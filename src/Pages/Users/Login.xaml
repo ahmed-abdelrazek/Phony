@@ -1,0 +1,32 @@
+﻿<Page x:Class="Phony.Pages.Users.Login"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Phony.Pages.Users"
+      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:vm="clr-namespace:Phony.ViewModel.Users"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="Login" FlowDirection="RightToLeft">
+    
+    <Grid x:Name="GridDX">
+        <Grid.DataContext>
+            <vm:LoginVM/>
+        </Grid.DataContext>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel x:Name="TextBoxFirstPanel" Orientation="Horizontal" Margin="5">
+                <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=UserNameTextBox, Path=BorderBrush}" Kind="account" />
+                <TextBox x:Name="UserNameTextBox" MinWidth="200" Margin="5" Text="{Binding Name, Mode=TwoWay}" Controls:TextBoxHelper.Watermark="اسم المستخدم" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:HintAssist.Hint="اسم المستخدم"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="{Binding ElementName=TextBoxFirstPanel, Path=Margin}">
+                <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=PasswordTextBox, Path=BorderBrush}" Kind="keyvariant" />
+                <PasswordBox x:Name="PasswordTextBox" MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button x:Name="LoginButton" Command="{Binding LogIn}" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
