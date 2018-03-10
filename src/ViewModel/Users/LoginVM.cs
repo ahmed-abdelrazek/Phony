@@ -53,6 +53,7 @@ namespace Phony.ViewModel.Users
             try
             {
                 //ToDo add logins
+                MainWindowVM.PageName = "Main";
             }
             catch (Exception ex)
             {
