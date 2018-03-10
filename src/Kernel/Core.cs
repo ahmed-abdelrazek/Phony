@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Phony.Model;
+using Phony.Persistence;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -21,7 +23,22 @@ namespace Phony.Kernel
         {
             try
             {
-                //todo add admin user
+                using (var db = new UnitOfWork(new PhonyDbContext()))
+                {
+                    var c = db.Users.Get(1);
+                    if (c == null)
+                    {
+                        User u = new User
+                        {
+                            Name = "admin",
+                            Pass = Encryption.EncryptText("admin"),
+                            Group = ViewModel.UserGroup.Manager,
+                            IsActive = true
+                        };
+                        db.Users.Add(u);
+                        db.Complete();
+                    }
+                }
             }
             catch (Exception ex)
             {

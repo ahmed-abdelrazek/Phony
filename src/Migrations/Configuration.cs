@@ -1,5 +1,6 @@
 namespace Phony.Migrations
 {
+    using Phony.Persistence;
     using System.Data.Entity.Migrations;
 
     internal sealed class Configuration : DbMigrationsConfiguration<PhonyDbContext>

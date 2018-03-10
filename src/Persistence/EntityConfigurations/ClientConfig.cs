@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity.ModelConfiguration;
 
-namespace Phony.EntityConfigurations
+namespace Phony.Persistence.EntityConfigurations
 {
     public class ClientConfig : EntityTypeConfiguration<Model.Client>
     {

@@ -1,6 +1,8 @@
 ﻿using Phony.Kernel;
+using Phony.Persistence;
 using Phony.Utility;
 using System;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Phony.ViewModel.Users
@@ -52,8 +54,17 @@ namespace Phony.ViewModel.Users
         {
             try
             {
-                //ToDo add logins
-                MainWindowVM.PageName = "Main";
+                using (var db = new UnitOfWork(new PhonyDbContext()))
+                {
+                    if (db.Users.GetLoginCredentials(Name, Encryption.EncryptText(Pass)))
+                    {
+                        MainWindowVM.PageName = "Main";
+                    }
+                    else
+                    {
+                        MessageBox.Show("تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط");
+                    }
+                }
             }
             catch (Exception ex)
             {

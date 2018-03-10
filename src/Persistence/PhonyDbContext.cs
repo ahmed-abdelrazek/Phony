@@ -1,7 +1,7 @@
-namespace Phony
+namespace Phony.Persistence
 {
-    using Phony.EntityConfigurations;
     using Phony.Model;
+    using Phony.Persistence.EntityConfigurations;
     using System.Data.Entity;
 
     public class PhonyDbContext : DbContext

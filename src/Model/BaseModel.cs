@@ -5,6 +5,7 @@ namespace Phony.Model
 {
     public class BaseModel : CommonBase
     {
+        //todo in ctor add current user to editor and null it when adding
 
         public int Id { get; set; }
 

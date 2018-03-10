@@ -4,6 +4,11 @@ namespace Phony.Model
 {
     public class Supplier : BaseModel
     {
+        public Supplier()
+        {
+            Items = new ObservableCollection<Item>();
+        }
+
         public string Name { get; set; }
 
         public decimal Balance { get; set; }

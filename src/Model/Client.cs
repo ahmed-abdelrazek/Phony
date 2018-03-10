@@ -4,6 +4,10 @@ namespace Phony.Model
 {
     public class Client : BaseModel
     {
+        public Client()
+        {
+            Bills = new ObservableCollection<Bill>();
+        }
 
         public string Name { get; set; }
 

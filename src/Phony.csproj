@@ -88,20 +88,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EntityConfigurations\BillConfig.cs" />
-    <Compile Include="EntityConfigurations\BillMoveConfig.cs" />
-    <Compile Include="EntityConfigurations\ClientConfig.cs" />
-    <Compile Include="EntityConfigurations\CompanyConfig.cs" />
-    <Compile Include="EntityConfigurations\ItemConfig.cs" />
-    <Compile Include="EntityConfigurations\ServiceConfig.cs" />
-    <Compile Include="EntityConfigurations\SupplierConfig.cs" />
-    <Compile Include="EntityConfigurations\UserConfig.cs" />
+    <Compile Include="Migrations\201803102002587_InitialModel.cs" />
+    <Compile Include="Migrations\201803102002587_InitialModel.Designer.cs">
+      <DependentUpon>201803102002587_InitialModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Persistence\EntityConfigurations\BillConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\BillMoveConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\ClientConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\CompanyConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\ItemConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\ServiceConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\SupplierConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\UserConfig.cs" />
+    <Compile Include="Kernel\Repositories\IUserRepo.cs" />
     <Compile Include="Extensions\IsNullOrEmptyExtension.cs" />
     <Compile Include="Kernel\CommonBase.cs" />
-    <Compile Include="Migrations\201803090938590_InitModel.cs" />
-    <Compile Include="Migrations\201803090938590_InitModel.Designer.cs">
-      <DependentUpon>201803090938590_InitModel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Bill.cs" />
     <Compile Include="Model\BillMove.cs" />
@@ -117,7 +118,12 @@
     <Compile Include="Pages\Users\UsersInfo.xaml.cs">
       <DependentUpon>UsersInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PhonyDbContext.cs" />
+    <Compile Include="Persistence\PhonyDbContext.cs" />
+    <Compile Include="Kernel\Repositories\IRepository.cs" />
+    <Compile Include="Persistence\Repositories\Repository.cs" />
+    <Compile Include="Persistence\Repositories\UserRepo.cs" />
+    <Compile Include="Kernel\IUnitOfWork.cs" />
+    <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Utility\CustomCommand.cs" />
     <Compile Include="ViewModel\ListsVM.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -185,8 +191,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\201803090938590_InitModel.resx">
-      <DependentUpon>201803090938590_InitModel.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803102002587_InitialModel.resx">
+      <DependentUpon>201803102002587_InitialModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -211,6 +217,7 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Reports\" />
+    <Folder Include="UnitsOfWork\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\PhonyLogo.png" />

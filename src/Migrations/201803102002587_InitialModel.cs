@@ -1,8 +1,9 @@
 namespace Phony.Migrations
 {
+    using System;
     using System.Data.Entity.Migrations;
-
-    public partial class InitModel : DbMigration
+    
+    public partial class InitialModel : DbMigration
     {
         public override void Up()
         {
