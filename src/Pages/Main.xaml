@@ -4,26 +4,25 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="clr-namespace:Phony.ViewModel"
       mc:Ignorable="d" 
-      d:DesignHeight="490" d:DesignWidth="690"
+      d:DesignHeight="650" d:DesignWidth="750"
       Title="Main" FlowDirection="RightToLeft">
+    <Page.DataContext>
+        <vm:MainWindowVM/>
+    </Page.DataContext>
 
     <Grid>
-        <StackPanel Margin="50" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Visible">
-            <ScrollViewer Margin="20" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" CanContentScroll="True" >
-                <StackPanel Orientation="Horizontal">
-                    <Controls:Tile Title="اضافة اصناف" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold"/>
-                    <Controls:Tile Title="عرض الاصناف" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
+        <WrapPanel Margin="50" MinWidth="500" MaxWidth="1366">
+            <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                <WrapPanel>
+                    <Controls:Tile Title="الاصناف" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" Command="{Binding OpenItemsWindow}"/>
                     <Controls:Tile Title="اضافة عميل" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="عرض العملاء" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="عمل فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="ارجاع فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="طباعه فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="نواقص" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
-                </StackPanel>
-            </ScrollViewer>
-            <ScrollViewer Margin="20" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True" CanContentScroll="True" >
-                <StackPanel Orientation="Horizontal">
                     <Controls:Tile Title="خدمات" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold"/>
                     <Controls:Tile Title="موردين" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="كروت شحن" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
@@ -33,8 +32,8 @@
                     <Controls:Tile Title="دعم" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="مستخدمين" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="اضافة مستخدم" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
-                </StackPanel>
+                </WrapPanel>
             </ScrollViewer>
-        </StackPanel>
+        </WrapPanel>
     </Grid>
 </Page>

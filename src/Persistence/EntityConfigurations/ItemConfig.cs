@@ -16,13 +16,30 @@ namespace Phony.Persistence.EntityConfigurations
                 .HasColumnType("image")
                 .IsOptional();
 
+            Property(i => i.WholeSalePrice)
+                .IsOptional();
+
+            Property(i => i.HalfWholeSalePrice)
+                .IsOptional();
+
+            Property(i => i.RetailPrice)
+                .IsOptional();
+
+            Property(b => b.CompanyId)
+                .IsOptional();
+
+            Property(b => b.SupplierId)
+                .IsOptional();
+
             HasOptional(i => i.Company)
                 .WithMany(c => c.Items)
-                .HasForeignKey(i => i.CompanyId);
+                .HasForeignKey(i => i.CompanyId)
+                .WillCascadeOnDelete(false);
 
             HasOptional(i => i.Supplier)
                 .WithMany(s => s.Items)
-                .HasForeignKey(i => i.SupplierId);
+                .HasForeignKey(i => i.SupplierId)
+                .WillCascadeOnDelete(false);
 
             HasRequired(i => i.Creator)
                 .WithMany()

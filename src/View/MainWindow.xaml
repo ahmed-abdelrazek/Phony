@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Phony.View"
         mc:Ignorable="d"
-        Title="Phony" Height="500" Width="700" MinWidth="700" MinHeight="500" FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" Icon="/Phony;component/Resources/PhonyLogo.png">
+        Title="Phony" Height="500" Width="700" MinWidth="700" MinHeight="500" FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" Icon="/Phony;component/Resources/PhonyLogo.png" Closing="metroWindow_Closing">
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -32,7 +32,7 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.DataContext>
-            <vm:MainWindowVM x:Name="mwvm"/>
+            <vm:MainWindowVM/>
         </Grid.DataContext>
         <Frame x:Name="FrameWithinGrid" Source="{Binding CurrentSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" NavigationUIVisibility="Hidden" FlowDirection="{Binding FlowDirection, ElementName=metroWindow}"/>
     </Grid>

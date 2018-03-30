@@ -8,17 +8,24 @@ namespace Phony.Persistence.EntityConfigurations
         {
             HasKey(b => b.Id);
 
+            Property(b => b.Discount)
+                .IsOptional();
+
+            Property(b => b.ClientId)
+                .IsOptional();
+
+            Property(b => b.CompanyId)
+                .IsOptional();
+
             HasOptional(b => b.Client)
-                    .WithMany(c => c.Bills)
-                    .HasForeignKey(b => b.ClientId);
+                .WithMany(c => c.Bills)
+                .HasForeignKey(b => b.ClientId)
+                .WillCascadeOnDelete(false);
 
             HasOptional(b => b.Company)
-                    .WithMany(c => c.Bills)
-                    .HasForeignKey(b => b.CompanyId);
-
-            HasOptional(b => b.Service)
-                    .WithMany(c => c.Bills)
-                    .HasForeignKey(b => b.ServiceId);
+                .WithMany(c => c.Bills)
+                .HasForeignKey(b => b.CompanyId)
+                .WillCascadeOnDelete(false);
 
             HasRequired(b => b.Creator)
                 .WithMany()

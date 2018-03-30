@@ -10,9 +10,14 @@ namespace Phony.Persistence.Repositories
         {
         }
 
-        bool IUserRepo.GetLoginCredentials(string Name, string Pass)
+        User IUserRepo.GetLoginCredentials(string Name, string Pass)
         {
-            return PhonyDbContext.Users.Any(u => u.Name == Name && u.Pass == Pass && u.IsActive == true);
+            var User = PhonyDbContext.Users.FirstOrDefault(u => u.Name == Name && u.Pass == Pass && u.IsActive == true);
+            if (User != null)
+            {
+                return User;
+            }
+            return null;
         }
 
         public PhonyDbContext PhonyDbContext

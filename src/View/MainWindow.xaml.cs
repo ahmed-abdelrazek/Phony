@@ -10,7 +10,7 @@ namespace Phony.View
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-
+        ViewModel.MainWindowVM v = new ViewModel.MainWindowVM();
         public MainWindow()
         {
             InitializeComponent();
@@ -22,9 +22,9 @@ namespace Phony.View
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (FrameWithinGrid.Source != ViewModel.MainWindowVM.CurrentSource)
+            if (FrameWithinGrid.Source != v.CurrentSource)
             {
-                FrameWithinGrid.Source = ViewModel.MainWindowVM.CurrentSource;
+                FrameWithinGrid.Source = v.CurrentSource;
             }
         }
 
@@ -34,32 +34,9 @@ namespace Phony.View
             set.ShowDialog();
         }
 
-        private void IncomeAddB_Click(object sender, RoutedEventArgs e)
+        private void metroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //using (var db = new PhonyDbContext())
-            //{
-            //    // Get customer collection
-            //    var Incomes = db.GetCollection<IncomeM>("Incomes");
-            //    // Create your new customer instance
-            //    var Income = new IncomeM
-            //    {
-            //        Name = IncomeNameTb.Text,
-            //        Balance = uint.Parse(IncomeBalanceTb.Text),
-            //        PeriodType = IncomePeriodTypeCb.SelectedIndex,
-            //        Month = DateTime.Now.Month,
-            //        Year = DateTime.Now.Year,
-            //        CreateDate = DateTime.Now,
-            //        IsActive = true
-            //    };
-            //    // Insert new customer document (Id will be auto-incremented)
-            //    Incomes.Insert(Income);
-            //    IncomesListDGV.Items.Refresh();
-            //    // Update a document inside a collection
-            //    //Income.Name = "Joana Doe";
-            //    //Incomes.Update(Income);
-            //    // Index document using a document property
-            //    //Incomes.EnsureIndex(x => x.Name);
-            //}
+            Environment.Exit(0);
         }
     }
 }

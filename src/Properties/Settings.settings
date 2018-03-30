@@ -8,5 +8,8 @@
     <Setting Name="Color" Type="System.String" Scope="User">
       <Value Profile="(Default)">Emerald</Value>
     </Setting>
+    <Setting Name="IsConfigured" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

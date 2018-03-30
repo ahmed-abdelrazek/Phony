@@ -5,7 +5,14 @@ namespace Phony.Model
 {
     public class BaseModel : CommonBase
     {
-        //todo in ctor add current user to editor and null it when adding
+
+        ViewModel.Users.LoginVM CurrentUser = new ViewModel.Users.LoginVM();
+
+        public BaseModel()
+        {
+            EditDate = DateTime.Now;
+            EditById = CurrentUser.Id;
+        }
 
         public int Id { get; set; }
 
@@ -17,7 +24,7 @@ namespace Phony.Model
 
         public DateTime CreateDate { get; set; }
 
-        public int EditById { get; set; }
+        public int? EditById { get; set; }
 
         public virtual User Editor { get; set; }
 

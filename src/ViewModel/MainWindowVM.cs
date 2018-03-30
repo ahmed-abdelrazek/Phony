@@ -11,6 +11,7 @@ namespace Phony.ViewModel
         static string _pageName;
         
         public ICommand ChangeSource { get; set; }
+        public ICommand OpenItemsWindow { get; set; }
 
         public MainWindowVM()
         {
@@ -25,6 +26,18 @@ namespace Phony.ViewModel
         public void LoadCommands()
         {
             ChangeSource = new CustomCommand(ChangeCurrentSource, CanChangeCurrentSource);
+            OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
+        }
+
+        private void DoOpenItemsWindow(object obj)
+        {
+            View.Items i = new View.Items();
+            i.Show();
+        }
+
+        private bool CanOpenItemsWindow(object obj)
+        {
+            return true;
         }
 
         private void ChangeCurrentSource(object obj)
@@ -41,7 +54,7 @@ namespace Phony.ViewModel
             return false;
         }
 
-        public static Uri CurrentSource
+        public Uri CurrentSource
         {
             get { return _currentSource; }
             set
@@ -53,7 +66,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public static string PageName
+        public string PageName
         {
             get => _pageName;
             set
@@ -66,7 +79,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public static void NavigateToPage(string Page)
+        public void NavigateToPage(string Page)
         {
             CurrentSource = new Uri("/Phony;component/Pages/" + Page + ".xaml", UriKind.Relative);
         }

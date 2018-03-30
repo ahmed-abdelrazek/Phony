@@ -1,6 +1,6 @@
-﻿using MahApps.Metro;
+﻿using Exceptionless;
+using MahApps.Metro;
 using Phony.Kernel;
-using System;
 using System.Windows;
 
 namespace Phony
@@ -14,6 +14,7 @@ namespace Phony
         protected override void OnStartup(StartupEventArgs e)
         {
             OnlyYou.Make();
+            ExceptionlessClient.Default.Register();
             Core.StartUp_Engine();
             if (!string.IsNullOrWhiteSpace(Core.Color) || !string.IsNullOrWhiteSpace(Core.Theme))
             {

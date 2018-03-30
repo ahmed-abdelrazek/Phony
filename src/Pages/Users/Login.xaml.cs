@@ -29,7 +29,7 @@ namespace Phony.Pages.Users
         {
             if (GridDX.DataContext != null)
             {
-                ((ViewModel.Users.LoginVM)GridDX.DataContext).Pass = ((PasswordBox)sender).Password;
+                ((ViewModel.Users.LoginVM)GridDX.DataContext).SecurePassword = ((PasswordBox)sender).SecurePassword;
             }
         }
     }

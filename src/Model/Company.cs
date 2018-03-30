@@ -12,7 +12,7 @@ namespace Phony.Model
 
         public string Name { get; set; }
 
-        public decimal? Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public string Site { get; set; }
 

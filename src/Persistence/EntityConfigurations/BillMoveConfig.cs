@@ -8,6 +8,19 @@ namespace Phony.Persistence.EntityConfigurations
         {
             HasKey(b => b.Id);
 
+
+            Property(b => b.Discount)
+                .IsOptional();
+
+            Property(b => b.BillId)
+                .IsOptional();
+
+            Property(b => b.ItemId)
+                .IsOptional();
+
+            Property(b => b.ServiceId)
+                .IsOptional();
+
             HasOptional(b => b.Bill)
                     .WithMany(b => b.BillMoves)
                     .HasForeignKey(b => b.BillId);
