@@ -17,12 +17,11 @@
             <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
                 <WrapPanel>
                     <Controls:Tile Title="الاصناف" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" Command="{Binding OpenItemsWindow}"/>
-                    <Controls:Tile Title="اضافة عميل" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
-                    <Controls:Tile Title="عرض العملاء" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
+                    <Controls:Tile Title="العملاء" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" Command="{Binding OpenClientsWindow}"/>
                     <Controls:Tile Title="عمل فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="ارجاع فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="طباعه فاتورة" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
-                    <Controls:Tile Title="نواقص" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
+                    <Controls:Tile Title="نواقص" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" Command="{Binding OpenShortagesWindow}"/>
                     <Controls:Tile Title="خدمات" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold"/>
                     <Controls:Tile Title="موردين" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />
                     <Controls:Tile Title="كروت شحن" Margin="5" HorizontalTitleAlignment="Center" VerticalTitleAlignment="Center" FontWeight="Bold" />

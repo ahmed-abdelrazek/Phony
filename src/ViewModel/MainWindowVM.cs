@@ -12,6 +12,8 @@ namespace Phony.ViewModel
         
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
+        public ICommand OpenClientsWindow { get; set; }
+        public ICommand OpenShortagesWindow { get; set; }
 
         public MainWindowVM()
         {
@@ -27,12 +29,33 @@ namespace Phony.ViewModel
         {
             ChangeSource = new CustomCommand(ChangeCurrentSource, CanChangeCurrentSource);
             OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
+            OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
+            OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
+        }
+
+        private bool CanOpenShortagesWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenShortagesWindow(object obj)
+        {
+            new View.Shortages().Show();
+        }
+
+        private bool CanOpenClientsWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenClientsWindow(object obj)
+        {
+            new View.Clients().Show();
         }
 
         private void DoOpenItemsWindow(object obj)
         {
-            View.Items i = new View.Items();
-            i.Show();
+            new View.Items().Show();
         }
 
         private bool CanOpenItemsWindow(object obj)

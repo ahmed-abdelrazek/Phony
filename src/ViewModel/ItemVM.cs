@@ -3,11 +3,13 @@ using Phony.Kernel;
 using Phony.Model;
 using Phony.Persistence;
 using Phony.Utility;
+using Phony.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,8 +17,6 @@ namespace Phony.ViewModel
 {
     public class ItemVM : CommonBase
     {
-        bool _isAddItemFlyoutOpen;
-
         int _itemId;
         int _selectedCompanyValue;
         int _selectedSupplierValue;
@@ -25,7 +25,14 @@ namespace Phony.ViewModel
         string _shopcode;
         string _searchText;
         string _notes;
+        string _childName;
+        string _childPrice;
+        static string _itemsCount;
+        static string _itemsPurchasePrice;
+        static string _itemsSalePrice;
+        static string _itemsProfit;
         byte[] _image;
+        byte[] _childImage;
         ItemGroup _group;
         decimal _purchasePrice;
         decimal _wholeSalePrice;
@@ -36,6 +43,9 @@ namespace Phony.ViewModel
         bool _byName;
         bool _byBarCode;
         bool _byShopCode;
+        bool _fastResult;
+        bool _openFastResult;
+        bool _isAddItemFlyoutOpen;
         Item _dataGridSelectedItem;
 
         ObservableCollection<Company> _companies;
@@ -120,6 +130,84 @@ namespace Phony.ViewModel
             }
         }
 
+        public string ChildName
+        {
+            get => _childName;
+            set
+            {
+                if (value != _childName)
+                {
+                    _childName = value;
+                    RaisePropertyChanged(nameof(ChildName));
+                }
+            }
+        }
+
+        public string ChildPrice
+        {
+            get => _childPrice;
+            set
+            {
+                if (value != _childPrice)
+                {
+                    _childPrice = value;
+                    RaisePropertyChanged(nameof(ChildPrice));
+                }
+            }
+        }
+
+        public string ItemsCount
+        {
+            get => _itemsCount;
+            set
+            {
+                if (value != _itemsCount)
+                {
+                    _itemsCount = value;
+                    RaisePropertyChanged(nameof(ItemsCount));
+                }
+            }
+        }
+
+        public string ItemsPurchasePrice
+        {
+            get => _itemsPurchasePrice;
+            set
+            {
+                if (value != _itemsPurchasePrice)
+                {
+                    _itemsPurchasePrice = value;
+                    RaisePropertyChanged(nameof(ItemsPurchasePrice));
+                }
+            }
+        }
+
+        public string ItemsSalePrice
+        {
+            get => _itemsSalePrice;
+            set
+            {
+                if (value != _itemsSalePrice)
+                {
+                    _itemsSalePrice = value;
+                    RaisePropertyChanged(nameof(ItemsSalePrice));
+                }
+            }
+        }
+
+        public string ItemsProfit
+        {
+            get => _itemsProfit;
+            set
+            {
+                if (value != _itemsProfit)
+                {
+                    _itemsProfit = value;
+                    RaisePropertyChanged(nameof(ItemsProfit));
+                }
+            }
+        }
+
         public byte[] Image
         {
             get => _image;
@@ -129,6 +217,19 @@ namespace Phony.ViewModel
                 {
                     _image = value;
                     RaisePropertyChanged(nameof(Image));
+                }
+            }
+        }
+
+        public byte[] ChildImage
+        {
+            get => _childImage;
+            set
+            {
+                if (value != _childImage)
+                {
+                    _childImage = value;
+                    RaisePropertyChanged(nameof(ChildImage));
                 }
             }
         }
@@ -289,6 +390,32 @@ namespace Phony.ViewModel
             }
         }
 
+        public bool FastResult
+        {
+            get => _fastResult;
+            set
+            {
+                if (value != _fastResult)
+                {
+                    _fastResult = value;
+                    RaisePropertyChanged(nameof(FastResult));
+                }
+            }
+        }
+
+        public bool OpenFastResult
+        {
+            get => _openFastResult;
+            set
+            {
+                if (value != _openFastResult)
+                {
+                    _openFastResult = value;
+                    RaisePropertyChanged(nameof(OpenFastResult));
+                }
+            }
+        }
+
         public Item DataGridSelectedItem
         {
             get => _dataGridSelectedItem;
@@ -367,12 +494,13 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        View.Items ItemsMassage = Application.Current.Windows.OfType<View.Items>().FirstOrDefault();
+        Items ItemsMassage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
 
 
         public ItemVM()
         {
             LoadCommands();
+            ByName = true;
             using (var db = new PhonyDbContext())
             {
                 Companies = new ObservableCollection<Company>(db.Companies);
@@ -380,7 +508,14 @@ namespace Phony.ViewModel
                 Items = new ObservableCollection<Item>(db.Items.Where(i => i.Group == ItemGroup.Other));
                 Users = new ObservableCollection<User>(db.Users);
             }
-            ByName = true;
+            new Thread(() =>
+            {
+                ItemsCount = $"إجمالى الاصناف: {Items.Count().ToString()}";
+                ItemsPurchasePrice = $"اجمالى سعر الشراء: {Items.Sum(i => i.PurchasePrice * i.QTY).ToString()}";
+                ItemsSalePrice = $"اجمالى سعر البيع: {Items.Sum(i => i.SalePrice * i.QTY).ToString()}";
+                ItemsProfit = $"تقدير صافى الربح: {(Items.Sum(i => i.SalePrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)).ToString()}";
+                Thread.CurrentThread.Abort();
+            }).Start();
         }
 
         public void LoadCommands()
@@ -490,6 +625,13 @@ namespace Phony.ViewModel
                 if (ByName)
                 {
                     Items = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                    if (FastResult)
+                    {
+                        ChildName = Items.FirstOrDefault().Name;
+                        ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
+                        ChildImage = Items.FirstOrDefault().Image;
+                        OpenFastResult = true;
+                    }
                 }
                 else if (ByBarCode)
                 {
@@ -531,12 +673,12 @@ namespace Phony.ViewModel
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-                    db.Items.Remove(DataGridSelectedItem);
+                    db.Items.Remove(db.Items.Get(DataGridSelectedItem.Id));
                     db.Complete();
                     Items.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await ItemsMassage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
+                await ItemsMassage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
             }
         }
 

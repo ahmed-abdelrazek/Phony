@@ -9,6 +9,7 @@
         xmlns:local="clr-namespace:Phony.View"
         xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         xmlns:converts="clr-namespace:Phony.Converters"
+        xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
         mc:Ignorable="d"
         Title="الاصناف" FlowDirection="RightToLeft" Height="450" Width="800">
     <Controls:MetroWindow.Resources>
@@ -19,8 +20,9 @@
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="140"/>
-            <RowDefinition Height="80*"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="5">
             <TextBlock Text="البحث"/>
@@ -38,6 +40,7 @@
                 <RadioButton Content="بالاسم" Margin="5" IsChecked="{Binding ByName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <RadioButton Content="بكود المحل" Margin="5" IsChecked="{Binding ByShopCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <RadioButton Content="بالباركود" Margin="5" IsChecked="{Binding ByBarCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox Content="نتيجة سريعة" Margin="5" IsChecked="{Binding FastResult, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddItemFlyout}"/>
@@ -51,11 +54,11 @@
                 <DataGridTextColumn Binding="{Binding Shopcode}" Header="كود المحل" FontSize="14"/>
                 <DataGridTextColumn Binding="{Binding Barcode}" Header="الباركود" FontSize="14"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الجملة" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر النصف جملة" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر القطاعى" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر البيع" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="الكمية" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="سعر الجملة" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding HalfWholeSalePrice}" Header="سعر النصف جملة" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding RetailPrice}" Header="سعر القطاعى" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding SalePrice}" Header="سعر البيع" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding QTY}" Header="الكمية" Minimum="0"/>
                 <DataGridTemplateColumn Header="الشركة">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -131,8 +134,26 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Controls:Flyout Grid.RowSpan="2" Header="بيانات الصنف" Width="250" Theme="Accent" IsOpen="{Binding IsAddItemFlyoutOpen}" Position="Left">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
+        <simpleChildWindow:ChildWindow Grid.RowSpan="3" IsOpen="{Binding OpenFastResult}" Title="نتيجة سريعة" BorderBrush="{DynamicResource AccentBaseColorBrush}" BorderThickness="1" GlowBrush="{DynamicResource AccentColorBrush}" AllowMove="True" FlowDirection="RightToLeft" ShowCloseButton="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="35*"/>
+                    <ColumnDefinition Width="35*"/>
+                    <ColumnDefinition Width="35*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding ChildName}" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding ChildPrice}" Grid.Column="1" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image Source="{Binding ChildImage, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Stretch="Fill" Grid.Column="2" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </simpleChildWindow:ChildWindow>
+        <StatusBar Grid.Row="2">
+            <Label Content="{Binding ItemsCount}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding ItemsPurchasePrice}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding ItemsSalePrice}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding ItemsProfit}" FontWeight="Bold" Margin="5"/>
+        </StatusBar>
+        <Controls:Flyout Grid.RowSpan="3" Header="بيانات الصنف" Width="250" Theme="Accent" IsOpen="{Binding IsAddItemFlyoutOpen}" Position="Left">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم الصنف" Margin="5"/>
                     <TextBox Text="{Binding Barcode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="باركود" Margin="5"/>
@@ -141,17 +162,17 @@
                         <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
                         <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Margin="5" Stretch="Fill"/>
                     </StackPanel>
-                    <TextBlock Text="سعر الشراء"/>
+                    <TextBlock Text="سعر الشراء" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding PurchasePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الشراء" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
-                    <TextBlock Text="سعر الجملة"/>
+                    <TextBlock Text="سعر الجملة" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding WholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
-                    <TextBlock Text="سعر نصف الجملة"/>
+                    <TextBlock Text="سعر نصف الجملة" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding HalfWholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر نصف الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
-                    <TextBlock Text="سعر القطاعى"/>
+                    <TextBlock Text="سعر القطاعى" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding RetailPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر القطاعى" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
-                    <TextBlock Text="سعر البيع"/>
+                    <TextBlock Text="سعر البيع" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding SalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر البيع" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
-                    <TextBlock Text="الكمية"/>
+                    <TextBlock Text="الكمية" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الكمية" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
                     <ComboBox ItemsSource="{Binding Companies}" materialDesign:HintAssist.Hint="الشركة" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedCompanyValue}"/>
                     <ComboBox ItemsSource="{Binding Suppliers}" materialDesign:HintAssist.Hint="المورد" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedSupplierValue}"/>
