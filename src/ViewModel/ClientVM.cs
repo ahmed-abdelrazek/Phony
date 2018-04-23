@@ -267,9 +267,9 @@ namespace Phony.ViewModel
             new Thread(() =>
             {
                 ClientCount = $"مجموع العملاء: {Clients.Count().ToString()}";
-                ClientDebits = $"اجمالى لينا: {Clients.Where(c => c.Balance > 0).Sum(i => i.Balance).ToString()}";
-                ClientCredits = $"اجمالى علينا: {Clients.Where(c => c.Balance < 0).Sum(i => i.Balance).ToString()}";
-                ClientProfit = $"تقدير لصافى المبلغ: {(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance) + Clients.Where(c => c.Balance < 0).Sum(i => i.Balance)).ToString()}";
+                ClientDebits = $"اجمالى لينا: {decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
+                ClientCredits = $"اجمالى علينا: {decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
+                ClientProfit = $"تقدير لصافى لينا: {decimal.Round((Clients.Where(c => c.Balance > 0).Sum(i => i.Balance) + Clients.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
                 Thread.CurrentThread.Abort();
             }).Start();
         }

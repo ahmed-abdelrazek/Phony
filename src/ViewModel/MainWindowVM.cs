@@ -1,6 +1,11 @@
 ﻿using Phony.Kernel;
+using Phony.Model;
+using Phony.Persistence;
 using Phony.Utility;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Phony.ViewModel
@@ -9,7 +14,49 @@ namespace Phony.ViewModel
     {
         static Uri _currentSource;
         static string _pageName;
-        
+        static int _itemsCount;
+        static int _clientsCount;
+        static int _shortagesCount;
+
+        public int ItemsCount
+        {
+            get => _itemsCount;
+            set
+            {
+                if (value != _itemsCount)
+                {
+                    _itemsCount = value;
+                    RaisePropertyChanged(nameof(ItemsCount));
+                }
+            }
+        }
+
+        public int ClientsCount
+        {
+            get => _clientsCount;
+            set
+            {
+                if (value != _clientsCount)
+                {
+                    _clientsCount = value;
+                    RaisePropertyChanged(nameof(ClientsCount));
+                }
+            }
+        }
+
+        public int ShortagesCount
+        {
+            get => _shortagesCount;
+            set
+            {
+                if (value != _shortagesCount)
+                {
+                    _shortagesCount = value;
+                    RaisePropertyChanged(nameof(ShortagesCount));
+                }
+            }
+        }
+
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
@@ -23,6 +70,7 @@ namespace Phony.ViewModel
                 PageName = "Users/Login";
             }
             NavigateToPage(PageName);
+            Task.Run(() => this.CountEveryThing()).Wait();
         }
 
         public void LoadCommands()
@@ -31,6 +79,25 @@ namespace Phony.ViewModel
             OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
             OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
             OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
+        }
+
+        async Task CountEveryThing()
+        {
+            using (var db = new PhonyDbContext())
+            {
+                await Task.Run(() =>
+                {
+                    ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
+                });
+                await Task.Run(() =>
+                {
+                    ClientsCount = db.Clients.Count();
+                });
+                await Task.Run(() =>
+                {
+                    ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
+                });
+            }
         }
 
         private bool CanOpenShortagesWindow(object obj)
@@ -77,12 +144,12 @@ namespace Phony.ViewModel
             return false;
         }
 
-        public Uri CurrentSource
+        public static Uri CurrentSource
         {
             get { return _currentSource; }
             set
             {
-                if (_currentSource != value)
+                if (_currentSource != value && value != null)
                 {
                     _currentSource = value;
                 }

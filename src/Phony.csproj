@@ -119,21 +119,47 @@
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityCollapsedConvertor.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Kernel\Repositories\IBillMoveRepo.cs" />
+    <Compile Include="Kernel\Repositories\IBillRepo.cs" />
+    <Compile Include="Kernel\Repositories\IClientMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IClientRepo.cs" />
+    <Compile Include="Kernel\Repositories\ICompanyMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\ICompanyRepo.cs" />
     <Compile Include="Kernel\Repositories\IItemRepo.cs" />
+    <Compile Include="Kernel\Repositories\INoteRepo.cs" />
+    <Compile Include="Kernel\Repositories\IServiceMoveRepo.cs" />
+    <Compile Include="Kernel\Repositories\IServiceRepo.cs" />
+    <Compile Include="Kernel\Repositories\ISupplierMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\ISupplierRepo.cs" />
     <Compile Include="Migrations\201803300834533_InitialModel.cs" />
     <Compile Include="Migrations\201803300834533_InitialModel.Designer.cs">
       <DependentUpon>201803300834533_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804231332028_NewMovesModels.cs" />
+    <Compile Include="Migrations\201804231332028_NewMovesModels.Designer.cs">
+      <DependentUpon>201804231332028_NewMovesModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804231334221_NewMovesModels1.cs" />
+    <Compile Include="Migrations\201804231334221_NewMovesModels1.Designer.cs">
+      <DependentUpon>201804231334221_NewMovesModels1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ClientMove.cs" />
+    <Compile Include="Model\CompanyMove.cs" />
+    <Compile Include="Model\Note.cs" />
+    <Compile Include="Model\ServiceMove.cs" />
+    <Compile Include="Model\SupplierMove.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\ClientConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\ClientMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\CompanyConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\CompanyMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\ItemConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\NoteConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\ServiceConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\ServiceMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\SupplierConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\SupplierMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\UserConfig.cs" />
     <Compile Include="Kernel\Repositories\IUserRepo.cs" />
     <Compile Include="Extensions\IsNullOrEmptyExtension.cs" />
@@ -155,10 +181,18 @@
     </Compile>
     <Compile Include="Persistence\PhonyDbContext.cs" />
     <Compile Include="Kernel\Repositories\IRepository.cs" />
+    <Compile Include="Persistence\Repositories\BillMoveRepo.cs" />
+    <Compile Include="Persistence\Repositories\BillRepo.cs" />
+    <Compile Include="Persistence\Repositories\ClientMoveRepo.cs" />
     <Compile Include="Persistence\Repositories\ClientRepo.cs" />
+    <Compile Include="Persistence\Repositories\CompanyMoveRepo.cs" />
     <Compile Include="Persistence\Repositories\CompanyRepo.cs" />
     <Compile Include="Persistence\Repositories\ItemRepo.cs" />
+    <Compile Include="Persistence\Repositories\NoteRepo.cs" />
     <Compile Include="Persistence\Repositories\Repository.cs" />
+    <Compile Include="Persistence\Repositories\ServiceMoveRepo.cs" />
+    <Compile Include="Persistence\Repositories\ServiceRepo.cs" />
+    <Compile Include="Persistence\Repositories\SupplierMoveRepo.cs" />
     <Compile Include="Persistence\Repositories\SupplierRepo.cs" />
     <Compile Include="Persistence\Repositories\UserRepo.cs" />
     <Compile Include="Kernel\IUnitOfWork.cs" />
@@ -255,6 +289,12 @@
     <EmbeddedResource Include="Migrations\201803300834533_InitialModel.resx">
       <DependentUpon>201803300834533_InitialModel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804231332028_NewMovesModels.resx">
+      <DependentUpon>201804231332028_NewMovesModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804231334221_NewMovesModels1.resx">
+      <DependentUpon>201804231334221_NewMovesModels1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -273,7 +313,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Reports\" />
-    <Folder Include="UnitsOfWork\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\PhonyLogo.png" />

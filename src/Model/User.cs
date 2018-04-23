@@ -19,4 +19,3 @@ namespace Phony.Model
         public bool IsActive { get; set; }
     }
 }
-    

@@ -2,18 +2,17 @@
 
 namespace Phony.Persistence.EntityConfigurations
 {
-    public class ClientConfig : EntityTypeConfiguration<Model.Client>
+    public class NoteConfig : EntityTypeConfiguration<Model.Note>
     {
-        public ClientConfig()
+        public NoteConfig()
         {
             HasKey(c => c.Id);
 
-            Property(c => c.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
+            Property(i => i.Name)
+                .IsRequired();
 
-            HasIndex(c => c.Name)
-                    .IsUnique();
+            Property(i => i.Notes)
+                .IsRequired();
 
             HasRequired(c => c.Creator)
                 .WithMany()

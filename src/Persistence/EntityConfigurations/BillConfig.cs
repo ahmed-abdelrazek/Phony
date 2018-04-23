@@ -1,8 +1,9 @@
-﻿using System.Data.Entity.ModelConfiguration;
+﻿using Phony.Model;
+using System.Data.Entity.ModelConfiguration;
 
 namespace Phony.Persistence.EntityConfigurations
 {
-    public class BillConfig : EntityTypeConfiguration<Model.Bill>
+    public class BillConfig : EntityTypeConfiguration<Bill>
     {
         public BillConfig()
         {

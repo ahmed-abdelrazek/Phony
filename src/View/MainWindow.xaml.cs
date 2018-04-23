@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Phony.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Threading;
@@ -10,7 +11,6 @@ namespace Phony.View
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        ViewModel.MainWindowVM v = new ViewModel.MainWindowVM();
         public MainWindow()
         {
             InitializeComponent();
@@ -22,9 +22,9 @@ namespace Phony.View
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (FrameWithinGrid.Source != v.CurrentSource)
+            if (FrameWithinGrid.Source != MainWindowVM.CurrentSource)
             {
-                FrameWithinGrid.Source = v.CurrentSource;
+                FrameWithinGrid.Source = MainWindowVM.CurrentSource;
             }
         }
 

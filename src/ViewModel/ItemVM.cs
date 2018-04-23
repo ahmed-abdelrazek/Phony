@@ -511,9 +511,9 @@ namespace Phony.ViewModel
             new Thread(() =>
             {
                 ItemsCount = $"إجمالى الاصناف: {Items.Count().ToString()}";
-                ItemsPurchasePrice = $"اجمالى سعر الشراء: {Items.Sum(i => i.PurchasePrice * i.QTY).ToString()}";
-                ItemsSalePrice = $"اجمالى سعر البيع: {Items.Sum(i => i.SalePrice * i.QTY).ToString()}";
-                ItemsProfit = $"تقدير صافى الربح: {(Items.Sum(i => i.SalePrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)).ToString()}";
+                ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
+                ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.SalePrice * i.QTY), 2).ToString()}";
+                ItemsProfit = $"تقدير صافى الربح: {decimal.Round((Items.Sum(i => i.SalePrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
                 Thread.CurrentThread.Abort();
             }).Start();
         }

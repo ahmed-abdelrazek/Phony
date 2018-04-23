@@ -109,7 +109,6 @@ namespace Phony.Kernel
                             }
                             Properties.Settings.Default.IsConfigured = true;
                             Properties.Settings.Default.Save();
-
                         }
                         catch (Exception e)
                         {

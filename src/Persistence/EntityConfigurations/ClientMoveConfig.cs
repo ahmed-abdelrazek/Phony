@@ -2,18 +2,16 @@
 
 namespace Phony.Persistence.EntityConfigurations
 {
-    public class ClientConfig : EntityTypeConfiguration<Model.Client>
+    public class ClientMoveConfig : EntityTypeConfiguration<Model.ClientMove>
     {
-        public ClientConfig()
+        public ClientMoveConfig()
         {
             HasKey(c => c.Id);
 
-            Property(c => c.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-            HasIndex(c => c.Name)
-                    .IsUnique();
+            HasRequired(c => c.Client)
+                .WithMany()
+                .HasForeignKey(c => c.ClientId)
+                .WillCascadeOnDelete(false);
 
             HasRequired(c => c.Creator)
                 .WithMany()

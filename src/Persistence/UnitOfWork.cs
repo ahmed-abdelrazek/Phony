@@ -11,18 +11,34 @@ namespace Phony.Persistence
         public UnitOfWork(PhonyDbContext context)
         {
             _context = context;
-            Users = new UserRepo(_context);
-            Items = new ItemRepo(_context);
+            Bills = new BillRepo(_context);
+            BillsMoves = new BillMoveRepo(_context);
             Clients = new ClientRepo(_context);
+            ClientsMoves = new ClientMoveRepo(_context);
             Companies = new CompanyRepo(_context);
+            CompaniesMoves = new CompanyMoveRepo(_context);
+            Items = new ItemRepo(_context);
+            Notes = new NoteRepo(_context);
+            Services = new ServiceRepo(_context);
+            ServicesMoves = new ServiceMoveRepo(_context);
             Suppliers = new SupplierRepo(_context);
+            SuppliersMoves = new SupplierMoveRepo(_context);
+            Users = new UserRepo(_context);
         }
 
-        public IUserRepo Users { get; private set; }
-        public IItemRepo Items { get; private set; }
+        public IBillRepo Bills { get; private set; }
+        public IBillMoveRepo BillsMoves { get; private set; }
         public IClientRepo Clients { get; private set; }
+        public IClientMoveRepo ClientsMoves { get; private set; }
         public ICompanyRepo Companies { get; private set; }
+        public ICompanyMoveRepo CompaniesMoves { get; private set; }
+        public IItemRepo Items { get; private set; }
+        public INoteRepo Notes { get; private set; }
+        public IServiceRepo Services { get; private set; }
+        public IServiceMoveRepo ServicesMoves { get; private set; }
         public ISupplierRepo Suppliers { get; private set; }
+        public ISupplierMoveRepo SuppliersMoves { get; private set; }
+        public IUserRepo Users { get; private set; }
 
         public int Complete()
         {

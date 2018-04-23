@@ -90,4 +90,12 @@ namespace Phony.ViewModel
         [LocalizedDescription("كارت شحن", typeof(string))]
         Card
     }
+
+    public enum NoteGroup : byte
+    {
+        [LocalizedDescription("ارقام", typeof(string))]
+        Numbers,
+        [LocalizedDescription("اخرى", typeof(string))]
+        Other
+    }
 }
