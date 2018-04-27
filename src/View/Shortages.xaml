@@ -7,10 +7,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm ="clr-namespace:Phony.ViewModel"
         xmlns:local="clr-namespace:Phony.View"
-        xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
-        xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
         mc:Ignorable="d"
-        Title="النواقص" FlowDirection="RightToLeft" Height="450" Width="450">
+        Title="النواقص" FlowDirection="RightToLeft" Height="450" Width="450" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.DataContext>
         <vm:ShortageVM/>
     </Controls:MetroWindow.DataContext>
@@ -19,7 +17,7 @@
             <RowDefinition Height="50*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Margin="5" SelectedItem="{Binding DataGridSelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Margin="5" SelectedItem="{Binding DataGridSelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="الاسم" FontSize="14"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0"/>

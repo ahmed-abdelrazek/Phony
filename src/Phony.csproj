@@ -198,7 +198,9 @@
     <Compile Include="Kernel\IUnitOfWork.cs" />
     <Compile Include="Persistence\UnitOfWork.cs" />
     <Compile Include="Utility\CustomCommand.cs" />
+    <Compile Include="ViewModel\CardVM.cs" />
     <Compile Include="ViewModel\ClientVM.cs" />
+    <Compile Include="ViewModel\CopmanyVM.cs" />
     <Compile Include="ViewModel\ItemVM.cs" />
     <Compile Include="ViewModel\ListsVM.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -206,9 +208,16 @@
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\ServiceVM.cs" />
     <Compile Include="ViewModel\ShortageVM.cs" />
+    <Compile Include="ViewModel\SupplierVM.cs" />
     <Compile Include="ViewModel\Users\LoginVM.cs" />
+    <Compile Include="View\Cards.xaml.cs">
+      <DependentUpon>Cards.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Clients.xaml.cs">
       <DependentUpon>Clients.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Companies.xaml.cs">
+      <DependentUpon>Companies.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Items.xaml.cs">
       <DependentUpon>Items.xaml</DependentUpon>
@@ -221,6 +230,9 @@
     </Compile>
     <Compile Include="View\Shortages.xaml.cs">
       <DependentUpon>Shortages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Suppliers.xaml.cs">
+      <DependentUpon>Suppliers.xaml</DependentUpon>
     </Compile>
     <Page Include="Pages\Main.xaml">
       <SubType>Designer</SubType>
@@ -242,7 +254,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Cards.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Clients.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Companies.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Items.xaml">
@@ -274,6 +292,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Shortages.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Suppliers.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

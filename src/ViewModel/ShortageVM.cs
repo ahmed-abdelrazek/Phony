@@ -1,13 +1,9 @@
 ﻿using Phony.Kernel;
 using Phony.Model;
 using Phony.Persistence;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Phony.ViewModel
 {
@@ -47,7 +43,7 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Items = new ObservableCollection<Item>(db.Items.Where(i => i.QTY > 0));
+                Items = new ObservableCollection<Item>(db.Items.Where(i => i.QTY <= 0));
             }
             new Thread(() =>
             {

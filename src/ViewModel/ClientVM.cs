@@ -436,7 +436,7 @@ namespace Phony.ViewModel
                 db.Clients.Add(c);
                 db.Complete();
                 Clients.Add(c);
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
+                ClientsMassage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
             }
         }
 
@@ -464,7 +464,7 @@ namespace Phony.ViewModel
                 Clients.Remove(DataGridSelectedClient);
                 Clients.Add(c);
                 DataGridSelectedClient = null;
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
+                ClientsMassage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
             }
         }
 
@@ -489,7 +489,7 @@ namespace Phony.ViewModel
                     Clients.Remove(DataGridSelectedClient);
                 }
                 DataGridSelectedClient = null;
-                await ClientsMassage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
+                await ClientsMassage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
             }
         }
     }

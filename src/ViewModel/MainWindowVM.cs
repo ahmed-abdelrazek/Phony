@@ -3,6 +3,7 @@ using Phony.Persistence;
 using Phony.Utility;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,7 +16,10 @@ namespace Phony.ViewModel
         static int _itemsCount;
         static int _clientsCount;
         static int _shortagesCount;
-        static int _ServicesCount;
+        static int _servicesCount;
+        static int _suppliersCount;
+        static int _cardsCount;
+        static int _companiesCount;
 
         public int ItemsCount
         {
@@ -58,13 +62,52 @@ namespace Phony.ViewModel
 
         public int ServicesCount
         {
-            get => _ServicesCount;
+            get => _servicesCount;
             set
             {
-                if (value != _ServicesCount)
+                if (value != _servicesCount)
                 {
-                    _ServicesCount = value;
+                    _servicesCount = value;
                     RaisePropertyChanged(nameof(ServicesCount));
+                }
+            }
+        }
+
+        public int SuppliersCount
+        {
+            get => _suppliersCount;
+            set
+            {
+                if (value != _suppliersCount)
+                {
+                    _suppliersCount = value;
+                    RaisePropertyChanged(nameof(SuppliersCount));
+                }
+            }
+        }
+
+        public int CardsCount
+        {
+            get => _cardsCount;
+            set
+            {
+                if (value != _cardsCount)
+                {
+                    _cardsCount = value;
+                    RaisePropertyChanged(nameof(CardsCount));
+                }
+            }
+        }
+
+        public int CompaniesCount
+        {
+            get => _companiesCount;
+            set
+            {
+                if (value != _companiesCount)
+                {
+                    _companiesCount = value;
+                    RaisePropertyChanged(nameof(CompaniesCount));
                 }
             }
         }
@@ -74,6 +117,9 @@ namespace Phony.ViewModel
         public ICommand OpenClientsWindow { get; set; }
         public ICommand OpenShortagesWindow { get; set; }
         public ICommand OpenServicesWindow { get; set; }
+        public ICommand OpenSuppliersWindow { get; set; }
+        public ICommand OpenCardsWindow { get; set; }
+        public ICommand OpenCompaniesWindow { get; set; }
 
         public MainWindowVM()
         {
@@ -106,6 +152,18 @@ namespace Phony.ViewModel
                 {
                     ServicesCount = db.Services.Count();
                 });
+                await Task.Run(() =>
+                {
+                    SuppliersCount = db.Suppliers.Count();
+                });
+                await Task.Run(() =>
+                {
+                    CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
+                });
+                await Task.Run(() =>
+                {
+                    CompaniesCount = db.Companies.Count();
+                });
             }
         }
 
@@ -116,6 +174,39 @@ namespace Phony.ViewModel
             OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
             OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
             OpenServicesWindow = new CustomCommand(DoOpenServicesWindow, CanOpenServicesWindow);
+            OpenSuppliersWindow = new CustomCommand(DoOpenSuppliersWindow, CanOpenSuppliersWindow);
+            OpenCardsWindow = new CustomCommand(DoOpenCardsWindow, CanOpenCardsWindow);
+            OpenCompaniesWindow = new CustomCommand(DoOpenCompaniesWindow, CanOpenCompaniesWindow);
+        }
+
+        private bool CanOpenCompaniesWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenCompaniesWindow(object obj)
+        {
+            new View.Companies().Show();
+        }
+
+        private bool CanOpenCardsWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenCardsWindow(object obj)
+        {
+            new View.Cards().Show();
+        }
+
+        private bool CanOpenSuppliersWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenSuppliersWindow(object obj)
+        {
+            new View.Suppliers().Show();
         }
 
         private bool CanOpenServicesWindow(object obj)

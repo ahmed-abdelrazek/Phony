@@ -38,13 +38,13 @@
                     <Controls:Tile Title="خدمات" Count="{Binding ServicesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenServicesWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Worker" />
                     </Controls:Tile>
-                    <Controls:Tile Title="موردين" Margin="5" FontWeight="Bold">
+                    <Controls:Tile Title="موردين" Count="{Binding SuppliersCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenSuppliersWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="VanUtility" />
                     </Controls:Tile>
-                    <Controls:Tile Title="كروت شحن" Margin="5" FontWeight="Bold">
+                    <Controls:Tile Title="كروت شحن" Count="{Binding CardsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenCardsWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="CreditCard" />
                     </Controls:Tile>
-                    <Controls:Tile Title="شركات" Margin="5" FontWeight="Bold">
+                    <Controls:Tile Title="شركات" Count="{Binding CompaniesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenCompaniesWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Briefcase" />
                     </Controls:Tile>
                     <Controls:Tile Title="مندوبين" Margin="5" FontWeight="Bold">

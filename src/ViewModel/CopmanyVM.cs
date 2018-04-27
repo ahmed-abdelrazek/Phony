@@ -15,34 +15,34 @@ using System.Windows.Input;
 
 namespace Phony.ViewModel
 {
-    public class ServiceVM : CommonBase
+    public class CopmanyVM : CommonBase
     {
-        int _serviceId;
+        int _companyId;
         string _name;
         string _site;
         string _email;
         string _searchText;
         string _phone;
         string _notes;
-        static string _servicesCount;
-        static string _servicesPurchasePrice;
-        static string _servicesSalePrice;
-        static string _servicesProfit;
+        static string _companiesCount;
+        static string _companiesPurchasePrice;
+        static string _companiesSalePrice;
+        static string _companiesProfit;
         byte[] _image;
         decimal _balance;
-        bool _isServiceFlyoutOpen;
-        Service _dataGridSelectedService;
-        ObservableCollection<Service> _services;
+        bool _isCompanyFlyoutOpen;
+        Company _dataGridSelectedCompany;
+        ObservableCollection<Company> _companies;
 
-        public int ServiceId
+        public int CompanyId
         {
-            get => _serviceId;
+            get => _companyId;
             set
             {
-                if (value != _serviceId)
+                if (value != _companyId)
                 {
-                    _serviceId = value;
-                    RaisePropertyChanged(nameof(ServiceId));
+                    _companyId = value;
+                    RaisePropertyChanged(nameof(CompanyId));
                 }
             }
         }
@@ -125,54 +125,54 @@ namespace Phony.ViewModel
             }
         }
 
-        public string ServicesCount
+        public string CompaniesCount
         {
-            get => _servicesCount;
+            get => _companiesCount;
             set
             {
-                if (value != _servicesCount)
+                if (value != _companiesCount)
                 {
-                    _servicesCount = value;
-                    RaisePropertyChanged(nameof(ServicesCount));
+                    _companiesCount = value;
+                    RaisePropertyChanged(nameof(CompaniesCount));
                 }
             }
         }
 
-        public string ServicesPurchasePrice
+        public string CompaniesPurchasePrice
         {
-            get => _servicesPurchasePrice;
+            get => _companiesPurchasePrice;
             set
             {
-                if (value != _servicesPurchasePrice)
+                if (value != _companiesPurchasePrice)
                 {
-                    _servicesPurchasePrice = value;
-                    RaisePropertyChanged(nameof(ServicesPurchasePrice));
+                    _companiesPurchasePrice = value;
+                    RaisePropertyChanged(nameof(CompaniesPurchasePrice));
                 }
             }
         }
 
-        public string ServicesSalePrice
+        public string CompaniesSalePrice
         {
-            get => _servicesSalePrice;
+            get => _companiesSalePrice;
             set
             {
-                if (value != _servicesSalePrice)
+                if (value != _companiesSalePrice)
                 {
-                    _servicesSalePrice = value;
-                    RaisePropertyChanged(nameof(ServicesSalePrice));
+                    _companiesSalePrice = value;
+                    RaisePropertyChanged(nameof(CompaniesSalePrice));
                 }
             }
         }
 
-        public string ServicesProfit
+        public string CompaniesProfit
         {
-            get => _servicesProfit;
+            get => _companiesProfit;
             set
             {
-                if (value != _servicesProfit)
+                if (value != _companiesProfit)
                 {
-                    _servicesProfit = value;
-                    RaisePropertyChanged(nameof(ServicesProfit));
+                    _companiesProfit = value;
+                    RaisePropertyChanged(nameof(CompaniesProfit));
                 }
             }
         }
@@ -203,95 +203,95 @@ namespace Phony.ViewModel
             }
         }
 
-        public Service DataGridSelectedService
+        public Company DataGridSelectedCompany
         {
-            get => _dataGridSelectedService;
+            get => _dataGridSelectedCompany;
             set
             {
-                if (value != _dataGridSelectedService)
+                if (value != _dataGridSelectedCompany)
                 {
-                    _dataGridSelectedService = value;
-                    RaisePropertyChanged(nameof(DataGridSelectedService));
+                    _dataGridSelectedCompany = value;
+                    RaisePropertyChanged(nameof(DataGridSelectedCompany));
                 }
             }
         }
 
-        public ObservableCollection<Service> Services
+        public ObservableCollection<Company> Companies
         {
-            get => _services;
+            get => _companies;
             set
             {
-                if (value != _services)
+                if (value != _companies)
                 {
-                    _services = value;
-                    RaisePropertyChanged(nameof(Services));
+                    _companies = value;
+                    RaisePropertyChanged(nameof(Companies));
                 }
             }
         }
 
         public ObservableCollection<User> Users { get; set; }
 
-        public bool IsAddServiceFlyoutOpen
+        public bool IsAddCompanyFlyoutOpen
         {
-            get => _isServiceFlyoutOpen;
+            get => _isCompanyFlyoutOpen;
             set
             {
-                if (value != _isServiceFlyoutOpen)
+                if (value != _isCompanyFlyoutOpen)
                 {
-                    _isServiceFlyoutOpen = value;
-                    RaisePropertyChanged(nameof(IsAddServiceFlyoutOpen));
+                    _isCompanyFlyoutOpen = value;
+                    RaisePropertyChanged(nameof(IsAddCompanyFlyoutOpen));
                 }
             }
         }
 
-        public ICommand OpenAddServiceFlyout { get; set; }
+        public ICommand OpenAddCompanyFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteService { get; set; }
-        public ICommand ReloadAllServices { get; set; }
+        public ICommand DeleteCompany { get; set; }
+        public ICommand ReloadAllCompanies { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddService { get; set; }
-        public ICommand EditService { get; set; }
+        public ICommand AddCompany { get; set; }
+        public ICommand EditCompany { get; set; }
         public ICommand AddBalance { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Services ServicesMassage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
+        Companies CompaniesMassage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
-        public ServiceVM()
+        public CopmanyVM()
         {
             LoadCommands();
             using (var db = new PhonyDbContext())
             {
-                Services = new ObservableCollection<Service>(db.Services);
+                Companies = new ObservableCollection<Company>(db.Companies);
                 Users = new ObservableCollection<User>(db.Users);
             }
             new Thread(() =>
             {
-                ServicesCount = $"إجمالى الخدمات: {Services.Count().ToString()}";
-                ServicesPurchasePrice = $"اجمالى لينا: {decimal.Round(Services.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                ServicesSalePrice = $"اجمالى علينا: {decimal.Round(Services.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                ServicesProfit = $"تقدير لصافى لينا: {decimal.Round((Services.Where(c => c.Balance > 0).Sum(i => i.Balance) + Services.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
+                CompaniesCount = $"إجمالى الشركات: {Companies.Count().ToString()}";
+                CompaniesPurchasePrice = $"اجمالى لينا: {decimal.Round(Companies.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
+                CompaniesSalePrice = $"اجمالى علينا: {decimal.Round(Companies.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
+                CompaniesProfit = $"تقدير لصافى لينا: {decimal.Round((Companies.Where(c => c.Balance > 0).Sum(i => i.Balance) + Companies.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
                 Thread.CurrentThread.Abort();
             }).Start();
         }
 
         public void LoadCommands()
         {
-            OpenAddServiceFlyout = new CustomCommand(DoOpenAddServiceFlyout, CanOpenAddServiceFlyout);
+            OpenAddCompanyFlyout = new CustomCommand(DoOpenAddCompanyFlyout, CanOpenAddCompanyFlyout);
             SelectImage = new CustomCommand(DoSelectImage, CanSelectImage);
             FillUI = new CustomCommand(DoFillUI, CanFillUI);
-            DeleteService = new CustomCommand(DoDeleteService, CanDeleteService);
-            ReloadAllServices = new CustomCommand(DoReloadAllServices, CanReloadAllServices);
+            DeleteCompany = new CustomCommand(DoDeleteCompany, CanDeleteCompany);
+            ReloadAllCompanies = new CustomCommand(DoReloadAllCompanies, CanReloadAllCompanies);
             Search = new CustomCommand(DoSearch, CanSearch);
-            AddService = new CustomCommand(DoAddService, CanAddService);
-            EditService = new CustomCommand(DoEditService, CanEditService);
+            AddCompany = new CustomCommand(DoAddCompany, CanAddCompany);
+            EditCompany = new CustomCommand(DoEditCompany, CanEditCompany);
             AddBalance = new CustomCommand(DoAddBalance, CanAddBalance);
         }
 
         private bool CanAddBalance(object obj)
         {
-            if (DataGridSelectedService == null)
+            if (DataGridSelectedCompany == null)
             {
                 return false;
             }
@@ -300,62 +300,62 @@ namespace Phony.ViewModel
 
         private async void DoAddBalance(object obj)
         {
-            var result = await ServicesMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للخدمة {DataGridSelectedService.Name}");
+            var result = await CompaniesMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للشركة {DataGridSelectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await ServicesMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await CompaniesMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
-                decimal servicepaymentamount;
-                bool isvalidmoney = decimal.TryParse(result, out servicepaymentamount);
+                decimal compantpaymentamount;
+                bool isvalidmoney = decimal.TryParse(result, out compantpaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
                     {
-                        var s = db.Services.Get(DataGridSelectedService.Id);
-                        s.Balance -= servicepaymentamount;
+                        var s = db.Companies.Get(DataGridSelectedCompany.Id);
+                        s.Balance -= compantpaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
-                        var sm = new ServiceMove
+                        var sm = new CompanyMove
                         {
-                            ServiceId = DataGridSelectedService.Id,
-                            Amount = servicepaymentamount,
+                            CompanyId = DataGridSelectedCompany.Id,
+                            Amount = compantpaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
                         };
-                        db.ServicesMoves.Add(sm);
+                        db.CompaniesMoves.Add(sm);
                         db.Complete();
-                        await ServicesMassage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} مبلغ {servicepaymentamount} جنية بنجاح");
-                        DataGridSelectedService = null;
-                        ServiceId = 0;
-                        Services.Remove(DataGridSelectedService);
-                        Services.Add(s);
+                        await CompaniesMassage.ShowMessageAsync("تمت العملية", $"تم شحن الشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        DataGridSelectedCompany = null;
+                        CompanyId = 0;
+                        Companies.Remove(DataGridSelectedCompany);
+                        Companies.Add(s);
                     }
                 }
                 else
                 {
-                    await ServicesMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await CompaniesMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
-        private bool CanEditService(object obj)
+        private bool CanEditCompany(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || ServiceId == 0 || DataGridSelectedService == null)
+            if (string.IsNullOrWhiteSpace(Name) || CompanyId == 0 || DataGridSelectedCompany == null)
             {
                 return false;
             }
             return true;
         }
 
-        private void DoEditService(object obj)
+        private void DoEditCompany(object obj)
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var s = db.Services.Get(DataGridSelectedService.Id);
+                var s = db.Companies.Get(DataGridSelectedCompany.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -366,15 +366,15 @@ namespace Phony.ViewModel
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
                 db.Complete();
-                ServiceId = 0;
-                Services.Remove(DataGridSelectedService);
-                Services.Add(s);
-                DataGridSelectedService = null;
-                ServicesMassage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
+                CompanyId = 0;
+                Companies.Remove(DataGridSelectedCompany);
+                Companies.Add(s);
+                DataGridSelectedCompany = null;
+                CompaniesMassage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
             }
         }
 
-        private bool CanAddService(object obj)
+        private bool CanAddCompany(object obj)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -383,11 +383,11 @@ namespace Phony.ViewModel
             return true;
         }
 
-        private void DoAddService(object obj)
+        private void DoAddCompany(object obj)
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var s = new Service
+                var s = new Company
                 {
                     Name = Name,
                     Balance = Balance,
@@ -401,10 +401,10 @@ namespace Phony.ViewModel
                     EditDate = null,
                     EditById = null
                 };
-                db.Services.Add(s);
+                db.Companies.Add(s);
                 db.Complete();
-                Services.Add(s);
-                ServicesMassage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
+                Companies.Add(s);
+                CompaniesMassage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
             }
         }
 
@@ -421,51 +421,51 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Services = new ObservableCollection<Service>(db.Services);
+                Companies = new ObservableCollection<Company>(db.Companies);
             }
         }
 
-        private bool CanReloadAllServices(object obj)
+        private bool CanReloadAllCompanies(object obj)
         {
             return true;
         }
 
-        private void DoReloadAllServices(object obj)
+        private void DoReloadAllCompanies(object obj)
         {
             using (var db = new PhonyDbContext())
             {
-                Services = new ObservableCollection<Service>(db.Services);
+                Companies = new ObservableCollection<Company>(db.Companies);
             }
         }
 
-        private bool CanDeleteService(object obj)
+        private bool CanDeleteCompany(object obj)
         {
-            if (DataGridSelectedService == null)
+            if (DataGridSelectedCompany == null)
             {
                 return false;
             }
             return true;
         }
 
-        private async void DoDeleteService(object obj)
+        private async void DoDeleteCompany(object obj)
         {
-            var result = await ServicesMassage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await CompaniesMassage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-                    db.Services.Remove(db.Services.Get(DataGridSelectedService.Id));
+                    db.Companies.Remove(db.Companies.Get(DataGridSelectedCompany.Id));
                     db.Complete();
-                    Services.Remove(DataGridSelectedService);
+                    Companies.Remove(DataGridSelectedCompany);
                 }
-                DataGridSelectedService = null;
-                await ServicesMassage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
+                DataGridSelectedCompany = null;
+                await CompaniesMassage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
             }
         }
 
         private bool CanFillUI(object obj)
         {
-            if (DataGridSelectedService == null)
+            if (DataGridSelectedCompany == null)
             {
                 return false;
             }
@@ -474,15 +474,15 @@ namespace Phony.ViewModel
 
         private void DoFillUI(object obj)
         {
-            ServiceId = DataGridSelectedService.Id;
-            Name = DataGridSelectedService.Name;
-            Balance = DataGridSelectedService.Balance;
-            Site = DataGridSelectedService.Site;
-            Image = DataGridSelectedService.Image;
-            Email = DataGridSelectedService.Email;
-            Phone = DataGridSelectedService.Phone;
-            Notes = DataGridSelectedService.Notes;
-            IsAddServiceFlyoutOpen = true;
+            CompanyId = DataGridSelectedCompany.Id;
+            Name = DataGridSelectedCompany.Name;
+            Balance = DataGridSelectedCompany.Balance;
+            Site = DataGridSelectedCompany.Site;
+            Image = DataGridSelectedCompany.Image;
+            Email = DataGridSelectedCompany.Email;
+            Phone = DataGridSelectedCompany.Phone;
+            Notes = DataGridSelectedCompany.Notes;
+            IsAddCompanyFlyoutOpen = true;
         }
 
         private bool CanSelectImage(object obj)
@@ -506,20 +506,20 @@ namespace Phony.ViewModel
             }
         }
 
-        private bool CanOpenAddServiceFlyout(object obj)
+        private bool CanOpenAddCompanyFlyout(object obj)
         {
             return true;
         }
 
-        private void DoOpenAddServiceFlyout(object obj)
+        private void DoOpenAddCompanyFlyout(object obj)
         {
-            if (IsAddServiceFlyoutOpen)
+            if (IsAddCompanyFlyoutOpen)
             {
-                IsAddServiceFlyoutOpen = false;
+                IsAddCompanyFlyoutOpen = false;
             }
             else
             {
-                IsAddServiceFlyoutOpen = true;
+                IsAddCompanyFlyoutOpen = true;
             }
         }
     }
