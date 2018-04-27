@@ -204,6 +204,7 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />
+    <Compile Include="ViewModel\ServiceVM.cs" />
     <Compile Include="ViewModel\ShortageVM.cs" />
     <Compile Include="ViewModel\Users\LoginVM.cs" />
     <Compile Include="View\Clients.xaml.cs">
@@ -211,6 +212,9 @@
     </Compile>
     <Compile Include="View\Items.xaml.cs">
       <DependentUpon>Items.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Services.xaml.cs">
+      <DependentUpon>Services.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -262,6 +266,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Services.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

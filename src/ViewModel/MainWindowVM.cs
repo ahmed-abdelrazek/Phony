@@ -1,9 +1,7 @@
 ﻿using Phony.Kernel;
-using Phony.Model;
 using Phony.Persistence;
 using Phony.Utility;
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,6 +15,7 @@ namespace Phony.ViewModel
         static int _itemsCount;
         static int _clientsCount;
         static int _shortagesCount;
+        static int _ServicesCount;
 
         public int ItemsCount
         {
@@ -57,10 +56,24 @@ namespace Phony.ViewModel
             }
         }
 
+        public int ServicesCount
+        {
+            get => _ServicesCount;
+            set
+            {
+                if (value != _ServicesCount)
+                {
+                    _ServicesCount = value;
+                    RaisePropertyChanged(nameof(ServicesCount));
+                }
+            }
+        }
+
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
         public ICommand OpenShortagesWindow { get; set; }
+        public ICommand OpenServicesWindow { get; set; }
 
         public MainWindowVM()
         {
@@ -71,14 +84,6 @@ namespace Phony.ViewModel
             }
             NavigateToPage(PageName);
             Task.Run(() => this.CountEveryThing()).Wait();
-        }
-
-        public void LoadCommands()
-        {
-            ChangeSource = new CustomCommand(ChangeCurrentSource, CanChangeCurrentSource);
-            OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
-            OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
-            OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
         }
 
         async Task CountEveryThing()
@@ -97,7 +102,30 @@ namespace Phony.ViewModel
                 {
                     ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
                 });
+                await Task.Run(() =>
+                {
+                    ServicesCount = db.Services.Count();
+                });
             }
+        }
+
+        public void LoadCommands()
+        {
+            ChangeSource = new CustomCommand(ChangeCurrentSource, CanChangeCurrentSource);
+            OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
+            OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
+            OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
+            OpenServicesWindow = new CustomCommand(DoOpenServicesWindow, CanOpenServicesWindow);
+        }
+
+        private bool CanOpenServicesWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenServicesWindow(object obj)
+        {
+            new View.Services().Show();
         }
 
         private bool CanOpenShortagesWindow(object obj)
