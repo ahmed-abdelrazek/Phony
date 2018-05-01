@@ -2,11 +2,11 @@
 
 namespace Phony.Model
 {
-    public class Client : BaseModel
+    public class SalesMan : BaseModel
     {
-        public Client()
+        public SalesMan()
         {
-            Bills = new ObservableCollection<Bill>();
+            Suppliers = new ObservableCollection<Supplier>();
         }
 
         public string Name { get; set; }
@@ -19,6 +19,6 @@ namespace Phony.Model
 
         public string Phone { get; set; }
 
-        public virtual ObservableCollection<Bill> Bills { get; set; }
+        public virtual ObservableCollection<Supplier> Suppliers { get; set; }
     }
 }

@@ -58,5 +58,17 @@ namespace Phony.Properties {
                 this["IsConfigured"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BackUpsFolder {
+            get {
+                return ((string)(this["BackUpsFolder"]));
+            }
+            set {
+                this["BackUpsFolder"] = value;
+            }
+        }
     }
 }

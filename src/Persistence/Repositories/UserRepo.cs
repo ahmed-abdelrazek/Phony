@@ -1,4 +1,5 @@
-﻿using Phony.Kernel.Repositories;
+﻿using Phony.Kernel;
+using Phony.Kernel.Repositories;
 using Phony.Model;
 using System.Linq;
 
@@ -12,10 +13,13 @@ namespace Phony.Persistence.Repositories
 
         User IUserRepo.GetLoginCredentials(string Name, string Pass)
         {
-            var User = PhonyDbContext.Users.FirstOrDefault(u => u.Name == Name && u.Pass == Pass && u.IsActive == true);
+            var User = PhonyDbContext.Users.FirstOrDefault(u => u.Name == Name && u.IsActive == true);
             if (User != null)
             {
-                return User;
+                if (SecurePasswordHasher.Verify(Pass, User.Pass))
+                {
+                    return User;
+                }
             }
             return null;
         }

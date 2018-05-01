@@ -28,6 +28,11 @@ namespace Phony.Persistence.EntityConfigurations
                 .HasForeignKey(b => b.CompanyId)
                 .WillCascadeOnDelete(false);
 
+            HasRequired(b => b.Store)
+                .WithMany()
+                .HasForeignKey(s => s.StoreId)
+                .WillCascadeOnDelete(false);
+
             HasRequired(b => b.Creator)
                 .WithMany()
                 .HasForeignKey(s => s.CreatedById)

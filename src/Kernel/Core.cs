@@ -42,83 +42,106 @@ namespace Phony.Kernel
                 }).Start();
                 if (!Properties.Settings.Default.IsConfigured)
                 {
-                    new Thread(() =>
+                    try
                     {
-                        try
+                        using (var db = new UnitOfWork(new PhonyDbContext()))
                         {
-                            using (var db = new UnitOfWork(new PhonyDbContext()))
+                            var u = db.Users.Get(1);
+                            if (u == null)
                             {
-                                var u = db.Users.Get(1);
-                                if (u == null)
+                                u = new User
                                 {
-                                    var nu = new User
-                                    {
-                                        Name = "admin",
-                                        Pass = Encryption.EncryptText("admin"),
-                                        Group = ViewModel.UserGroup.Manager,
-                                        IsActive = true
-                                    };
-                                    db.Users.Add(nu);
-                                    db.Complete();
-                                }
-                                var cl = db.Clients.Get(1);
-                                if (cl == null)
-                                {
-                                    var ncl = new Client
-                                    {
-                                        Name = "كاش",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    };
-                                    db.Clients.Add(ncl);
-                                    db.Complete();
-                                }
-                                var co = db.Companies.Get(1);
-                                if (co == null)
-                                {
-                                    var nco = new Company
-                                    {
-                                        Name = "لا يوجد",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    };
-                                    db.Companies.Add(nco);
-                                    db.Complete();
-                                }
-                                var s = db.Suppliers.Get(1);
-                                if (s == null)
-                                {
-                                    var ns = new Supplier
-                                    {
-                                        Name = "لا يوجد",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    };
-                                    db.Suppliers.Add(ns);
-                                    db.Complete();
-                                }
+                                    Name = "admin",
+                                    Pass = SecurePasswordHasher.Hash("admin"),
+                                    Group = ViewModel.UserGroup.Manager,
+                                    IsActive = true
+                                };
+                                db.Users.Add(u);
+                                db.Complete();
                             }
-                            Properties.Settings.Default.IsConfigured = true;
-                            Properties.Settings.Default.Save();
+                            var cl = db.Clients.Get(1);
+                            if (cl == null)
+                            {
+                                cl = new Client
+                                {
+                                    Name = "كاش",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Clients.Add(cl);
+                                db.Complete();
+                            }
+                            var co = db.Companies.Get(1);
+                            if (co == null)
+                            {
+                                co = new Company
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Companies.Add(co);
+                                db.Complete();
+                            }
+                            var sa = db.SalesMen.Get(1);
+                            if (sa == null)
+                            {
+                                sa = new SalesMan
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.SalesMen.Add(sa);
+                                db.Complete();
+                            }
+                            var su = db.Suppliers.Get(1);
+                            if (su == null)
+                            {
+                                su = new Supplier
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    SalesManId = 1,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Suppliers.Add(su);
+                                db.Complete();
+                            }
+                            var st = db.Stores.Get(1);
+                            if (st == null)
+                            {
+                                st = new Store
+                                {
+                                    Name = "التوكل على الله",
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Stores.Add(st);
+                                db.Complete();
+                            }
                         }
-                        catch (Exception e)
-                        {
-                            SaveException(e);
-                        }
-                        finally
-                        {
-                            Thread.CurrentThread.Abort();
-                        }
-                    }).Start();
+                        Properties.Settings.Default.IsConfigured = true;
+                        Properties.Settings.Default.Save();
+                    }
+                    catch (Exception e)
+                    {
+                        SaveException(e);
+                    }
                 }
             }
             catch (Exception ex)

@@ -19,6 +19,11 @@ namespace Phony.Persistence.EntityConfigurations
                 .HasColumnType("image")
                 .IsOptional();
 
+            HasRequired(s => s.SalesMan)
+                .WithMany()
+                .HasForeignKey(s => s.SalesManId)
+                .WillCascadeOnDelete(false);
+
             HasRequired(s => s.Creator)
                 .WithMany()
                 .HasForeignKey(s => s.CreatedById)

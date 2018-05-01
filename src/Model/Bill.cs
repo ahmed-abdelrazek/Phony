@@ -17,6 +17,10 @@ namespace Phony.Model
 
         public virtual Company Company { get; set; }
 
+        public int StoreId { get; set; }
+
+        public virtual Store Store { get; set; }
+
         public decimal Discount { get; set; }
 
         public virtual ObservableCollection<BillMove> BillMoves { get; set; }

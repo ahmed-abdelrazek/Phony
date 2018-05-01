@@ -3,11 +3,9 @@ using Phony.Kernel;
 using Phony.Persistence;
 using Phony.Utility;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Security;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -27,13 +25,12 @@ namespace Phony.ViewModel.Users
                 if (value != _id)
                 {
                     _id = value;
-                    RaisePropertyChanged(nameof(Id));
+                    RaisePropertyChanged();
                 }
             }
         }
-        bool _isLogging;
 
-        BackgroundWorker LoginBGW = new BackgroundWorker();
+        bool _isLogging;
 
         public string Name
         {
@@ -43,7 +40,7 @@ namespace Phony.ViewModel.Users
                 if (value != _name)
                 {
                     _name = value;
-                    RaisePropertyChanged(nameof(Name));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -56,7 +53,7 @@ namespace Phony.ViewModel.Users
                 if (value != _group)
                 {
                     _group = value;
-                    RaisePropertyChanged(nameof(Group));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -69,7 +66,7 @@ namespace Phony.ViewModel.Users
                 if (value != _isLogging)
                 {
                     _isLogging = value;
-                    RaisePropertyChanged(nameof(IsLogging));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -78,7 +75,8 @@ namespace Phony.ViewModel.Users
 
         public ICommand LogIn { get; set; }
 
-        ViewModel.MainWindowVM v = new ViewModel.MainWindowVM();
+        MainWindowVM v = new MainWindowVM();
+
         public LoginVM()
         {
             LoadCommands();
@@ -92,12 +90,11 @@ namespace Phony.ViewModel.Users
         private async void DoLogIn(object obj)
         {
             IsLogging = true;
-            var pass = Encryption.EncryptText(new NetworkCredential("", SecurePassword).Password);
             try
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-                    Model.User u = db.Users.GetLoginCredentials(Name, pass);
+                    Model.User u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
                     if (u == null)
                     {
                         var LoginErrorMassage = Application.Current.Windows.OfType<View.MainWindow>().FirstOrDefault();

@@ -47,7 +47,7 @@
                     <Controls:Tile Title="شركات" Count="{Binding CompaniesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenCompaniesWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Briefcase" />
                     </Controls:Tile>
-                    <Controls:Tile Title="مندوبين" Margin="5" FontWeight="Bold">
+                    <Controls:Tile Title="مندوبين" Count="{Binding SalesMenCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenSalesMenWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountSwitch" />
                     </Controls:Tile>
                     <Controls:Tile Title="ارقام" Margin="5" FontWeight="Bold">
@@ -58,6 +58,15 @@
                     </Controls:Tile>
                     <Controls:Tile Title="مستخدمين" Margin="5" FontWeight="Bold">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountMultipleOutline" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="اخذ نسخه احتياطية" Margin="5" FontWeight="Bold" Command="{Binding TakeBackup}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="DatabasePlus"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="استرجاع نسخه احتياطية" Margin="5" FontWeight="Bold" Command="{Binding RestoreBackup}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Database"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="بيانات المحل" Margin="5" FontWeight="Bold" Command="{Binding StoreInfo}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Store"/>
                     </Controls:Tile>
                 </WrapPanel>
             </ScrollViewer>

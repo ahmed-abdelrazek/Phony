@@ -1,10 +1,15 @@
-﻿using Phony.Kernel;
+﻿using MahApps.Metro.Controls.Dialogs;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Phony.Kernel;
 using Phony.Persistence;
 using Phony.Utility;
+using Phony.View;
 using System;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Phony.ViewModel
@@ -20,6 +25,7 @@ namespace Phony.ViewModel
         static int _suppliersCount;
         static int _cardsCount;
         static int _companiesCount;
+        static int _salesMenCount;
 
         public int ItemsCount
         {
@@ -29,7 +35,7 @@ namespace Phony.ViewModel
                 if (value != _itemsCount)
                 {
                     _itemsCount = value;
-                    RaisePropertyChanged(nameof(ItemsCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -42,7 +48,7 @@ namespace Phony.ViewModel
                 if (value != _clientsCount)
                 {
                     _clientsCount = value;
-                    RaisePropertyChanged(nameof(ClientsCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -55,7 +61,7 @@ namespace Phony.ViewModel
                 if (value != _shortagesCount)
                 {
                     _shortagesCount = value;
-                    RaisePropertyChanged(nameof(ShortagesCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -68,7 +74,7 @@ namespace Phony.ViewModel
                 if (value != _servicesCount)
                 {
                     _servicesCount = value;
-                    RaisePropertyChanged(nameof(ServicesCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -81,7 +87,7 @@ namespace Phony.ViewModel
                 if (value != _suppliersCount)
                 {
                     _suppliersCount = value;
-                    RaisePropertyChanged(nameof(SuppliersCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -94,7 +100,7 @@ namespace Phony.ViewModel
                 if (value != _cardsCount)
                 {
                     _cardsCount = value;
-                    RaisePropertyChanged(nameof(CardsCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -107,7 +113,20 @@ namespace Phony.ViewModel
                 if (value != _companiesCount)
                 {
                     _companiesCount = value;
-                    RaisePropertyChanged(nameof(CompaniesCount));
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int SalesMenCount
+        {
+            get => _salesMenCount;
+            set
+            {
+                if (value != _salesMenCount)
+                {
+                    _salesMenCount = value;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -120,6 +139,12 @@ namespace Phony.ViewModel
         public ICommand OpenSuppliersWindow { get; set; }
         public ICommand OpenCardsWindow { get; set; }
         public ICommand OpenCompaniesWindow { get; set; }
+        public ICommand OpenSalesMenWindow { get; set; }
+        public ICommand TakeBackup { get; set; }
+        public ICommand RestoreBackup { get; set; }
+        public ICommand StoreInfo { get; set; }
+
+        MainWindow Massage = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
         public MainWindowVM()
         {
@@ -164,6 +189,10 @@ namespace Phony.ViewModel
                 {
                     CompaniesCount = db.Companies.Count();
                 });
+                await Task.Run(() =>
+                {
+                    SalesMenCount = db.SalesMen.Count();
+                });
             }
         }
 
@@ -177,6 +206,124 @@ namespace Phony.ViewModel
             OpenSuppliersWindow = new CustomCommand(DoOpenSuppliersWindow, CanOpenSuppliersWindow);
             OpenCardsWindow = new CustomCommand(DoOpenCardsWindow, CanOpenCardsWindow);
             OpenCompaniesWindow = new CustomCommand(DoOpenCompaniesWindow, CanOpenCompaniesWindow);
+            OpenSalesMenWindow = new CustomCommand(DoOpenSalesMenWindow, CanOpenSalesMenWindow);
+            TakeBackup = new CustomCommand(DoTakeBackup, CanTakeBackup);
+            RestoreBackup = new CustomCommand(DoRestoreBackup, CanRestoreBackup);
+            StoreInfo = new CustomCommand(DoStoreInfo, CanStoreInfo);
+        }
+
+        private bool CanStoreInfo(object obj)
+        {
+            return true;
+        }
+
+        private void DoStoreInfo(object obj)
+        {
+            new Stores().Show();
+        }
+
+        private bool CanOpenSalesMenWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenSalesMenWindow(object obj)
+        {
+            new SalesMen().Show();
+        }
+
+        private bool CanRestoreBackup(object obj)
+        {
+            return true;
+        }
+
+        private void DoRestoreBackup(object obj)
+        {
+            var dlg = new CommonOpenFileDialog();
+            dlg.Title = "اختار نسخه احتياطية لاسترجعها";
+            dlg.IsFolderPicker = false;
+            dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
+            dlg.AddToMostRecentlyUsedList = false;
+            dlg.AllowNonFileSystemItems = false;
+            dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            dlg.EnsureFileExists = true;
+            dlg.EnsurePathExists = true;
+            dlg.EnsureReadOnly = false;
+            dlg.EnsureValidNames = true;
+            dlg.Multiselect = false;
+            dlg.ShowPlacesList = true;
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
+                var backupFolder = ConfigurationManager.AppSettings["BackupFolder"];
+                var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
+                var database = sqlConStrBuilder.InitialCatalog;
+                string query = null;
+                using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
+                {
+                    query = $"ALTER DATABASE [{database}] SET Single_User WITH Rollback Immediate";
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                    }
+                    query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH  FILE = 1,  NOUNLOAD,  STATS = 10";
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    query = $"USE master ALTER DATABASE [{database}] SET Multi_User";
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    Massage.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
+                }
+            }
+        }
+
+        private bool CanTakeBackup(object obj)
+        {
+            return true;
+        }
+
+        private void DoTakeBackup(object obj)
+        {
+            var dlg = new CommonOpenFileDialog();
+            dlg.Title = "اختار مكان لحفظ النسخه الاحتياطية";
+            dlg.IsFolderPicker = true;
+            dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
+            dlg.AddToMostRecentlyUsedList = false;
+            dlg.AllowNonFileSystemItems = false;
+            dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            dlg.EnsureFileExists = true;
+            dlg.EnsurePathExists = true;
+            dlg.EnsureReadOnly = false;
+            dlg.EnsureValidNames = true;
+            dlg.Multiselect = false;
+            dlg.ShowPlacesList = true;
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                Properties.Settings.Default.BackUpsFolder = dlg.FileName;
+                if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))
+                {
+                    Properties.Settings.Default.BackUpsFolder += "\\";
+                }
+                Properties.Settings.Default.Save();
+                var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
+                var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
+                var backupFileName = $"{Properties.Settings.Default.BackUpsFolder}{sqlConStrBuilder.InitialCatalog} {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak";
+                using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
+                {
+                    var query = $"BACKUP DATABASE [{sqlConStrBuilder.InitialCatalog}] TO DISK='{backupFileName}'";
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+                        command.ExecuteNonQuery();
+                        Massage.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
+                    }
+                }
+            }
         }
 
         private bool CanOpenCompaniesWindow(object obj)
@@ -186,7 +333,7 @@ namespace Phony.ViewModel
 
         private void DoOpenCompaniesWindow(object obj)
         {
-            new View.Companies().Show();
+            new Companies().Show();
         }
 
         private bool CanOpenCardsWindow(object obj)
@@ -196,7 +343,7 @@ namespace Phony.ViewModel
 
         private void DoOpenCardsWindow(object obj)
         {
-            new View.Cards().Show();
+            new Cards().Show();
         }
 
         private bool CanOpenSuppliersWindow(object obj)
@@ -206,7 +353,7 @@ namespace Phony.ViewModel
 
         private void DoOpenSuppliersWindow(object obj)
         {
-            new View.Suppliers().Show();
+            new Suppliers().Show();
         }
 
         private bool CanOpenServicesWindow(object obj)
@@ -216,7 +363,7 @@ namespace Phony.ViewModel
 
         private void DoOpenServicesWindow(object obj)
         {
-            new View.Services().Show();
+            new Services().Show();
         }
 
         private bool CanOpenShortagesWindow(object obj)
@@ -226,7 +373,7 @@ namespace Phony.ViewModel
 
         private void DoOpenShortagesWindow(object obj)
         {
-            new View.Shortages().Show();
+            new Shortages().Show();
         }
 
         private bool CanOpenClientsWindow(object obj)
@@ -236,12 +383,12 @@ namespace Phony.ViewModel
 
         private void DoOpenClientsWindow(object obj)
         {
-            new View.Clients().Show();
+            new Clients().Show();
         }
 
         private void DoOpenItemsWindow(object obj)
         {
-            new View.Items().Show();
+            new Items().Show();
         }
 
         private bool CanOpenItemsWindow(object obj)

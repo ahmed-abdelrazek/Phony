@@ -21,7 +21,7 @@ namespace Phony.ViewModel
                 if (value != _itemsCount)
                 {
                     _itemsCount = value;
-                    RaisePropertyChanged(nameof(ItemsCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -34,7 +34,7 @@ namespace Phony.ViewModel
                 if (value != _items)
                 {
                     _items = value;
-                    RaisePropertyChanged(nameof(Items));
+                    RaisePropertyChanged();
                 }
             }
         }

@@ -7,5 +7,7 @@ namespace Phony.Model
         public string Name { get; set; }
 
         public NoteGroup Group { get; set; }
+
+        public string Phone { get; set; }
     }
 }

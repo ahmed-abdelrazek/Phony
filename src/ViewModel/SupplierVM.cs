@@ -42,7 +42,7 @@ namespace Phony.ViewModel
                 if (value != _supplierId)
                 {
                     _supplierId = value;
-                    RaisePropertyChanged(nameof(SupplierId));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace Phony.ViewModel
                 if (value != _name)
                 {
                     _name = value;
-                    RaisePropertyChanged(nameof(Name));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace Phony.ViewModel
                 if (value != _site)
                 {
                     _site = value;
-                    RaisePropertyChanged(nameof(Site));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Phony.ViewModel
                 if (value != _email)
                 {
                     _email = value;
-                    RaisePropertyChanged(nameof(Email));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Phony.ViewModel
                 if (value != _phone)
                 {
                     _phone = value;
-                    RaisePropertyChanged(nameof(Phone));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace Phony.ViewModel
                 if (value != _searchText)
                 {
                     _searchText = value;
-                    RaisePropertyChanged(nameof(SearchText));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace Phony.ViewModel
                 if (value != _notes)
                 {
                     _notes = value;
-                    RaisePropertyChanged(nameof(Notes));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -133,7 +133,7 @@ namespace Phony.ViewModel
                 if (value != _suppliersCount)
                 {
                     _suppliersCount = value;
-                    RaisePropertyChanged(nameof(SuppliersCount));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace Phony.ViewModel
                 if (value != _suppliersPurchasePrice)
                 {
                     _suppliersPurchasePrice = value;
-                    RaisePropertyChanged(nameof(SuppliersPurchasePrice));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace Phony.ViewModel
                 if (value != _suppliersSalePrice)
                 {
                     _suppliersSalePrice = value;
-                    RaisePropertyChanged(nameof(SuppliersSalePrice));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -172,7 +172,7 @@ namespace Phony.ViewModel
                 if (value != _suppliersProfit)
                 {
                     _suppliersProfit = value;
-                    RaisePropertyChanged(nameof(SuppliersProfit));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -185,7 +185,7 @@ namespace Phony.ViewModel
                 if (value != _image)
                 {
                     _image = value;
-                    RaisePropertyChanged(nameof(Image));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -198,7 +198,20 @@ namespace Phony.ViewModel
                 if (value != _balance)
                 {
                     _balance = value;
-                    RaisePropertyChanged(nameof(Balance));
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool IsAddSupplierFlyoutOpen
+        {
+            get => _isSupplierFlyoutOpen;
+            set
+            {
+                if (value != _isSupplierFlyoutOpen)
+                {
+                    _isSupplierFlyoutOpen = value;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -211,7 +224,7 @@ namespace Phony.ViewModel
                 if (value != _dataGridSelectedSupplier)
                 {
                     _dataGridSelectedSupplier = value;
-                    RaisePropertyChanged(nameof(DataGridSelectedSupplier));
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -224,25 +237,12 @@ namespace Phony.ViewModel
                 if (value != _suppliers)
                 {
                     _suppliers = value;
-                    RaisePropertyChanged(nameof(Suppliers));
+                    RaisePropertyChanged();
                 }
             }
         }
 
         public ObservableCollection<User> Users { get; set; }
-
-        public bool IsAddSupplierFlyoutOpen
-        {
-            get => _isSupplierFlyoutOpen;
-            set
-            {
-                if (value != _isSupplierFlyoutOpen)
-                {
-                    _isSupplierFlyoutOpen = value;
-                    RaisePropertyChanged(nameof(IsAddSupplierFlyoutOpen));
-                }
-            }
-        }
 
         public ICommand OpenAddSupplierFlyout { get; set; }
         public ICommand SelectImage { get; set; }
@@ -257,7 +257,7 @@ namespace Phony.ViewModel
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
         Suppliers SuppliersMassage = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
-        
+
         public SupplierVM()
         {
             LoadCommands();
@@ -440,7 +440,7 @@ namespace Phony.ViewModel
 
         private bool CanDeleteSupplier(object obj)
         {
-            if (DataGridSelectedSupplier == null)
+            if (DataGridSelectedSupplier == null || DataGridSelectedSupplier.Id == 1)
             {
                 return false;
             }

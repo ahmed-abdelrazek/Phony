@@ -19,8 +19,11 @@ namespace Phony.Persistence
             CompaniesMoves = new CompanyMoveRepo(_context);
             Items = new ItemRepo(_context);
             Notes = new NoteRepo(_context);
+            SalesMen = new SalesManRepo(_context);
+            SalesMenMoves = new SalesManMoveRepo(_context);
             Services = new ServiceRepo(_context);
             ServicesMoves = new ServiceMoveRepo(_context);
+            Stores = new StoreRepo(_context);
             Suppliers = new SupplierRepo(_context);
             SuppliersMoves = new SupplierMoveRepo(_context);
             Users = new UserRepo(_context);
@@ -34,8 +37,11 @@ namespace Phony.Persistence
         public ICompanyMoveRepo CompaniesMoves { get; private set; }
         public IItemRepo Items { get; private set; }
         public INoteRepo Notes { get; private set; }
+        public ISalesManRepo SalesMen { get; private set; }
+        public ISalesManMoveRepo SalesMenMoves { get; private set; }
         public IServiceRepo Services { get; private set; }
         public IServiceMoveRepo ServicesMoves { get; private set; }
+        public IStoreRepo Stores { get; private set; }
         public ISupplierRepo Suppliers { get; private set; }
         public ISupplierMoveRepo SuppliersMoves { get; private set; }
         public IUserRepo Users { get; private set; }

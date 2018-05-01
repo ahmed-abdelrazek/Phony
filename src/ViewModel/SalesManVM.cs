@@ -13,34 +13,34 @@ using System.Windows.Input;
 
 namespace Phony.ViewModel
 {
-    public class ClientVM : CommonBase
+    public class SalesManVM : CommonBase
     {
-        int _clientsId;
+        int _salesManId;
         string _name;
         string _notes;
         string _searchText;
         string _childName;
         string _childPrice;
-        static string _clientsCount;
-        static string _clientsPurchasePrice;
-        static string _clientsSalePrice;
-        static string _clientsProfit;
+        static string _salesMenCount;
+        static string _salesMenPurchasePrice;
+        static string _salesMenSalePrice;
+        static string _salesMenProfit;
         decimal _balance;
         bool _fastResult;
         bool _openFastResult;
-        bool _isAddClientFlyoutOpen;
-        Client _dataGridSelectedClient;
+        bool _isAddSalesManFlyoutOpen;
+        SalesMan _dataGridSelectedSalesMan;
 
-        ObservableCollection<Client> _clients;
+        ObservableCollection<SalesMan> _salesMen;
 
-        public int ClientId
+        public int SalesManId
         {
-            get => _clientsId;
+            get => _salesManId;
             set
             {
-                if (value != _clientsId)
+                if (value != _salesManId)
                 {
-                    _clientsId = value;
+                    _salesManId = value;
                     RaisePropertyChanged();
                 }
             }
@@ -111,53 +111,53 @@ namespace Phony.ViewModel
             }
         }
 
-        public string ClientCount
+        public string SalesMenCount
         {
-            get => _clientsCount;
+            get => _salesMenCount;
             set
             {
-                if (value != _clientsCount)
+                if (value != _salesMenCount)
                 {
-                    _clientsCount = value;
+                    _salesMenCount = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public string ClientCredits
+        public string SalesMenCredits
         {
-            get => _clientsPurchasePrice;
+            get => _salesMenPurchasePrice;
             set
             {
-                if (value != _clientsPurchasePrice)
+                if (value != _salesMenPurchasePrice)
                 {
-                    _clientsPurchasePrice = value;
+                    _salesMenPurchasePrice = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public string ClientDebits
+        public string SalesMenDebits
         {
-            get => _clientsSalePrice;
+            get => _salesMenSalePrice;
             set
             {
-                if (value != _clientsSalePrice)
+                if (value != _salesMenSalePrice)
                 {
-                    _clientsSalePrice = value;
+                    _salesMenSalePrice = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public string ClientProfit
+        public string SalesMenProfit
         {
-            get => _clientsProfit;
+            get => _salesMenProfit;
             set
             {
-                if (value != _clientsProfit)
+                if (value != _salesMenProfit)
                 {
-                    _clientsProfit = value;
+                    _salesMenProfit = value;
                     RaisePropertyChanged();
                 }
             }
@@ -202,40 +202,40 @@ namespace Phony.ViewModel
             }
         }
 
-        public bool IsAddClientFlyoutOpen
+        public bool IsAddSalesManFlyoutOpen
         {
-            get => _isAddClientFlyoutOpen;
+            get => _isAddSalesManFlyoutOpen;
             set
             {
-                if (value != _isAddClientFlyoutOpen)
+                if (value != _isAddSalesManFlyoutOpen)
                 {
-                    _isAddClientFlyoutOpen = value;
+                    _isAddSalesManFlyoutOpen = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public Client DataGridSelectedClient
+        public SalesMan DataGridSelectedSalesMan
         {
-            get => _dataGridSelectedClient;
+            get => _dataGridSelectedSalesMan;
             set
             {
-                if (value != _dataGridSelectedClient)
+                if (value != _dataGridSelectedSalesMan)
                 {
-                    _dataGridSelectedClient = value;
+                    _dataGridSelectedSalesMan = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public ObservableCollection<Client> Clients
+        public ObservableCollection<SalesMan> SalesMen
         {
-            get => _clients;
+            get => _salesMen;
             set
             {
-                if (value != _clients)
+                if (value != _salesMen)
                 {
-                    _clients = value;
+                    _salesMen = value;
                     RaisePropertyChanged();
                 }
             }
@@ -244,32 +244,32 @@ namespace Phony.ViewModel
         public ObservableCollection<User> Users { get; set; }
 
         public ICommand Search { get; set; }
-        public ICommand OpenAddClientFlyout { get; set; }
+        public ICommand OpenAddSalesManFlyout { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand ClientPay { get; set; }
-        public ICommand ReloadAllClients { get; set; }
-        public ICommand AddClient { get; set; }
-        public ICommand EditClient { get; set; }
-        public ICommand DeleteClient { get; set; }
+        public ICommand SalesManPay { get; set; }
+        public ICommand ReloadAllSalesMen { get; set; }
+        public ICommand AddSalesMan { get; set; }
+        public ICommand EditSalesMan { get; set; }
+        public ICommand DeleteSalesMan { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Clients ClientsMassage = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
+        SalesMen SalesMenMassage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
 
-        public ClientVM()
+        public SalesManVM()
         {
             LoadCommands();
             using (var db = new PhonyDbContext())
             {
-                Clients = new ObservableCollection<Client>(db.Clients);
+                SalesMen = new ObservableCollection<SalesMan>(db.SalesMen);
                 Users = new ObservableCollection<User>(db.Users);
             }
             new Thread(() =>
             {
-                ClientCount = $"مجموع العملاء: {Clients.Count().ToString()}";
-                ClientDebits = $"اجمالى لينا: {decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                ClientCredits = $"اجمالى علينا: {decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                ClientProfit = $"تقدير لصافى لينا: {decimal.Round((Clients.Where(c => c.Balance > 0).Sum(i => i.Balance) + Clients.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
+                SalesMenCount = $"مجموع المندوبين: {SalesMen.Count().ToString()}";
+                SalesMenDebits = $"اجمالى لينا: {decimal.Round(SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
+                SalesMenCredits = $"اجمالى علينا: {decimal.Round(SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
+                SalesMenProfit = $"تقدير لصافى لينا: {decimal.Round((SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance) + SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
                 Thread.CurrentThread.Abort();
             }).Start();
         }
@@ -277,13 +277,13 @@ namespace Phony.ViewModel
         public void LoadCommands()
         {
             Search = new CustomCommand(DoSearch, CanSearch);
-            OpenAddClientFlyout = new CustomCommand(DoOpenAddClientFlyout, CanOpenAddClientFlyout);
+            OpenAddSalesManFlyout = new CustomCommand(DoOpenAddSalesManFlyout, CanOpenAddSalesManFlyout);
             FillUI = new CustomCommand(DoFillUI, CanFillUI);
-            ClientPay = new CustomCommand(DoClientPayAsync, CanClientPay);
-            ReloadAllClients = new CustomCommand(DoReloadAllClients, CanReloadAllClients);
-            AddClient = new CustomCommand(DoAddClient, CanAddClient);
-            EditClient = new CustomCommand(DoEditClient, CanEditClient);
-            DeleteClient = new CustomCommand(DoDeleteClient, CanDeleteClient);
+            SalesManPay = new CustomCommand(DoSalesManPayAsync, CanSalesManPay);
+            ReloadAllSalesMen = new CustomCommand(DoReloadAllSalesMen, CanReloadAllSalesMen);
+            AddSalesMan = new CustomCommand(DoAddSalesMan, CanAddSalesMan);
+            EditSalesMan = new CustomCommand(DoEditSalesMan, CanEditSalesMan);
+            DeleteSalesMan = new CustomCommand(DoDeleteSalesMan, CanDeleteSalesMan);
         }
 
         private bool CanSearch(object obj)
@@ -299,32 +299,32 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Clients = new ObservableCollection<Client>(db.Clients.Where(i => i.Name.Contains(SearchText)));
+                SalesMen = new ObservableCollection<SalesMan>(db.SalesMen.Where(i => i.Name.Contains(SearchText)));
                 if (FastResult)
                 {
-                    ChildName = Clients.FirstOrDefault().Name;
-                    ChildPrice = Clients.FirstOrDefault().Balance.ToString();
+                    ChildName = SalesMen.FirstOrDefault().Name;
+                    ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
                     OpenFastResult = true;
                 }
             }
         }
 
-        private bool CanReloadAllClients(object obj)
+        private bool CanReloadAllSalesMen(object obj)
         {
             return true;
         }
 
-        private void DoReloadAllClients(object obj)
+        private void DoReloadAllSalesMen(object obj)
         {
             using (var db = new PhonyDbContext())
             {
-                Clients = new ObservableCollection<Client>(db.Clients);
+                SalesMen = new ObservableCollection<SalesMan>(db.SalesMen);
             }
         }
 
         private bool CanFillUI(object obj)
         {
-            if (DataGridSelectedClient == null)
+            if (DataGridSelectedSalesMan == null)
             {
                 return false;
             }
@@ -333,84 +333,84 @@ namespace Phony.ViewModel
 
         private void DoFillUI(object obj)
         {
-            ClientId = DataGridSelectedClient.Id;
-            Name = DataGridSelectedClient.Name;
-            Balance = DataGridSelectedClient.Balance;
-            Notes = DataGridSelectedClient.Notes;
-            IsAddClientFlyoutOpen = true;
+            SalesManId = DataGridSelectedSalesMan.Id;
+            Name = DataGridSelectedSalesMan.Name;
+            Balance = DataGridSelectedSalesMan.Balance;
+            Notes = DataGridSelectedSalesMan.Notes;
+            IsAddSalesManFlyoutOpen = true;
         }
 
-        private bool CanClientPay(object obj)
+        private bool CanSalesManPay(object obj)
         {
-            if (DataGridSelectedClient == null)
+            if (DataGridSelectedSalesMan == null)
             {
                 return false;
             }
             return true;
         }
 
-        private async void DoClientPayAsync(object obj)
+        private async void DoSalesManPayAsync(object obj)
         {
-            var result = await ClientsMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للعميل {DataGridSelectedClient.Name}");
+            var result = await SalesMenMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await ClientsMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                await SalesMenMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
             }
             else
             {
-                decimal clientpaymentamount;
-                bool isvalidmoney =  decimal.TryParse(result, out clientpaymentamount);
+                decimal SalesManpaymentamount;
+                bool isvalidmoney = decimal.TryParse(result, out SalesManpaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
                     {
-                        var c = db.Clients.Get(DataGridSelectedClient.Id);
-                        c.Balance -= clientpaymentamount;
-                        c.EditDate = DateTime.Now;
-                        c.EditById = CurrentUser.Id;
-                        var cm = new ClientMove
+                        var s = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
+                        s.Balance -= SalesManpaymentamount;
+                        s.EditDate = DateTime.Now;
+                        s.EditById = CurrentUser.Id;
+                        var sm = new SalesManMove
                         {
-                            ClientId = DataGridSelectedClient.Id,
-                            Amount = clientpaymentamount,
+                            SalesManId = DataGridSelectedSalesMan.Id,
+                            Amount = SalesManpaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
                         };
-                        db.ClientsMoves.Add(cm);
+                        db.SalesMenMoves.Add(sm);
                         db.Complete();
-                        await ClientsMassage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
-                        ClientId = 0;
-                        Clients.Remove(DataGridSelectedClient);
-                        Clients.Add(c);
-                        DataGridSelectedClient = null;
+                        await SalesMenMassage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
+                        SalesManId = 0;
+                        SalesMen.Remove(DataGridSelectedSalesMan);
+                        SalesMen.Add(s);
+                        DataGridSelectedSalesMan = null;
                     }
                 }
                 else
                 {
-                    await ClientsMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await SalesMenMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
-        private bool CanOpenAddClientFlyout(object obj)
+        private bool CanOpenAddSalesManFlyout(object obj)
         {
             return true;
         }
 
-        private void DoOpenAddClientFlyout(object obj)
+        private void DoOpenAddSalesManFlyout(object obj)
         {
-            if (IsAddClientFlyoutOpen)
+            if (IsAddSalesManFlyoutOpen)
             {
-                IsAddClientFlyoutOpen = false;
+                IsAddSalesManFlyoutOpen = false;
             }
             else
             {
-                IsAddClientFlyoutOpen = true;
+                IsAddSalesManFlyoutOpen = true;
             }
         }
 
-        private bool CanAddClient(object obj)
+        private bool CanAddSalesMan(object obj)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -419,11 +419,11 @@ namespace Phony.ViewModel
             return true;
         }
 
-        private void DoAddClient(object obj)
+        private void DoAddSalesMan(object obj)
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var c = new Client
+                var c = new SalesMan
                 {
                     Name = Name,
                     Balance = Balance,
@@ -433,63 +433,63 @@ namespace Phony.ViewModel
                     EditDate = null,
                     EditById = null
                 };
-                db.Clients.Add(c);
+                db.SalesMen.Add(c);
                 db.Complete();
-                Clients.Add(c);
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
+                SalesMen.Add(c);
+                SalesMenMassage.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
             }
         }
 
-        private bool CanEditClient(object obj)
+        private bool CanEditSalesMan(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || ClientId == 0 || DataGridSelectedClient == null)
+            if (string.IsNullOrWhiteSpace(Name) || SalesManId == 0 || DataGridSelectedSalesMan == null)
             {
                 return false;
             }
             return true;
         }
 
-        private void DoEditClient(object obj)
+        private void DoEditSalesMan(object obj)
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var c = db.Clients.Get(DataGridSelectedClient.Id);
+                var c = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
                 c.Name = Name;
                 c.Balance = Balance;
                 c.Notes = Notes;
                 c.EditDate = DateTime.Now;
                 c.EditById = CurrentUser.Id;
                 db.Complete();
-                ClientId = 0;
-                Clients.Remove(DataGridSelectedClient);
-                Clients.Add(c);
-                DataGridSelectedClient = null;
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
+                SalesManId = 0;
+                SalesMen.Remove(DataGridSelectedSalesMan);
+                SalesMen.Add(c);
+                DataGridSelectedSalesMan = null;
+                SalesMenMassage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
             }
         }
 
-        private bool CanDeleteClient(object obj)
+        private bool CanDeleteSalesMan(object obj)
         {
-            if (DataGridSelectedClient == null || DataGridSelectedClient.Id == 1)
+            if (DataGridSelectedSalesMan == null || DataGridSelectedSalesMan.Id == 1)
             {
                 return false;
             }
             return true;
         }
 
-        private async void DoDeleteClient(object obj)
+        private async void DoDeleteSalesMan(object obj)
         {
-            var result = await ClientsMassage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await SalesMenMassage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-                    db.Clients.Remove(db.Clients.Get(DataGridSelectedClient.Id));
+                    db.SalesMen.Remove(db.SalesMen.Get(DataGridSelectedSalesMan.Id));
                     db.Complete();
-                    Clients.Remove(DataGridSelectedClient);
+                    SalesMen.Remove(DataGridSelectedSalesMan);
                 }
-                DataGridSelectedClient = null;
-                await ClientsMassage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
+                DataGridSelectedSalesMan = null;
+                await SalesMenMassage.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
             }
         }
     }

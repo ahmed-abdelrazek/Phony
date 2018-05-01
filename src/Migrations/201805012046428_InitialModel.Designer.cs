@@ -7,13 +7,13 @@ namespace Phony.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class NewMovesModels : IMigrationMetadata
+    public sealed partial class InitialModel : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(NewMovesModels));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialModel));
         
         string IMigrationMetadata.Id
         {
-            get { return "201804231332028_NewMovesModels"; }
+            get { return "201805012046428_InitialModel"; }
         }
         
         string IMigrationMetadata.Source

@@ -1,5 +1,5 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Phony.Kernel
 {
@@ -13,11 +13,10 @@ namespace Phony.Kernel
         /// Tell the UI about changed property when data binding
         /// </summary>
         /// <param name="propertyName">The property name that has been changed</param>
-        protected void RaisePropertyChanged(string propertyName)
+        protected void RaisePropertyChanged([CallerMemberName] string propertyname = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
 
-        
     }
 }

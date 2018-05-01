@@ -12,8 +12,11 @@ namespace Phony.Kernel
         ICompanyMoveRepo CompaniesMoves { get; }
         IItemRepo Items { get; }
         INoteRepo Notes { get; }
+        ISalesManRepo SalesMen { get; }
+        ISalesManMoveRepo SalesMenMoves { get; }
         IServiceRepo Services { get; }
         IServiceMoveRepo ServicesMoves { get; }
+        IStoreRepo Stores { get; }
         ISupplierRepo Suppliers { get; }
         ISupplierMoveRepo SuppliersMoves { get; }
         IUserRepo Users { get; }

@@ -21,6 +21,10 @@ namespace Phony.Model
 
         public string Phone { get; set; }
 
+        public int SalesManId { get; set; }
+
+        public virtual SalesMan SalesMan { get; set; }
+
         public virtual ObservableCollection<Item> Items { get; set; }
     }
 }
