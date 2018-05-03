@@ -625,12 +625,19 @@ namespace Phony.ViewModel
                 if (ByName)
                 {
                     Items = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
-                    if (FastResult)
+                    if (Items.Count > 0)
                     {
-                        ChildName = Items.FirstOrDefault().Name;
-                        ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
-                        ChildImage = Items.FirstOrDefault().Image;
-                        OpenFastResult = true;
+                        if (FastResult)
+                        {
+                            ChildName = Items.FirstOrDefault().Name;
+                            ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
+                            ChildImage = Items.FirstOrDefault().Image;
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        ItemsMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
                 else if (ByBarCode)

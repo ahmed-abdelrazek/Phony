@@ -300,11 +300,18 @@ namespace Phony.ViewModel
             using (var db = new PhonyDbContext())
             {
                 SalesMen = new ObservableCollection<SalesMan>(db.SalesMen.Where(i => i.Name.Contains(SearchText)));
-                if (FastResult)
+                if (SalesMen.Count > 0)
                 {
-                    ChildName = SalesMen.FirstOrDefault().Name;
-                    ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
-                    OpenFastResult = true;
+                    if (FastResult)
+                    {
+                        ChildName = SalesMen.FirstOrDefault().Name;
+                        ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
+                        OpenFastResult = true;
+                    }
+                }
+                else
+                {
+                    SalesMenMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }

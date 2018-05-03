@@ -26,6 +26,7 @@ namespace Phony.ViewModel
         static int _cardsCount;
         static int _companiesCount;
         static int _salesMenCount;
+        static int _numbersCount;
 
         public int ItemsCount
         {
@@ -131,6 +132,19 @@ namespace Phony.ViewModel
             }
         }
 
+        public int NumbersCount
+        {
+            get => _numbersCount;
+            set
+            {
+                if (value != _numbersCount)
+                {
+                    _numbersCount = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
@@ -142,7 +156,8 @@ namespace Phony.ViewModel
         public ICommand OpenSalesMenWindow { get; set; }
         public ICommand TakeBackup { get; set; }
         public ICommand RestoreBackup { get; set; }
-        public ICommand StoreInfo { get; set; }
+        public ICommand OpenStoreInfoWindow { get; set; }
+        public ICommand OpenNumbersWindow { get; set; }
 
         MainWindow Massage = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
@@ -193,6 +208,10 @@ namespace Phony.ViewModel
                 {
                     SalesMenCount = db.SalesMen.Count();
                 });
+                await Task.Run(() =>
+                {
+                    NumbersCount = db.Notes.Count();
+                });
             }
         }
 
@@ -209,15 +228,26 @@ namespace Phony.ViewModel
             OpenSalesMenWindow = new CustomCommand(DoOpenSalesMenWindow, CanOpenSalesMenWindow);
             TakeBackup = new CustomCommand(DoTakeBackup, CanTakeBackup);
             RestoreBackup = new CustomCommand(DoRestoreBackup, CanRestoreBackup);
-            StoreInfo = new CustomCommand(DoStoreInfo, CanStoreInfo);
+            OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
+            OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
         }
 
-        private bool CanStoreInfo(object obj)
+        private bool CanOpenNumbersWindow(object obj)
         {
             return true;
         }
 
-        private void DoStoreInfo(object obj)
+        private void DoOpenNumbersWindow(object obj)
+        {
+            new Notes().Show();
+        }
+
+        private bool CanOpenStoreInfoWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenStoreInfoWindow(object obj)
         {
             new Stores().Show();
         }

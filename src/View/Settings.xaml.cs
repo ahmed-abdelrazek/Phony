@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
-using Phony.Kernel;
 using System;
 using System.Windows;
 
@@ -19,6 +18,8 @@ namespace Phony.View
 
         public void ChangeAppStyle()
         {
+            new PaletteHelper().ReplacePrimaryColor(Properties.Settings.Default.Color);
+            new PaletteHelper().ReplaceAccentColor(Properties.Settings.Default.Color);
             if (Properties.Settings.Default.Theme == "BaseLight")
             {
                 new PaletteHelper().SetLightDark(false);
@@ -27,14 +28,7 @@ namespace Phony.View
             {
                 new PaletteHelper().SetLightDark(true);
             }
-            try
-            {
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Properties.Settings.Default.Theme));
-            }
-            catch (Exception ex)
-            {
-                Core.SaveException(ex);
-            }
+            ThemeManager.ChangeAppTheme(Application.Current, Properties.Settings.Default.Theme);
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -79,89 +73,39 @@ namespace Phony.View
                         ThemeC.SelectedIndex = 5;
                         break;
                     }
-                case "Emerald":
+                case "Teal":
                     {
                         ThemeC.SelectedIndex = 6;
                         break;
                     }
-                case "Teal":
+                case "Cyan":
                     {
                         ThemeC.SelectedIndex = 7;
                         break;
                     }
-                case "Cyan":
+                case "Indigo":
                     {
                         ThemeC.SelectedIndex = 8;
                         break;
                     }
-                case "Cobalt":
+                case "Pink":
                     {
                         ThemeC.SelectedIndex = 9;
                         break;
                     }
-                case "Indigo":
+                case "Amber":
                     {
                         ThemeC.SelectedIndex = 10;
                         break;
                     }
-                case "Violet":
+                case "Yellow":
                     {
                         ThemeC.SelectedIndex = 11;
                         break;
                     }
-                case "Pink":
-                    {
-                        ThemeC.SelectedIndex = 12;
-                        break;
-                    }
-                case "Magenta":
-                    {
-                        ThemeC.SelectedIndex = 13;
-                        break;
-                    }
-                case "Crimson":
-                    {
-                        ThemeC.SelectedIndex = 14;
-                        break;
-                    }
-                case "Amber":
-                    {
-                        ThemeC.SelectedIndex = 15;
-                        break;
-                    }
-                case "Yellow":
-                    {
-                        ThemeC.SelectedIndex = 16;
-                        break;
-                    }
                 case "Brown":
                     {
-                        ThemeC.SelectedIndex = 17;
-                        break;
-                    }
-                case "Olive":
-                    {
-                        ThemeC.SelectedIndex = 18;
-                        break;
-                    }
-                case "Steel":
-                    {
-                        ThemeC.SelectedIndex = 19;
-                        break;
-                    }
-                case "Mauve":
-                    {
-                        ThemeC.SelectedIndex = 20;
-                        break;
-                    }
-                case "Taupe":
-                    {
-                        ThemeC.SelectedIndex = 21;
-                        break;
-                    }
-                case "Sienna":
-                    {
-                        ThemeC.SelectedIndex = 22;
+                        ThemeC.SelectedIndex = 12;
                         break;
                     }
                 default:

@@ -194,25 +194,25 @@ namespace Phony.Kernel
         public async static Task SaveExceptionAsync(Exception e)
         {
             await Task.Delay(100);
-            lock (e)
+            Console.WriteLine(e.ToString());
+            e.ToExceptionless().Submit();
+            if (e.TargetSite.Name == "ThrowInvalidOperationException") return;
+            DateTime now = DateTime.Now;
+            string str = string.Concat(new object[] { now.Month, "-", now.Day, "//" });
+            if (!Directory.Exists(Paths.UnhandledExceptionsPath))
             {
-                Console.WriteLine(e.ToString());
-                e.ToExceptionless().Submit();
-                if (e.TargetSite.Name == "ThrowInvalidOperationException") return;
-                DateTime now = DateTime.Now;
-                string str = string.Concat(new object[] { now.Month, "-", now.Day, "//" });
-                if (!Directory.Exists(Paths.UnhandledExceptionsPath))
-                {
-                    Directory.CreateDirectory(Paths.UnhandledExceptionsPath);
-                }
-                if (!Directory.Exists(Paths.UnhandledExceptionsPath + str))
-                {
-                    Directory.CreateDirectory(Paths.UnhandledExceptionsPath + str);
-                }
-                if (!Directory.Exists(Paths.UnhandledExceptionsPath + str + e.TargetSite.Name))
-                {
-                    Directory.CreateDirectory(Paths.UnhandledExceptionsPath + str + e.TargetSite.Name);
-                }
+                Directory.CreateDirectory(Paths.UnhandledExceptionsPath);
+            }
+            if (!Directory.Exists(Paths.UnhandledExceptionsPath + str))
+            {
+                Directory.CreateDirectory(Paths.UnhandledExceptionsPath + str);
+            }
+            if (!Directory.Exists(Paths.UnhandledExceptionsPath + str + e.TargetSite.Name))
+            {
+                Directory.CreateDirectory(Paths.UnhandledExceptionsPath + str + e.TargetSite.Name);
+            }
+            await Task.Run(() =>
+            {
                 File.WriteAllLines((Paths.UnhandledExceptionsPath + str + e.TargetSite.Name + "\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Ticks & 10L }) + ".txt", new List<string>
                 {
                     "----Exception message----",
@@ -222,7 +222,7 @@ namespace Phony.Kernel
                     e.StackTrace,
                     "----End of stack trace----\r\n"
                 }.ToArray());
-            }
+            });
         }
     }
 }

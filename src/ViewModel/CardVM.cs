@@ -606,12 +606,19 @@ namespace Phony.ViewModel
                 if (ByName)
                 {
                     Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card));
-                    if (FastResult)
+                    if (Cards.Count > 0)
                     {
-                        ChildName = Cards.FirstOrDefault().Name;
-                        ChildPrice = Cards.FirstOrDefault().SalePrice.ToString();
-                        ChildImage = Cards.FirstOrDefault().Image;
-                        OpenFastResult = true;
+                        if (FastResult)
+                        {
+                            ChildName = Cards.FirstOrDefault().Name;
+                            ChildPrice = Cards.FirstOrDefault().SalePrice.ToString();
+                            ChildImage = Cards.FirstOrDefault().Image;
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        CardsMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
                 else if (ByBarCode)
@@ -640,7 +647,7 @@ namespace Phony.ViewModel
 
         private bool CanDeleteCard(object obj)
         {
-            if (DataGridSelectedItem== null)
+            if (DataGridSelectedItem == null)
             {
                 return false;
             }

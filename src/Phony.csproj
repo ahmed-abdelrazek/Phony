@@ -178,6 +178,10 @@
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Supplier.cs" />
+    <Compile Include="ViewModel\NoteVM.cs" />
+    <Compile Include="View\Notes.xaml.cs">
+      <DependentUpon>Notes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -253,6 +257,9 @@
     <Compile Include="View\Suppliers.xaml.cs">
       <DependentUpon>Suppliers.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\Notes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -44,23 +44,13 @@
             <ListBoxItem Background="Purple" Content="Purple" Width="350"/>
             <ListBoxItem Background="Orange" Content="Orange" Width="350"/>
             <ListBoxItem Background="Lime" Content="Lime" Width="350"/>
-            <ListBoxItem Background="#33a133" Content="Emerald" Width="350"/>
             <ListBoxItem Background="Teal" Content="Teal" Width="350"/>
             <ListBoxItem Background="Cyan" Content="Cyan" Width="350"/>
-            <ListBoxItem Background="#0747c6" Content="Cobalt" Width="350"/>
             <ListBoxItem Background="Indigo" Content="Indigo" Width="350"/>
-            <ListBoxItem Background="Violet" Content="Violet" Width="350"/>
             <ListBoxItem Background="Pink" Content="Pink" Width="350"/>
-            <ListBoxItem Background="Magenta" Content="Magenta" Width="350"/>
-            <ListBoxItem Background="Crimson" Content="Crimson" Width="350"/>
             <ListBoxItem Background="#c7890f" Content="Amber" Width="350"/>
             <ListBoxItem Background="Yellow" Content="Yellow" Width="350"/>
             <ListBoxItem Background="Brown" Content="Brown" Width="350"/>
-            <ListBoxItem Background="Olive" Content="Olive" Width="350"/>
-            <ListBoxItem Background="#576573" Content="Steel" Width="350"/>
-            <ListBoxItem Background="#655475" Content="Mauve" Width="350"/>
-            <ListBoxItem Background="#736845" Content="Taupe" Width="350"/>
-            <ListBoxItem Background="Sienna" Content="Sienna" Width="350"/>
         </ComboBox>
     </Grid>
     </Controls:MetroWindow>
