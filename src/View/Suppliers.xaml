@@ -126,8 +126,8 @@
         </simpleChildWindow:ChildWindow>
         <StatusBar Grid.Row="2">
             <Label Content="{Binding SuppliersCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SuppliersDebits}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SuppliersCredits}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding SuppliersPurchasePrice}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding SuppliersSalePrice}" FontWeight="Bold" Margin="5"/>
             <Label Content="{Binding SuppliersProfit}" FontWeight="Bold" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الموردين" Width="250" Theme="Accent" IsOpen="{Binding IsAddSupplierFlyoutOpen}" Position="Left">
