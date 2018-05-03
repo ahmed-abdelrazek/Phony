@@ -1,40 +1,40 @@
-﻿using Phony.Extensions;
+﻿using System.ComponentModel;
 
 namespace Phony.ViewModel
 {
     public enum PaymentType : byte
     {
-        [LocalizedDescription("كاش", typeof(string))]
+        [Description("كاش")]
         Cash,
-        [LocalizedDescription("اجل", typeof(string))]
+        [Description("اجل")]
         Credit
     }
 
     public enum Month : byte
     {
-        [LocalizedDescription("يناير", typeof(string))]
+        [Description("يناير")]
         January = 1,
-        [LocalizedDescription("فبراير", typeof(string))]
+        [Description("فبراير")]
         February,
-        [LocalizedDescription("مارس", typeof(string))]
+        [Description("مارس")]
         March,
-        [LocalizedDescription("ابريل", typeof(string))]
+        [Description("ابريل")]
         April,
-        [LocalizedDescription("مايو", typeof(string))]
+        [Description("مايو")]
         May,
-        [LocalizedDescription("يونيو", typeof(string))]
+        [Description("يونيو")]
         June,
-        [LocalizedDescription("يوليو", typeof(string))]
+        [Description("يوليو")]
         July,
-        [LocalizedDescription("اغسطس", typeof(string))]
+        [Description("اغسطس")]
         August,
-        [LocalizedDescription("سبتمبر", typeof(string))]
+        [Description("سبتمبر")]
         September,
-        [LocalizedDescription("اكتوبر", typeof(string))]
+        [Description("اكتوبر")]
         October,
-        [LocalizedDescription("نوفمبر", typeof(string))]
+        [Description("نوفمبر")]
         November,
-        [LocalizedDescription("ديسمبر", typeof(string))]
+        [Description("ديسمبر")]
         December
     }
 
@@ -73,29 +73,29 @@ namespace Phony.ViewModel
 
     public enum UserGroup : byte
     {
-        [LocalizedDescription("لا يوجد", typeof(string))]
+        [Description("لا يوجد")]
         None,
-        [LocalizedDescription("مدير", typeof(string))]
+        [Description("مدير")]
         Manager,
-        [LocalizedDescription("مستخدم", typeof(string))]
+        [Description("مستخدم")]
         Employee
     }
 
     public enum ItemGroup : byte
     {
-        [LocalizedDescription("لا يوجد", typeof(string))]
+        [Description("لا يوجد")]
         None,
-        [LocalizedDescription("اخرى", typeof(string))]
+        [Description("اخرى")]
         Other,
-        [LocalizedDescription("كارت شحن", typeof(string))]
+        [Description("كارت شحن")]
         Card
     }
 
     public enum NoteGroup : byte
     {
-        [LocalizedDescription("ارقام", typeof(string))]
+        [Description("ارقام")]
         Numbers,
-        [LocalizedDescription("اخرى", typeof(string))]
+        [Description("اخرى")]
         Other
     }
 }

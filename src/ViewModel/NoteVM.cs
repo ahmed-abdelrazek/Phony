@@ -5,12 +5,8 @@ using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -310,7 +306,7 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Numbers = new ObservableCollection<Note>(db.Notes);
+                Numbers = new ObservableCollection<Note>(db.Notes.Where(i => i.Name.Contains(SearchText)));
                 if (Numbers.Count > 0)
                 {
                     if (FastResult)

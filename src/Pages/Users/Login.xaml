@@ -18,7 +18,7 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel x:Name="TextBoxFirstPanel" Orientation="Horizontal" Margin="5">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=UserNameTextBox, Path=BorderBrush}" Kind="account" />
-                <TextBox x:Name="UserNameTextBox" MinWidth="200" Margin="5" Text="{Binding Name, Mode=TwoWay}" Controls:TextBoxHelper.Watermark="اسم المستخدم" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:HintAssist.Hint="اسم المستخدم"/>
+                <TextBox x:Name="UserNameTextBox" MinWidth="200" Margin="5" BorderThickness="0,0,0,1" Text="{Binding Name, Mode=TwoWay}" Controls:TextBoxHelper.Watermark="اسم المستخدم" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:HintAssist.Hint="اسم المستخدم"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="{Binding ElementName=TextBoxFirstPanel, Path=Margin}">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=PasswordTextBox, Path=BorderBrush}" Kind="keyvariant" />

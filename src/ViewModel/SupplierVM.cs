@@ -421,7 +421,11 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
+                Suppliers = new ObservableCollection<Supplier>(db.Suppliers.Where(i => i.Name.Contains(SearchText)));
+                if (Suppliers.Count < 1)
+                {
+                    SuppliersMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                }
             }
         }
 

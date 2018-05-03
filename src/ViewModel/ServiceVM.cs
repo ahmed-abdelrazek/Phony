@@ -421,7 +421,11 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                Services = new ObservableCollection<Service>(db.Services);
+                Services = new ObservableCollection<Service>(db.Services.Where(i => i.Name.Contains(SearchText)));
+                if (Services.Count < 1)
+                {
+                    ServicesMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                }
             }
         }
 

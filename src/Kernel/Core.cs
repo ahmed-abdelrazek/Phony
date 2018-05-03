@@ -188,7 +188,6 @@ namespace Phony.Kernel
         /// <param name="e">exception string</param>
         public async static Task SaveExceptionAsync(Exception e)
         {
-            await Task.Delay(100);
             Console.WriteLine(e.ToString());
             e.ToExceptionless().Submit();
             if (e.TargetSite.Name == "ThrowInvalidOperationException") return;

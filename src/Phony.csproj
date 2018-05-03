@@ -124,7 +124,6 @@
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityCollapsedConvertor.cs" />
-    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
     <Compile Include="Kernel\SecurePasswordHasher.cs" />
     <Compile Include="Kernel\Repositories\IBillMoveRepo.cs" />
@@ -179,6 +178,7 @@
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="ViewModel\NoteVM.cs" />
+    <Compile Include="ViewModel\UserVM.cs" />
     <Compile Include="View\Notes.xaml.cs">
       <DependentUpon>Notes.xaml</DependentUpon>
     </Compile>
@@ -257,6 +257,9 @@
     <Compile Include="View\Suppliers.xaml.cs">
       <DependentUpon>Suppliers.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Users.xaml.cs">
+      <DependentUpon>Users.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\Notes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -327,6 +330,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Suppliers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Users.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

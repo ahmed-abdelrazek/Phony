@@ -27,6 +27,7 @@ namespace Phony.ViewModel
         static int _companiesCount;
         static int _salesMenCount;
         static int _numbersCount;
+        static int _usersCount;
 
         public int ItemsCount
         {
@@ -145,6 +146,19 @@ namespace Phony.ViewModel
             }
         }
 
+        public int UsersCount
+        {
+            get => _usersCount;
+            set
+            {
+                if (value != _usersCount)
+                {
+                    _usersCount = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
@@ -158,6 +172,7 @@ namespace Phony.ViewModel
         public ICommand RestoreBackup { get; set; }
         public ICommand OpenStoreInfoWindow { get; set; }
         public ICommand OpenNumbersWindow { get; set; }
+        public ICommand OpenUsersWindow { get; set; }
 
         MainWindow Massage = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
@@ -212,6 +227,10 @@ namespace Phony.ViewModel
                 {
                     NumbersCount = db.Notes.Count();
                 });
+                await Task.Run(() =>
+                {
+                    UsersCount = db.Users.Count();
+                });
             }
         }
 
@@ -230,6 +249,17 @@ namespace Phony.ViewModel
             RestoreBackup = new CustomCommand(DoRestoreBackup, CanRestoreBackup);
             OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
             OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
+            OpenUsersWindow = new CustomCommand(DoOpenUsersWindow, CanOpenUsersWindow);
+        }
+
+        private bool CanOpenUsersWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenUsersWindow(object obj)
+        {
+            new View.Users().Show();
         }
 
         private bool CanOpenNumbersWindow(object obj)
