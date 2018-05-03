@@ -12,11 +12,6 @@ namespace Phony.Kernel
 {
     public class Core
     {
-        /// <summary>
-        /// Program Theme settings
-        /// </summary>
-        public static string Theme = Properties.Settings.Default.Theme, Color = Properties.Settings.Default.Color;
-
         /// <summary> 
         /// The first thing that program is going to do after showing up
         /// like checking for database connection etc

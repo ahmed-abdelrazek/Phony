@@ -1,5 +1,6 @@
 ﻿using Exceptionless;
 using MahApps.Metro;
+using MaterialDesignThemes.Wpf;
 using Phony.Kernel;
 using System.Windows;
 
@@ -15,15 +16,17 @@ namespace Phony
         {
             OnlyYou.Make();
             ExceptionlessClient.Default.Register();
-            Core.StartUp_Engine();
-            if (!string.IsNullOrWhiteSpace(Core.Color) || !string.IsNullOrWhiteSpace(Core.Theme))
+            if (!string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Color) || !string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Theme))
             {
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Core.Color), ThemeManager.GetAppTheme(Core.Theme)); // or appStyle.Item1
+                new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.Color);
+                new PaletteHelper().ReplaceAccentColor(Phony.Properties.Settings.Default.Color);
+                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme)); // or appStyle.Item1
             }
             else
             {
                 ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent("Emerald"), ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
             }
+            Core.StartUp_Engine();
             base.OnStartup(e);
         }
     }

@@ -28,7 +28,7 @@ namespace Phony.View
             {
                 new PaletteHelper().SetLightDark(true);
             }
-            ThemeManager.ChangeAppTheme(Application.Current, Properties.Settings.Default.Theme);
+            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
