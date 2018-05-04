@@ -36,14 +36,11 @@
                     <materialDesign:PackIcon Kind="Magnify" />
                 </Button>
             </Grid>
-            <StackPanel Orientation="Horizontal">
-                <CheckBox Content="نتيجة سريعة" Margin="5" IsChecked="{Binding FastResult, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddSupplierFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteSupplier}"/>
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllSuppliers}"/>
-                <Button Content="تدفيع" Margin="5" Command="{Binding SupplierPay}"/>
+                <Button Content="تدفيع" Margin="5" Command="{Binding AddBalance}"/>
             </StackPanel>
         </StackPanel>
         <DataGrid IsReadOnly="True" ItemsSource="{Binding Suppliers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
@@ -58,6 +55,18 @@
                 <DataGridTextColumn Binding="{Binding Site}" Header="الموقع"/>
                 <DataGridTextColumn Binding="{Binding Email}" Header="الايميل"/>
                 <DataGridTextColumn Binding="{Binding Phone}" Header="الهاتف"/>
+                <DataGridTemplateColumn Header="المندوب">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesManId}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesManId}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -113,17 +122,6 @@
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
-        <simpleChildWindow:ChildWindow Grid.RowSpan="3" IsOpen="{Binding OpenFastResult}" Title="نتيجة سريعة" BorderBrush="{DynamicResource AccentBaseColorBrush}" BorderThickness="1" GlowBrush="{DynamicResource AccentColorBrush}" AllowMove="True" FlowDirection="RightToLeft" ShowCloseButton="True">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="35*"/>
-                    <ColumnDefinition Width="35*"/>
-                    <ColumnDefinition Width="35*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding ChildName}" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding ChildPrice}" Grid.Column="1" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Grid>
-        </simpleChildWindow:ChildWindow>
         <StatusBar Grid.Row="2">
             <Label Content="{Binding SuppliersCount}" FontWeight="Bold" Margin="5"/>
             <Label Content="{Binding SuppliersPurchasePrice}" FontWeight="Bold" Margin="5"/>
@@ -144,6 +142,7 @@
                     <TextBox Text="{Binding Site, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الموقع" Margin="5"/>
                     <TextBox Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الايميل" Margin="5"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الهاتف" Margin="5"/>
+                    <ComboBox ItemsSource="{Binding SalesMen}" materialDesign:HintAssist.Hint="المندوب" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedSalesMan}"/>
                     <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="100" Width="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Button Content="اضافة" Margin="5" Command="{Binding AddSupplier}"/>

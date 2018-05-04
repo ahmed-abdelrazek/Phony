@@ -32,7 +32,9 @@ namespace Phony.ViewModel
         decimal _balance;
         bool _isSupplierFlyoutOpen;
         Supplier _dataGridSelectedSupplier;
+        int _selectedSalesMan;
         ObservableCollection<Supplier> _suppliers;
+        ObservableCollection<SalesMan> _salesMen;
 
         public int SupplierId
         {
@@ -229,6 +231,19 @@ namespace Phony.ViewModel
             }
         }
 
+        public int SelectedSalesMan
+        {
+            get => _selectedSalesMan;
+            set
+            {
+                if (value != _selectedSalesMan)
+                {
+                    _selectedSalesMan = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public ObservableCollection<Supplier> Suppliers
         {
             get => _suppliers;
@@ -237,6 +252,19 @@ namespace Phony.ViewModel
                 if (value != _suppliers)
                 {
                     _suppliers = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<SalesMan> SalesMen
+        {
+            get => _salesMen;
+            set
+            {
+                if (value != _salesMen)
+                {
+                    _salesMen = value;
                     RaisePropertyChanged();
                 }
             }
@@ -264,6 +292,7 @@ namespace Phony.ViewModel
             using (var db = new PhonyDbContext())
             {
                 Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
+                SalesMen = new ObservableCollection<SalesMan>(db.SalesMen);
                 Users = new ObservableCollection<User>(db.Users);
             }
             new Thread(() =>
@@ -344,7 +373,7 @@ namespace Phony.ViewModel
 
         private bool CanEditSupplier(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || SupplierId == 0 || DataGridSelectedSupplier == null)
+            if (string.IsNullOrWhiteSpace(Name) || SupplierId < 1 || SelectedSalesMan < 1 || DataGridSelectedSupplier == null)
             {
                 return false;
             }
@@ -362,6 +391,7 @@ namespace Phony.ViewModel
                 s.Email = Email;
                 s.Phone = Phone;
                 s.Image = Image;
+                s.SalesManId = SelectedSalesMan;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
@@ -376,7 +406,7 @@ namespace Phony.ViewModel
 
         private bool CanAddSupplier(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name))
+            if (string.IsNullOrWhiteSpace(Name) || SelectedSalesMan < 1)
             {
                 return false;
             }
@@ -395,6 +425,7 @@ namespace Phony.ViewModel
                     Email = Email,
                     Phone = Phone,
                     Image = Image,
+                    SalesManId = SelectedSalesMan,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
                     CreatedById = CurrentUser.Id,
@@ -485,6 +516,7 @@ namespace Phony.ViewModel
             Image = DataGridSelectedSupplier.Image;
             Email = DataGridSelectedSupplier.Email;
             Phone = DataGridSelectedSupplier.Phone;
+            SelectedSalesMan = DataGridSelectedSupplier.SalesManId;
             Notes = DataGridSelectedSupplier.Notes;
             IsAddSupplierFlyoutOpen = true;
         }

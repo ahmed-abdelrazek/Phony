@@ -17,6 +17,9 @@ namespace Phony.ViewModel
     {
         int _salesManId;
         string _name;
+        string _site;
+        string _email;
+        string _phone;
         string _notes;
         string _searchText;
         string _childName;
@@ -54,6 +57,45 @@ namespace Phony.ViewModel
                 if (value != _name)
                 {
                     _name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Site
+        {
+            get => _site;
+            set
+            {
+                if (value != _site)
+                {
+                    _site = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Email
+        {
+            get => _email;
+            set
+            {
+                if (value != _email)
+                {
+                    _email = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Phone
+        {
+            get => _phone;
+            set
+            {
+                if (value != _phone)
+                {
+                    _phone = value;
                     RaisePropertyChanged();
                 }
             }
@@ -343,6 +385,9 @@ namespace Phony.ViewModel
             SalesManId = DataGridSelectedSalesMan.Id;
             Name = DataGridSelectedSalesMan.Name;
             Balance = DataGridSelectedSalesMan.Balance;
+            Site = DataGridSelectedSalesMan.Site;
+            Email = DataGridSelectedSalesMan.Email;
+            Phone = DataGridSelectedSalesMan.Phone;
             Notes = DataGridSelectedSalesMan.Notes;
             IsAddSalesManFlyoutOpen = true;
         }
@@ -434,6 +479,9 @@ namespace Phony.ViewModel
                 {
                     Name = Name,
                     Balance = Balance,
+                    Site = Site,
+                    Email = Email,
+                    Phone = Phone,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
                     CreatedById = CurrentUser.Id,
@@ -463,6 +511,9 @@ namespace Phony.ViewModel
                 var c = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
                 c.Name = Name;
                 c.Balance = Balance;
+                c.Site = Site;
+                c.Email = Email;
+                c.Phone = Phone;
                 c.Notes = Notes;
                 c.EditDate = DateTime.Now;
                 c.EditById = CurrentUser.Id;

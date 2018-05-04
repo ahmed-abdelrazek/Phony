@@ -138,8 +138,8 @@
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الهاتف" Margin="5"/>
                     <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="100" Width="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Button Content="اضافة" Margin="5" Command="{Binding AddClient}"/>
-                        <Button Content="تعديل" Margin="5" Command="{Binding EditClient}"/>
+                        <Button Content="اضافة" Margin="5" Command="{Binding AddSalesMan}"/>
+                        <Button Content="تعديل" Margin="5" Command="{Binding EditSalesMan}"/>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

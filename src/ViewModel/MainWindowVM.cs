@@ -184,7 +184,7 @@ namespace Phony.ViewModel
                 PageName = "Users/Login";
             }
             NavigateToPage(PageName);
-            Task.Run(() => this.CountEveryThing()).Wait();
+            Task.WhenAll(CountEveryThing());
         }
 
         async Task CountEveryThing()
@@ -231,6 +231,7 @@ namespace Phony.ViewModel
                 {
                     UsersCount = db.Users.Count();
                 });
+                await Task.Delay(500);
             }
         }
 
@@ -308,6 +309,7 @@ namespace Phony.ViewModel
             dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             dlg.EnsureFileExists = true;
             dlg.EnsurePathExists = true;
+            dlg.Filters.Add(new CommonFileDialogFilter("Backup file", "*.bak"));
             dlg.EnsureReadOnly = false;
             dlg.EnsureValidNames = true;
             dlg.Multiselect = false;
@@ -347,42 +349,50 @@ namespace Phony.ViewModel
             return true;
         }
 
-        private void DoTakeBackup(object obj)
+        private async void DoTakeBackup(object obj)
         {
-            var dlg = new CommonOpenFileDialog();
-            dlg.Title = "اختار مكان لحفظ النسخه الاحتياطية";
-            dlg.IsFolderPicker = true;
-            dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
-            dlg.AddToMostRecentlyUsedList = false;
-            dlg.AllowNonFileSystemItems = false;
-            dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            dlg.EnsureFileExists = true;
-            dlg.EnsurePathExists = true;
-            dlg.EnsureReadOnly = false;
-            dlg.EnsureValidNames = true;
-            dlg.Multiselect = false;
-            dlg.ShowPlacesList = true;
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            try
             {
-                Properties.Settings.Default.BackUpsFolder = dlg.FileName;
-                if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))
+                var dlg = new CommonOpenFileDialog();
+                dlg.Title = "اختار مكان لحفظ النسخه الاحتياطية";
+                dlg.IsFolderPicker = true;
+                dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
+                dlg.AddToMostRecentlyUsedList = false;
+                dlg.AllowNonFileSystemItems = false;
+                dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                dlg.EnsureFileExists = true;
+                dlg.EnsurePathExists = true;
+                dlg.EnsureReadOnly = false;
+                dlg.EnsureValidNames = true;
+                dlg.Multiselect = false;
+                dlg.ShowPlacesList = true;
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    Properties.Settings.Default.BackUpsFolder += "\\";
-                }
-                Properties.Settings.Default.Save();
-                var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
-                var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
-                var backupFileName = $"{Properties.Settings.Default.BackUpsFolder}{sqlConStrBuilder.InitialCatalog} {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak";
-                using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
-                {
-                    var query = $"BACKUP DATABASE [{sqlConStrBuilder.InitialCatalog}] TO DISK='{backupFileName}'";
-                    using (var command = new SqlCommand(query, connection))
+                    Properties.Settings.Default.BackUpsFolder = dlg.FileName;
+                    if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))
                     {
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                        Massage.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
+                        Properties.Settings.Default.BackUpsFolder += "\\";
+                    }
+                    Properties.Settings.Default.Save();
+                    var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
+                    var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
+                    var backupFileName = $"{Properties.Settings.Default.BackUpsFolder}{sqlConStrBuilder.InitialCatalog} {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak";
+                    using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
+                    {
+                        var query = $"BACKUP DATABASE [{sqlConStrBuilder.InitialCatalog}] TO DISK='{backupFileName}'";
+                        using (var command = new SqlCommand(query, connection))
+                        {
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                            await Massage.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                await Core.SaveExceptionAsync(ex);
+                await Massage.ShowMessageAsync("مشكله", "هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر");
             }
         }
 

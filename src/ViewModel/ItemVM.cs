@@ -532,7 +532,7 @@ namespace Phony.ViewModel
 
         private bool CanEditItem(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || ItemId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null)
+            if (string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null)
             {
                 return false;
             }
@@ -570,7 +570,7 @@ namespace Phony.ViewModel
 
         private bool CanAddItem(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue == 0 || SelectedSupplierValue == 0)
+            if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1)
             {
                 return false;
             }

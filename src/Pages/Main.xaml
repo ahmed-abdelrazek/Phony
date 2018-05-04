@@ -26,9 +26,6 @@
                     <Controls:Tile Title="فواتير مبيعات" Margin="5" FontWeight="Bold">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="FileDocumentBox" />
                     </Controls:Tile>
-                    <Controls:Tile Title="ارجاع فاتورة" Margin="5" FontWeight="Bold">
-                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="FileRestore" />
-                    </Controls:Tile>
                     <Controls:Tile Title="طباعه فاتورة" Margin="5" FontWeight="Bold">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Printer" />
                     </Controls:Tile>
@@ -64,6 +61,9 @@
                     </Controls:Tile>
                     <Controls:Tile Title="بيانات المحل" Margin="5" FontWeight="Bold" Command="{Binding OpenStoreInfoWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Store"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="الباركود" Margin="5" FontWeight="Bold">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Barcode"/>
                     </Controls:Tile>
                 </WrapPanel>
             </ScrollViewer>

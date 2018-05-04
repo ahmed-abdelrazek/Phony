@@ -30,9 +30,6 @@
                     <materialDesign:PackIcon Kind="Magnify" />
                 </Button>
             </Grid>
-            <StackPanel Orientation="Horizontal">
-                <CheckBox Content="نتيجة سريعة" Margin="5" IsChecked="{Binding FastResult, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddUserFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteUser}"/>
@@ -78,54 +75,6 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Phone}" Header="الرقم"/>
                 <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="نشط"/>
-                <DataGridTemplateColumn Header="اضاف من قبل">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CreatedById}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CreatedById}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="فى">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Controls:DateTimePicker IsEnabled="False" SelectedDate="{Binding CreateDate}" FlowDirection="RightToLeft" Culture="ar-EG" FirstDayOfWeek="Saturday"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <Controls:DateTimePicker IsEnabled="False" SelectedDate="{Binding CreateDate}" FlowDirection="RightToLeft" Culture="ar-EG" FirstDayOfWeek="Saturday" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="عدل من قبل">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding EditById}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding EditById}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="فى">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Controls:DateTimePicker IsEnabled="False" SelectedDate="{Binding EditDate}" FlowDirection="RightToLeft" Culture="ar-EG" FirstDayOfWeek="Saturday"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <Controls:DateTimePicker IsEnabled="False" SelectedDate="{Binding EditDate}" FlowDirection="RightToLeft" Culture="ar-EG" FirstDayOfWeek="Saturday" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
