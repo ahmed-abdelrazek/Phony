@@ -37,7 +37,7 @@ namespace Phony.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Emerald")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Teal")]
         public string Color {
             get {
                 return ((string)(this["Color"]));

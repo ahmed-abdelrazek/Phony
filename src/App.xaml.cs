@@ -2,6 +2,7 @@
 using MahApps.Metro;
 using MaterialDesignThemes.Wpf;
 using Phony.Kernel;
+using System;
 using System.Windows;
 
 namespace Phony
@@ -16,15 +17,33 @@ namespace Phony
         {
             OnlyYou.Make();
             ExceptionlessClient.Default.Register();
-            if (!string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Color) || !string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Theme))
+            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Theme))
+            {
+                Phony.Properties.Settings.Default.Theme = "BaseLight";
+                Phony.Properties.Settings.Default.Save();
+            }
+            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Color))
+            {
+                Phony.Properties.Settings.Default.Color = "Teal";
+                Phony.Properties.Settings.Default.Save();
+            }
+            try
             {
                 new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.Color);
                 new PaletteHelper().ReplaceAccentColor(Phony.Properties.Settings.Default.Color);
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme)); // or appStyle.Item1
+                if (Phony.Properties.Settings.Default.Theme == "BaseLight")
+                {
+                    new PaletteHelper().SetLightDark(false);
+                }
+                else
+                {
+                    new PaletteHelper().SetLightDark(true);
+                }
+                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
             }
-            else
+            catch (Exception ex)
             {
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent("Emerald"), ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
+                Core.SaveException(ex);
             }
             Core.StartUp_Engine();
             base.OnStartup(e);

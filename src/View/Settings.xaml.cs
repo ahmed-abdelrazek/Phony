@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
-using System;
 using System.Windows;
 
 namespace Phony.View
@@ -28,7 +27,7 @@ namespace Phony.View
             {
                 new PaletteHelper().SetLightDark(true);
             }
-            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
+            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Properties.Settings.Default.Theme));
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
