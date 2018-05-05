@@ -8,9 +8,11 @@ using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Phony.ViewModel
 {
@@ -18,16 +20,16 @@ namespace Phony.ViewModel
     {
         static Uri _currentSource;
         static string _pageName;
-        static int _itemsCount;
-        static int _clientsCount;
-        static int _shortagesCount;
-        static int _servicesCount;
-        static int _suppliersCount;
-        static int _cardsCount;
-        static int _companiesCount;
-        static int _salesMenCount;
-        static int _numbersCount;
-        static int _usersCount;
+        int _itemsCount;
+        int _clientsCount;
+        int _shortagesCount;
+        int _servicesCount;
+        int _suppliersCount;
+        int _cardsCount;
+        int _companiesCount;
+        int _salesMenCount;
+        int _numbersCount;
+        int _usersCount;
 
         public int ItemsCount
         {
@@ -173,8 +175,11 @@ namespace Phony.ViewModel
         public ICommand OpenStoreInfoWindow { get; set; }
         public ICommand OpenNumbersWindow { get; set; }
         public ICommand OpenUsersWindow { get; set; }
+        public ICommand OpenSettingsWindow { get; set; }
 
         MainWindow Massage = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+
+        DispatcherTimer Timer = new DispatcherTimer();
 
         public MainWindowVM()
         {
@@ -184,7 +189,14 @@ namespace Phony.ViewModel
                 PageName = "Users/Login";
             }
             NavigateToPage(PageName);
-            Task.WhenAll(CountEveryThing());
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = TimeSpan.FromMilliseconds(500);
+            Timer.Start();
+        }
+
+        private async void Timer_Tick(object sender, EventArgs e)
+        {
+            await CountEveryThing();
         }
 
         async Task CountEveryThing()
@@ -251,6 +263,32 @@ namespace Phony.ViewModel
             OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
             OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
             OpenUsersWindow = new CustomCommand(DoOpenUsersWindow, CanOpenUsersWindow);
+            OpenSettingsWindow = new CustomCommand(DoOpenSettingsWindow, CanOpenSettingsWindow);
+        }
+
+        private bool CanOpenSettingsWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenSettingsWindow(object obj)
+        {
+            new Settings().ShowDialog();
+        }
+
+        private bool CanRefreshCounters(object obj)
+        {
+            if (CurrentSource != new Uri("/Phony;component/Pages/Main.xaml", UriKind.Relative))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoRefreshCounters(object obj)
+        {
+            await CountEveryThing();
+            await Task.Delay(500);
         }
 
         private bool CanOpenUsersWindow(object obj)

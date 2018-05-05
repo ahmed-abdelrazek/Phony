@@ -188,9 +188,6 @@
     <Compile Include="Pages\Users\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Users\UsersInfo.xaml.cs">
-      <DependentUpon>UsersInfo.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Persistence\PhonyDbContext.cs" />
     <Compile Include="Kernel\Repositories\IRepository.cs" />
     <Compile Include="Persistence\Repositories\BillMoveRepo.cs" />
@@ -268,10 +265,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Users\Login.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Users\UsersInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

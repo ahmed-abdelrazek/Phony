@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using Phony.ViewModel;
 using System;
-using System.Windows;
 using System.Windows.Threading;
 
 namespace Phony.View
@@ -26,12 +25,6 @@ namespace Phony.View
             {
                 FrameWithinGrid.Source = MainWindowVM.CurrentSource;
             }
-        }
-
-        private void SettingsW_Click(object sender, RoutedEventArgs e)
-        {
-            Settings set = new Settings();
-            set.ShowDialog();
         }
 
         private void metroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
