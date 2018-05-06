@@ -10,13 +10,9 @@
         xmlns:local="clr-namespace:Phony.View"
         mc:Ignorable="d"
         Title="Phony" Height="500" Width="700" MinWidth="700" MinHeight="500" FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" Icon="/Phony;component/Resources/PhonyLogo.png" Closing="metroWindow_Closing">
-    <Controls:MetroWindow.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.DataContext>
+        <vm:MainWindowVM/>
+    </Controls:MetroWindow.DataContext>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Command="{Binding OpenSettingsWindow}">
@@ -28,9 +24,6 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <Grid.DataContext>
-            <vm:MainWindowVM/>
-        </Grid.DataContext>
         <Frame x:Name="FrameWithinGrid" Source="{Binding CurrentSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" NavigationUIVisibility="Hidden" FlowDirection="{Binding FlowDirection, ElementName=metroWindow}"/>
     </Grid>
 </Controls:MetroWindow>
