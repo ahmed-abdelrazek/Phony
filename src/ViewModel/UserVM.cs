@@ -200,7 +200,7 @@ namespace Phony.ViewModel
 
         private bool CanEditUser(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null)
+            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null ||string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
             {
                 //if (DataGridSelectedUser.Name != ViewModel.Users.CurrentUser.Name && ViewModel.Users.CurrentUser.Group != UserGroup.Manager)
                 //{
@@ -239,7 +239,7 @@ namespace Phony.ViewModel
 
         private bool CanAddUser(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name))
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
             {
                 return false;
             }

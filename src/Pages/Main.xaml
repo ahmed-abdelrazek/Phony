@@ -32,7 +32,7 @@
                     <Controls:Tile Title="نواقص" Count="{Binding ShortagesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenShortagesWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="PackageVariantClosed" />
                     </Controls:Tile>
-                    <Controls:Tile Title="خدمات" Count="{Binding ServicesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenServicesWindow}">
+                    <Controls:Tile Title="خدمات شركات" Count="{Binding ServicesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenServicesWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Worker" />
                     </Controls:Tile>
                     <Controls:Tile Title="موردين" Count="{Binding SuppliersCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenSuppliersWindow}">
