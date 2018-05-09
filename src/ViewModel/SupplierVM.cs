@@ -284,7 +284,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Suppliers SuppliersMassage = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
+        Suppliers SuppliersMessage = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
 
         public SupplierVM()
         {
@@ -329,10 +329,10 @@ namespace Phony.ViewModel
 
         private async void DoAddBalance(object obj)
         {
-            var result = await SuppliersMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه الموردين {DataGridSelectedSupplier.Name}");
+            var result = await SuppliersMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه الموردين {DataGridSelectedSupplier.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await SuppliersMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await SuppliersMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
@@ -357,7 +357,7 @@ namespace Phony.ViewModel
                         };
                         db.SuppliersMoves.Add(sm);
                         db.Complete();
-                        await SuppliersMassage.ShowMessageAsync("تمت العملية", $"تم اضافة للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
+                        await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم اضافة للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         DataGridSelectedSupplier = null;
                         SupplierId = 0;
                         Suppliers.Remove(DataGridSelectedSupplier);
@@ -366,7 +366,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    await SuppliersMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await SuppliersMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -400,7 +400,7 @@ namespace Phony.ViewModel
                 Suppliers.Remove(DataGridSelectedSupplier);
                 Suppliers.Add(s);
                 DataGridSelectedSupplier = null;
-                SuppliersMassage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
+                SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
             }
         }
 
@@ -435,7 +435,7 @@ namespace Phony.ViewModel
                 db.Suppliers.Add(s);
                 db.Complete();
                 Suppliers.Add(s);
-                SuppliersMassage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
+                SuppliersMessage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
             }
         }
 
@@ -455,7 +455,7 @@ namespace Phony.ViewModel
                 Suppliers = new ObservableCollection<Supplier>(db.Suppliers.Where(i => i.Name.Contains(SearchText)));
                 if (Suppliers.Count < 1)
                 {
-                    SuppliersMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    SuppliersMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -484,7 +484,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteSupplier(object obj)
         {
-            var result = await SuppliersMassage.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await SuppliersMessage.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -494,7 +494,7 @@ namespace Phony.ViewModel
                     Suppliers.Remove(DataGridSelectedSupplier);
                 }
                 DataGridSelectedSupplier = null;
-                await SuppliersMassage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
+                await SuppliersMessage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
             }
         }
 

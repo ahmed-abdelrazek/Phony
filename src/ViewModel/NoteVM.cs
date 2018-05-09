@@ -211,7 +211,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Notes Massage = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
+        Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
 
         public NoteVM()
         {
@@ -259,7 +259,7 @@ namespace Phony.ViewModel
                 Numbers.Remove(DataGridSelectedNo);
                 Numbers.Add(i);
                 DataGridSelectedNo = null;
-                Massage.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
+                Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
             }
         }
 
@@ -289,7 +289,7 @@ namespace Phony.ViewModel
                 db.Notes.Add(n);
                 db.Complete();
                 Numbers.Add(n);
-                Massage.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
+                Message.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
             }
         }
 
@@ -318,7 +318,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    Massage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -347,7 +347,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteNo(object obj)
         {
-            var result = await Massage.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -357,7 +357,7 @@ namespace Phony.ViewModel
                     Numbers.Remove(DataGridSelectedNo);
                 }
                 DataGridSelectedNo = null;
-                await Massage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 

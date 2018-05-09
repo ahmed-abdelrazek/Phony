@@ -77,6 +77,8 @@ namespace Phony.ViewModel.Users
 
         MainWindowVM v = new MainWindowVM();
 
+        View.MainWindow Message = Application.Current.Windows.OfType<View.MainWindow>().FirstOrDefault();
+
         public LoginVM()
         {
             LoadCommands();
@@ -85,6 +87,15 @@ namespace Phony.ViewModel.Users
         private void LoadCommands()
         {
             LogIn = new CustomCommand(DoLogIn, CanDoLogIn);
+        }
+
+        private bool CanDoLogIn(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return false;
+            }
+            return true;
         }
 
         private async void DoLogIn(object obj)
@@ -97,8 +108,7 @@ namespace Phony.ViewModel.Users
                     Model.User u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
                     if (u == null)
                     {
-                        var LoginErrorMassage = Application.Current.Windows.OfType<View.MainWindow>().FirstOrDefault();
-                        await LoginErrorMassage.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                        await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
                     }
                     else
                     {
@@ -111,17 +121,13 @@ namespace Phony.ViewModel.Users
             }
             catch (Exception ex)
             {
-                await Core.SaveExceptionAsync(ex).ConfigureAwait(false);
+                Core.SaveException(ex);
+                if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
+                {
+                    MessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
+                }
             }
         }
 
-        private bool CanDoLogIn(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }

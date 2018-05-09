@@ -27,20 +27,6 @@
             <ListBoxItem Content="ابيض"/>
             <ListBoxItem Content="اسود"/>
         </ComboBox>
-        <ComboBox x:Name="ThemeC" HorizontalAlignment="Left" Height="35" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="372" Controls:TextBoxHelper.Watermark="اخضر">
-            <ListBoxItem Background="Red" Content="Red" Width="350"/>
-            <ListBoxItem Background="Green" Content="Green" Width="350"/>
-            <ListBoxItem Background="Blue" Content="Blue" Width="350"/>
-            <ListBoxItem Background="Purple" Content="Purple" Width="350"/>
-            <ListBoxItem Background="Orange" Content="Orange" Width="350"/>
-            <ListBoxItem Background="Lime" Content="Lime" Width="350"/>
-            <ListBoxItem Background="Teal" Content="Teal" Width="350"/>
-            <ListBoxItem Background="Cyan" Content="Cyan" Width="350"/>
-            <ListBoxItem Background="Indigo" Content="Indigo" Width="350"/>
-            <ListBoxItem Background="Pink" Content="Pink" Width="350"/>
-            <ListBoxItem Background="#c7890f" Content="Amber" Width="350"/>
-            <ListBoxItem Background="Yellow" Content="Yellow" Width="350"/>
-            <ListBoxItem Background="Brown" Content="Brown" Width="350"/>
-        </ComboBox>
+        <ComboBox x:Name="ThemeC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="372"/>
     </Grid>
     </Controls:MetroWindow>

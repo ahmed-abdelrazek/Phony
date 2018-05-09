@@ -1,7 +1,11 @@
-﻿using MahApps.Metro;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
+using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using System;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Phony.View
 {
@@ -14,22 +18,8 @@ namespace Phony.View
         {
             InitializeComponent();
         }
-
-        public void ChangeAppStyle()
-        {
-            new PaletteHelper().ReplacePrimaryColor(Properties.Settings.Default.Color);
-            new PaletteHelper().ReplaceAccentColor(Properties.Settings.Default.Color);
-            if (Properties.Settings.Default.Theme == "BaseLight")
-            {
-                new PaletteHelper().SetLightDark(false);
-            }
-            else
-            {
-                new PaletteHelper().SetLightDark(true);
-            }
-            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Properties.Settings.Default.Theme));
-        }
-
+        public IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
+        
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (Properties.Settings.Default.Theme == "BaseDark")
@@ -40,95 +30,47 @@ namespace Phony.View
             {
                 ThemeS.SelectedIndex = 0;
             }
-            switch (Properties.Settings.Default.Color)
+            ThemeC.Text = Properties.Settings.Default.Color;
+            foreach (var item in Swatches)
             {
-                case "Red":
-                    {
-                        ThemeC.SelectedIndex = 0;
-                        break;
-                    }
-                case "Green":
-                    {
-                        ThemeC.SelectedIndex = 1;
-                        break;
-                    }
-                case "Blue":
-                    {
-                        ThemeC.SelectedIndex = 2;
-                        break;
-                    }
-                case "Purple":
-                    {
-                        ThemeC.SelectedIndex = 3;
-                        break;
-                    }
-                case "Orange":
-                    {
-                        ThemeC.SelectedIndex = 4;
-                        break;
-                    }
-                case "Lime":
-                    {
-                        ThemeC.SelectedIndex = 5;
-                        break;
-                    }
-                case "Teal":
-                    {
-                        ThemeC.SelectedIndex = 6;
-                        break;
-                    }
-                case "Cyan":
-                    {
-                        ThemeC.SelectedIndex = 7;
-                        break;
-                    }
-                case "Indigo":
-                    {
-                        ThemeC.SelectedIndex = 8;
-                        break;
-                    }
-                case "Pink":
-                    {
-                        ThemeC.SelectedIndex = 9;
-                        break;
-                    }
-                case "Amber":
-                    {
-                        ThemeC.SelectedIndex = 10;
-                        break;
-                    }
-                case "Yellow":
-                    {
-                        ThemeC.SelectedIndex = 11;
-                        break;
-                    }
-                case "Brown":
-                    {
-                        ThemeC.SelectedIndex = 12;
-                        break;
-                    }
-                default:
-                    {
-                        ThemeC.SelectedIndex = 0;
-                        break;
-                    }
+                ComboBoxItem cbi1 = new ComboBoxItem();
+                SolidColorBrush brush1 = new SolidColorBrush(item.ExemplarHue.Color);
+                SolidColorBrush brush2 = new SolidColorBrush(item.ExemplarHue.Foreground);
+                cbi1.Background = brush1;
+                cbi1.Foreground = brush2;
+                cbi1.Content = item.Name;
+                ThemeC.Items.Add(cbi1);
+                if (item.Name == Properties.Settings.Default.Color.ToLowerInvariant())
+                {
+                    ThemeC.SelectedItem = cbi1;
+                }
             }
         }
 
         private void SaveB_Click(object sender, RoutedEventArgs e)
         {
+            
+            new PaletteHelper().ReplacePrimaryColor(ThemeC.Text);
+            try
+            {
+                new PaletteHelper().ReplaceAccentColor(ThemeC.Text);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             if (ThemeS.SelectedIndex == 0)
             {
                 Properties.Settings.Default.Theme = "BaseLight";
+                new PaletteHelper().SetLightDark(false);
             }
             else
             {
                 Properties.Settings.Default.Theme = "BaseDark";
+                new PaletteHelper().SetLightDark(true);
             }
             Properties.Settings.Default.Color = ThemeC.Text;
             Properties.Settings.Default.Save();
-            ChangeAppStyle();
         }
-
     }
 }

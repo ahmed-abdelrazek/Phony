@@ -208,7 +208,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Stores Massage = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
+        Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
 
         public StoreVM()
         {
@@ -270,7 +270,7 @@ namespace Phony.ViewModel
                 store.EditDate = DateTime.Now;
                 store.EditById = CurrentUser.Id;
                 db.Complete();
-                Massage.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
+                Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
             }
         }
 

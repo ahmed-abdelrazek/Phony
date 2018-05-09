@@ -154,7 +154,6 @@ namespace Phony.Kernel
             lock (e)
             {
                 Console.WriteLine(e.ToString());
-                e.ToExceptionless().Submit();
                 if (e.TargetSite.Name == "ThrowInvalidOperationException") return;
                 DateTime now = DateTime.Now;
                 string str = string.Concat(new object[] { now.Month, "-", now.Day, "//" });
@@ -179,6 +178,7 @@ namespace Phony.Kernel
                     e.StackTrace,
                     "----End of stack trace----\r\n"
                 }.ToArray());
+                e.ToExceptionless().Submit();
             }
         }
 
@@ -189,7 +189,6 @@ namespace Phony.Kernel
         public async static Task SaveExceptionAsync(Exception e)
         {
             Console.WriteLine(e.ToString());
-            e.ToExceptionless().Submit();
             if (e.TargetSite.Name == "ThrowInvalidOperationException") return;
             DateTime now = DateTime.Now;
             string str = string.Concat(new object[] { now.Month, "-", now.Day, "//" });
@@ -205,6 +204,7 @@ namespace Phony.Kernel
             {
                 Directory.CreateDirectory(Paths.UnhandledExceptionsPath + str + e.TargetSite.Name);
             }
+            e.ToExceptionless().Submit();
             await Task.Run(() =>
             {
                 File.WriteAllLines((Paths.UnhandledExceptionsPath + str + e.TargetSite.Name + "\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Ticks & 10L }) + ".txt", new List<string>

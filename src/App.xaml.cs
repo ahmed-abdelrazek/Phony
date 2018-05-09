@@ -30,7 +30,7 @@ namespace Phony
             try
             {
                 new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.Color);
-                new PaletteHelper().ReplaceAccentColor(Phony.Properties.Settings.Default.Color);
+                new PaletteHelper().ReplaceAccentColor("Yellow");
                 if (Phony.Properties.Settings.Default.Theme == "BaseLight")
                 {
                     new PaletteHelper().SetLightDark(false);
@@ -39,7 +39,8 @@ namespace Phony
                 {
                     new PaletteHelper().SetLightDark(true);
                 }
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(Phony.Properties.Settings.Default.Color), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
+                Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
+                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
             }
             catch (Exception ex)
             {

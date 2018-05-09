@@ -296,7 +296,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Clients ClientsMassage = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
+        Clients ClientsMessage = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
 
         public ClientVM()
         {
@@ -353,7 +353,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    ClientsMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    ClientsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -403,10 +403,10 @@ namespace Phony.ViewModel
 
         private async void DoClientPayAsync(object obj)
         {
-            var result = await ClientsMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للعميل {DataGridSelectedClient.Name}");
+            var result = await ClientsMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للعميل {DataGridSelectedClient.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await ClientsMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                await ClientsMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
             }
             else
             {
@@ -431,7 +431,7 @@ namespace Phony.ViewModel
                         };
                         db.ClientsMoves.Add(cm);
                         db.Complete();
-                        await ClientsMassage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
+                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         ClientId = 0;
                         Clients.Remove(DataGridSelectedClient);
                         Clients.Add(c);
@@ -440,7 +440,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    await ClientsMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await ClientsMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace Phony.ViewModel
                 db.Clients.Add(c);
                 db.Complete();
                 Clients.Add(c);
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
+                ClientsMessage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
             }
         }
 
@@ -522,7 +522,7 @@ namespace Phony.ViewModel
                 Clients.Remove(DataGridSelectedClient);
                 Clients.Add(c);
                 DataGridSelectedClient = null;
-                ClientsMassage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
+                ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
             }
         }
 
@@ -537,7 +537,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteClient(object obj)
         {
-            var result = await ClientsMassage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await ClientsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -547,7 +547,7 @@ namespace Phony.ViewModel
                     Clients.Remove(DataGridSelectedClient);
                 }
                 DataGridSelectedClient = null;
-                await ClientsMassage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
+                await ClientsMessage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
             }
         }
     }

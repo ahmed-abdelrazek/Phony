@@ -296,7 +296,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        SalesMen SalesMenMassage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
+        SalesMen SalesMenMessage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
 
         public SalesManVM()
         {
@@ -353,7 +353,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    SalesMenMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    SalesMenMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -403,10 +403,10 @@ namespace Phony.ViewModel
 
         private async void DoSalesManPayAsync(object obj)
         {
-            var result = await SalesMenMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
+            var result = await SalesMenMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await SalesMenMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                await SalesMenMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
             }
             else
             {
@@ -431,7 +431,7 @@ namespace Phony.ViewModel
                         };
                         db.SalesMenMoves.Add(sm);
                         db.Complete();
-                        await SalesMenMassage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
+                        await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
                         SalesManId = 0;
                         SalesMen.Remove(DataGridSelectedSalesMan);
                         SalesMen.Add(s);
@@ -440,7 +440,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    await SalesMenMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await SalesMenMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace Phony.ViewModel
                 db.SalesMen.Add(c);
                 db.Complete();
                 SalesMen.Add(c);
-                SalesMenMassage.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
+                SalesMenMessage.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
             }
         }
 
@@ -522,7 +522,7 @@ namespace Phony.ViewModel
                 SalesMen.Remove(DataGridSelectedSalesMan);
                 SalesMen.Add(c);
                 DataGridSelectedSalesMan = null;
-                SalesMenMassage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
+                SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
             }
         }
 
@@ -537,7 +537,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteSalesMan(object obj)
         {
-            var result = await SalesMenMassage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await SalesMenMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -547,7 +547,7 @@ namespace Phony.ViewModel
                     SalesMen.Remove(DataGridSelectedSalesMan);
                 }
                 DataGridSelectedSalesMan = null;
-                await SalesMenMassage.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
+                await SalesMenMessage.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
             }
         }
     }

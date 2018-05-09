@@ -494,7 +494,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Items ItemsMassage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
+        Items ItemsMessage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
 
 
         public ItemVM()
@@ -564,7 +564,7 @@ namespace Phony.ViewModel
                 Items.Remove(DataGridSelectedItem);
                 Items.Add(i);
                 DataGridSelectedItem = null;
-                ItemsMassage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
+                ItemsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
             }
         }
 
@@ -605,7 +605,7 @@ namespace Phony.ViewModel
                 db.Items.Add(i);
                 db.Complete();
                 Items.Add(i);
-                ItemsMassage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
+                ItemsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
             }
         }
 
@@ -646,7 +646,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    ItemsMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    ItemsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -675,7 +675,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteItem(object obj)
         {
-            var result = await ItemsMassage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await ItemsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -685,7 +685,7 @@ namespace Phony.ViewModel
                     Items.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await ItemsMassage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
+                await ItemsMessage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
             }
         }
 

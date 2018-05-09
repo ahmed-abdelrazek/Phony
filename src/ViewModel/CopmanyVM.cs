@@ -256,7 +256,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Companies CompaniesMassage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
+        Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
         public CopmanyVM()
         {
@@ -300,10 +300,10 @@ namespace Phony.ViewModel
 
         private async void DoAddBalance(object obj)
         {
-            var result = await CompaniesMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للشركة {DataGridSelectedCompany.Name}");
+            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للشركة {DataGridSelectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await CompaniesMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await CompaniesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
@@ -328,7 +328,7 @@ namespace Phony.ViewModel
                         };
                         db.CompaniesMoves.Add(sm);
                         db.Complete();
-                        await CompaniesMassage.ShowMessageAsync("تمت العملية", $"تم شحن الشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم شحن الشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         DataGridSelectedCompany = null;
                         CompanyId = 0;
                         Companies.Remove(DataGridSelectedCompany);
@@ -337,7 +337,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    await CompaniesMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await CompaniesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -370,7 +370,7 @@ namespace Phony.ViewModel
                 Companies.Remove(DataGridSelectedCompany);
                 Companies.Add(s);
                 DataGridSelectedCompany = null;
-                CompaniesMassage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
+                CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
             }
         }
 
@@ -404,7 +404,7 @@ namespace Phony.ViewModel
                 db.Companies.Add(s);
                 db.Complete();
                 Companies.Add(s);
-                CompaniesMassage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
+                CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
             }
         }
 
@@ -424,7 +424,7 @@ namespace Phony.ViewModel
                 Companies = new ObservableCollection<Company>(db.Companies.Where(i => i.Name.Contains(SearchText)));
                 if (Companies.Count < 1)
                 {
-                    CompaniesMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -453,7 +453,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteCompany(object obj)
         {
-            var result = await CompaniesMassage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await CompaniesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -463,7 +463,7 @@ namespace Phony.ViewModel
                     Companies.Remove(DataGridSelectedCompany);
                 }
                 DataGridSelectedCompany = null;
-                await CompaniesMassage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
+                await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
             }
         }
 

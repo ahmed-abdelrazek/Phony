@@ -177,7 +177,7 @@ namespace Phony.ViewModel
         public ICommand OpenUsersWindow { get; set; }
         public ICommand OpenSettingsWindow { get; set; }
 
-        MainWindow Massage = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+        MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
         DispatcherTimer Timer = new DispatcherTimer();
 
@@ -203,47 +203,56 @@ namespace Phony.ViewModel
         {
             using (var db = new PhonyDbContext())
             {
-                await Task.Run(() =>
+                try
                 {
-                    ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
-                });
-                await Task.Run(() =>
+                    await Task.Run(() =>
+                    {
+                        ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ClientsCount = db.Clients.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ServicesCount = db.Services.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        SuppliersCount = db.Suppliers.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        CompaniesCount = db.Companies.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        SalesMenCount = db.SalesMen.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        NumbersCount = db.Notes.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        UsersCount = db.Users.Count();
+                    });
+                }
+                catch (Exception ex)
                 {
-                    ClientsCount = db.Clients.Count();
-                });
-                await Task.Run(() =>
-                {
-                    ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
-                });
-                await Task.Run(() =>
-                {
-                    ServicesCount = db.Services.Count();
-                });
-                await Task.Run(() =>
-                {
-                    SuppliersCount = db.Suppliers.Count();
-                });
-                await Task.Run(() =>
-                {
-                    CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
-                });
-                await Task.Run(() =>
-                {
-                    CompaniesCount = db.Companies.Count();
-                });
-                await Task.Run(() =>
-                {
-                    SalesMenCount = db.SalesMen.Count();
-                });
-                await Task.Run(() =>
-                {
-                    NumbersCount = db.Notes.Count();
-                });
-                await Task.Run(() =>
-                {
-                    UsersCount = db.Users.Count();
-                });
-                await Task.Delay(500);
+                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
+                    {
+                        MessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
+                    }
+                }
             }
         }
 
@@ -377,7 +386,7 @@ namespace Phony.ViewModel
                     {
                         command.ExecuteNonQuery();
                     }
-                    Massage.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
+                    Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
             }
         }
@@ -422,7 +431,7 @@ namespace Phony.ViewModel
                         {
                             connection.Open();
                             command.ExecuteNonQuery();
-                            await Massage.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
+                            await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                         }
                     }
                 }
@@ -430,7 +439,7 @@ namespace Phony.ViewModel
             catch (Exception ex)
             {
                 await Core.SaveExceptionAsync(ex);
-                await Massage.ShowMessageAsync("مشكله", "هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر");
+                await Message.ShowMessageAsync("مشكله", "هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر");
             }
         }
 

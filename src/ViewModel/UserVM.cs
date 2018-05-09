@@ -173,7 +173,7 @@ namespace Phony.ViewModel
         public ICommand AddUser { get; set; }
         public ICommand EditUser { get; set; }
 
-        View.Users Massage = Application.Current.Windows.OfType<View.Users>().FirstOrDefault();
+        View.Users Message = Application.Current.Windows.OfType<View.Users>().FirstOrDefault();
 
         public UserVM()
         {
@@ -228,12 +228,12 @@ namespace Phony.ViewModel
                     Users.Remove(DataGridSelectedUser);
                     Users.Add(u);
                     DataGridSelectedUser = null;
-                    Massage.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
+                    Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
                 }
             }
             else
             {
-                Massage.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
             }
         }
 
@@ -265,13 +265,13 @@ namespace Phony.ViewModel
                     db.Users.Add(u);
                     db.Complete();
                     Users.Add(u);
-                    Massage.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
+                    Message.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
                 }
 
             }
             else
             {
-                Massage.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
             }
         }
 
@@ -291,7 +291,7 @@ namespace Phony.ViewModel
                 Users = new ObservableCollection<User>(db.Users);
                 if (Users.Count < 1)
                 {
-                    Massage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -320,7 +320,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteUser(object obj)
         {
-            var result = await Massage.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -330,7 +330,7 @@ namespace Phony.ViewModel
                     Users.Remove(DataGridSelectedUser);
                 }
                 DataGridSelectedUser = null;
-                await Massage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 

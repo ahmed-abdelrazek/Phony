@@ -256,7 +256,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Services ServicesMassage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
+        Services ServicesMessage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
 
         public ServiceVM()
         {
@@ -300,10 +300,10 @@ namespace Phony.ViewModel
 
         private async void DoAddBalance(object obj)
         {
-            var result = await ServicesMassage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للخدمة {DataGridSelectedService.Name}");
+            var result = await ServicesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للخدمة {DataGridSelectedService.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await ServicesMassage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await ServicesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
@@ -328,7 +328,7 @@ namespace Phony.ViewModel
                         };
                         db.ServicesMoves.Add(sm);
                         db.Complete();
-                        await ServicesMassage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} مبلغ {servicepaymentamount} جنية بنجاح");
+                        await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} مبلغ {servicepaymentamount} جنية بنجاح");
                         DataGridSelectedService = null;
                         ServiceId = 0;
                         Services.Remove(DataGridSelectedService);
@@ -337,7 +337,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    await ServicesMassage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await ServicesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -370,7 +370,7 @@ namespace Phony.ViewModel
                 Services.Remove(DataGridSelectedService);
                 Services.Add(s);
                 DataGridSelectedService = null;
-                ServicesMassage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
+                ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
             }
         }
 
@@ -404,7 +404,7 @@ namespace Phony.ViewModel
                 db.Services.Add(s);
                 db.Complete();
                 Services.Add(s);
-                ServicesMassage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
+                ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
             }
         }
 
@@ -424,7 +424,7 @@ namespace Phony.ViewModel
                 Services = new ObservableCollection<Service>(db.Services.Where(i => i.Name.Contains(SearchText)));
                 if (Services.Count < 1)
                 {
-                    ServicesMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    ServicesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -453,7 +453,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteService(object obj)
         {
-            var result = await ServicesMassage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await ServicesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -463,7 +463,7 @@ namespace Phony.ViewModel
                     Services.Remove(DataGridSelectedService);
                 }
                 DataGridSelectedService = null;
-                await ServicesMassage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
+                await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
             }
         }
 

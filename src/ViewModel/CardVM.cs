@@ -480,7 +480,7 @@ namespace Phony.ViewModel
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        Cards CardsMassage = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
+        Cards CardsMessage = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
 
         public CardVM()
         {
@@ -547,7 +547,7 @@ namespace Phony.ViewModel
                 Cards.Remove(DataGridSelectedItem);
                 Cards.Add(i);
                 DataGridSelectedItem = null;
-                CardsMassage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
+                CardsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
             }
         }
 
@@ -586,7 +586,7 @@ namespace Phony.ViewModel
                 db.Items.Add(i);
                 db.Complete();
                 Cards.Add(i);
-                CardsMassage.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
+                CardsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
             }
         }
 
@@ -627,7 +627,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    CardsMassage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    CardsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                 }
             }
         }
@@ -656,7 +656,7 @@ namespace Phony.ViewModel
 
         private async void DoDeleteCard(object obj)
         {
-            var result = await CardsMassage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await CardsMessage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -666,7 +666,7 @@ namespace Phony.ViewModel
                     Cards.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await CardsMassage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                await CardsMessage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 
