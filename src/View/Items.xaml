@@ -48,7 +48,7 @@
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllItems}"/>
             </StackPanel>
         </StackPanel>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{Binding MaterialDesignDataGrid}" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
