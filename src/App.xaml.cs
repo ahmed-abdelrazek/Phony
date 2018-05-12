@@ -22,15 +22,15 @@ namespace Phony
                 Phony.Properties.Settings.Default.Theme = "BaseLight";
                 Phony.Properties.Settings.Default.Save();
             }
-            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Color))
+            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.PrimaryColor))
             {
-                Phony.Properties.Settings.Default.Color = "Teal";
+                Phony.Properties.Settings.Default.PrimaryColor = "Teal";
                 Phony.Properties.Settings.Default.Save();
             }
             try
             {
-                new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.Color);
-                new PaletteHelper().ReplaceAccentColor("Yellow");
+                new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.PrimaryColor);
+                new PaletteHelper().ReplaceAccentColor(Phony.Properties.Settings.Default.AccentColor);
                 if (Phony.Properties.Settings.Default.Theme == "BaseLight")
                 {
                     new PaletteHelper().SetLightDark(false);

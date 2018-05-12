@@ -5,8 +5,11 @@
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">BaseLight</Value>
     </Setting>
-    <Setting Name="Color" Type="System.String" Scope="User">
+    <Setting Name="PrimaryColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Teal</Value>
+    </Setting>
+    <Setting Name="AccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Yellow</Value>
     </Setting>
     <Setting Name="IsConfigured" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

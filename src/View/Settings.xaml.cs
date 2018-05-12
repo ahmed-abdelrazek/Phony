@@ -30,19 +30,41 @@ namespace Phony.View
             {
                 ThemeS.SelectedIndex = 0;
             }
-            ThemeC.Text = Properties.Settings.Default.Color;
+            ThemePC.Text = Properties.Settings.Default.PrimaryColor;
             foreach (var item in Swatches)
             {
-                ComboBoxItem cbi1 = new ComboBoxItem();
+                ComboBoxItem cbi = new ComboBoxItem();
                 SolidColorBrush brush1 = new SolidColorBrush(item.ExemplarHue.Color);
                 SolidColorBrush brush2 = new SolidColorBrush(item.ExemplarHue.Foreground);
-                cbi1.Background = brush1;
-                cbi1.Foreground = brush2;
-                cbi1.Content = item.Name;
-                ThemeC.Items.Add(cbi1);
-                if (item.Name == Properties.Settings.Default.Color.ToLowerInvariant())
+                cbi.Background = brush1;
+                cbi.Foreground = brush2;
+                cbi.Content = item.Name;
+                ThemePC.Items.Add(cbi);
+                if (item.Name == Properties.Settings.Default.PrimaryColor.ToLowerInvariant())
                 {
-                    ThemeC.SelectedItem = cbi1;
+                    ThemePC.SelectedItem = cbi;
+                }
+            }
+            ThemeAC.Text = Properties.Settings.Default.AccentColor;
+            foreach (var item in Swatches)
+            {
+                try
+                {
+                    ComboBoxItem cbi = new ComboBoxItem();
+                    SolidColorBrush brush1 = new SolidColorBrush(item.AccentExemplarHue.Color);
+                    SolidColorBrush brush2 = new SolidColorBrush(item.AccentExemplarHue.Foreground);
+                    cbi.Background = brush1;
+                    cbi.Foreground = brush2;
+                    cbi.Content = item.Name;
+                    ThemeAC.Items.Add(cbi);
+                    if (item.Name == Properties.Settings.Default.AccentColor.ToLowerInvariant())
+                    {
+                        ThemeAC.SelectedItem = cbi;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
                 }
             }
         }
@@ -50,10 +72,10 @@ namespace Phony.View
         private void SaveB_Click(object sender, RoutedEventArgs e)
         {
             
-            new PaletteHelper().ReplacePrimaryColor(ThemeC.Text);
+            new PaletteHelper().ReplacePrimaryColor(ThemePC.Text);
             try
             {
-                new PaletteHelper().ReplaceAccentColor(ThemeC.Text);
+                new PaletteHelper().ReplaceAccentColor(ThemeAC.Text);
             }
             catch (Exception ex)
             {
@@ -69,7 +91,8 @@ namespace Phony.View
                 Properties.Settings.Default.Theme = "BaseDark";
                 new PaletteHelper().SetLightDark(true);
             }
-            Properties.Settings.Default.Color = ThemeC.Text;
+            Properties.Settings.Default.PrimaryColor = ThemePC.Text;
+            Properties.Settings.Default.AccentColor = ThemeAC.Text;
             Properties.Settings.Default.Save();
         }
     }

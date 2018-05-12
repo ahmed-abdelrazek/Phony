@@ -357,7 +357,7 @@ namespace Phony.ViewModel
                     Numbers.Remove(DataGridSelectedNo);
                 }
                 DataGridSelectedNo = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الرقم بنجاح");
             }
         }
 

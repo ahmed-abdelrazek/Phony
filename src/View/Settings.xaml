@@ -6,27 +6,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="إعدادت" Height="300" Width="400" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40*"/>
-            <RowDefinition Height="45*"/>
-            <RowDefinition Height="46*"/>
-            <RowDefinition Height="84*"/>
-            <RowDefinition Height="54*"/>
-        </Grid.RowDefinitions>
-        <Button x:Name="SaveB" Style="{StaticResource AccentedSquareButtonStyle}" Margin="259,0,10,0" Grid.Row="4" Height="48" VerticalAlignment="Top" Click="SaveB_Click">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5 5 0 0" VerticalAlignment="Center" Text="حفظ " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
-                <materialDesign:PackIcon Height="32" Width="32" Kind="ContentSave" />
-            </StackPanel>
-        </Button>
-        <Label x:Name="label1" Content="اختار الثيم" HorizontalAlignment="Left" Height="40" Margin="10,0,0,0" VerticalAlignment="Top" Width="372" FontSize="14"/>
-        <Label x:Name="label2" Content="اختار اللون" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="372" FontSize="14" Grid.Row="2" Margin="10,0,0,0"/>
-        <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Height="35" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="372" Controls:TextBoxHelper.Watermark="ابيض/ اسود">
+        Title="إعدادت" Height="320" Width="400" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
+    <StackPanel>
+        <Label Content="اختار الثيم" HorizontalAlignment="Left" Margin="5 5 5 0" VerticalAlignment="Top" Width="372" FontSize="14"/>
+        <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" Grid.Row="1" VerticalAlignment="Top" Width="372" Controls:TextBoxHelper.Watermark="ابيض/ اسود">
             <ListBoxItem Content="ابيض"/>
             <ListBoxItem Content="اسود"/>
         </ComboBox>
-        <ComboBox x:Name="ThemeC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="10,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="372"/>
-    </Grid>
+        <Label Content="اختار اللون الاساسى" HorizontalAlignment="Left" VerticalAlignment="Top" Width="372" FontSize="14" Margin="5 5 5 0"/>
+        <ComboBox x:Name="ThemePC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" VerticalAlignment="Top" Width="372"/>
+        <Label Content="اختار اللون الفرعى" HorizontalAlignment="Left" VerticalAlignment="Top" Width="372" FontSize="14" Margin="5 5 5 0"/>
+        <ComboBox x:Name="ThemeAC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" VerticalAlignment="Top" Width="372"/>
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
+            <Button x:Name="SaveB" Style="{StaticResource AccentedSquareButtonStyle}" Margin="10" Grid.Row="4" Height="48" Click="SaveB_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5 5 0 0" VerticalAlignment="Center" Text="حفظ " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
+                    <materialDesign:PackIcon Height="32" Width="32" Kind="ContentSave" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </StackPanel>
     </Controls:MetroWindow>
