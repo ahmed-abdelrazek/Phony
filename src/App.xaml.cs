@@ -27,6 +27,11 @@ namespace Phony
                 Phony.Properties.Settings.Default.PrimaryColor = "Teal";
                 Phony.Properties.Settings.Default.Save();
             }
+            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.AccentColor))
+            {
+                Phony.Properties.Settings.Default.AccentColor = "Yellow";
+                Phony.Properties.Settings.Default.Save();
+            }
             try
             {
                 new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.PrimaryColor);
