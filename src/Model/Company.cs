@@ -6,7 +6,6 @@ namespace Phony.Model
     {
         public Company()
         {
-            Bills = new ObservableCollection<Bill>();
             Items = new ObservableCollection<Item>();
         }
 
@@ -14,16 +13,14 @@ namespace Phony.Model
 
         public decimal Balance { get; set; }
 
-        public string Site { get; set; }
-
         public byte[] Image { get; set; }
+
+        public string Site { get; set; }
 
         public string Email { get; set; }
 
         public string Phone { get; set; }
-
-        public virtual ObservableCollection<Bill> Bills { get; set; }
-
+        
         public virtual ObservableCollection<Item> Items { get; set; }
     }
 }

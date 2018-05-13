@@ -6,16 +6,12 @@ namespace Phony.Model
     {
         public Bill()
         {
-            BillMoves = new ObservableCollection<BillMove>();
+            BillsMoves = new ObservableCollection<BillMove>();
         }
 
         public int ClientId { get; set; }
 
         public virtual Client Client { get; set; }
-
-        public int CompanyId { get; set; }
-
-        public virtual Company Company { get; set; }
 
         public int StoreId { get; set; }
 
@@ -23,6 +19,10 @@ namespace Phony.Model
 
         public decimal Discount { get; set; }
 
-        public virtual ObservableCollection<BillMove> BillMoves { get; set; }
+        public decimal TotalAfterDiscounts { get; set; }
+
+        public decimal TotalPayed { get; set; }
+
+        public virtual ObservableCollection<BillMove> BillsMoves { get; set; }
     }
 }

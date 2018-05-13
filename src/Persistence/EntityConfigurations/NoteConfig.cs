@@ -9,7 +9,8 @@ namespace Phony.Persistence.EntityConfigurations
             HasKey(c => c.Id);
 
             Property(i => i.Name)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(100);
 
             Property(i => i.Notes)
                 .IsRequired();

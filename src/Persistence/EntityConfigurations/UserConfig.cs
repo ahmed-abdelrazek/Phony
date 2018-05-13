@@ -12,6 +12,10 @@ namespace Phony.Persistence.EntityConfigurations
                 .IsRequired()
                 .HasMaxLength(50);
 
+            Property(u => u.Pass)
+                .IsRequired()
+                .HasMaxLength(100);
+
             HasIndex(u => u.Name)
                 .IsUnique();
         }

@@ -164,7 +164,7 @@
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات كارت الشحن" Width="250" Theme="Accent" IsOpen="{Binding IsAddCardFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
-                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم كارت الشحن" Margin="5"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم كارت الشحن" Margin="5" MaxLength="100"/>
                     <TextBox Text="{Binding Barcode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="باركود" Margin="5"/>
                     <TextBox Text="{Binding Shopcode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="كود المحل" Margin="5"/>
                     <StackPanel Margin="5">

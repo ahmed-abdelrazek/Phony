@@ -119,7 +119,7 @@
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الشركة" Width="250" Theme="Accent" IsOpen="{Binding IsAddCompanyFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
-                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم الشركة" Margin="5"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم الشركة" Margin="5" MaxLength="50"/>
                     <StackPanel Margin="5">
                         <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
                         <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Margin="5" Stretch="Fill"/>

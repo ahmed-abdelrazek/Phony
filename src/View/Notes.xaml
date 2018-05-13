@@ -47,7 +47,7 @@
         <Controls:Flyout Header="بيانات الرقم" Width="290" Theme="Accent" IsOpen="{Binding IsAddNoFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
-                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5" MaxLength="100"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الرقم" Margin="5"/>
                     <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="150" Width="250" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

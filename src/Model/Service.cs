@@ -6,7 +6,6 @@ namespace Phony.Model
     {
         public Service()
         {
-            Bills = new ObservableCollection<Bill>();
             BillMoves = new ObservableCollection<BillMove>();
         }
 
@@ -14,16 +13,14 @@ namespace Phony.Model
 
         public decimal Balance { get; set; }
 
-        public string Site { get; set; }
-
         public byte[] Image { get; set; }
+
+        public string Site { get; set; }
 
         public string Email { get; set; }
 
         public string Phone { get; set; }
-
-        public virtual ObservableCollection<Bill> Bills { get; set; }
-
+        
         public virtual ObservableCollection<BillMove> BillMoves { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace Phony.Persistence.EntityConfigurations
             HasKey(c => c.Id);
 
             HasRequired(c => c.Client)
-                .WithMany()
+                .WithMany(c => c.ClientsMoves)
                 .HasForeignKey(c => c.ClientId)
                 .WillCascadeOnDelete(false);
 

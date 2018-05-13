@@ -15,7 +15,9 @@ namespace Phony.Kernel
         /// <param name="propertyName">The property name that has been changed</param>
         protected void RaisePropertyChanged([CallerMemberName] string propertyname = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            //the handler is to avoid nulls in multithreaded apps
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
 
     }

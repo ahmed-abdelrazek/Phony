@@ -130,7 +130,7 @@
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBlock Text="اسم العميل" Margin="5,0"/>
-                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم العميل" Margin="5"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم العميل" Margin="5" MaxLength="50"/>
                     <TextBlock Text="الرصيد" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
                     <TextBox Text="{Binding Site, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الموقع" Margin="5"/>

@@ -13,7 +13,7 @@ namespace Phony.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201805012046428_InitialModel"; }
+            get { return "201805121346390_InitialModel"; }
         }
         
         string IMigrationMetadata.Source

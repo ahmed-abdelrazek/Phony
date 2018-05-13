@@ -8,11 +8,7 @@ namespace Phony.Persistence.EntityConfigurations
         {
             HasKey(b => b.Id);
 
-
             Property(b => b.Discount)
-                .IsOptional();
-
-            Property(b => b.BillId)
                 .IsOptional();
 
             Property(b => b.ItemId)
@@ -21,8 +17,8 @@ namespace Phony.Persistence.EntityConfigurations
             Property(b => b.ServiceId)
                 .IsOptional();
 
-            HasOptional(b => b.Bill)
-                    .WithMany(b => b.BillMoves)
+            HasRequired(b => b.Bill)
+                    .WithMany(b => b.BillsMoves)
                     .HasForeignKey(b => b.BillId);
 
             HasOptional(b => b.Item)
