@@ -58,9 +58,9 @@
                 <DataGridTextColumn Binding="{Binding Name}" Header="اسم كارت الشحن" FontSize="14"/>
                 <DataGridTextColumn Binding="{Binding Shopcode}" Header="كود المحل" FontSize="14"/>
                 <DataGridTextColumn Binding="{Binding Barcode}" Header="الباركود" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="الرصيد الفعلى" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding SalePrice}" Header="سعر البيع" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="الرصيد الفعلى" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding SalePrice}" Header="سعر البيع" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding QTY}" Header="الكمية" Minimum="0"/>
                 <DataGridTemplateColumn Header="الشركة">
                     <DataGridTemplateColumn.CellTemplate>
@@ -172,11 +172,11 @@
                         <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Margin="5" Stretch="Fill"/>
                     </StackPanel>
                     <TextBlock Text="سعر الشراء" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding PurchasePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الشراء" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
+                    <Controls:NumericUpDown Value="{Binding PurchasePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الشراء" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
                     <TextBlock Text="الرصيد الفعلى" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding WholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد الفعلى" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
+                    <Controls:NumericUpDown Value="{Binding WholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد الفعلى" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
                     <TextBlock Text="سعر البيع" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding SalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر البيع" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
+                    <Controls:NumericUpDown Value="{Binding SalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="سعر البيع" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
                     <TextBlock Text="الكمية" Margin="5,0"/>
                     <Controls:NumericUpDown Value="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الكمية" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5"/>
                     <ComboBox ItemsSource="{Binding Companies}" materialDesign:HintAssist.Hint="الشركة" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedCompanyValue}"/>
