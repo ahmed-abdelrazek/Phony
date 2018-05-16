@@ -280,6 +280,7 @@ namespace Phony.ViewModel
                 {
                     Name = Name,
                     Phone = Phone,
+                    Group = NoteGroup.Numbers,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
                     CreatedById = CurrentUser.Id,
