@@ -39,7 +39,97 @@ namespace Phony.Kernel
                 {
                     try
                     {
-                        SeedDatabase();
+                        using (var db = new UnitOfWork(new PhonyDbContext()))
+                        {
+                            var u = db.Users.Get(1);
+                            if (u == null)
+                            {
+                                u = new User
+                                {
+                                    Name = "admin",
+                                    Pass = SecurePasswordHasher.Hash("admin"),
+                                    Group = ViewModel.UserGroup.Manager,
+                                    IsActive = true
+                                };
+                                db.Users.Add(u);
+                                db.Complete();
+                            }
+                            var cl = db.Clients.Get(1);
+                            if (cl == null)
+                            {
+                                cl = new Client
+                                {
+                                    Name = "كاش",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Clients.Add(cl);
+                                db.Complete();
+                            }
+                            var co = db.Companies.Get(1);
+                            if (co == null)
+                            {
+                                co = new Company
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Companies.Add(co);
+                                db.Complete();
+                            }
+                            var sa = db.SalesMen.Get(1);
+                            if (sa == null)
+                            {
+                                sa = new SalesMan
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.SalesMen.Add(sa);
+                                db.Complete();
+                            }
+                            var su = db.Suppliers.Get(1);
+                            if (su == null)
+                            {
+                                su = new Supplier
+                                {
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    SalesManId = 1,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Suppliers.Add(su);
+                                db.Complete();
+                            }
+                            var st = db.Stores.Get(1);
+                            if (st == null)
+                            {
+                                st = new Store
+                                {
+                                    Name = "التوكل على الله",
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                };
+                                db.Stores.Add(st);
+                                db.Complete();
+                            }
+                        }
                         Properties.Settings.Default.IsConfigured = true;
                         Properties.Settings.Default.Save();
                     }
@@ -52,104 +142,6 @@ namespace Phony.Kernel
             catch (Exception ex)
             {
                 SaveException(ex);
-            }
-        }
-
-        /// <summary>
-        /// Fill the database with basic data to function like main user client etc
-        /// </summary>
-        public static void SeedDatabase()
-        {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
-            {
-                var u = db.Users.Get(1);
-                if (u == null)
-                {
-                    u = new User
-                    {
-                        Name = "admin",
-                        Pass = SecurePasswordHasher.Hash("admin"),
-                        Group = ViewModel.UserGroup.Manager,
-                        IsActive = true
-                    };
-                    db.Users.Add(u);
-                    db.Complete();
-                }
-                var cl = db.Clients.Get(1);
-                if (cl == null)
-                {
-                    cl = new Client
-                    {
-                        Name = "كاش",
-                        Balance = 0,
-                        CreatedById = 1,
-                        CreateDate = DateTime.Now,
-                        EditById = null,
-                        EditDate = null
-                    };
-                    db.Clients.Add(cl);
-                    db.Complete();
-                }
-                var co = db.Companies.Get(1);
-                if (co == null)
-                {
-                    co = new Company
-                    {
-                        Name = "لا يوجد",
-                        Balance = 0,
-                        CreatedById = 1,
-                        CreateDate = DateTime.Now,
-                        EditById = null,
-                        EditDate = null
-                    };
-                    db.Companies.Add(co);
-                    db.Complete();
-                }
-                var sa = db.SalesMen.Get(1);
-                if (sa == null)
-                {
-                    sa = new SalesMan
-                    {
-                        Name = "لا يوجد",
-                        Balance = 0,
-                        CreatedById = 1,
-                        CreateDate = DateTime.Now,
-                        EditById = null,
-                        EditDate = null
-                    };
-                    db.SalesMen.Add(sa);
-                    db.Complete();
-                }
-                var su = db.Suppliers.Get(1);
-                if (su == null)
-                {
-                    su = new Supplier
-                    {
-                        Name = "لا يوجد",
-                        Balance = 0,
-                        SalesManId = 1,
-                        CreatedById = 1,
-                        CreateDate = DateTime.Now,
-                        EditById = null,
-                        EditDate = null
-                    };
-                    db.Suppliers.Add(su);
-                    db.Complete();
-                }
-                var st = db.Stores.Get(1);
-                if (st == null)
-                {
-                    st = new Store
-                    {
-                        Name = "التوكل على الله",
-                        CreatedById = 1,
-                        CreateDate = DateTime.Now,
-                        EditById = null,
-                        EditDate = null
-                    };
-                    db.Stores.Add(st);
-                    db.Complete();
-                }
             }
         }
 

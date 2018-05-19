@@ -109,7 +109,6 @@ namespace Phony.ViewModel.Users
                     if (u == null)
                     {
                         await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
-                        Core.SeedDatabase();
                     }
                     else
                     {
