@@ -1,8 +1,7 @@
 namespace Phony.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class InitialModel : DbMigration
     {
         public override void Up()
@@ -45,6 +44,7 @@ namespace Phony.Migrations
                         ItemId = c.Int(),
                         QTY = c.Decimal(nullable: false, precision: 18, scale: 2),
                         ServiceId = c.Int(),
+                        ServicePayment = c.Decimal(precision: 18, scale: 2),
                         Discount = c.Decimal(precision: 18, scale: 2),
                         Notes = c.String(),
                         CreatedById = c.Int(nullable: false),

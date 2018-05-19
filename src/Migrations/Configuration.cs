@@ -1,16 +1,15 @@
 namespace Phony.Migrations
 {
-    using Phony.Persistence;
     using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<PhonyDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Persistence.PhonyDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(PhonyDbContext context)
+        protected override void Seed(Persistence.PhonyDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

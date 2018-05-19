@@ -17,6 +17,9 @@ namespace Phony.Persistence.EntityConfigurations
             Property(b => b.ServiceId)
                 .IsOptional();
 
+            Property(b => b.ServicePayment)
+                .IsOptional();
+
             HasRequired(b => b.Bill)
                     .WithMany(b => b.BillsMoves)
                     .HasForeignKey(b => b.BillId);

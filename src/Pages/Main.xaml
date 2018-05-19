@@ -10,9 +10,8 @@
       d:DesignHeight="650" d:DesignWidth="750"
       Title="Main" FlowDirection="RightToLeft">
     <Page.DataContext>
-        <vm:MainWindowVM/>
+        <vm:MainPageVM/>
     </Page.DataContext>
-
     <Grid>
         <WrapPanel Margin="50" MinWidth="600" MaxWidth="1366">
             <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
@@ -23,7 +22,7 @@
                     <Controls:Tile Title="العملاء" Count="{Binding ClientsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenClientsWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountMultiple" />
                     </Controls:Tile>
-                    <Controls:Tile Title="فواتير مبيعات" Margin="5" FontWeight="Bold">
+                    <Controls:Tile Title="فواتير مبيعات" Margin="5" FontWeight="Bold" Command="{Binding OpenBillsWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="FileDocumentBox" />
                     </Controls:Tile>
                     <Controls:Tile Title="طباعه فاتورة" Margin="5" FontWeight="Bold">

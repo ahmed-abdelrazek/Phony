@@ -22,6 +22,8 @@ namespace Phony.Model
 
         public virtual Service Service { get; set; }
 
+        public decimal ServicePayment { get; set; }
+
         public decimal Discount { get; set; }
 
         public virtual ObservableCollection<Bill> Bills { get; set; }

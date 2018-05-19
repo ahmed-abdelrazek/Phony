@@ -13,19 +13,21 @@
         mc:Ignorable="d"
         Title="فواتير" FlowDirection="RightToLeft" Height="600" Width="800" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.Resources>
-        <converts:BinaryImageConverter x:Key="ImageToSource"/>
+        <converts:BooleanToVisibilityCollapsedConvertor x:Key="BToV"/>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.DataContext>
         <vm:BillVM/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="150"/>
-            <RowDefinition Height="50"/>
             <RowDefinition Height="50*"/>
             <RowDefinition Height="150"/>
         </Grid.RowDefinitions>
-        <StackPanel Margin="5">
+        <materialDesign:Card Content="{Binding CurrentBillNo}" Margin="5"/>
+        <ComboBox SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clients}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedIndex="0" IsEditable="True" Margin="5" Style="{StaticResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="اختار عميل"/>
+        <StackPanel Margin="5" Grid.Row="1">
             <TextBlock Text="البحث"/>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -38,19 +40,22 @@
                 </Button>
             </Grid>
             <StackPanel Orientation="Horizontal">
-                <RadioButton Content="صنف" Margin="5" IsChecked="{Binding ByName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <RadioButton Content="كارت شحن" Margin="5" IsChecked="{Binding ByShopCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <RadioButton Content="خدمة" Margin="5" IsChecked="{Binding ByBarCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <RadioButton Content="صنف" Margin="5" IsChecked="{Binding ByItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <RadioButton Content="كارت شحن" Margin="5" IsChecked="{Binding ByCard, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <RadioButton x:Name="IsServiceRadioButton" Content="خدمة" Margin="5" IsChecked="{Binding ByService, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Orientation="Horizontal" Margin="50,5,5,5" Visibility="{Binding IsChecked, Converter={StaticResource BToV}, ElementName=IsServiceRadioButton}">
+                    <RadioButton Content="بالاسم" Margin="5" IsChecked="{Binding ByName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <RadioButton Content="بكود المحل" Margin="5" IsChecked="{Binding ByShopCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <RadioButton Content="بالباركود" Margin="5" IsChecked="{Binding ByBarCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddItemFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteItem}"/>
-                <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllItems}"/>
+                <Button Content="تراجع" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllItems}"/>
             </StackPanel>
         </StackPanel>
-        <TextBlock Text="العملاء" Grid.Row="1"/>
-        <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" Grid.Row="1" Style="{StaticResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اختار عميل"/>
-            <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="2" Margin="5" SelectedItem="{Binding DataGridSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="2" Margin="5" SelectedItem="{Binding DataGridSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
