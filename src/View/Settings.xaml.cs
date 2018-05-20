@@ -18,6 +18,7 @@ namespace Phony.View
         {
             InitializeComponent();
         }
+
         public IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
         
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -26,9 +27,17 @@ namespace Phony.View
             {
                 ThemeS.SelectedIndex = 1;
             }
-            else if (Properties.Settings.Default.Theme == "BaseLight")
+            else
             {
                 ThemeS.SelectedIndex = 0;
+            }
+            if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
+            {
+                BillReportPaperSizeCb.SelectedIndex = 0;
+            }
+            else
+            {
+                BillReportPaperSizeCb.SelectedIndex = 1;
             }
             ThemePC.Text = Properties.Settings.Default.PrimaryColor;
             foreach (var item in Swatches)
@@ -93,6 +102,7 @@ namespace Phony.View
             }
             Properties.Settings.Default.PrimaryColor = ThemePC.Text;
             Properties.Settings.Default.AccentColor = ThemeAC.Text;
+            Properties.Settings.Default.SalesBillsPaperSize = BillReportPaperSizeCb.Text;
             Properties.Settings.Default.Save();
         }
     }

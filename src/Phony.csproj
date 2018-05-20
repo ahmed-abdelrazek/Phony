@@ -89,6 +89,8 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="SAPBusinessObjects.WPF.Viewer, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="SAPBusinessObjects.WPF.ViewerShared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -130,6 +132,7 @@
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityCollapsedConvertor.cs" />
+    <Compile Include="Extensions\ReportSourceBehaviour.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
     <Compile Include="Kernel\SecurePasswordHasher.cs" />
     <Compile Include="Kernel\Repositories\IBillMoveRepo.cs" />
@@ -183,9 +186,22 @@
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Supplier.cs" />
+    <Compile Include="Reports\SalesBillA4.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SalesBillA4.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\SalesBillA7.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SalesBillA7.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ViewModel\BillVM.cs" />
     <Compile Include="ViewModel\MainPageVM.cs" />
     <Compile Include="ViewModel\NoteVM.cs" />
+    <Compile Include="ViewModel\SalesBillsViewerVM.cs" />
     <Compile Include="ViewModel\UserVM.cs" />
     <Compile Include="View\Bills.xaml.cs">
       <DependentUpon>Bills.xaml</DependentUpon>
@@ -246,6 +262,9 @@
     </Compile>
     <Compile Include="View\Items.xaml.cs">
       <DependentUpon>Items.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SalesBillsViewer.xaml.cs">
+      <DependentUpon>SalesBillsViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SalesMen.xaml.cs">
       <DependentUpon>SalesMen.xaml</DependentUpon>
@@ -312,6 +331,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\SalesBillsViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SalesMen.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,6 +380,14 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\SalesBillA4.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesBillA4.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\SalesBillA7.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>SalesBillA7.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -371,9 +401,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reports\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\PhonyLogo.png" />
   </ItemGroup>

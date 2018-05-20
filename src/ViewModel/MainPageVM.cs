@@ -162,6 +162,7 @@ namespace Phony.ViewModel
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
         public ICommand OpenBillsWindow { get; set; }
+        public ICommand OpenSalesBillsWindow { get; set; }
         public ICommand OpenShortagesWindow { get; set; }
         public ICommand OpenServicesWindow { get; set; }
         public ICommand OpenSuppliersWindow { get; set; }
@@ -193,6 +194,7 @@ namespace Phony.ViewModel
             OpenItemsWindow = new CustomCommand(DoOpenItemsWindow, CanOpenItemsWindow);
             OpenClientsWindow = new CustomCommand(DoOpenClientsWindow, CanOpenClientsWindow);
             OpenBillsWindow = new CustomCommand(DoOpenBillsWindow, CanOpenBillsWindow);
+            OpenSalesBillsWindow = new CustomCommand(DoOpenSalesBillsWindow, CanOpenSalesBillsWindow);
             OpenShortagesWindow = new CustomCommand(DoOpenShortagesWindow, CanOpenShortagesWindow);
             OpenServicesWindow = new CustomCommand(DoOpenServicesWindow, CanOpenServicesWindow);
             OpenSuppliersWindow = new CustomCommand(DoOpenSuppliersWindow, CanOpenSuppliersWindow);
@@ -204,6 +206,16 @@ namespace Phony.ViewModel
             OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
             OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
             OpenUsersWindow = new CustomCommand(DoOpenUsersWindow, CanOpenUsersWindow);
+        }
+
+        private bool CanOpenSalesBillsWindow(object obj)
+        {
+            return true;
+        }
+
+        private void DoOpenSalesBillsWindow(object obj)
+        {
+            new SalesBillsViewer().Show();
         }
 
         async Task CountEveryThing()

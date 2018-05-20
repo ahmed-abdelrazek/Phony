@@ -6,17 +6,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="إعدادت" Height="320" Width="400" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
+        Title="إعدادت" Height="380" Width="400" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
     <StackPanel>
-        <Label Content="اختار الثيم" HorizontalAlignment="Left" Margin="5 5 5 0" VerticalAlignment="Top" Width="372" FontSize="14"/>
-        <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" Grid.Row="1" VerticalAlignment="Top" Width="372" Controls:TextBoxHelper.Watermark="ابيض/ اسود">
+        <Label Content="اختار الثيم" HorizontalAlignment="Left" Margin="5 5 5 0" VerticalAlignment="Top" FontSize="14"/>
+        <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Margin="5 0 5 5" Grid.Row="1" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">
             <ListBoxItem Content="ابيض"/>
             <ListBoxItem Content="اسود"/>
         </ComboBox>
-        <Label Content="اختار اللون الاساسى" HorizontalAlignment="Left" VerticalAlignment="Top" Width="372" FontSize="14" Margin="5 5 5 0"/>
-        <ComboBox x:Name="ThemePC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" VerticalAlignment="Top" Width="372"/>
-        <Label Content="اختار اللون الفرعى" HorizontalAlignment="Left" VerticalAlignment="Top" Width="372" FontSize="14" Margin="5 5 5 0"/>
-        <ComboBox x:Name="ThemeAC" SelectedValuePath="Name" HorizontalAlignment="Left" Height="35" Margin="5 0 5 5" VerticalAlignment="Top" Width="372"/>
+        <Label Content="اختار اللون الاساسى" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
+        <ComboBox x:Name="ThemePC" SelectedValuePath="Name" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300"/>
+        <Label Content="اختار اللون الفرعى" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
+        <ComboBox x:Name="ThemeAC" SelectedValuePath="Name" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300"/>
+        <Label Content="اختار حجم ورقه فاتورة المبيعات" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
+        <ComboBox x:Name="BillReportPaperSizeCb" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">
+            <ComboBoxItem Content="A4"/>
+            <ComboBoxItem Content="A7"/>
+        </ComboBox>
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
             <Button x:Name="SaveB" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Margin="10" Grid.Row="4" Height="48" Click="SaveB_Click">
                 <StackPanel Orientation="Horizontal">

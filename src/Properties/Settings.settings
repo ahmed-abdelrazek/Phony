@@ -25,5 +25,8 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=.\SQLDEV2017;Initial Catalog=Phony;Integrated Security=True</Value>
     </Setting>
+    <Setting Name="SalesBillsPaperSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A4</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

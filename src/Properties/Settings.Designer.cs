@@ -92,5 +92,17 @@ namespace Phony.Properties {
                 return ((string)(this["ConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("A4")]
+        public string SalesBillsPaperSize {
+            get {
+                return ((string)(this["SalesBillsPaperSize"]));
+            }
+            set {
+                this["SalesBillsPaperSize"] = value;
+            }
+        }
     }
 }
