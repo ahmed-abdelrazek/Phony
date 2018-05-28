@@ -248,16 +248,15 @@ namespace Phony.ViewModel
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var i = db.Notes.Get(DataGridSelectedNo.Id);
-                i.Name = Name;
-                i.Phone = Phone;
-                i.Notes = Notes;
-                i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
+                var n = db.Notes.Get(DataGridSelectedNo.Id);
+                n.Name = Name;
+                n.Phone = Phone;
+                n.Notes = Notes;
+                n.EditDate = DateTime.Now;
+                n.EditById = CurrentUser.Id;
                 db.Complete();
+                Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
                 NoId = 0;
-                Numbers.Remove(DataGridSelectedNo);
-                Numbers.Add(i);
                 DataGridSelectedNo = null;
                 Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
             }

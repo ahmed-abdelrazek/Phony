@@ -270,9 +270,6 @@ namespace Phony.ViewModel
             {
                 ServicesCount = $"إجمالى الخدمات: {Services.Count().ToString()}";
                 ServicesPurchasePrice = $"اجمالى لينا: {decimal.Round(Services.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                ServicesSalePrice = $"اجمالى علينا: {decimal.Round(Services.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                ServicesProfit = $"تقدير لصافى لينا: {decimal.Round((Services.Where(c => c.Balance > 0).Sum(i => i.Balance) + Services.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -300,7 +297,7 @@ namespace Phony.ViewModel
 
         private async void DoAddBalance(object obj)
         {
-            var result = await ServicesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للخدمة {DataGridSelectedService.Name}");
+            var result = await ServicesMessage.ShowInputAsync("شحن", $"ادخل المبلغ الذى تريد شحن الخدمه به {DataGridSelectedService.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await ServicesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -314,7 +311,7 @@ namespace Phony.ViewModel
                     using (var db = new UnitOfWork(new PhonyDbContext()))
                     {
                         var s = db.Services.Get(DataGridSelectedService.Id);
-                        s.Balance -= servicepaymentamount;
+                        s.Balance += servicepaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
                         var sm = new ServiceMove
@@ -328,11 +325,10 @@ namespace Phony.ViewModel
                         };
                         db.ServicesMoves.Add(sm);
                         db.Complete();
-                        await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} مبلغ {servicepaymentamount} جنية بنجاح");
-                        DataGridSelectedService = null;
+                        await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
+                        Services[Services.IndexOf(DataGridSelectedService)] = s;
                         ServiceId = 0;
-                        Services.Remove(DataGridSelectedService);
-                        Services.Add(s);
+                        DataGridSelectedService = null;
                     }
                 }
                 else
@@ -366,9 +362,8 @@ namespace Phony.ViewModel
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
                 db.Complete();
+                Services[Services.IndexOf(DataGridSelectedService)] = s;
                 ServiceId = 0;
-                Services.Remove(DataGridSelectedService);
-                Services.Add(s);
                 DataGridSelectedService = null;
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
             }

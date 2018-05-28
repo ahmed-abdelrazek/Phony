@@ -16,6 +16,7 @@ namespace Phony.Migrations
                         Discount = c.Decimal(precision: 18, scale: 2),
                         TotalAfterDiscounts = c.Decimal(nullable: false, precision: 18, scale: 2),
                         TotalPayed = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        IsReturned = c.Boolean(nullable: false),
                         Notes = c.String(),
                         CreatedById = c.Int(nullable: false),
                         CreateDate = c.DateTime(nullable: false),

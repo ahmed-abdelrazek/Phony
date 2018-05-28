@@ -496,7 +496,6 @@ namespace Phony.ViewModel
 
         Items ItemsMessage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
 
-
         public ItemVM()
         {
             LoadCommands();
@@ -514,7 +513,6 @@ namespace Phony.ViewModel
                 ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
                 ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.SalePrice * i.QTY), 2).ToString()}";
                 ItemsProfit = $"تقدير صافى الربح: {decimal.Round((Items.Sum(i => i.SalePrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -560,9 +558,8 @@ namespace Phony.ViewModel
                 i.EditDate = DateTime.Now;
                 i.EditById = CurrentUser.Id;
                 db.Complete();
+                Items[Items.IndexOf(DataGridSelectedItem)] = i;
                 ItemId = 0;
-                Items.Remove(DataGridSelectedItem);
-                Items.Add(i);
                 DataGridSelectedItem = null;
                 ItemsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
             }

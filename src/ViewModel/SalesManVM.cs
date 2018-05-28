@@ -312,7 +312,6 @@ namespace Phony.ViewModel
                 SalesMenDebits = $"اجمالى لينا: {decimal.Round(SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
                 SalesMenCredits = $"اجمالى علينا: {decimal.Round(SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
                 SalesMenProfit = $"تقدير لصافى لينا: {decimal.Round((SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance) + SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -508,19 +507,18 @@ namespace Phony.ViewModel
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var c = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
-                c.Name = Name;
-                c.Balance = Balance;
-                c.Site = Site;
-                c.Email = Email;
-                c.Phone = Phone;
-                c.Notes = Notes;
-                c.EditDate = DateTime.Now;
-                c.EditById = CurrentUser.Id;
+                var s = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
+                s.Name = Name;
+                s.Balance = Balance;
+                s.Site = Site;
+                s.Email = Email;
+                s.Phone = Phone;
+                s.Notes = Notes;
+                s.EditDate = DateTime.Now;
+                s.EditById = CurrentUser.Id;
                 db.Complete();
+                SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
                 SalesManId = 0;
-                SalesMen.Remove(DataGridSelectedSalesMan);
-                SalesMen.Add(c);
                 DataGridSelectedSalesMan = null;
                 SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
             }

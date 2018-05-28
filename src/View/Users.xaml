@@ -42,7 +42,7 @@
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5"/>
                     <PasswordBox Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5" PasswordChanged="p1_PasswordChanged"/>
                     <PasswordBox Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5" PasswordChanged="p2_PasswordChanged"/>
-                    <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding SelectedGroup}" Style="{DynamicResource MaterialDesignComboBox}" materialDesign:HintAssist.Hint="صلاحيات" Margin="5"/>
+                    <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding SelectedGroup}" SelectedValuePath="Id" DisplayMemberPath="Name" Style="{DynamicResource MaterialDesignComboBox}" materialDesign:HintAssist.Hint="صلاحيات" Margin="5"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الرقم" Margin="5"/>
                     <Controls:ToggleSwitch Content="نشط" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FlowDirection="LeftToRight" materialDesign:HintAssist.Hint="نشط" Margin="5"/>
                     <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="150" Width="250" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -61,18 +61,6 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="الاسم"/>
-                <DataGridTemplateColumn Header="صلاحيات">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Groups}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Group}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Groups}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Group}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Phone}" Header="الرقم"/>
                 <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="نشط"/>
             </DataGrid.Columns>

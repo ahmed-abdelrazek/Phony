@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="إعدادت" Height="380" Width="400" WindowStartupLocation="CenterScreen" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
+        Title="إعدادت" Height="380" Width="330" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
     <StackPanel>
         <Label Content="اختار الثيم" HorizontalAlignment="Left" Margin="5 5 5 0" VerticalAlignment="Top" FontSize="14"/>
         <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Margin="5 0 5 5" Grid.Row="1" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">

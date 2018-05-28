@@ -1,4 +1,8 @@
-﻿using Phony.Kernel;
+﻿using CrystalDecisions.CrystalReports.Engine;
+using Phony.Kernel;
+using Phony.Persistence;
+using System.Data;
+using System.Linq;
 
 namespace Phony.ViewModel
 {
@@ -27,7 +31,14 @@ namespace Phony.ViewModel
             }
             else
             {
-                Report = new Reports.SalesBillA7();
+                DataTable tb = new DataTable();
+                Reports.SalesBillA7 b = new Reports.SalesBillA7();
+                using (var db = new PhonyDbContext())
+                {
+                    DataSet1 ds = new DataSet1();
+                    b.SetDataSource(db.Bills.ToList());
+                }                  
+                Report = b;
             }
         }
     }

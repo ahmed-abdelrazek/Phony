@@ -499,7 +499,6 @@ namespace Phony.ViewModel
                 CardsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Cards.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
                 CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.SalePrice * i.QTY), 2).ToString()}";
                 CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.SalePrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -543,9 +542,8 @@ namespace Phony.ViewModel
                 i.EditDate = DateTime.Now;
                 i.EditById = CurrentUser.Id;
                 db.Complete();
+                Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
                 CardId = 0;
-                Cards.Remove(DataGridSelectedItem);
-                Cards.Add(i);
                 DataGridSelectedItem = null;
                 CardsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
             }

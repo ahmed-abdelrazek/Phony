@@ -1,10 +1,10 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
+using Phony.Extensions;
 using Phony.Kernel;
 using Phony.Model;
 using Phony.Persistence;
 using Phony.Utility;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -18,7 +18,7 @@ namespace Phony.ViewModel
     {
         int _userId;
         string _name;
-        UserGroup _selectedGroup;
+        byte _selectedGroup;
         string _phone;
         string _searchText;
         string _notes;
@@ -58,7 +58,7 @@ namespace Phony.ViewModel
 
         public SecureString Password2 { private get; set; }
 
-        public UserGroup SelectedGroup
+        public byte SelectedGroup
         {
             get => _selectedGroup;
             set
@@ -149,7 +149,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public IEnumerable<UserGroup> Groups { get; set; }
+        public ObservableCollection<Enumeration<byte>> Groups { get; set; }
 
         public ObservableCollection<User> Users
         {
@@ -179,8 +179,15 @@ namespace Phony.ViewModel
         {
             LoadCommands();
             IsActive = true;
-            Groups = Enum.GetValues(typeof(UserGroup))
-            .OfType<UserGroup>();
+            Groups = new ObservableCollection<Enumeration<byte>>();
+            foreach (var group in Enum.GetValues(typeof(UserGroup)))
+            {
+                Groups.Add(new Enumeration<byte>
+                {
+                    Id = (byte)group,
+                    Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
+                });
+            }
             using (var db = new PhonyDbContext())
             {
                 Users = new ObservableCollection<User>(db.Users);
@@ -219,14 +226,13 @@ namespace Phony.ViewModel
                     var u = db.Users.Get(DataGridSelectedUser.Id);
                     u.Name = Name;
                     u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
-                    u.Group = SelectedGroup;
+                    u.Group = (UserGroup)SelectedGroup;
                     u.Phone = Phone;
                     u.Notes = Notes;
                     u.IsActive = IsActive;
                     db.Complete();
+                    Users[Users.IndexOf(DataGridSelectedUser)] = u;
                     UserId = 0;
-                    Users.Remove(DataGridSelectedUser);
-                    Users.Add(u);
                     DataGridSelectedUser = null;
                     Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
                 }
@@ -257,7 +263,7 @@ namespace Phony.ViewModel
                     {
                         Name = Name,
                         Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password),
-                        Group = SelectedGroup,
+                        Group = (UserGroup)SelectedGroup,
                         Phone = Phone,
                         Notes = Notes,
                         IsActive = IsActive
@@ -347,7 +353,7 @@ namespace Phony.ViewModel
         {
             UserId = DataGridSelectedUser.Id;
             Name = DataGridSelectedUser.Name;
-            SelectedGroup = DataGridSelectedUser.Group;
+            SelectedGroup = (byte)DataGridSelectedUser.Group;
             Phone = DataGridSelectedUser.Phone;
             Notes = DataGridSelectedUser.Notes;
             IsActive = DataGridSelectedUser.IsActive;

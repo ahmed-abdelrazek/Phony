@@ -272,7 +272,6 @@ namespace Phony.ViewModel
                 CompaniesPurchasePrice = $"اجمالى لينا: {decimal.Round(Companies.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
                 CompaniesSalePrice = $"اجمالى علينا: {decimal.Round(Companies.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
                 CompaniesProfit = $"تقدير لصافى لينا: {decimal.Round((Companies.Where(c => c.Balance > 0).Sum(i => i.Balance) + Companies.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -355,20 +354,19 @@ namespace Phony.ViewModel
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var s = db.Companies.Get(DataGridSelectedCompany.Id);
-                s.Name = Name;
-                s.Balance = Balance;
-                s.Site = Site;
-                s.Email = Email;
-                s.Phone = Phone;
-                s.Image = Image;
-                s.Notes = Notes;
-                s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                var c = db.Companies.Get(DataGridSelectedCompany.Id);
+                c.Name = Name;
+                c.Balance = Balance;
+                c.Site = Site;
+                c.Email = Email;
+                c.Phone = Phone;
+                c.Image = Image;
+                c.Notes = Notes;
+                c.EditDate = DateTime.Now;
+                c.EditById = CurrentUser.Id;
                 db.Complete();
+                Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
                 CompanyId = 0;
-                Companies.Remove(DataGridSelectedCompany);
-                Companies.Add(s);
                 DataGridSelectedCompany = null;
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
             }

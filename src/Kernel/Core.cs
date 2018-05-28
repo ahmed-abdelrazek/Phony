@@ -30,10 +30,6 @@ namespace Phony.Kernel
                     {
                         SaveException(e);
                     }
-                    finally
-                    {
-                        Thread.CurrentThread.Abort();
-                    }
                 }).Start();
                 if (!Properties.Settings.Default.IsConfigured)
                 {

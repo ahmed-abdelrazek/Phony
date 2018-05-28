@@ -312,7 +312,6 @@ namespace Phony.ViewModel
                 ClientDebits = $"اجمالى لينا: {decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
                 ClientCredits = $"اجمالى علينا: {decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
                 ClientProfit = $"تقدير لصافى لينا: {decimal.Round((Clients.Where(c => c.Balance > 0).Sum(i => i.Balance) + Clients.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -518,9 +517,8 @@ namespace Phony.ViewModel
                 c.EditDate = DateTime.Now;
                 c.EditById = CurrentUser.Id;
                 db.Complete();
+                Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                 ClientId = 0;
-                Clients.Remove(DataGridSelectedClient);
-                Clients.Add(c);
                 DataGridSelectedClient = null;
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
             }

@@ -20,21 +20,29 @@
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="155"/>
             <RowDefinition Height="50*"/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="180"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card Content="{Binding CurrentBillNo}" Margin="5"/>
-        <ComboBox SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clients}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedIndex="0" IsEditable="True" Margin="5" Style="{StaticResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="اختار عميل"/>
+        <StackPanel>
+            <materialDesign:Card HorizontalAlignment="Left" FontSize="14" Foreground="Red" Margin="5">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="رقم الفاتورة الحاليه: " FontSize="14" FontWeight="Bold" Foreground="Red"/>
+                    <TextBlock Text="{Binding CurrentBillNo}" HorizontalAlignment="Left" FontSize="14" Foreground="Red">
+                    </TextBlock>
+                </StackPanel>
+            </materialDesign:Card>
+            <ComboBox SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clients}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" Margin="5" Style="{StaticResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="اختار عميل" materialDesign:HintAssist.FloatingScale="50" FontSize="14" FontWeight="Bold"/>
+        </StackPanel>
         <StackPanel Margin="5" Grid.Row="1">
-            <TextBlock Text="البحث"/>
+            <TextBlock Text="البحث" FontSize="15" FontWeight="Bold" Margin="5,5,0,0"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" Style="{StaticResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="ادخل البيانات للبحث عنه"/>
+                <ComboBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SearchItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" FontWeight="Bold" Margin="5" Style="{StaticResource MaterialDesignComboBox}" IsEditable="True" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SearchSelectedValue}" materialDesign:HintAssist.Hint="ادخل البيانات للبحث عنه"/>
                 <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" IsDefault="True" Margin="5" Width="30" Height="30" Command="{Binding Search}">
                     <materialDesign:PackIcon Kind="Magnify" />
                 </Button>
@@ -50,51 +58,103 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddItemFlyout}"/>
-                <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteItem}"/>
-                <Button Content="تراجع" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllItems}"/>
+                <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddBillMove}"/>
+                <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteBillMove}"/>
+                <Button Content="تراجع" Margin="5" Command="{Binding RedoBill}"/>
             </StackPanel>
         </StackPanel>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="2" Margin="5" SelectedItem="{Binding DataGridSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
+        <simpleChildWindow:ChildWindow Grid.RowSpan="4" IsOpen="{Binding IsAddItemChildOpen}" Title="اضافة صنف للفاتورة" BorderBrush="{DynamicResource AccentBaseColorBrush}" BorderThickness="1" GlowBrush="{DynamicResource AccentColorBrush}" AllowMove="True" FlowDirection="RightToLeft" ShowCloseButton="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="اسم الصنف: " VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <TextBlock Grid.Column="1" Text="{Binding ItemChildItemName}" FontSize="14" FontWeight="Bold" Margin="5"/>
+                <TextBlock Text="السعر: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Grid.Column="1" Grid.Row="1" Value="{Binding ItemChildItemPrice}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                <TextBlock Text="الموجود: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Grid.Column="1" Grid.Row="2" Value="{Binding ItemChildItemQTYExist}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                <TextBlock Text="الكمية: " VerticalAlignment="Center" Grid.Row="3" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Grid.Column="1" Grid.Row="3" Value="{Binding ItemChildItemQTYSell}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="4" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal" Margin="5" Grid.ColumnSpan="2">
+                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
+                    <TextBlock Text="%" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="5"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Margin="5" Grid.Row="5" Grid.Column="1">
+                    <Button Content="اضافة" Command="{Binding AddItemToBill}"/>
+                </StackPanel>
+            </Grid>
+        </simpleChildWindow:ChildWindow>
+        <simpleChildWindow:ChildWindow Grid.RowSpan="4" IsOpen="{Binding IsAddServiceChildOpen}" Title="اضافة خدمة للفاتورة" BorderBrush="{DynamicResource AccentBaseColorBrush}" BorderThickness="1" GlowBrush="{DynamicResource AccentColorBrush}" AllowMove="True" FlowDirection="RightToLeft" ShowCloseButton="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="اسم الخدمة: " VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <TextBlock Text="{Binding ServiceChildServiceName}" Grid.Column="1" FontSize="14" FontWeight="Bold" Margin="5"/>
+                <TextBlock Text="التكلفة: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Value="{Binding ServiceChildServiceCost}" Grid.Column="1" Grid.Row="1" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Margin="5" Grid.Column="1" Grid.Row="2">
+                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
+                    <TextBlock Text="%" VerticalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="3" Margin="5">
+                    <Button Content="اضافة" Command="{Binding AddServiceToBill}"/>
+                </StackPanel>
+            </Grid>
+        </simpleChildWindow:ChildWindow>
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding BillMoves, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="2" Margin="5" SelectedItem="{Binding DataGridSelectedBillMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Name}" Header="اسم الصنف" FontSize="14"/>
-                <DataGridTextColumn Binding="{Binding Shopcode}" Header="كود المحل" FontSize="14"/>
-                <DataGridTextColumn Binding="{Binding Barcode}" Header="الباركود" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="سعر الجملة" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding HalfWholeSalePrice}" Header="سعر النصف جملة" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding RetailPrice}" Header="سعر القطاعى" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding SalePrice}" Header="سعر البيع" Minimum="0"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding QTY}" Header="الكمية" Minimum="0"/>
-                <DataGridTemplateColumn Header="الشركة">
+                <DataGridTemplateColumn Header="الصنف">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Companies}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CompanyId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Items}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ItemId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Companies}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CompanyId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Items}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ItemId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="الموزع">
+                <DataGridTextColumn Binding="{Binding QTY}" Header="الكمية" FontSize="14"/>
+                <DataGridTemplateColumn Header="الخدمة">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Suppliers}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SupplierId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Services}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ServiceId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Suppliers}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SupplierId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Services}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ServiceId}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding ServicePayment}" Header="المطلوب" FontSize="14"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" Minimum="0"/>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -144,11 +204,37 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Notes}" TextWrapping="Wrap" Margin="10,2,10,10" />
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="175"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="50*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="الاجمالى:" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+            <Controls:NumericUpDown Value="{Binding BillTotal}" Margin="5,5,30,5" Grid.Column="1" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+            <TextBlock Text="الاجمالى بعد خصم الاصناف:" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
+            <Controls:NumericUpDown Value="{Binding BillTotalAfterEachDiscount}" Margin="5,5,30,5" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+            <TextBlock Text="خصم للفاتورة:" Grid.Row="1" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+            <Controls:NumericUpDown Value="{Binding BillDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Text="الاجمالى بعد الخصم :" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
+            <Controls:NumericUpDown Value="{Binding BillTotalAfterDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+            <TextBlock Text="المدفوع من العميل:" Grid.Row="2" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+            <Controls:NumericUpDown Value="{Binding BillClientPayment}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="1" Minimum="0" StringFormat="C2" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Text="*سيتم معاملة الفاتورة كاجل اذا كان المدفوع اقل من الاجمالى بعد الخصم." VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" FontSize="14" FontWeight="Bold" Foreground="Red"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="5">
+                <Controls:ToggleSwitch Content="اضافه ملاحظه فى اخر الفاتورة" IsChecked="{Binding IsAddBillNote}" Margin="10,2,10,2" FlowDirection="LeftToRight" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FontWeight="Bold" Foreground="Green"/>
+                <Button Content="حفظ الفاتورة" Margin="10,2,10,2" Command="{Binding SaveBill}"/>
+                <Button Content="حفظ و طباعة" Margin="10,2,10,2"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Controls:MetroWindow>

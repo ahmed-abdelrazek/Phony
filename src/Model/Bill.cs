@@ -23,6 +23,8 @@ namespace Phony.Model
 
         public decimal TotalPayed { get; set; }
 
+        public bool IsReturned { get; set; }
+
         public virtual ObservableCollection<BillMove> BillsMoves { get; set; }
     }
 }

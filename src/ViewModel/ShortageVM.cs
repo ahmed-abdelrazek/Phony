@@ -48,7 +48,6 @@ namespace Phony.ViewModel
             new Thread(() =>
             {
                 ItemsCount = $"إجمالى النواقص: {Items.Count().ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
     }

@@ -301,7 +301,6 @@ namespace Phony.ViewModel
                 SuppliersPurchasePrice = $"اجمالى لينا: {decimal.Round(Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
                 SuppliersSalePrice = $"اجمالى علينا: {decimal.Round(Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
                 SuppliersProfit = $"تقدير لصافى لينا: {decimal.Round((Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance) + Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-                Thread.CurrentThread.Abort();
             }).Start();
         }
 
@@ -396,9 +395,8 @@ namespace Phony.ViewModel
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
                 db.Complete();
+                Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
                 SupplierId = 0;
-                Suppliers.Remove(DataGridSelectedSupplier);
-                Suppliers.Add(s);
                 DataGridSelectedSupplier = null;
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
             }
