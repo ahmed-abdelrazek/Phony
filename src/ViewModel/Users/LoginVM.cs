@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Security;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -105,7 +106,11 @@ namespace Phony.ViewModel.Users
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-                    Model.User u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
+                    Model.User u = null;
+                    await Task.Run(() =>
+                    {
+                        u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
+                    });
                     if (u == null)
                     {
                         await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);

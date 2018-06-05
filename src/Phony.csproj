@@ -13,6 +13,28 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <SupportUrl>https://shababco.blogspot.com</SupportUrl>
+    <ErrorReportUrl>https://shababco.blogspot.com</ErrorReportUrl>
+    <TargetCulture>ar-EG</TargetCulture>
+    <ProductName>Phony</ProductName>
+    <PublisherName>ShababConquer</PublisherName>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -132,6 +154,9 @@
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityCollapsedConvertor.cs" />
+    <Compile Include="DataSet1.cs">
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="DataSet1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -139,9 +164,10 @@
     </Compile>
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
+    <Compile Include="Kernel\Repositories\IBillItemMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
     <Compile Include="Kernel\SecurePasswordHasher.cs" />
-    <Compile Include="Kernel\Repositories\IBillMoveRepo.cs" />
+    <Compile Include="Kernel\Repositories\IBillServiceMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IBillRepo.cs" />
     <Compile Include="Kernel\Repositories\IClientMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IClientRepo.cs" />
@@ -160,6 +186,7 @@
       <DependentUpon>201805271345167_InitialModel.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\BillServiceMove.cs" />
     <Compile Include="Model\ClientMove.cs" />
     <Compile Include="Model\CompanyMove.cs" />
     <Compile Include="Model\Enumeration.cs" />
@@ -170,7 +197,8 @@
     <Compile Include="Model\Store.cs" />
     <Compile Include="Model\SupplierMove.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillConfig.cs" />
-    <Compile Include="Persistence\EntityConfigurations\BillMoveConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\BillItemMoveConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\BillServiceMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\ClientConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\ClientMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\CompanyConfig.cs" />
@@ -189,10 +217,11 @@
     <Compile Include="Extensions\IsNullOrEmptyExtension.cs" />
     <Compile Include="Kernel\CommonBase.cs" />
     <Compile Include="Model\Bill.cs" />
-    <Compile Include="Model\BillMove.cs" />
+    <Compile Include="Model\BillItemMove.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Supplier.cs" />
+    <Compile Include="Persistence\Repositories\BillServiceMoveRepo.cs" />
     <Compile Include="Reports\SalesBillA4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -224,7 +253,7 @@
     </Compile>
     <Compile Include="Persistence\PhonyDbContext.cs" />
     <Compile Include="Kernel\Repositories\IRepository.cs" />
-    <Compile Include="Persistence\Repositories\BillMoveRepo.cs" />
+    <Compile Include="Persistence\Repositories\BillItemMoveRepo.cs" />
     <Compile Include="Persistence\Repositories\BillRepo.cs" />
     <Compile Include="Persistence\Repositories\ClientMoveRepo.cs" />
     <Compile Include="Persistence\Repositories\ClientRepo.cs" />
@@ -418,7 +447,28 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SqlServer.Express.11.0">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2012 Express</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="SAP.CrystalReports14.NET.2.0">
+      <Visible>False</Visible>
+      <ProductName>SAP Crystal Reports Runtime Engine for .NET Framework</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\PhonyLogo.png" />
   </ItemGroup>

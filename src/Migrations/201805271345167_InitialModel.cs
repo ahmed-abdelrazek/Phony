@@ -22,10 +22,12 @@ namespace Phony.Migrations
                         CreateDate = c.DateTime(nullable: false),
                         EditById = c.Int(),
                         EditDate = c.DateTime(),
-                        BillMove_Id = c.Int(),
+                        BillItemMove_Id = c.Int(),
+                        BillServiceMove_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.BillMoves", t => t.BillMove_Id)
+                .ForeignKey("dbo.BillItemMoves", t => t.BillItemMove_Id)
+                .ForeignKey("dbo.BillServiceMoves", t => t.BillServiceMove_Id)
                 .ForeignKey("dbo.Clients", t => t.ClientId)
                 .ForeignKey("dbo.Users", t => t.CreatedById)
                 .ForeignKey("dbo.Users", t => t.EditById)
@@ -34,18 +36,17 @@ namespace Phony.Migrations
                 .Index(t => t.StoreId)
                 .Index(t => t.CreatedById)
                 .Index(t => t.EditById)
-                .Index(t => t.BillMove_Id);
+                .Index(t => t.BillItemMove_Id)
+                .Index(t => t.BillServiceMove_Id);
             
             CreateTable(
-                "dbo.BillMoves",
+                "dbo.BillItemMoves",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         BillId = c.Int(nullable: false),
-                        ItemId = c.Int(),
+                        ItemId = c.Int(nullable: false),
                         QTY = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        ServiceId = c.Int(),
-                        ServicePayment = c.Decimal(precision: 18, scale: 2),
                         Discount = c.Decimal(precision: 18, scale: 2),
                         Notes = c.String(),
                         CreatedById = c.Int(nullable: false),
@@ -58,10 +59,8 @@ namespace Phony.Migrations
                 .ForeignKey("dbo.Users", t => t.CreatedById)
                 .ForeignKey("dbo.Users", t => t.EditById)
                 .ForeignKey("dbo.Items", t => t.ItemId)
-                .ForeignKey("dbo.Services", t => t.ServiceId)
                 .Index(t => t.BillId)
                 .Index(t => t.ItemId)
-                .Index(t => t.ServiceId)
                 .Index(t => t.CreatedById)
                 .Index(t => t.EditById);
             
@@ -207,6 +206,31 @@ namespace Phony.Migrations
                 .ForeignKey("dbo.Users", t => t.EditById)
                 .ForeignKey("dbo.SalesMen", t => t.SalesManId)
                 .Index(t => t.SalesManId)
+                .Index(t => t.CreatedById)
+                .Index(t => t.EditById);
+            
+            CreateTable(
+                "dbo.BillServiceMoves",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        BillId = c.Int(nullable: false),
+                        ServiceId = c.Int(nullable: false),
+                        ServicePayment = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Discount = c.Decimal(precision: 18, scale: 2),
+                        Notes = c.String(),
+                        CreatedById = c.Int(nullable: false),
+                        CreateDate = c.DateTime(nullable: false),
+                        EditById = c.Int(),
+                        EditDate = c.DateTime(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Bills", t => t.BillId, cascadeDelete: true)
+                .ForeignKey("dbo.Users", t => t.CreatedById)
+                .ForeignKey("dbo.Users", t => t.EditById)
+                .ForeignKey("dbo.Services", t => t.ServiceId)
+                .Index(t => t.BillId)
+                .Index(t => t.ServiceId)
                 .Index(t => t.CreatedById)
                 .Index(t => t.EditById);
             
@@ -419,10 +443,14 @@ namespace Phony.Migrations
             DropForeignKey("dbo.ClientMoves", "EditById", "dbo.Users");
             DropForeignKey("dbo.ClientMoves", "CreatedById", "dbo.Users");
             DropForeignKey("dbo.ClientMoves", "ClientId", "dbo.Clients");
-            DropForeignKey("dbo.BillMoves", "ServiceId", "dbo.Services");
+            DropForeignKey("dbo.BillServiceMoves", "ServiceId", "dbo.Services");
             DropForeignKey("dbo.Services", "EditById", "dbo.Users");
             DropForeignKey("dbo.Services", "CreatedById", "dbo.Users");
-            DropForeignKey("dbo.BillMoves", "ItemId", "dbo.Items");
+            DropForeignKey("dbo.BillServiceMoves", "EditById", "dbo.Users");
+            DropForeignKey("dbo.BillServiceMoves", "CreatedById", "dbo.Users");
+            DropForeignKey("dbo.Bills", "BillServiceMove_Id", "dbo.BillServiceMoves");
+            DropForeignKey("dbo.BillServiceMoves", "BillId", "dbo.Bills");
+            DropForeignKey("dbo.BillItemMoves", "ItemId", "dbo.Items");
             DropForeignKey("dbo.Items", "SupplierId", "dbo.Suppliers");
             DropForeignKey("dbo.Suppliers", "SalesManId", "dbo.SalesMen");
             DropForeignKey("dbo.SalesManMoves", "SalesManId", "dbo.SalesMen");
@@ -437,10 +465,10 @@ namespace Phony.Migrations
             DropForeignKey("dbo.Items", "CompanyId", "dbo.Companies");
             DropForeignKey("dbo.Companies", "EditById", "dbo.Users");
             DropForeignKey("dbo.Companies", "CreatedById", "dbo.Users");
-            DropForeignKey("dbo.BillMoves", "EditById", "dbo.Users");
-            DropForeignKey("dbo.BillMoves", "CreatedById", "dbo.Users");
-            DropForeignKey("dbo.Bills", "BillMove_Id", "dbo.BillMoves");
-            DropForeignKey("dbo.BillMoves", "BillId", "dbo.Bills");
+            DropForeignKey("dbo.BillItemMoves", "EditById", "dbo.Users");
+            DropForeignKey("dbo.BillItemMoves", "CreatedById", "dbo.Users");
+            DropForeignKey("dbo.Bills", "BillItemMove_Id", "dbo.BillItemMoves");
+            DropForeignKey("dbo.BillItemMoves", "BillId", "dbo.Bills");
             DropIndex("dbo.SupplierMoves", new[] { "EditById" });
             DropIndex("dbo.SupplierMoves", new[] { "CreatedById" });
             DropIndex("dbo.SupplierMoves", new[] { "SupplierId" });
@@ -463,6 +491,10 @@ namespace Phony.Migrations
             DropIndex("dbo.Services", new[] { "EditById" });
             DropIndex("dbo.Services", new[] { "CreatedById" });
             DropIndex("dbo.Services", new[] { "Name" });
+            DropIndex("dbo.BillServiceMoves", new[] { "EditById" });
+            DropIndex("dbo.BillServiceMoves", new[] { "CreatedById" });
+            DropIndex("dbo.BillServiceMoves", new[] { "ServiceId" });
+            DropIndex("dbo.BillServiceMoves", new[] { "BillId" });
             DropIndex("dbo.SalesManMoves", new[] { "EditById" });
             DropIndex("dbo.SalesManMoves", new[] { "CreatedById" });
             DropIndex("dbo.SalesManMoves", new[] { "SalesManId" });
@@ -481,12 +513,12 @@ namespace Phony.Migrations
             DropIndex("dbo.Items", new[] { "SupplierId" });
             DropIndex("dbo.Items", new[] { "CompanyId" });
             DropIndex("dbo.Users", new[] { "Name" });
-            DropIndex("dbo.BillMoves", new[] { "EditById" });
-            DropIndex("dbo.BillMoves", new[] { "CreatedById" });
-            DropIndex("dbo.BillMoves", new[] { "ServiceId" });
-            DropIndex("dbo.BillMoves", new[] { "ItemId" });
-            DropIndex("dbo.BillMoves", new[] { "BillId" });
-            DropIndex("dbo.Bills", new[] { "BillMove_Id" });
+            DropIndex("dbo.BillItemMoves", new[] { "EditById" });
+            DropIndex("dbo.BillItemMoves", new[] { "CreatedById" });
+            DropIndex("dbo.BillItemMoves", new[] { "ItemId" });
+            DropIndex("dbo.BillItemMoves", new[] { "BillId" });
+            DropIndex("dbo.Bills", new[] { "BillServiceMove_Id" });
+            DropIndex("dbo.Bills", new[] { "BillItemMove_Id" });
             DropIndex("dbo.Bills", new[] { "EditById" });
             DropIndex("dbo.Bills", new[] { "CreatedById" });
             DropIndex("dbo.Bills", new[] { "StoreId" });
@@ -499,13 +531,14 @@ namespace Phony.Migrations
             DropTable("dbo.ClientMoves");
             DropTable("dbo.Clients");
             DropTable("dbo.Services");
+            DropTable("dbo.BillServiceMoves");
             DropTable("dbo.SalesManMoves");
             DropTable("dbo.SalesMen");
             DropTable("dbo.Suppliers");
             DropTable("dbo.Companies");
             DropTable("dbo.Items");
             DropTable("dbo.Users");
-            DropTable("dbo.BillMoves");
+            DropTable("dbo.BillItemMoves");
             DropTable("dbo.Bills");
         }
     }

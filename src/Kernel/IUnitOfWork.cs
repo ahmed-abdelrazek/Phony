@@ -6,7 +6,8 @@ namespace Phony.Kernel
     public interface IUnitOfWork : IDisposable
     {
         IBillRepo Bills { get; }
-        IBillMoveRepo BillsMoves { get; }
+        IBillItemMoveRepo BillsItemsMoves { get; }
+        IBillServiceMoveRepo BillsServicesMoves { get; }
         IClientRepo Clients { get; }
         ICompanyRepo Companies { get; }
         ICompanyMoveRepo CompaniesMoves { get; }

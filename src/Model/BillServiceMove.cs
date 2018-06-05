@@ -2,9 +2,9 @@
 
 namespace Phony.Model
 {
-    public class BillMove : BaseModel
+    public class BillServiceMove : BaseModel
     {
-        public BillMove()
+        public BillServiceMove()
         {
             Bills = new ObservableCollection<Bill>();
         }
@@ -12,13 +12,7 @@ namespace Phony.Model
 
         public virtual Bill Bill { get; set; }
 
-        public int? ItemId { get; set; }
-
-        public virtual Item Item { get; set; }
-
-        public decimal QTY { get; set; }
-
-        public int? ServiceId { get; set; }
+        public int ServiceId { get; set; }
 
         public virtual Service Service { get; set; }
 

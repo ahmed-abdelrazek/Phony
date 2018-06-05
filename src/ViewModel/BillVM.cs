@@ -7,6 +7,7 @@ using Phony.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -30,6 +31,8 @@ namespace Phony.ViewModel
         string _searchText;
         string _itemChildItemName;
         string _serviceChildServiceName;
+        string _serviceChildNotes;
+        string _itemChildNotes;
         bool _byItem;
         bool _byCard;
         bool _byService;
@@ -42,11 +45,14 @@ namespace Phony.ViewModel
         Client _selectedClient;
         Item _selectedItem;
         Service _selectedService;
-        BillMove _dataGridSelectedBillMove;
+        BillItemMove _dataGridSelectedBillItemMove;
+        BillServiceMove _dataGridSelectedBillServiceMove;
 
         ObservableCollection<object> _searchItems;
 
-        ObservableCollection<BillMove> _billMoves;
+        ObservableCollection<BillItemMove> _billItemsMoves;
+
+        ObservableCollection<BillServiceMove> _billServicesMoves;
 
         public int SearchSelectedValue
         {
@@ -251,6 +257,32 @@ namespace Phony.ViewModel
             }
         }
 
+        public string ServiceChildNotes
+        {
+            get => _serviceChildNotes;
+            set
+            {
+                if (value != _serviceChildNotes)
+                {
+                    _serviceChildNotes = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string ItemChildNotes
+        {
+            get => _itemChildNotes;
+            set
+            {
+                if (value != _itemChildNotes)
+                {
+                    _itemChildNotes = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool ByItem
         {
             get => _byItem;
@@ -430,14 +462,27 @@ namespace Phony.ViewModel
             }
         }
 
-        public BillMove DataGridSelectedBillMove
+        public BillItemMove DataGridSelectedBillItemMove
         {
-            get => _dataGridSelectedBillMove;
+            get => _dataGridSelectedBillItemMove;
             set
             {
-                if (value != _dataGridSelectedBillMove)
+                if (value != _dataGridSelectedBillItemMove)
                 {
-                    _dataGridSelectedBillMove = value;
+                    _dataGridSelectedBillItemMove = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public BillServiceMove DataGridSelectedBillServiceMove
+        {
+            get => _dataGridSelectedBillServiceMove;
+            set
+            {
+                if (value != _dataGridSelectedBillServiceMove)
+                {
+                    _dataGridSelectedBillServiceMove = value;
                     RaisePropertyChanged();
                 }
             }
@@ -456,14 +501,27 @@ namespace Phony.ViewModel
             }
         }
 
-        public ObservableCollection<BillMove> BillMoves
+        public ObservableCollection<BillItemMove> BillItemsMoves
         {
-            get => _billMoves;
+            get => _billItemsMoves;
             set
             {
-                if (value != _billMoves)
+                if (value != _billItemsMoves)
                 {
-                    _billMoves = value;
+                    _billItemsMoves = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<BillServiceMove> BillServicesMoves
+        {
+            get => _billServicesMoves;
+            set
+            {
+                if (value != _billServicesMoves)
+                {
+                    _billServicesMoves = value;
                     RaisePropertyChanged();
                 }
             }
@@ -484,6 +542,7 @@ namespace Phony.ViewModel
         public ICommand DeleteBillMove { get; set; }
         public ICommand RedoBill { get; set; }
         public ICommand SaveBill { get; set; }
+        public ICommand SaveAndShow { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -501,7 +560,8 @@ namespace Phony.ViewModel
                 Services = new ObservableCollection<Service>(db.Services);
                 Users = new ObservableCollection<User>(db.Users);
                 SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY > 0));
-                BillMoves = new ObservableCollection<BillMove>();
+                BillItemsMoves = new ObservableCollection<BillItemMove>();
+                BillServicesMoves = new ObservableCollection<BillServiceMove>();
             }
             NewBillNo();
         }
@@ -515,34 +575,27 @@ namespace Phony.ViewModel
             DeleteBillMove = new CustomCommand(DoDeleteBillMove, CanDeleteBillMove);
             RedoBill = new CustomCommand(DoRedoBill, CanRedoBill);
             SaveBill = new CustomCommand(DoSaveBill, CanSaveBill);
+            SaveAndShow = new CustomCommand(DoSaveAndShow, CanSaveAndShow);
         }
 
-        private bool CanSaveBill(object obj)
-        {
-            if (SelectedClient == null)
-            {
-                return false;
-            }
-            if (BillMoves.Count > 0 && SelectedClient.Id > 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private async void DoSaveBill(object obj)
+        async Task<int> SaveBillNoAsync()
         {
             if (BillClientPayment > BillTotalAfterDiscount)
             {
                 await Message.ShowMessageAsync("خطأ", "لا يمكن تدفيع العميل اكتر من قيمه الفاتورة");
-                return;
+                return 0;
             }
             if (BillClientPayment < BillTotalAfterDiscount)
             {
+                if (SelectedClient.Id == 1)
+                {
+                    await Message.ShowMessageAsync("خطأ", "لا يمكن عمل فاتورة اجل لهذا العميل اختار عميل اخر او اضف عميل جديد");
+                    return 0;
+                }
                 var result = await Message.ShowMessageAsync("اجل", $"هل انت متاكد من تسجيل الفاتورة كاجل؟", MessageDialogStyle.AffirmativeAndNegative);
                 if (result != MessageDialogResult.Affirmative)
                 {
-                    return;
+                    return 0;
                 }
             }
             string billNote = null;
@@ -570,21 +623,84 @@ namespace Phony.ViewModel
                             EditDate = null
                         };
                         db.Bills.Add(bi);
-                        db.SaveChanges();
-                        foreach (var item in BillMoves)
+                        await db.SaveChangesAsync();
+                        foreach (var item in BillItemsMoves)
                         {
                             item.BillId = bi.Id;
-                            db.BillsMoves.Add(item);
+                            db.BillsItemsMoves.Add(item);
+                            var i = db.Items.SingleOrDefault(n => n.Id == item.ItemId);
+                            i.QTY -= item.QTY;
                         }
-                        db.SaveChanges();
+                        foreach (var service in BillServicesMoves)
+                        {
+                            service.BillId = bi.Id;
+                            db.BillsServicesMoves.Add(service);
+                            var s = db.Services.SingleOrDefault(n => n.Id == service.ServiceId);
+                            s.Balance -= service.ServicePayment;
+                        }
+                        if (BillClientPayment < BillTotalAfterDiscount)
+                        {
+                            var c = db.Clients.SingleOrDefault(n => n.Id == SelectedClient.Id);
+                            c.Balance += BillTotalAfterDiscount - BillClientPayment;
+                        }
+                        await db.SaveChangesAsync();
                         dbContextTransaction.Commit();
+                        Clear();
+                        CurrentBillNo = bi.Id + 1;
+                        return bi.Id;
                     }
                     catch (Exception ex)
                     {
                         dbContextTransaction.Rollback();
                         await Core.SaveExceptionAsync(ex);
+                        return -1;
                     }
                 }
+            }
+        }
+
+        private bool CanSaveAndShow(object obj)
+        {
+            return CanSaveBill(obj);
+        }
+
+        private async void DoSaveAndShow(object obj)
+        {
+            var i = await SaveBillNoAsync();
+            if (i > 0)
+            {
+                await Message.ShowMessageAsync("تم الحفظ", $"تم حفظ الفاتورة بالرقم {i} بنجاح و سيتم عرضها للطباعه الان");
+                new SalesBillsViewer(i).Show();
+            }
+            else if (i < 0)
+            {
+                await Message.ShowMessageAsync("خطا", "حدث خطا اثناء حفظ الفاتورة");
+            }
+        }
+
+        private bool CanSaveBill(object obj)
+        {
+            if (SelectedClient == null)
+            {
+                return false;
+            }
+            if ((BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private async void DoSaveBill(object obj)
+        {
+            var i = await SaveBillNoAsync();
+            if (i > 0)
+            {
+                await Message.ShowMessageAsync("تم الحفظ", $"تم حفظ الفاتورة بالرقم {i}");
+            }
+            else if (i < 0)
+            {
+                await Message.ShowMessageAsync("خطا", "حدث خطا اثناء حفظ الفاتورة");
             }
         }
 
@@ -595,19 +711,12 @@ namespace Phony.ViewModel
 
         private void DoRedoBill(object obj)
         {
-            SelectedClient = null;
-            SearchSelectedValue = 0;
-            BillMoves = new ObservableCollection<BillMove>();
-            BillTotal = 0;
-            BillTotalAfterEachDiscount = 0;
-            BillDiscount = 0;
-            BillTotalAfterDiscount = 0;
-            BillClientPayment = 0;
+            Clear();
         }
 
         private bool CanDeleteBillMove(object obj)
         {
-            if (DataGridSelectedBillMove == null)
+            if ((DataGridSelectedBillItemMove == null && ByItem) || (DataGridSelectedBillServiceMove == null && ByService))
             {
                 return false;
             }
@@ -616,8 +725,46 @@ namespace Phony.ViewModel
 
         private void DoDeleteBillMove(object obj)
         {
-            BillMoves.Remove(DataGridSelectedBillMove);
-            DataGridSelectedBillMove = null;
+            if (ByItem)
+            {
+                BillItemsMoves.Remove(DataGridSelectedBillItemMove);
+            }
+            if (ByService)
+            {
+                BillServicesMoves.Remove(DataGridSelectedBillServiceMove);
+            }
+            DataGridSelectedBillItemMove = null;
+            DataGridSelectedBillServiceMove = null;
+        }
+
+        void Clear()
+        {
+            SelectedClient = null;
+            BillItemsMoves = new ObservableCollection<BillItemMove>();
+            BillServicesMoves = new ObservableCollection<BillServiceMove>();
+            BillTotal = 0;
+            BillTotalAfterEachDiscount = 0;
+            BillDiscount = 0;
+            BillTotalAfterDiscount = 0;
+            BillClientPayment = 0;
+            using (var db = new PhonyDbContext())
+            {
+                if (ByItem)
+                {
+                    SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY > 0));
+                }
+                else if (ByCard)
+                {
+                    SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card && c.QTY > 0));
+                }
+                else if (ByService)
+                {
+                    SearchItems = new ObservableCollection<object>(db.Services);
+                }
+                Services = new ObservableCollection<Service>(db.Services);
+                Items = new ObservableCollection<Item>(db.Items);
+                SearchSelectedValue = 0;
+            }
         }
 
         void ClearChild()
@@ -630,6 +777,7 @@ namespace Phony.ViewModel
                 ItemChildItemQTYExist = 0;
                 ItemChildItemQTYSell = 0;
                 SelectedItem = null;
+                ItemChildNotes = null;
             }
             if (IsAddServiceChildOpen)
             {
@@ -637,6 +785,7 @@ namespace Phony.ViewModel
                 ServiceChildServiceName = null;
                 ServiceChildServiceCost = 0;
                 SelectedService = null;
+                ServiceChildNotes = null;
             }
             ChildDiscount = 0;
         }
@@ -652,14 +801,24 @@ namespace Phony.ViewModel
 
         private void DoAddServiceToBill(object obj)
         {
-            if (SelectedService.Balance >= ServiceChildServiceCost)
+            decimal balanceNeeded = 0;
+            foreach (var item in BillServicesMoves)
             {
-                BillMoves.Add(new BillMove
+                if (item.ServiceId == SearchSelectedValue)
+                {
+                    balanceNeeded += item.ServicePayment;
+                }
+            }
+            balanceNeeded += ServiceChildServiceCost;
+            if (SelectedService.Balance >= balanceNeeded)
+            {
+                BillServicesMoves.Add(new BillServiceMove
                 {
                     BillId = CurrentBillNo,
                     ServiceId = SearchSelectedValue,
                     ServicePayment = ServiceChildServiceCost,
                     Discount = ChildDiscount,
+                    Notes = ServiceChildNotes,
                     CreatedById = CurrentUser.Id,
                     CreateDate = DateTime.Now,
                     EditById = null,
@@ -694,16 +853,25 @@ namespace Phony.ViewModel
 
         private void DoAddItemToBill(object obj)
         {
-            if (SelectedItem.QTY >= ItemChildItemQTYSell)
+            decimal QTYNeeded = 0;
+            foreach (var item in BillItemsMoves)
             {
-
+                if (item.ItemId == SearchSelectedValue)
+                {
+                    QTYNeeded += item.QTY;
+                }
+            }
+            QTYNeeded += ItemChildItemQTYSell;
+            if (SelectedItem.QTY >= QTYNeeded)
+            {
                 var ItemToQtyPrice = SelectedItem.SalePrice * ItemChildItemQTYSell;
-                BillMoves.Add(new BillMove
+                BillItemsMoves.Add(new BillItemMove
                 {
                     BillId = CurrentBillNo,
                     ItemId = SearchSelectedValue,
                     QTY = ItemChildItemQTYSell,
                     Discount = ChildDiscount,
+                    Notes = ItemChildNotes,
                     CreatedById = CurrentUser.Id,
                     CreateDate = DateTime.Now,
                     EditById = null,

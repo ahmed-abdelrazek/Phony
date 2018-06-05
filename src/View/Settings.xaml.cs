@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -78,10 +79,16 @@ namespace Phony.View
             }
         }
 
-        private void SaveB_Click(object sender, RoutedEventArgs e)
+        private async void SaveB_Click(object sender, RoutedEventArgs e)
         {
-            
-            new PaletteHelper().ReplacePrimaryColor(ThemePC.Text);
+            try
+            {
+                new PaletteHelper().ReplacePrimaryColor(ThemePC.Text);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             try
             {
                 new PaletteHelper().ReplaceAccentColor(ThemeAC.Text);
@@ -104,6 +111,8 @@ namespace Phony.View
             Properties.Settings.Default.AccentColor = ThemeAC.Text;
             Properties.Settings.Default.SalesBillsPaperSize = BillReportPaperSizeCb.Text;
             Properties.Settings.Default.Save();
+            await this.ShowMessageAsync("تم الحفظ", "لقد تم تغيير اعدادات البرنامج و حفظها بنجاح");
+
         }
     }
 }

@@ -3,9 +3,9 @@ using Phony.Model;
 
 namespace Phony.Persistence.Repositories
 {
-    public class BillMoveRepo : Repository<BillMove>, IBillMoveRepo
+    public class BillServiceMoveRepo : Repository<BillServiceMove>, IBillServiceMoveRepo
     {
-        public BillMoveRepo(PhonyDbContext context) : base(context)
+        public BillServiceMoveRepo(PhonyDbContext context) : base(context)
         {
         }
 

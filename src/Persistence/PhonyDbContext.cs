@@ -12,7 +12,8 @@ namespace Phony.Persistence
         }
 
         public DbSet<Bill> Bills { get; set; }
-        public DbSet<BillMove> BillsMoves { get; set; }
+        public DbSet<BillItemMove> BillsItemsMoves { get; set; }
+        public DbSet<BillServiceMove> BillsServicesMoves { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientMove> ClientsMoves { get; set; }
         public DbSet<Company> Companies { get; set; }
@@ -31,7 +32,8 @@ namespace Phony.Persistence
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new BillConfig());
-            modelBuilder.Configurations.Add(new BillMoveConfig());
+            modelBuilder.Configurations.Add(new BillItemMoveConfig());
+            modelBuilder.Configurations.Add(new BillServiceMoveConfig());
             modelBuilder.Configurations.Add(new ClientConfig());
             modelBuilder.Configurations.Add(new ClientMoveConfig());
             modelBuilder.Configurations.Add(new CompanyConfig());

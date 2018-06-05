@@ -2,7 +2,7 @@
 
 namespace Phony.Kernel.Repositories
 {
-    public interface IBillMoveRepo : IRepository<BillMove>
+    public interface IBillServiceMoveRepo : IRepository<BillServiceMove>
     {
     }
 }

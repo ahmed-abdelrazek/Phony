@@ -11,5 +11,11 @@ namespace Phony.View
         {
             InitializeComponent();
         }
+
+        public SalesBillsViewer(int billNo)
+        {
+            InitializeComponent();
+            this.DataContext = new ViewModel.SalesBillsViewerVM(billNo);
+        }
     }
 }

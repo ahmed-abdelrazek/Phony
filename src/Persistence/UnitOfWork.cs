@@ -12,7 +12,8 @@ namespace Phony.Persistence
         {
             _context = context;
             Bills = new BillRepo(_context);
-            BillsMoves = new BillMoveRepo(_context);
+            BillsItemsMoves = new BillItemMoveRepo(_context);
+            BillsServicesMoves = new BillServiceMoveRepo(_context);
             Clients = new ClientRepo(_context);
             ClientsMoves = new ClientMoveRepo(_context);
             Companies = new CompanyRepo(_context);
@@ -30,7 +31,8 @@ namespace Phony.Persistence
         }
 
         public IBillRepo Bills { get; private set; }
-        public IBillMoveRepo BillsMoves { get; private set; }
+        public IBillItemMoveRepo BillsItemsMoves { get; private set; }
+        public IBillServiceMoveRepo BillsServicesMoves { get; private set; }
         public IClientRepo Clients { get; private set; }
         public IClientMoveRepo ClientsMoves { get; private set; }
         public ICompanyRepo Companies { get; private set; }

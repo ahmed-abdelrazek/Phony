@@ -6,7 +6,8 @@ namespace Phony.Model
     {
         public Bill()
         {
-            BillsMoves = new ObservableCollection<BillMove>();
+            BillsItemsMoves = new ObservableCollection<BillItemMove>();
+            BillsServicesMoves = new ObservableCollection<BillServiceMove>();
         }
 
         public int ClientId { get; set; }
@@ -25,6 +26,8 @@ namespace Phony.Model
 
         public bool IsReturned { get; set; }
 
-        public virtual ObservableCollection<BillMove> BillsMoves { get; set; }
+        public virtual ObservableCollection<BillItemMove> BillsItemsMoves { get; set; }
+
+        public virtual ObservableCollection<BillServiceMove> BillsServicesMoves { get; set; }
     }
 }
