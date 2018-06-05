@@ -11,7 +11,7 @@
         xmlns:converts="clr-namespace:Phony.Converters"
         xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
         mc:Ignorable="d"
-        Title="فواتير" FlowDirection="RightToLeft" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+        Title="فواتير" FlowDirection="RightToLeft" Height="600" Width="800" WindowState="Maximized" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.Resources>
         <converts:BooleanToVisibilityCollapsedConvertor x:Key="BToV"/>
         <converts:InverseBooleanToVisibilityCollapsedConvertor x:Key="IBToV"/>
@@ -21,20 +21,22 @@
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="90"/>
+            <RowDefinition Height="120"/>
             <RowDefinition Height="155"/>
             <RowDefinition Height="50*"/>
             <RowDefinition Height="180"/>
         </Grid.RowDefinitions>
-        <StackPanel>
-            <materialDesign:Card HorizontalAlignment="Left" FontSize="14" Foreground="Red" Margin="5">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <TextBlock Text="رقم الفاتورة الحاليه: " FontSize="14" FontWeight="Bold" Foreground="Red"/>
-                    <TextBlock Text="{Binding CurrentBillNo}" HorizontalAlignment="Left" FontSize="14" Foreground="Red">
-                    </TextBlock>
-                </StackPanel>
+            <StackPanel>
+            <materialDesign:Card Background="{DynamicResource PrimaryHueLightBrush}" HorizontalAlignment="Left" FontSize="14" Foreground="Red" Margin="5">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="رقم الفاتورة الحاليه المتوقع: " FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+                    <TextBlock Text="{Binding CurrentBillNo}" HorizontalAlignment="Left" FontSize="14" FontWeight="Bold" Foreground="Red">
+                        </TextBlock>
+                    </StackPanel>
             </materialDesign:Card>
-            <ComboBox SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clients}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" Margin="5" Style="{StaticResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="اختار عميل" materialDesign:HintAssist.FloatingScale="50" FontSize="14" FontWeight="Bold"/>
+            <materialDesign:Card Margin="5" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
+                <ComboBox SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clients}" SelectedValuePath="Id" DisplayMemberPath="Name" IsEditable="True" Margin="5" Style="{StaticResource MaterialDesignFloatingHintComboBox}" materialDesign:HintAssist.Hint="اختار عميل" materialDesign:HintAssist.HintOpacity="100" FontSize="14" FontWeight="Bold"/>
+            </materialDesign:Card>
         </StackPanel>
         <StackPanel Margin="5" Grid.Row="1">
             <TextBlock Text="البحث" FontSize="15" FontWeight="Bold" Margin="5,5,0,0"/>
@@ -285,30 +287,39 @@
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
         <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="175"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="170*"/>
                 <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
-            <TextBlock Text="الاجمالى:" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-            <Controls:NumericUpDown Value="{Binding BillTotal}" Margin="5,5,30,5" Grid.Column="1" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
-            <TextBlock Text="الاجمالى بعد خصم الاصناف:" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
-            <Controls:NumericUpDown Value="{Binding BillTotalAfterEachDiscount}" Margin="5,5,30,5" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
-            <TextBlock Text="خصم للفاتورة:" Grid.Row="1" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-            <Controls:NumericUpDown Value="{Binding BillDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
-            <TextBlock Text="الاجمالى بعد الخصم :" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
-            <Controls:NumericUpDown Value="{Binding BillTotalAfterDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
-            <TextBlock Text="المدفوع من العميل:" Grid.Row="2" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-            <Controls:NumericUpDown Value="{Binding BillClientPayment}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="1" Minimum="0" StringFormat="C2" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
-            <TextBlock Text="*سيتم معاملة الفاتورة كاجل اذا كان المدفوع اقل من الاجمالى بعد الخصم." VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" FontSize="14" FontWeight="Bold" Foreground="Red"/>
+            <materialDesign:Card Margin="5" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="175"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="50*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="الاجمالى:" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotal}" Margin="5,5,30,5" Grid.Column="1" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <TextBlock Text="الاجمالى بعد خصم الاصناف:" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotalAfterEachDiscount}" Margin="5,5,30,5" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <TextBlock Text="خصم للفاتورة:" Grid.Row="1" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                    <TextBlock Text="الاجمالى بعد الخصم :" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotalAfterDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <TextBlock Text="المدفوع من العميل:" Grid.Row="2" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillClientPayment}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="1" Minimum="0" StringFormat="C2" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                    <TextBlock Text="*سيتم معاملة الفاتورة كاجل اذا كان المدفوع اقل من الاجمالى بعد الخصم." VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" FontSize="14" FontWeight="Bold" Foreground="Red"/>
+                </Grid>
+            </materialDesign:Card>
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="5">
                 <Controls:ToggleSwitch Content="اضافه ملاحظه فى اخر الفاتورة" IsChecked="{Binding IsAddBillNote}" Margin="10,2,10,2" FlowDirection="LeftToRight" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FontWeight="Bold" Foreground="Green"/>
                 <Button Content="حفظ الفاتورة" Margin="10,2,10,2" Command="{Binding SaveBill}"/>
