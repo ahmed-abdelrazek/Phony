@@ -68,8 +68,11 @@
     <Reference Include="AttachedCommandBehavior, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AttachedCommandBehavior.2.0.0.0\lib\net35\AttachedCommandBehavior.dll</HintPath>
     </Reference>
-    <Reference Include="BespokeFusion, Version=1.0.1.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialMessageBox.1.0.0.11\lib\BespokeFusion.dll</HintPath>
+    <Reference Include="BarcodeLib">
+      <HintPath>..\Libraries\BarcodeLib.dll</HintPath>
+    </Reference>
+    <Reference Include="BespokeFusion">
+      <HintPath>..\Libraries\BespokeFusion.dll</HintPath>
     </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
@@ -141,12 +144,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="zxing, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net47\zxing.dll</HintPath>
-    </Reference>
-    <Reference Include="zxing.presentation, Version=0.16.4.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
-      <HintPath>..\packages\ZXing.Net.0.16.4\lib\net47\zxing.presentation.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -247,6 +244,9 @@
     <Compile Include="ViewModel\NoteVM.cs" />
     <Compile Include="ViewModel\SalesBillsViewerVM.cs" />
     <Compile Include="ViewModel\UserVM.cs" />
+    <Compile Include="View\BarCodes.xaml.cs">
+      <DependentUpon>BarCodes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Bills.xaml.cs">
       <DependentUpon>Bills.xaml</DependentUpon>
     </Compile>
@@ -331,6 +331,9 @@
     <Compile Include="View\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\BarCodes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Bills.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

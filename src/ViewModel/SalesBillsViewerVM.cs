@@ -383,11 +383,12 @@ namespace Phony.ViewModel
                         }
                     }
                     db.Complete();
+                    BespokeFusion.MaterialMessageBox.Show("تم ارجاع الفاتورة بنجاح");
                 }
                 else
                 {
                     IsReturned = true;
-                    MessageBox.Show("لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
+                    BespokeFusion.MaterialMessageBox.Show("لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
                 }
             }
         }

@@ -269,7 +269,7 @@ namespace Phony.ViewModel
                 {
                     if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
                     {
-                        MessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
+                        BespokeFusion.MaterialMessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
                     }
                 }
             }
