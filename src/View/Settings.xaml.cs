@@ -21,7 +21,7 @@ namespace Phony.View
         }
 
         public IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
-        
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (Properties.Settings.Default.Theme == "BaseDark")
@@ -112,7 +112,6 @@ namespace Phony.View
             Properties.Settings.Default.SalesBillsPaperSize = BillReportPaperSizeCb.Text;
             Properties.Settings.Default.Save();
             await this.ShowMessageAsync("تم الحفظ", "لقد تم تغيير اعدادات البرنامج و حفظها بنجاح");
-
         }
     }
 }

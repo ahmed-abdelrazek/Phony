@@ -17,8 +17,18 @@
     <Controls:MetroWindow.DataContext>
         <vm:StoreVM/>
     </Controls:MetroWindow.DataContext>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Command="{Binding Edit}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Margin="5" Height="20" Width="20" Kind="ContentSave" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="حفظ" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" FlowDirection="LeftToRight">
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
             <StackPanel FlowDirection="RightToLeft">
                 <TextBlock Text="اسم المحل" Margin="5,5,5,0"/>
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم المحل" Margin="5"/>
@@ -45,9 +55,6 @@
                 <TextBlock Text="الموقع" Margin="5,5,5,0"/>
                 <TextBox Text="{Binding Site, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الموقع" Margin="5"/>
                 <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="100" Width="280" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Content="حفظ" Margin="5" Command="{Binding Edit}"/>
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

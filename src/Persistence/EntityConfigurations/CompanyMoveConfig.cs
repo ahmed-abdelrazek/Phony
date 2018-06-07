@@ -9,7 +9,7 @@ namespace Phony.Persistence.EntityConfigurations
             HasKey(c => c.Id);
 
             HasRequired(c => c.Company)
-                .WithMany()
+                .WithMany(c=> c.CompaniesMoves)
                 .HasForeignKey(c => c.CompanyId)
                 .WillCascadeOnDelete(false);
 
@@ -23,7 +23,7 @@ namespace Phony.Persistence.EntityConfigurations
 
             HasOptional(c => c.Editor)
                 .WithMany()
-                .HasForeignKey(s => s.EditById)
+                .HasForeignKey(c => c.EditById)
                 .WillCascadeOnDelete(false);
         }
     }

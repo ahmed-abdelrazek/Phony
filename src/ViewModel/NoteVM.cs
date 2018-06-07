@@ -14,7 +14,7 @@ namespace Phony.ViewModel
 {
     public class NoteVM : CommonBase
     {
-        int _noId;
+        long _noId;
         string _name;
         string _phone;
         string _searchText;
@@ -29,7 +29,7 @@ namespace Phony.ViewModel
         
         ObservableCollection<Note> _numbers;
 
-        public int NoId
+        public long NoId
         {
             get => _noId;
             set

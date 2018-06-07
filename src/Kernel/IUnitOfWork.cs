@@ -20,6 +20,8 @@ namespace Phony.Kernel
         IStoreRepo Stores { get; }
         ISupplierRepo Suppliers { get; }
         ISupplierMoveRepo SuppliersMoves { get; }
+        ITreasuryRepo Treasuries { get; }
+        ITreasuryMoveRepo TreasuriesMoves { get; }
         IUserRepo Users { get; }
 
         int Complete();

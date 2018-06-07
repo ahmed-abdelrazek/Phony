@@ -14,7 +14,7 @@ namespace Phony.Model
             EditById = CurrentUser.Id;
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public string Notes { get; set; }
 

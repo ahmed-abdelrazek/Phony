@@ -17,9 +17,9 @@ namespace Phony.ViewModel
 {
     public class CardVM : CommonBase
     {
-        int _cardId;
-        int _selectedCompanyValue;
-        int _selectedSupplierValue;
+        long _cardId;
+        long _selectedCompanyValue;
+        long _selectedSupplierValue;
         string _name;
         string _barcode;
         string _shopcode;
@@ -51,7 +51,7 @@ namespace Phony.ViewModel
         ObservableCollection<Supplier> _suppliers;
         ObservableCollection<Item> _cards;
 
-        public int CardId
+        public long CardId
         {
             get => _cardId;
             set
@@ -311,7 +311,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int SelectedCompanyValue
+        public long SelectedCompanyValue
         {
             get => _selectedCompanyValue;
             set
@@ -324,7 +324,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int SelectedSupplierValue
+        public long SelectedSupplierValue
         {
             get => _selectedSupplierValue;
             set

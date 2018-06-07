@@ -17,7 +17,7 @@ namespace Phony.ViewModel
 {
     public class ServiceVM : CommonBase
     {
-        int _serviceId;
+        long _serviceId;
         string _name;
         string _site;
         string _email;
@@ -34,7 +34,7 @@ namespace Phony.ViewModel
         Service _dataGridSelectedService;
         ObservableCollection<Service> _services;
 
-        public int ServiceId
+        public long ServiceId
         {
             get => _serviceId;
             set

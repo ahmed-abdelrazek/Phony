@@ -25,10 +25,10 @@ namespace Phony.Persistence.EntityConfigurations
             Property(i => i.RetailPrice)
                 .IsOptional();
 
-            Property(b => b.CompanyId)
+            Property(i => i.CompanyId)
                 .IsOptional();
 
-            Property(b => b.SupplierId)
+            Property(i => i.SupplierId)
                 .IsOptional();
 
             HasOptional(i => i.Company)

@@ -6,26 +6,26 @@ namespace Phony.Persistence.EntityConfigurations
     {
         public NoteConfig()
         {
-            HasKey(c => c.Id);
+            HasKey(n => n.Id);
 
-            Property(i => i.Name)
+            Property(n => n.Name)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            Property(i => i.Notes)
+            Property(n => n.Notes)
                 .IsRequired();
 
-            HasRequired(c => c.Creator)
+            HasRequired(n => n.Creator)
                 .WithMany()
-                .HasForeignKey(c => c.CreatedById)
+                .HasForeignKey(n => n.CreatedById)
                 .WillCascadeOnDelete(false);
 
-            Property(c => c.EditById)
+            Property(n => n.EditById)
                 .IsOptional();
 
-            HasOptional(c => c.Editor)
+            HasOptional(n => n.Editor)
                 .WithMany()
-                .HasForeignKey(s => s.EditById)
+                .HasForeignKey(n => n.EditById)
                 .WillCascadeOnDelete(false);
         }
     }

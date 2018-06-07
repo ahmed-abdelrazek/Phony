@@ -6,24 +6,24 @@ namespace Phony.Persistence.EntityConfigurations
     {
         public SalesManConfig()
         {
-            HasKey(c => c.Id);
+            HasKey(s => s.Id);
 
-            Property(c => c.Name)
+            Property(s => s.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
-            HasIndex(c => c.Name)
+            HasIndex(s => s.Name)
                     .IsUnique();
 
-            HasRequired(c => c.Creator)
+            HasRequired(s => s.Creator)
                 .WithMany()
-                .HasForeignKey(c => c.CreatedById)
+                .HasForeignKey(s => s.CreatedById)
                 .WillCascadeOnDelete(false);
 
-            Property(c => c.EditById)
+            Property(s => s.EditById)
                 .IsOptional();
 
-            HasOptional(c => c.Editor)
+            HasOptional(s => s.Editor)
                 .WithMany()
                 .HasForeignKey(s => s.EditById)
                 .WillCascadeOnDelete(false);

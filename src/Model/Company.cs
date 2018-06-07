@@ -7,6 +7,7 @@ namespace Phony.Model
         public Company()
         {
             Items = new ObservableCollection<Item>();
+            CompaniesMoves = new ObservableCollection<CompanyMove>();
         }
 
         public string Name { get; set; }
@@ -22,5 +23,7 @@ namespace Phony.Model
         public string Phone { get; set; }
         
         public virtual ObservableCollection<Item> Items { get; set; }
+
+        public virtual ObservableCollection<CompanyMove> CompaniesMoves { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Phony.ViewModel
 {
     public class CopmanyVM : CommonBase
     {
-        int _companyId;
+        long _companyId;
         string _name;
         string _site;
         string _email;
@@ -34,7 +34,7 @@ namespace Phony.ViewModel
         Company _dataGridSelectedCompany;
         ObservableCollection<Company> _companies;
 
-        public int CompanyId
+        public long CompanyId
         {
             get => _companyId;
             set
@@ -306,8 +306,7 @@ namespace Phony.ViewModel
             }
             else
             {
-                decimal compantpaymentamount;
-                bool isvalidmoney = decimal.TryParse(result, out compantpaymentamount);
+                bool isvalidmoney = decimal.TryParse(result, out decimal compantpaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -326,6 +325,30 @@ namespace Phony.ViewModel
                             EditById = null
                         };
                         db.CompaniesMoves.Add(sm);
+                        if (compantpaymentamount > 0)
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = compantpaymentamount,
+                                Out = 0,
+                                Notes = $"تدفيع الشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
+                        else
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = 0,
+                                Out = compantpaymentamount,
+                                Notes = $"استلام من الشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
                         db.Complete();
                         await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم شحن الشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         DataGridSelectedCompany = null;

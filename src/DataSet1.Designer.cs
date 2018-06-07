@@ -620,7 +620,7 @@ namespace Phony {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public BillRow AddBillRow(
-                        int BillId, 
+                        long BillId, 
                         decimal BillDiscount, 
                         decimal BillTotalAfterDiscount, 
                         decimal BillTotalPayed, 
@@ -709,7 +709,7 @@ namespace Phony {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             private void InitClass() {
-                this.columnBillId = new global::System.Data.DataColumn("BillId", typeof(int), null, global::System.Data.MappingType.Element);
+                this.columnBillId = new global::System.Data.DataColumn("BillId", typeof(long), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBillId);
                 this.columnBillDiscount = new global::System.Data.DataColumn("BillDiscount", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBillDiscount);
@@ -749,7 +749,6 @@ namespace Phony {
                 base.Columns.Add(this.columnStoreNotes);
                 this.columnBillCreateDate = new global::System.Data.DataColumn("BillCreateDate", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBillCreateDate);
-                this.columnBillId.DefaultValue = ((int)(0));
                 this.columnBillDiscount.AllowDBNull = false;
                 this.columnBillDiscount.DefaultValue = ((decimal)(0m));
                 this.columnBillTotalAfterDiscount.AllowDBNull = false;
@@ -1492,10 +1491,10 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public int BillId {
+            public long BillId {
                 get {
                     try {
-                        return ((int)(this[this.tableBill.BillIdColumn]));
+                        return ((long)(this[this.tableBill.BillIdColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'BillId\' in table \'Bill\' is DBNull.", e);

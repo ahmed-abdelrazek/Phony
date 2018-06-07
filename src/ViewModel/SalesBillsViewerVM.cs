@@ -2,7 +2,6 @@
 using Phony.Model;
 using Phony.Persistence;
 using Phony.Utility;
-using Phony.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
@@ -15,8 +14,8 @@ namespace Phony.ViewModel
 {
     public class SalesBillsViewerVM : CommonBase
     {
-        int _clientSelectedValue;
-        int _billSelectedValue;
+        long _clientSelectedValue;
+        long _billSelectedValue;
         string billCommand = "SELECT Bills.Id AS BillId, Bills.Discount AS BillDiscount, Bills.TotalAfterDiscounts AS BillTotalAfterDiscount, Bills.TotalPayed AS BillTotalPayed, Bills.Notes AS BillNotes, Bills.CreateDate AS BillCreateDate, Clients.[Name] AS ClientName, Users.[Name] AS UserName, [Stores].[Name] AS StoreName, CAST(Stores.[Image] AS VARBINARY(MAX)) AS StoreImage, Stores.Address1, Stores.Address2, Stores.Tel1, Stores.Tel2, Stores.Phone1, Stores.Phone2, Stores.Email1, Stores.Email2, Stores.[Site], Stores.Notes AS StoreNotes FROM [dbo].[Bills] JOIN [Clients] on [Clients].[Id] = [Bills].[ClientId] JOIN [Stores] on [Bills].[StoreId] = [dbo].[Stores].[Id] JOIN [Users] on [Users].[Id] = (CASE WHEN([Bills].[EditById] > 0) THEN [Bills].[EditById] ELSE([Bills].[CreatedById]) END) WHERE [Bills].[Id] = {0}";
         string billItemsCommand = "SELECT BillItemMoves.QTY AS ItemQTY, BillItemMoves.Discount AS ItemDiscount, BillItemMoves.Notes AS ItemNotes, Items.[Name] AS ItemName, Items.SalePrice AS ItemSalePrice FROM [dbo].[BillItemMoves] JOIN [Items] on [BillItemMoves].[ItemId] = [dbo].[Items].[Id] WHERE [dbo].[BillItemMoves].[BillId] = {0}";
         string billServicesCommand = "SELECT BillServiceMoves.ServicePayment, BillServiceMoves.Discount AS ServiceDiscount, BillServiceMoves.Notes AS ServiceNotes, [Services].[Name] AS ServiceName FROM [dbo].[BillServiceMoves] JOIN [Services] on [BillServiceMoves].ServiceId = [dbo].[Services].[Id] WHERE [dbo].[BillServiceMoves].[BillId] = {0}";
@@ -28,7 +27,7 @@ namespace Phony.ViewModel
         bool _byUserName;
         bool _isReturned;
 
-        Visibility _isReturnedVisiable;
+        Visibility _isReturnedVisible;
 
         ObservableCollection<Bill> _bills;
 
@@ -38,7 +37,7 @@ namespace Phony.ViewModel
 
         CrystalDecisions.CrystalReports.Engine.ReportDocument _report;
 
-        public int ClientSelectedValue
+        public long ClientSelectedValue
         {
             get => _clientSelectedValue;
             set
@@ -51,7 +50,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int BillSelectedValue
+        public long BillSelectedValue
         {
             get => _billSelectedValue;
             set
@@ -170,14 +169,14 @@ namespace Phony.ViewModel
             }
         }
 
-        public Visibility IsReturnedVisiable
+        public Visibility IsReturnedVisible
         {
-            get => _isReturnedVisiable;
+            get => _isReturnedVisible;
             set
             {
-                if (value != _isReturnedVisiable)
+                if (value != _isReturnedVisible)
                 {
-                    _isReturnedVisiable = value;
+                    _isReturnedVisible = value;
                     RaisePropertyChanged();
                 }
             }
@@ -244,7 +243,7 @@ namespace Phony.ViewModel
         public SalesBillsViewerVM()
         {
             ByBillNo = true;
-            IsReturnedVisiable = Visibility.Collapsed;
+            IsReturnedVisible = Visibility.Collapsed;
             FirstDate = SecondDate = DateTime.Now;
             using (var db = new PhonyDbContext())
             {
@@ -253,7 +252,7 @@ namespace Phony.ViewModel
             LoadCommands();
         }
 
-        public SalesBillsViewerVM(int id) : this()
+        public SalesBillsViewerVM(long id) : this()
         {
             BillSelectedValue = id;
             LoadReport(id);
@@ -266,7 +265,7 @@ namespace Phony.ViewModel
             SaveReturned = new CustomCommand(DoSaveReturned, CanSaveReturned);
         }
 
-        void BillReturnedStatues(int id)
+        void BillReturnedStatues(long id)
         {
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
@@ -274,7 +273,7 @@ namespace Phony.ViewModel
             }
         }
 
-        async void LoadReport(int id)
+        async void LoadReport(long id)
         {
             using (var ds = new DataSet1())
             {
@@ -296,7 +295,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    Reports.SalesBillA7 r = new Reports.SalesBillA7();
+                    Reports.SalesBillA8 r = new Reports.SalesBillA8();
                     await Task.Run(() =>
                     {
                         r.SetDataSource(ds);
@@ -305,10 +304,10 @@ namespace Phony.ViewModel
                 }
             }
             BillReturnedStatues(id);
-            IsReturnedVisiable = Visibility.Visible;
+            IsReturnedVisible = Visibility.Visible;
         }
 
-        async Task LoadReportAsync(int id)
+        async Task LoadReportAsync(long id)
         {
             using (var ds = new DataSet1())
             {
@@ -330,7 +329,7 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    Reports.SalesBillA7 r = new Reports.SalesBillA7();
+                    Reports.SalesBillA8 r = new Reports.SalesBillA8();
                     await Task.Run(() =>
                     {
                         r.SetDataSource(ds);
@@ -339,7 +338,7 @@ namespace Phony.ViewModel
                 }
             }
             BillReturnedStatues(id);
-            IsReturnedVisiable = Visibility.Visible;
+            IsReturnedVisible = Visibility.Visible;
         }
 
         private bool CanShow(object obj)

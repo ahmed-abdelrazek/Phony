@@ -17,9 +17,9 @@ namespace Phony.ViewModel
 {
     public class ItemVM : CommonBase
     {
-        int _itemId;
-        int _selectedCompanyValue;
-        int _selectedSupplierValue;
+        long _itemId;
+        long _selectedCompanyValue;
+        long _selectedSupplierValue;
         string _name;
         string _barcode;
         string _shopcode;
@@ -52,7 +52,7 @@ namespace Phony.ViewModel
         ObservableCollection<Supplier> _suppliers;
         ObservableCollection<Item> _items;
 
-        public int ItemId
+        public long ItemId
         {
             get => _itemId;
             set
@@ -325,7 +325,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int SelectedCompanyValue
+        public long SelectedCompanyValue
         {
             get => _selectedCompanyValue;
             set
@@ -338,7 +338,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int SelectedSupplierValue
+        public long SelectedSupplierValue
         {
             get => _selectedSupplierValue;
             set

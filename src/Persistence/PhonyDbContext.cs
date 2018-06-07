@@ -27,6 +27,8 @@ namespace Phony.Persistence
         public DbSet<Store> Stores { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<SupplierMove> SuppliersMoves { get; set; }
+        public DbSet<Treasury> Treasuries { get; set; }
+        public DbSet<TreasuryMove> TreasuriesMoves { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -47,6 +49,8 @@ namespace Phony.Persistence
             modelBuilder.Configurations.Add(new StoreConfig());
             modelBuilder.Configurations.Add(new SupplierConfig());
             modelBuilder.Configurations.Add(new SupplierMoveConfig());
+            modelBuilder.Configurations.Add(new TreasuryConfig());
+            modelBuilder.Configurations.Add(new TreasuryMoveConfig());
             modelBuilder.Configurations.Add(new UserConfig());
         }
     }

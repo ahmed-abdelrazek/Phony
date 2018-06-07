@@ -7,6 +7,7 @@ namespace Phony.Kernel.Repositories
     public interface IRepository<TEntity> where TEntity : class
     {
         TEntity Get(int Id);
+        TEntity Get(long Id);
         TEntity Get(string Name);
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);

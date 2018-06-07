@@ -25,7 +25,7 @@ namespace Phony.Persistence.EntityConfigurations
 
             HasOptional(c => c.Editor)
                 .WithMany()
-                .HasForeignKey(s => s.EditById)
+                .HasForeignKey(c => c.EditById)
                 .WillCascadeOnDelete(false);
         }
     }

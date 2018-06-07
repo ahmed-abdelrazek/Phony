@@ -25,7 +25,7 @@
                 <PasswordBox x:Name="PasswordTextBox" MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged" />
             </StackPanel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button x:Name="LoginButton" Command="{Binding LogIn}" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
+                <Button Command="{Binding LogIn}" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
             </StackPanel>
         </StackPanel>
     </Grid>

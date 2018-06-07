@@ -6,20 +6,20 @@ namespace Phony.Persistence.EntityConfigurations
     {
         public StoreConfig()
         {
-            HasKey(c => c.Id);
+            HasKey(s => s.Id);
 
-            Property(i => i.Name)
+            Property(s => s.Name)
                 .IsRequired();
 
-            HasRequired(c => c.Creator)
+            HasRequired(s => s.Creator)
                 .WithMany()
-                .HasForeignKey(c => c.CreatedById)
+                .HasForeignKey(s => s.CreatedById)
                 .WillCascadeOnDelete(false);
 
-            Property(c => c.EditById)
+            Property(s => s.EditById)
                 .IsOptional();
 
-            HasOptional(c => c.Editor)
+            HasOptional(s => s.Editor)
                 .WithMany()
                 .HasForeignKey(s => s.EditById)
                 .WillCascadeOnDelete(false);

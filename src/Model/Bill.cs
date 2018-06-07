@@ -10,11 +10,11 @@ namespace Phony.Model
             BillsServicesMoves = new ObservableCollection<BillServiceMove>();
         }
 
-        public int ClientId { get; set; }
+        public long ClientId { get; set; }
 
         public virtual Client Client { get; set; }
 
-        public int StoreId { get; set; }
+        public long StoreId { get; set; }
 
         public virtual Store Store { get; set; }
 

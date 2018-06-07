@@ -6,22 +6,22 @@ namespace Phony.Persistence.EntityConfigurations
     {
         public SupplierMoveConfig()
         {
-            HasKey(c => c.Id);
+            HasKey(s => s.Id);
 
-            HasRequired(c => c.Supplier)
-                .WithMany()
-                .HasForeignKey(c => c.SupplierId)
+            HasRequired(s => s.Supplier)
+                .WithMany(s => s.SuppliersMoves)
+                .HasForeignKey(s => s.SupplierId)
                 .WillCascadeOnDelete(false);
 
-            HasRequired(c => c.Creator)
+            HasRequired(s => s.Creator)
                 .WithMany()
-                .HasForeignKey(c => c.CreatedById)
+                .HasForeignKey(s => s.CreatedById)
                 .WillCascadeOnDelete(false);
 
-            Property(c => c.EditById)
+            Property(s => s.EditById)
                 .IsOptional();
 
-            HasOptional(c => c.Editor)
+            HasOptional(s => s.Editor)
                 .WithMany()
                 .HasForeignKey(s => s.EditById)
                 .WillCascadeOnDelete(false);

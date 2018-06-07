@@ -1,6 +1,7 @@
 ﻿using Phony.Kernel;
 using Phony.Kernel.Repositories;
 using Phony.Persistence.Repositories;
+using System.Threading.Tasks;
 
 namespace Phony.Persistence
 {
@@ -27,6 +28,8 @@ namespace Phony.Persistence
             Stores = new StoreRepo(_context);
             Suppliers = new SupplierRepo(_context);
             SuppliersMoves = new SupplierMoveRepo(_context);
+            Treasuries = new TreasuryRepo(_context);
+            TreasuriesMoves = new TreasuryMoveRepo(_context);
             Users = new UserRepo(_context);
         }
 
@@ -46,11 +49,18 @@ namespace Phony.Persistence
         public IStoreRepo Stores { get; private set; }
         public ISupplierRepo Suppliers { get; private set; }
         public ISupplierMoveRepo SuppliersMoves { get; private set; }
+        public ITreasuryRepo Treasuries{ get; private set; }
+        public ITreasuryMoveRepo TreasuriesMoves { get; private set; }
         public IUserRepo Users { get; private set; }
 
         public int Complete()
         {
             return _context.SaveChanges();
+        }
+
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public void Dispose()

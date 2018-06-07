@@ -157,9 +157,6 @@
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityCollapsedConvertor.cs" />
-    <Compile Include="DataSet1.cs">
-      <DependentUpon>DataSet1.xsd</DependentUpon>
-    </Compile>
     <Compile Include="DataSet1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -169,6 +166,8 @@
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
     <Compile Include="Kernel\Repositories\IBillItemMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
+    <Compile Include="Kernel\Repositories\ITreasuryMoveRepo.cs" />
+    <Compile Include="Kernel\Repositories\ITreasuryRepo.cs" />
     <Compile Include="Kernel\SecurePasswordHasher.cs" />
     <Compile Include="Kernel\Repositories\IBillServiceMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IBillRepo.cs" />
@@ -199,6 +198,8 @@
     <Compile Include="Model\ServiceMove.cs" />
     <Compile Include="Model\Store.cs" />
     <Compile Include="Model\SupplierMove.cs" />
+    <Compile Include="Model\Treasury.cs" />
+    <Compile Include="Model\TreasuryMove.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillItemMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\BillServiceMoveConfig.cs" />
@@ -215,6 +216,8 @@
     <Compile Include="Persistence\EntityConfigurations\StoreConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\SupplierConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\SupplierMoveConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\TreasuryConfig.cs" />
+    <Compile Include="Persistence\EntityConfigurations\TreasuryMoveConfig.cs" />
     <Compile Include="Persistence\EntityConfigurations\UserConfig.cs" />
     <Compile Include="Kernel\Repositories\IUserRepo.cs" />
     <Compile Include="Extensions\IsNullOrEmptyExtension.cs" />
@@ -225,16 +228,18 @@
     <Compile Include="Model\Company.cs" />
     <Compile Include="Model\Supplier.cs" />
     <Compile Include="Persistence\Repositories\BillServiceMoveRepo.cs" />
+    <Compile Include="Persistence\Repositories\TreasuryMoveRepo.cs" />
+    <Compile Include="Persistence\Repositories\TreasuryRepo.cs" />
     <Compile Include="Reports\SalesBillA4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SalesBillA4.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\SalesBillA7.cs">
+    <Compile Include="Reports\SalesBillA8.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SalesBillA7.rpt</DependentUpon>
+      <DependentUpon>SalesBillA8.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ViewModel\BillVM.cs" />
@@ -364,7 +369,6 @@
     <Compile Include="Kernel\AssemblyInfo.cs" />
     <Compile Include="Kernel\Core.cs" />
     <Compile Include="Kernel\Encryption.cs" />
-    <Compile Include="Kernel\Paths.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -422,9 +426,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>SalesBillA4.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\SalesBillA7.rpt">
+    <EmbeddedResource Include="Reports\SalesBillA8.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>SalesBillA7.cs</LastGenOutput>
+      <LastGenOutput>SalesBillA8.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="DataSet1.xsc">
       <DependentUpon>DataSet1.xsd</DependentUpon>

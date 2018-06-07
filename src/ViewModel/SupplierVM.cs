@@ -17,7 +17,7 @@ namespace Phony.ViewModel
 {
     public class SupplierVM : CommonBase
     {
-        int _supplierId;
+        long _supplierId;
         string _name;
         string _site;
         string _email;
@@ -32,11 +32,11 @@ namespace Phony.ViewModel
         decimal _balance;
         bool _isSupplierFlyoutOpen;
         Supplier _dataGridSelectedSupplier;
-        int _selectedSalesMan;
+        long _selectedSalesMan;
         ObservableCollection<Supplier> _suppliers;
         ObservableCollection<SalesMan> _salesMen;
 
-        public int SupplierId
+        public long SupplierId
         {
             get => _supplierId;
             set
@@ -231,7 +231,7 @@ namespace Phony.ViewModel
             }
         }
 
-        public int SelectedSalesMan
+        public long SelectedSalesMan
         {
             get => _selectedSalesMan;
             set
@@ -355,6 +355,30 @@ namespace Phony.ViewModel
                             EditById = null
                         };
                         db.SuppliersMoves.Add(sm);
+                        if (supplierpaymentamount > 0)
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = supplierpaymentamount,
+                                Out = 0,
+                                Notes = $"تدفيع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
+                        else
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = 0,
+                                Out = supplierpaymentamount,
+                                Notes = $"استلام من المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
                         db.Complete();
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم اضافة للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         DataGridSelectedSupplier = null;

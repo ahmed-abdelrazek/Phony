@@ -16,7 +16,7 @@ namespace Phony.ViewModel
 
     public class BillVM : CommonBase
     {
-        int _searchSelectedValue;
+        long _searchSelectedValue;
         decimal _itemChildItemPrice;
         decimal _itemChildItemQTYExist;
         decimal _itemChildItemQTYSell;
@@ -27,7 +27,8 @@ namespace Phony.ViewModel
         decimal _billDiscount;
         decimal _billTotalAfterDiscount;
         decimal _billClientPayment;
-        int _currentBillNo;
+        decimal _billClientPaymentChange;
+        long _currentBillNo;
         string _searchText;
         string _itemChildItemName;
         string _serviceChildServiceName;
@@ -48,13 +49,15 @@ namespace Phony.ViewModel
         BillItemMove _dataGridSelectedBillItemMove;
         BillServiceMove _dataGridSelectedBillServiceMove;
 
+        Visibility _billClientPaymentChangeVisible;
+
         ObservableCollection<object> _searchItems;
 
         ObservableCollection<BillItemMove> _billItemsMoves;
 
         ObservableCollection<BillServiceMove> _billServicesMoves;
 
-        public int SearchSelectedValue
+        public long SearchSelectedValue
         {
             get => _searchSelectedValue;
             set
@@ -200,12 +203,35 @@ namespace Phony.ViewModel
                 if (value != _billClientPayment)
                 {
                     _billClientPayment = value;
+                    if (_billClientPayment > BillTotalAfterDiscount)
+                    {
+                        BillClientPaymentChange = _billClientPayment - BillTotalAfterDiscount;
+                        BillClientPaymentChangeVisible = Visibility.Visible;
+                    }
+                    else
+                    {
+                        BillClientPaymentChange = 0;
+                        BillClientPaymentChangeVisible = Visibility.Collapsed;
+                    }
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public int CurrentBillNo
+        public decimal BillClientPaymentChange
+        {
+            get => _billClientPaymentChange;
+            set
+            {
+                if (value != _billClientPaymentChange)
+                {
+                    _billClientPaymentChange = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public long CurrentBillNo
         {
             get => _currentBillNo;
             set
@@ -488,6 +514,19 @@ namespace Phony.ViewModel
             }
         }
 
+        public Visibility BillClientPaymentChangeVisible
+        {
+            get => _billClientPaymentChangeVisible;
+            set
+            {
+                if (value != _billClientPaymentChangeVisible)
+                {
+                    _billClientPaymentChangeVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public ObservableCollection<object> SearchItems
         {
             get => _searchItems;
@@ -553,6 +592,7 @@ namespace Phony.ViewModel
             LoadCommands();
             ByName = true;
             ByItem = true;
+            BillClientPaymentChangeVisible = Visibility.Collapsed;
             using (var db = new PhonyDbContext())
             {
                 Clients = new ObservableCollection<Client>(db.Clients);
@@ -578,13 +618,8 @@ namespace Phony.ViewModel
             SaveAndShow = new CustomCommand(DoSaveAndShow, CanSaveAndShow);
         }
 
-        async Task<int> SaveBillNoAsync()
+        async Task<long> SaveBillNoAsync()
         {
-            if (BillClientPayment > BillTotalAfterDiscount)
-            {
-                await Message.ShowMessageAsync("خطأ", "لا يمكن تدفيع العميل اكتر من قيمه الفاتورة");
-                return 0;
-            }
             if (BillClientPayment < BillTotalAfterDiscount)
             {
                 if (SelectedClient.Id == 1)
@@ -643,6 +678,15 @@ namespace Phony.ViewModel
                             var c = db.Clients.SingleOrDefault(n => n.Id == SelectedClient.Id);
                             c.Balance += BillTotalAfterDiscount - BillClientPayment;
                         }
+                        db.TreasuriesMoves.Add(new TreasuryMove
+                        {
+                            TreasuryId = 1,
+                            In = BillClientPayment,
+                            Out = BillClientPaymentChange,
+                            Notes = $"فاتورة رقم {bi.Id}",
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id
+                        });
                         await db.SaveChangesAsync();
                         dbContextTransaction.Commit();
                         Clear();
@@ -727,10 +771,17 @@ namespace Phony.ViewModel
         {
             if (ByItem)
             {
+                var ItemToQtyPrice = DataGridSelectedBillItemMove.ItemPrice * DataGridSelectedBillItemMove.QTY;
+                BillTotal -= ItemToQtyPrice;
+                BillTotalAfterEachDiscount -= ItemToQtyPrice - (ItemToQtyPrice * (DataGridSelectedBillItemMove.Discount / 100));
+                BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100));
                 BillItemsMoves.Remove(DataGridSelectedBillItemMove);
             }
             if (ByService)
             {
+                BillTotal -= DataGridSelectedBillServiceMove.ServicePayment;
+                BillTotalAfterEachDiscount -= DataGridSelectedBillServiceMove.ServicePayment - (DataGridSelectedBillServiceMove.ServicePayment * (DataGridSelectedBillServiceMove.Discount / 100));
+                BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100));
                 BillServicesMoves.Remove(DataGridSelectedBillServiceMove);
             }
             DataGridSelectedBillItemMove = null;
@@ -870,6 +921,7 @@ namespace Phony.ViewModel
                     BillId = CurrentBillNo,
                     ItemId = SearchSelectedValue,
                     QTY = ItemChildItemQTYSell,
+                    ItemPrice = SelectedItem.SalePrice,
                     Discount = ChildDiscount,
                     Notes = ItemChildNotes,
                     CreatedById = CurrentUser.Id,

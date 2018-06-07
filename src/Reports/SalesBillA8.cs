@@ -16,14 +16,14 @@ namespace Phony.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class SalesBillA7 : ReportClass {
+    public class SalesBillA8 : ReportClass {
         
-        public SalesBillA7() {
+        public SalesBillA8() {
         }
         
         public override string ResourceName {
             get {
-                return "SalesBillA7.rpt";
+                return "SalesBillA8.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Phony.Reports {
         
         public override string FullResourceName {
             get {
-                return "Phony.Reports.SalesBillA7.rpt";
+                return "Phony.Reports.SalesBillA8.rpt";
             }
             set {
                 // Do nothing
@@ -154,9 +154,9 @@ namespace Phony.Reports {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedSalesBillA7 : Component, ICachedReport {
+    public class CachedSalesBillA8 : Component, ICachedReport {
         
-        public CachedSalesBillA7() {
+        public CachedSalesBillA8() {
         }
         
         [Browsable(false)]
@@ -193,7 +193,7 @@ namespace Phony.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            SalesBillA7 rpt = new SalesBillA7();
+            SalesBillA8 rpt = new SalesBillA8();
             rpt.Site = this.Site;
             return rpt;
         }

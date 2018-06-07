@@ -86,12 +86,12 @@
                 <TextBlock Text="السعر: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
                 <Controls:NumericUpDown Grid.Column="1" Grid.Row="1" Value="{Binding ItemChildItemPrice}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
                 <TextBlock Text="الموجود: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
-                <Controls:NumericUpDown Grid.Column="1" Grid.Row="2" Value="{Binding ItemChildItemQTYExist}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                <Controls:NumericUpDown Grid.Column="1" Grid.Row="2" Value="{Binding ItemChildItemQTYExist}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Numbers" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
                 <TextBlock Text="الكمية: " VerticalAlignment="Center" Grid.Row="3" FontSize="15" FontWeight="Bold" Margin="5"/>
-                <Controls:NumericUpDown Grid.Column="1" Grid.Row="3" Value="{Binding ItemChildItemQTYSell}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                <Controls:NumericUpDown Grid.Column="1" Grid.Row="3" Value="{Binding ItemChildItemQTYSell}" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" StringFormat="N" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
                 <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="4" FontSize="15" FontWeight="Bold" Margin="5"/>
                 <StackPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal" Margin="5">
-                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
+                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" StringFormat="N" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
                     <TextBlock Text="%" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Margin="5"/>
                 </StackPanel>
                 <TextBox Grid.ColumnSpan="2" Grid.Row="5" Text="{Binding ItemChildNotes}" materialDesign:HintAssist.Hint="ملاحظات" Margin="5" MaxWidth="200" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
@@ -116,10 +116,10 @@
                 <TextBlock Text="اسم الخدمة: " VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Margin="5"/>
                 <TextBlock Text="{Binding ServiceChildServiceName}" Grid.Column="1" FontSize="14" FontWeight="Bold" Margin="5"/>
                 <TextBlock Text="التكلفة: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
-                <Controls:NumericUpDown Value="{Binding ServiceChildServiceCost}" Grid.Column="1" Grid.Row="1" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="C2" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                <Controls:NumericUpDown Value="{Binding ServiceChildServiceCost}" Grid.Column="1" Grid.Row="1" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
                 <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
                 <StackPanel Orientation="Horizontal" Margin="5" Grid.Column="1" Grid.Row="2">
-                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
+                    <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
                     <TextBlock Text="%" VerticalAlignment="Center" FontSize="14" FontWeight="Bold"/>
                 </StackPanel>
                 <TextBox Grid.ColumnSpan="2" Grid.Row="3" Text="{Binding ServiceChildNotes}" materialDesign:HintAssist.Hint="ملاحظات" Margin="5" MaxWidth="200" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
@@ -150,8 +150,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding QTY}" Header="الكمية" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding ItemPrice}" Header="السعر" Minimum="0" StringFormat="C2" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding QTY}" Header="الكمية" Minimum="0" StringFormat="N" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" Minimum="0" StringFormat="N" FontFamily="Segoe UI"/>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -229,8 +230,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding ServicePayment}" Header="الشحن" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" Minimum="0"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding ServicePayment}" Header="الشحن" Minimum="0" StringFormat="C2" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" Minimum="0" StringFormat="N" FontFamily="Segoe UI"/>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -294,10 +295,10 @@
             <materialDesign:Card Margin="5" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
                 <Grid >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="185"/>
                         <ColumnDefinition Width="175"/>
-                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="185"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -307,16 +308,18 @@
                         <RowDefinition Height="50*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="الاجمالى:" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-                    <Controls:NumericUpDown Value="{Binding BillTotal}" Margin="5,5,30,5" Grid.Column="1" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotal}" Margin="5,5,30,5" Grid.Column="1" StringFormat="N" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
                     <TextBlock Text="الاجمالى بعد خصم الاصناف:" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
-                    <Controls:NumericUpDown Value="{Binding BillTotalAfterEachDiscount}" Margin="5,5,30,5" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotalAfterEachDiscount}" Margin="5,5,30,5" Grid.Column="3" StringFormat="N" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
                     <TextBlock Text="خصم للفاتورة:" Grid.Row="1" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-                    <Controls:NumericUpDown Value="{Binding BillDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
-                    <TextBlock Text="الاجمالى بعد الخصم :" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
-                    <Controls:NumericUpDown Value="{Binding BillTotalAfterDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="3" StringFormat="C2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <Controls:NumericUpDown Value="{Binding BillDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="1" StringFormat="N" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                    <TextBlock Text="المطلوب:" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillTotalAfterDiscount}" Margin="5,5,30,5" Grid.Row="1" Grid.Column="3" StringFormat="N" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
                     <TextBlock Text="المدفوع من العميل:" Grid.Row="2" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
-                    <Controls:NumericUpDown Value="{Binding BillClientPayment}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="1" Minimum="0" StringFormat="C2" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
-                    <TextBlock Text="*سيتم معاملة الفاتورة كاجل اذا كان المدفوع اقل من الاجمالى بعد الخصم." VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Margin="5" FontSize="14" FontWeight="Bold" Foreground="Red"/>
+                    <Controls:NumericUpDown Value="{Binding BillClientPayment}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="1" Minimum="0" StringFormat="N" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"/>
+                    <TextBlock Text="الباقى:" Visibility="{Binding BillClientPaymentChangeVisible}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="10,5,5,5" FontSize="14" FontWeight="Bold"/>
+                    <Controls:NumericUpDown Value="{Binding BillClientPaymentChange}" Visibility="{Binding BillClientPaymentChangeVisible}" Margin="5,5,30,5" Grid.Row="2" Grid.Column="3" Minimum="0" StringFormat="N" Culture="ar-EG" HorizontalContentAlignment="Center" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True" IsReadOnly="True"/>
+                    <TextBlock Text="*سيتم معاملة الفاتورة كاجل اذا كان المدفوع اقل من المطلوب." VerticalAlignment="Center" Grid.RowSpan="3" Grid.Column="4" Grid.ColumnSpan="3" Margin="5" FontSize="14" FontWeight="Bold" Foreground="Red" TextWrapping="WrapWithOverflow"/>
                 </Grid>
             </materialDesign:Card>
             

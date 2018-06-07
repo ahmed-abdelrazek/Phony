@@ -15,7 +15,7 @@ namespace Phony.ViewModel
 {
     public class SalesManVM : CommonBase
     {
-        int _salesManId;
+        long _salesManId;
         string _name;
         string _site;
         string _email;
@@ -36,7 +36,7 @@ namespace Phony.ViewModel
 
         ObservableCollection<SalesMan> _salesMen;
 
-        public int SalesManId
+        public long SalesManId
         {
             get => _salesManId;
             set
@@ -429,6 +429,30 @@ namespace Phony.ViewModel
                             EditById = null
                         };
                         db.SalesMenMoves.Add(sm);
+                        if (SalesManpaymentamount > 0)
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = SalesManpaymentamount,
+                                Out = 0,
+                                Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
+                        else
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = 0,
+                                Out = SalesManpaymentamount,
+                                Notes = $"استلام من المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
                         db.Complete();
                         await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
                         SalesManId = 0;

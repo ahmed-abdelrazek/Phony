@@ -32,11 +32,11 @@ namespace Phony.Model
 
         public decimal QTY { get; set; }
 
-        public int CompanyId { get; set; }
+        public long CompanyId { get; set; }
 
         public virtual Company Company { get; set; }
 
-        public int SupplierId { get; set; }
+        public long SupplierId { get; set; }
 
         public virtual Supplier Supplier { get; set; }
 

@@ -217,7 +217,7 @@ namespace Phony
             }
             catch (Exception ex)
             {
-                Core.SaveException(ex);
+                Console.WriteLine(ex.ToString());
             }
             Core.StartUp_Engine();
             base.OnStartup(e);

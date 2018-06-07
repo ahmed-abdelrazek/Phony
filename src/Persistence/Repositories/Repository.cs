@@ -36,6 +36,11 @@ namespace Phony.Persistence.Repositories
             return Context.Set<TEntity>().Find(Id);
         }
 
+        public TEntity Get(long Id)
+        {
+            return Context.Set<TEntity>().Find(Id);
+        }
+
         public TEntity Get(string Name)
         {
             return Context.Set<TEntity>().Find(Name);

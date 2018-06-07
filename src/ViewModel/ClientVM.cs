@@ -15,7 +15,7 @@ namespace Phony.ViewModel
 {
     public class ClientVM : CommonBase
     {
-        int _clientsId;
+        long _clientsId;
         string _name;
         string _site;
         string _email;
@@ -36,7 +36,7 @@ namespace Phony.ViewModel
 
         ObservableCollection<Client> _clients;
 
-        public int ClientId
+        public long ClientId
         {
             get => _clientsId;
             set
@@ -409,8 +409,7 @@ namespace Phony.ViewModel
             }
             else
             {
-                decimal clientpaymentamount;
-                bool isvalidmoney =  decimal.TryParse(result, out clientpaymentamount);
+                bool isvalidmoney = decimal.TryParse(result, out decimal clientpaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -429,6 +428,30 @@ namespace Phony.ViewModel
                             EditById = null
                         };
                         db.ClientsMoves.Add(cm);
+                        if (clientpaymentamount > 0)
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = clientpaymentamount,
+                                Out = 0,
+                                Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
+                        else
+                        {
+                            db.TreasuriesMoves.Add(new TreasuryMove
+                            {
+                                TreasuryId = 1,
+                                In = 0,
+                                Out = clientpaymentamount,
+                                Notes = $"تدفيع العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
+                                CreateDate = DateTime.Now,
+                                CreatedById = CurrentUser.Id
+                            });
+                        }
                         db.Complete();
                         await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         ClientId = 0;
