@@ -13,9 +13,65 @@
         <vm:MainPageVM/>
     </Page.DataContext>
     <Grid>
-        <WrapPanel Margin="50" MinWidth="600" MaxWidth="1366">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="480*"/>
+            <ColumnDefinition MinWidth="220" MaxWidth="260"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+            <materialDesign:Flipper Margin="5,50,20,50" Style="{DynamicResource MaterialDesignCardFlipper}">
+                <materialDesign:Flipper.FrontContent>
+                    <Grid Height="300" Width="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="160" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone Mode="PrimaryLight" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding UserName}" Margin="5" Foreground="{DynamicResource IdealForegroundColorBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <Button Content="تعديل" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="5,12,5,0"/>
+                            <Button Content="تسجيل الخروج" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding SignOut}" Margin="5,12,5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Flipper.FrontContent>
+                <materialDesign:Flipper.BackContent>
+                    <Grid Height="350" Width="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone Mode="Accent" Padding="6">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Command="{x:Static materialDesign:Flipper.FlipCommand}" HorizontalAlignment="Left">
+                                    <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Right"/>
+                                </Button>
+                                <TextBlock Text="تعديل المستخدم" FontSize="14" FontWeight="Bold" Margin="8 0 0 0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:ColorZone>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBox materialDesign:HintAssist.Hint="الاسم" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding UserName}"/>
+                            <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="كلمة المرور الحالية" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding Password}"/>
+                            <TextBox Grid.Row="2" materialDesign:HintAssist.Hint=" كلمة المرور الجديدة" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding NewPassword}"/>
+                            <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="الهاتف" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding Phone}"/>
+                            <TextBlock Text="{Binding Group, StringFormat={} المجموعة: {0}}" Foreground="{DynamicResource IdealForegroundColorBrush}" VerticalAlignment="Center" Grid.Row="4" Margin="5,12,5,0"/>
+                            <Button Content="حفظ" Grid.Row="5" Margin="5,10,5,10" HorizontalAlignment="Right" Command="{Binding SaveUser}"/>
+                        </Grid>
+                    </Grid>
+                </materialDesign:Flipper.BackContent>
+            </materialDesign:Flipper>
+        </StackPanel>
+        <Grid>
             <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
-                <WrapPanel>
+                <WrapPanel Margin="5,50">
                     <Controls:Tile Title="الاصناف" Count="{Binding ItemsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenItemsWindow}">
                         <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="PackageVariant" />
                     </Controls:Tile>
@@ -66,6 +122,6 @@
                     </Controls:Tile>
                 </WrapPanel>
             </ScrollViewer>
-        </WrapPanel>
+        </Grid>
     </Grid>
 </Page>

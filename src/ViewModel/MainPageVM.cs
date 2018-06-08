@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Phony.Extensions;
 using Phony.Kernel;
 using Phony.Persistence;
 using Phony.Utility;
@@ -27,6 +28,11 @@ namespace Phony.ViewModel
         int _salesMenCount;
         int _numbersCount;
         int _usersCount;
+        string _userName;
+        string _password;
+        string _newPassword;
+        string _phone;
+        string _group;
 
         public int ItemsCount
         {
@@ -158,6 +164,71 @@ namespace Phony.ViewModel
             }
         }
 
+        public string UserName
+        {
+            get => _userName;
+            set
+            {
+                if (value != _userName)
+                {
+                    _userName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                if (value != _password)
+                {
+                    _password = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string NewPassword
+        {
+            get => _newPassword;
+            set
+            {
+                if (value != _newPassword)
+                {
+                    _newPassword = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Phone
+        {
+            get => _phone;
+            set
+            {
+                if (value != _phone)
+                {
+                    _phone = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Group
+        {
+            get => _group;
+            set
+            {
+                if (value != _group)
+                {
+                    _group = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public ICommand ChangeSource { get; set; }
         public ICommand OpenItemsWindow { get; set; }
         public ICommand OpenClientsWindow { get; set; }
@@ -174,8 +245,12 @@ namespace Phony.ViewModel
         public ICommand OpenStoreInfoWindow { get; set; }
         public ICommand OpenNumbersWindow { get; set; }
         public ICommand OpenUsersWindow { get; set; }
+        public ICommand SignOut { get; set; }
+        public ICommand SaveUser { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
+
+        MainWindowVM v = new MainWindowVM();
 
         MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
@@ -187,6 +262,13 @@ namespace Phony.ViewModel
             Timer.Tick += Timer_Tick;
             Timer.Interval = TimeSpan.FromMilliseconds(500);
             Timer.Start();
+            using (var db = new UnitOfWork(new PhonyDbContext()))
+            {
+                var u = db.Users.Get(CurrentUser.Id);
+                UserName = u.Name;
+                Phone = u.Phone;
+                Group = Enumerations.GetEnumDescription((UserGroup)u.Group);
+            }
         }
 
         public void LoadCommands()
@@ -206,6 +288,62 @@ namespace Phony.ViewModel
             OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
             OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
             OpenUsersWindow = new CustomCommand(DoOpenUsersWindow, CanOpenUsersWindow);
+            SignOut = new CustomCommand(DoSignOut, CanSignOut);
+            SaveUser = new CustomCommand(DoSaveUser, CanSaveUser);
+        }
+
+        private bool CanSaveUser(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoSaveUser(object obj)
+        {
+            using (var db = new UnitOfWork(new PhonyDbContext()))
+            {
+                Model.User u = null;
+                await Task.Run(() =>
+                {
+                    u = db.Users.GetLoginCredentials(UserName, Password);
+                });
+                if (u == null)
+                {
+                    await Message.ShowMessageAsync("خطا", "تاكد ان كلمه المرور الحاليه صحيحة");
+                }
+                else if (string.IsNullOrWhiteSpace(NewPassword))
+                {
+                    u.Name = UserName;
+                    u.Phone = Phone;
+                }
+                else
+                {
+                    u.Name = UserName;
+                    u.Pass = SecurePasswordHasher.Hash(NewPassword);
+                    u.Phone = Phone;
+                }
+                await db.CompleteAsync();
+                Password = null;
+                NewPassword = null;
+                await Message.ShowMessageAsync("تمت", "تم تعديل بيانات المستخدم بنجاح");
+            }
+        }
+
+        private bool CanSignOut(object obj)
+        {
+            return true;
+        }
+
+        private void DoSignOut(object obj)
+        {
+            CurrentUser.Id = 0;
+            CurrentUser.Name = null;
+            CurrentUser.SecurePassword = null;
+            CurrentUser.Group = UserGroup.None;
+            v.PageName = "Users/Login";
         }
 
         private bool CanOpenSalesBillsWindow(object obj)
@@ -289,7 +427,7 @@ namespace Phony.ViewModel
         {
             new Bills().Show();
         }
-        
+
         private bool CanOpenUsersWindow(object obj)
         {
             if (CurrentUser.Group == UserGroup.Manager)
