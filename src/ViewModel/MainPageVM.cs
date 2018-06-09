@@ -245,6 +245,7 @@ namespace Phony.ViewModel
         public ICommand OpenStoreInfoWindow { get; set; }
         public ICommand OpenNumbersWindow { get; set; }
         public ICommand OpenUsersWindow { get; set; }
+        public ICommand OpenBarcodesWindow { get; set; }
         public ICommand SignOut { get; set; }
         public ICommand SaveUser { get; set; }
 
@@ -288,8 +289,85 @@ namespace Phony.ViewModel
             OpenStoreInfoWindow = new CustomCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
             OpenNumbersWindow = new CustomCommand(DoOpenNumbersWindow, CanOpenNumbersWindow);
             OpenUsersWindow = new CustomCommand(DoOpenUsersWindow, CanOpenUsersWindow);
+            OpenBarcodesWindow = new CustomCommand(DoOpenBarcodesWindow, CanOpenBarcodesWindow);
             SignOut = new CustomCommand(DoSignOut, CanSignOut);
             SaveUser = new CustomCommand(DoSaveUser, CanSaveUser);
+        }
+
+        async Task CountEveryThing()
+        {
+            using (var db = new PhonyDbContext())
+            {
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ClientsCount = db.Clients.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        ServicesCount = db.Services.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        SuppliersCount = db.Suppliers.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        CompaniesCount = db.Companies.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        SalesMenCount = db.SalesMen.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        NumbersCount = db.Notes.Count();
+                    });
+                    await Task.Run(() =>
+                    {
+                        UsersCount = db.Users.Count();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
+                    {
+                        BespokeFusion.MaterialMessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
+                    }
+                }
+            }
+        }
+
+        private async void Timer_Tick(object sender, EventArgs e)
+        {
+            await CountEveryThing();
+        }
+
+        private bool CanOpenBarcodesWindow(object obj)
+        {
+            if (CurrentUser.Group == UserGroup.Manager)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void DoOpenBarcodesWindow(object obj)
+        {
+            new BarCodes().Show();
         }
 
         private bool CanSaveUser(object obj)
@@ -354,68 +432,6 @@ namespace Phony.ViewModel
         private void DoOpenSalesBillsWindow(object obj)
         {
             new SalesBillsViewer().Show();
-        }
-
-        async Task CountEveryThing()
-        {
-            using (var db = new PhonyDbContext())
-            {
-                try
-                {
-                    await Task.Run(() =>
-                    {
-                        ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        ClientsCount = db.Clients.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        ServicesCount = db.Services.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        SuppliersCount = db.Suppliers.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        CompaniesCount = db.Companies.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        SalesMenCount = db.SalesMen.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        NumbersCount = db.Notes.Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        UsersCount = db.Users.Count();
-                    });
-                }
-                catch (Exception ex)
-                {
-                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
-                    {
-                        BespokeFusion.MaterialMessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
-                    }
-                }
-            }
-        }
-
-        private async void Timer_Tick(object sender, EventArgs e)
-        {
-            await CountEveryThing();
         }
 
         private bool CanOpenBillsWindow(object obj)

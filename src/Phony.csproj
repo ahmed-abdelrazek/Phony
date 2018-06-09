@@ -151,6 +151,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ColorPicker.xaml.cs">
+      <DependentUpon>ColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BooleanToVisibilityCollapsedConvertor.cs" />
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
@@ -160,7 +163,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\ColorConverterExtensions.cs" />
     <Compile Include="Extensions\Enumerations.cs" />
+    <Compile Include="Extensions\ImageConverterExtensions.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
     <Compile Include="Kernel\Repositories\IBillItemMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
@@ -240,6 +245,7 @@
       <DependentUpon>SalesBillA8.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ViewModel\BarcodeVM.cs" />
     <Compile Include="ViewModel\BillVM.cs" />
     <Compile Include="ViewModel\MainPageVM.cs" />
     <Compile Include="ViewModel\NoteVM.cs" />
@@ -250,6 +256,9 @@
     </Compile>
     <Compile Include="View\Bills.xaml.cs">
       <DependentUpon>Bills.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ColorDialog.xaml.cs">
+      <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Notes.xaml.cs">
       <DependentUpon>Notes.xaml</DependentUpon>
@@ -332,10 +341,16 @@
     <Compile Include="View\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\ColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BarCodes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Bills.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ColorDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Notes.xaml">
@@ -488,6 +503,15 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ColorSwatchCircle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ColorSwatchSquare1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ColorSwatchSquare2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

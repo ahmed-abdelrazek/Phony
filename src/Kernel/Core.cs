@@ -182,8 +182,8 @@ namespace Phony.Kernel
                     e.StackTrace,
                     "----End of stack trace----\r\n"
                 }.ToArray());
-                e.ToExceptionless().Submit();
             }
+            e.ToExceptionless().Submit();
         }
 
         /// <summary> 

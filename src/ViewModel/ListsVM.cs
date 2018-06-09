@@ -98,4 +98,62 @@ namespace Phony.ViewModel
         [Description("اخرى")]
         Other
     }
+
+    public enum BarCodeEncoders : byte
+    {
+        [Description("UPC-A")]
+        UPCA,
+        [Description("UPC-E")]
+        UPCE,
+        [Description("UPC 2 Digit Ext.")]
+        UPC2DigitExt,
+        [Description("UPC 5 Digit Ext.")]
+        UPC5DigitExt,
+        [Description("EAN-13")]
+        EAN13,
+        [Description("JAN-13")]
+        JAN13,
+        [Description("EAN-8")]
+        EAN8,
+        [Description("ITF-14")]
+        ITF14,
+        [Description("Interleaved 2 of 5")]
+        Interleaved2of5,
+        [Description("Standard 2 of 5")]
+        Standard2of5,
+        [Description("Codabar")]
+        Codabar,
+        [Description("PostNet")]
+        PostNet,
+        [Description("Bookland/ISBN")]
+        BooklandISBN,
+        [Description("Code 11")]
+        Code11,
+        [Description("Code 39")]
+        Code39,
+        [Description("Code 39 Extended")]
+        Code39Extended,
+        [Description("Code 39 Mod 43")]
+        Code39Mod43,
+        [Description("Code 93")]
+        Code93,
+        [Description("Code 128")]
+        Code128,
+        [Description("Code 128-A")]
+        Code128A,
+        [Description("Code 128-B")]
+        Code128B,
+        [Description("ode 128-C")]
+        Code128C,
+        [Description("LOGMARS")]
+        LOGMARS,
+        [Description("MSI")]
+        MSI,
+        [Description("Telepen")]
+        Telepen,
+        [Description("FIM")]
+        FIM,
+        [Description("Pharmacode")]
+        Pharmacode
+    }
 }
