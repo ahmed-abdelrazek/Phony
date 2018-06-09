@@ -17,6 +17,7 @@ namespace Phony.ViewModel.Users
         static int _id;
         static string _name;
         static UserGroup _group;
+        bool _isLogging;
 
         public int Id
         {
@@ -30,8 +31,6 @@ namespace Phony.ViewModel.Users
                 }
             }
         }
-
-        bool _isLogging;
 
         public string Name
         {

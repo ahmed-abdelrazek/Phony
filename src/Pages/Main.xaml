@@ -29,7 +29,7 @@
                             <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </materialDesign:ColorZone>
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <TextBlock Text="{Binding UserName}" Margin="5" Foreground="{DynamicResource IdealForegroundColorBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding UserName}" Margin="5" Foreground="{DynamicResource AccentColorBrush2}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                             <Button Content="تعديل" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="5,12,5,0"/>
                             <Button Content="تسجيل الخروج" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding SignOut}" Margin="5,12,5,0"/>
                         </StackPanel>
@@ -58,11 +58,11 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <TextBox materialDesign:HintAssist.Hint="الاسم" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding UserName}"/>
-                            <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="كلمة المرور الحالية" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding Password}"/>
-                            <TextBox Grid.Row="2" materialDesign:HintAssist.Hint=" كلمة المرور الجديدة" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding NewPassword}"/>
-                            <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="الهاتف" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource IdealForegroundColorBrush}" Margin="5,12,5,0" Text="{Binding Phone}"/>
-                            <TextBlock Text="{Binding Group, StringFormat={} المجموعة: {0}}" Foreground="{DynamicResource IdealForegroundColorBrush}" VerticalAlignment="Center" Grid.Row="4" Margin="5,12,5,0"/>
+                            <TextBox materialDesign:HintAssist.Hint="الاسم" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding UserName}"/>
+                            <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="كلمة المرور الحالية" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Password}"/>
+                            <TextBox Grid.Row="2" materialDesign:HintAssist.Hint=" كلمة المرور الجديدة" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding NewPassword}"/>
+                            <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="الهاتف" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Phone}"/>
+                            <TextBlock Text="{Binding Group, StringFormat={} المجموعة: {0}}" Foreground="{DynamicResource AccentColorBrush2}" VerticalAlignment="Center" Grid.Row="4" Margin="5,12,5,0"/>
                             <Button Content="حفظ" Grid.Row="5" Margin="5,10,5,10" HorizontalAlignment="Right" Command="{Binding SaveUser}"/>
                         </Grid>
                     </Grid>
