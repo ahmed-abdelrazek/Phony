@@ -1006,7 +1006,7 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public ItemsRow AddItemsRow(string ItemName, decimal ItemQTY, decimal ItemDiscount, string ItemSalePrice, string ItemNotes) {
+            public ItemsRow AddItemsRow(string ItemName, decimal ItemQTY, decimal ItemDiscount, decimal ItemSalePrice, string ItemNotes) {
                 ItemsRow rowItemsRow = ((ItemsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ItemName,
@@ -1052,12 +1052,13 @@ namespace Phony {
                 base.Columns.Add(this.columnItemQTY);
                 this.columnItemDiscount = new global::System.Data.DataColumn("ItemDiscount", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnItemDiscount);
-                this.columnItemSalePrice = new global::System.Data.DataColumn("ItemSalePrice", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnItemSalePrice = new global::System.Data.DataColumn("ItemSalePrice", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnItemSalePrice);
                 this.columnItemNotes = new global::System.Data.DataColumn("ItemNotes", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnItemNotes);
                 this.columnItemQTY.DefaultValue = ((decimal)(0m));
                 this.columnItemDiscount.DefaultValue = ((decimal)(0m));
+                this.columnItemSalePrice.DefaultValue = ((decimal)(0m));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2080,10 +2081,10 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public string ItemSalePrice {
+            public decimal ItemSalePrice {
                 get {
                     try {
-                        return ((string)(this[this.tableItems.ItemSalePriceColumn]));
+                        return ((decimal)(this[this.tableItems.ItemSalePriceColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'ItemSalePrice\' in table \'Items\' is DBNull.", e);
