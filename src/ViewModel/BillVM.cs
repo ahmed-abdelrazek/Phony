@@ -985,60 +985,69 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            if (ByItem)
+            try
             {
-                if (ByName)
+                if (ByItem)
                 {
-                    using (var db = new PhonyDbContext())
+                    if (ByName)
                     {
-                        SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Name.Contains(SearchText)).Id;
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Name.Contains(SearchText)).Id;
+                        }
+                    }
+                    else if (ByBarCode)
+                    {
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Barcode == SearchText).Id;
+                        }
+                    }
+                    else
+                    {
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Shopcode == SearchText).Id;
+                        }
                     }
                 }
-                else if (ByBarCode)
+                else if (ByCard)
                 {
-                    using (var db = new PhonyDbContext())
+                    if (ByName)
                     {
-                        SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Barcode == SearchText).Id;
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Name.Contains(SearchText)).Id;
+                        }
+                    }
+                    else if (ByBarCode)
+                    {
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Barcode == SearchText).Id;
+                        }
+                    }
+                    else
+                    {
+                        using (var db = new PhonyDbContext())
+                        {
+                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Shopcode == SearchText).Id;
+                        }
                     }
                 }
                 else
                 {
                     using (var db = new PhonyDbContext())
                     {
-                        SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Shopcode == SearchText).Id;
+                        SearchSelectedValue = db.Services.SingleOrDefault(s => s.Name.Contains(SearchText)).Id;
                     }
                 }
             }
-            else if (ByCard)
+            catch (Exception ex)
             {
-                if (ByName)
-                {
-                    using (var db = new PhonyDbContext())
-                    {
-                        SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Name.Contains(SearchText)).Id;
-                    }
-                }
-                else if (ByBarCode)
-                {
-                    using (var db = new PhonyDbContext())
-                    {
-                        SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Barcode == SearchText).Id;
-                    }
-                }
-                else
-                {
-                    using (var db = new PhonyDbContext())
-                    {
-                        SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Shopcode == SearchText).Id;
-                    }
-                }
-            }
-            else
-            {
-                using (var db = new PhonyDbContext())
-                {
-                    SearchSelectedValue = db.Services.SingleOrDefault(s => s.Name.Contains(SearchText)).Id;
-                }
+                SearchSelectedValue = 0;
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

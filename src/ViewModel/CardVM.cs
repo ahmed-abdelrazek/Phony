@@ -599,34 +599,42 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                if (ByName)
+                using (var db = new PhonyDbContext())
                 {
-                    Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card));
-                }
-                else if (ByBarCode)
-                {
-                    Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
-                }
-                else
-                {
-                    Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
-                }
-                if (Cards.Count > 0)
-                {
-                    if (FastResult)
+                    if (ByName)
                     {
-                        ChildName = Cards.FirstOrDefault().Name;
-                        ChildPrice = Cards.FirstOrDefault().SalePrice.ToString();
-                        ChildImage = Cards.FirstOrDefault().Image;
-                        OpenFastResult = true;
+                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card));
+                    }
+                    else if (ByBarCode)
+                    {
+                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
+                    }
+                    else
+                    {
+                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
+                    }
+                    if (Cards.Count > 0)
+                    {
+                        if (FastResult)
+                        {
+                            ChildName = Cards.FirstOrDefault().Name;
+                            ChildPrice = Cards.FirstOrDefault().SalePrice.ToString();
+                            ChildImage = Cards.FirstOrDefault().Image;
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        CardsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
-                else
-                {
-                    CardsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

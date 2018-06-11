@@ -440,13 +440,21 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                Companies = new ObservableCollection<Company>(db.Companies.Where(i => i.Name.Contains(SearchText)));
-                if (Companies.Count < 1)
+                using (var db = new PhonyDbContext())
                 {
-                    CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    Companies = new ObservableCollection<Company>(db.Companies.Where(i => i.Name.Contains(SearchText)));
+                    if (Companies.Count < 1)
+                    {
+                        CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

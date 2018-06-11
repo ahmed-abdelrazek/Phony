@@ -338,22 +338,30 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                Clients = new ObservableCollection<Client>(db.Clients.Where(i => i.Name.Contains(SearchText)));
-                if (Clients.Count > 0)
+                using (var db = new PhonyDbContext())
                 {
-                    if (FastResult)
+                    Clients = new ObservableCollection<Client>(db.Clients.Where(i => i.Name.Contains(SearchText)));
+                    if (Clients.Count > 0)
                     {
-                        ChildName = Clients.FirstOrDefault().Name;
-                        ChildPrice = Clients.FirstOrDefault().Balance.ToString();
-                        OpenFastResult = true;
+                        if (FastResult)
+                        {
+                            ChildName = Clients.FirstOrDefault().Name;
+                            ChildPrice = Clients.FirstOrDefault().Balance.ToString();
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        ClientsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
-                else
-                {
-                    ClientsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

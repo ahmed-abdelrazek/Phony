@@ -617,34 +617,42 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                if (ByName)
+                using (var db = new PhonyDbContext())
                 {
-                    Items = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
-                }
-                else if (ByBarCode)
-                {
-                    Items = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
-                }
-                else
-                {
-                    Items = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
-                }
-                if (Items.Count > 0)
-                {
-                    if (FastResult)
+                    if (ByName)
                     {
-                        ChildName = Items.FirstOrDefault().Name;
-                        ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
-                        ChildImage = Items.FirstOrDefault().Image;
-                        OpenFastResult = true;
+                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                    }
+                    else if (ByBarCode)
+                    {
+                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
+                    }
+                    else
+                    {
+                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
+                    }
+                    if (Items.Count > 0)
+                    {
+                        if (FastResult)
+                        {
+                            ChildName = Items.FirstOrDefault().Name;
+                            ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
+                            ChildImage = Items.FirstOrDefault().Image;
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        ItemsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
-                else
-                {
-                    ItemsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

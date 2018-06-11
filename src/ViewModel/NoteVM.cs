@@ -304,22 +304,30 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                Numbers = new ObservableCollection<Note>(db.Notes.Where(i => i.Name.Contains(SearchText)));
-                if (Numbers.Count > 0)
+                using (var db = new PhonyDbContext())
                 {
-                    if (FastResult)
+                    Numbers = new ObservableCollection<Note>(db.Notes.Where(i => i.Name.Contains(SearchText)));
+                    if (Numbers.Count > 0)
                     {
-                        ChildName = Numbers.FirstOrDefault().Name;
-                        ChildNo = Numbers.FirstOrDefault().Phone;
-                        OpenFastResult = true;
+                        if (FastResult)
+                        {
+                            ChildName = Numbers.FirstOrDefault().Name;
+                            ChildNo = Numbers.FirstOrDefault().Phone;
+                            OpenFastResult = true;
+                        }
+                    }
+                    else
+                    {
+                        Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
-                else
-                {
-                    Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

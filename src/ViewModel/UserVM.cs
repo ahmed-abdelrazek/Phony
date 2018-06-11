@@ -292,13 +292,21 @@ namespace Phony.ViewModel
 
         private void DoSearch(object obj)
         {
-            using (var db = new PhonyDbContext())
+            try
             {
-                Users = new ObservableCollection<User>(db.Users);
-                if (Users.Count < 1)
+                using (var db = new PhonyDbContext())
                 {
-                    Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    Users = new ObservableCollection<User>(db.Users);
+                    if (Users.Count < 1)
+                    {
+                        Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Core.SaveException(ex);
+                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
