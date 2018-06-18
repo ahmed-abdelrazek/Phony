@@ -322,7 +322,7 @@ namespace Phony.ViewModel
                         using (var db = new PhonyDbContext())
                         {
                             SearchSelectedValue = 0;
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY > 0));
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
                         }
                     }
                     RaisePropertyChanged();
@@ -343,7 +343,7 @@ namespace Phony.ViewModel
                         using (var db = new PhonyDbContext())
                         {
                             SearchSelectedValue = 0;
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card && c.QTY > 0));
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card));
                         }
                     }
                     RaisePropertyChanged();
@@ -599,7 +599,7 @@ namespace Phony.ViewModel
                 Items = new ObservableCollection<Item>(db.Items);
                 Services = new ObservableCollection<Service>(db.Services);
                 Users = new ObservableCollection<User>(db.Users);
-                SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY > 0));
+                SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
                 BillItemsMoves = new ObservableCollection<BillItemMove>();
                 BillServicesMoves = new ObservableCollection<BillServiceMove>();
             }
@@ -802,11 +802,11 @@ namespace Phony.ViewModel
             {
                 if (ByItem)
                 {
-                    SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY > 0));
+                    SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
                 }
                 else if (ByCard)
                 {
-                    SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card && c.QTY > 0));
+                    SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card));
                 }
                 else if (ByService)
                 {
@@ -993,21 +993,48 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Name.Contains(SearchText)).Id;
+                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText));
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الاسم");
+                            }
                         }
                     }
                     else if (ByBarCode)
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Barcode == SearchText).Id;
+                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText);
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الباركود");
+                            }
                         }
                     }
                     else
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.QTY > 0 && i.Shopcode == SearchText).Id;
+                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText);
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بكود المحل هذا");
+                            }
                         }
                     }
                 }
@@ -1017,21 +1044,48 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Name.Contains(SearchText)).Id;
+                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Name.Contains(SearchText));
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الاسم");
+                            }
                         }
                     }
                     else if (ByBarCode)
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Barcode == SearchText).Id;
+                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Barcode == SearchText);
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الباركود");
+                            }
                         }
                     }
                     else
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            SearchSelectedValue = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.QTY > 0 && c.Shopcode == SearchText).Id;
+                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Shopcode == SearchText);
+                            if (result != null)
+                            {
+                                SearchSelectedValue = result.Id;
+                            }
+                            else
+                            {
+                                SearchSelectedValue = 0;
+                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بكود المحل هذا");
+                            }
                         }
                     }
                 }
@@ -1039,7 +1093,16 @@ namespace Phony.ViewModel
                 {
                     using (var db = new PhonyDbContext())
                     {
-                        SearchSelectedValue = db.Services.SingleOrDefault(s => s.Name.Contains(SearchText)).Id;
+                        var result = db.Services.SingleOrDefault(s => s.Name.Contains(SearchText));
+                        if (result != null)
+                        {
+                            SearchSelectedValue = result.Id;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد خدمه بهذا الاسم");
+                        }
                     }
                 }
             }
@@ -1047,7 +1110,6 @@ namespace Phony.ViewModel
             {
                 SearchSelectedValue = 0;
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
