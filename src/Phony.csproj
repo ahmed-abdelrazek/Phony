@@ -190,6 +190,10 @@
     <Compile Include="Migrations\201805271345167_InitialModel.Designer.cs">
       <DependentUpon>201805271345167_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806182204416_RemoveSalePriceFromItem.cs" />
+    <Compile Include="Migrations\201806182204416_RemoveSalePriceFromItem.Designer.cs">
+      <DependentUpon>201806182204416_RemoveSalePriceFromItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BillServiceMove.cs" />
     <Compile Include="Model\ClientMove.cs" />
@@ -436,6 +440,9 @@
     </Compile>
     <EmbeddedResource Include="Migrations\201805271345167_InitialModel.resx">
       <DependentUpon>201805271345167_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806182204416_RemoveSalePriceFromItem.resx">
+      <DependentUpon>201806182204416_RemoveSalePriceFromItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

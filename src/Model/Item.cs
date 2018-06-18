@@ -28,8 +28,6 @@ namespace Phony.Model
 
         public decimal RetailPrice { get; set; }
 
-        public decimal SalePrice { get; set; }
-
         public decimal QTY { get; set; }
 
         public long CompanyId { get; set; }

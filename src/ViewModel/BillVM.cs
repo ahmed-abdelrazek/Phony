@@ -915,13 +915,13 @@ namespace Phony.ViewModel
             QTYNeeded += ItemChildItemQTYSell;
             if (SelectedItem.QTY >= QTYNeeded)
             {
-                var ItemToQtyPrice = SelectedItem.SalePrice * ItemChildItemQTYSell;
+                var ItemToQtyPrice = SelectedItem.RetailPrice * ItemChildItemQTYSell;
                 BillItemsMoves.Add(new BillItemMove
                 {
                     BillId = CurrentBillNo,
                     ItemId = SearchSelectedValue,
                     QTY = ItemChildItemQTYSell,
-                    ItemPrice = SelectedItem.SalePrice,
+                    ItemPrice = SelectedItem.RetailPrice,
                     Discount = ChildDiscount,
                     Notes = ItemChildNotes,
                     CreatedById = CurrentUser.Id,
@@ -969,7 +969,7 @@ namespace Phony.ViewModel
                 SelectedItem = Items.FirstOrDefault(f => f.Id == SearchSelectedValue);
                 IsAddItemChildOpen = true;
                 ItemChildItemName = SelectedItem.Name;
-                ItemChildItemPrice = SelectedItem.SalePrice;
+                ItemChildItemPrice = SelectedItem.RetailPrice;
                 ItemChildItemQTYExist = SelectedItem.QTY;
             }
         }

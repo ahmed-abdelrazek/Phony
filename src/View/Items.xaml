@@ -58,11 +58,10 @@
                 <DataGridTextColumn Binding="{Binding Name}" Header="اسم الصنف"/>
                 <DataGridTextColumn Binding="{Binding Barcode}" Header="الباركود"/>
                 <DataGridTextColumn Binding="{Binding Shopcode}" Header="كود المحل"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="سعر الجملة" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding HalfWholeSalePrice}" Header="سعر النصف جملة" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding RetailPrice}" Header="سعر القطاعى" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding SalePrice}" Header="سعر البيع" Minimum="0" StringFormat="C2" FontFamily="Microsoft Sans Serif"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding WholeSalePrice}" Header="سعر الجملة" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding HalfWholeSalePrice}" Header="سعر النصف جملة" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding RetailPrice}" Header="سعر البيع" Minimum="0" FontFamily="Segoe UI"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding QTY}" Header="الكمية" Minimum="0"/>
                 <DataGridTemplateColumn Header="الشركة">
                     <DataGridTemplateColumn.CellTemplate>
@@ -151,7 +150,7 @@
                     <ColumnDefinition Width="35*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding ChildName}" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding ChildPrice}" Grid.Column="1" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding ChildPrice, StringFormat={}سعر البيع {0}}" Grid.Column="1" FontSize="20" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <Image Source="{Binding ChildImage, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Stretch="Fill" Grid.Column="2" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </simpleChildWindow:ChildWindow>
@@ -171,18 +170,16 @@
                         <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
                         <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Margin="5" Stretch="Fill"/>
                     </StackPanel>
-                    <TextBlock Text="سعر الشراء" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding PurchasePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الشراء" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
-                    <TextBlock Text="سعر الجملة" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding WholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
-                    <TextBlock Text="سعر نصف الجملة" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding HalfWholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر نصف الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
-                    <TextBlock Text="سعر القطاعى" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding RetailPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر القطاعى" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
-                    <TextBlock Text="سعر البيع" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding SalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر البيع" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" StringFormat="N" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Microsoft Sans Serif" FontSize="14"/>
-                    <TextBlock Text="الكمية" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="الكمية" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Numbers" FontSize="14"/>
+                    <TextBlock Text="سعر الشراء" Margin="5,5,5,0"/>
+                    <Controls:NumericUpDown Value="{Binding PurchasePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الشراء" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5,1,5,5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <TextBlock Text="سعر الجملة" Margin="5,5,5,0"/>
+                    <Controls:NumericUpDown Value="{Binding WholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5,1,5,5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <TextBlock Text="سعر نصف الجملة" Margin="5,5,5,0"/>
+                    <Controls:NumericUpDown Value="{Binding HalfWholeSalePrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر نصف الجملة" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5,1,5,5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <TextBlock Text="سعر البيع" Margin="5,5,5,0"/>
+                    <Controls:NumericUpDown Value="{Binding RetailPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="سعر القطاعى" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5,1,5,5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <TextBlock Text="الكمية" Margin="5,5,5,0"/>
+                    <Controls:NumericUpDown Value="{Binding QTY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Controls:TextBoxHelper.Watermark="الكمية" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5,1,5,5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Numbers" FontSize="14"/>
                     <ComboBox ItemsSource="{Binding Companies}" materialDesign:HintAssist.Hint="الشركة" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedCompanyValue}"/>
                     <ComboBox ItemsSource="{Binding Suppliers}" materialDesign:HintAssist.Hint="المورد" Style="{DynamicResource MaterialDesignComboBox}" Margin="5" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SelectedSupplierValue}"/>
                     <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="100" Width="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

@@ -38,7 +38,6 @@ namespace Phony.ViewModel
         decimal _wholeSalePrice;
         decimal _halfWholeSalePrice;
         decimal _retailPrice;
-        decimal _salePrice;
         decimal _qty;
         bool _byName;
         bool _byBarCode;
@@ -299,19 +298,6 @@ namespace Phony.ViewModel
             }
         }
 
-        public decimal SalePrice
-        {
-            get => _salePrice;
-            set
-            {
-                if (value != _salePrice)
-                {
-                    _salePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public decimal QTY
         {
             get => _qty;
@@ -511,8 +497,8 @@ namespace Phony.ViewModel
             {
                 ItemsCount = $"إجمالى الاصناف: {Items.Count().ToString()}";
                 ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
-                ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.SalePrice * i.QTY), 2).ToString()}";
-                ItemsProfit = $"تقدير صافى الربح: {decimal.Round((Items.Sum(i => i.SalePrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
+                ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY), 2).ToString()}";
+                ItemsProfit = $"تقدير صافى الربح: {decimal.Round((Items.Sum(i => i.RetailPrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
             }).Start();
         }
 
@@ -550,7 +536,6 @@ namespace Phony.ViewModel
                 i.WholeSalePrice = WholeSalePrice;
                 i.HalfWholeSalePrice = HalfWholeSalePrice;
                 i.RetailPrice = RetailPrice;
-                i.SalePrice = SalePrice;
                 i.QTY = QTY;
                 i.CompanyId = SelectedCompanyValue;
                 i.SupplierId = SelectedSupplierValue;
@@ -589,7 +574,6 @@ namespace Phony.ViewModel
                     WholeSalePrice = WholeSalePrice,
                     HalfWholeSalePrice = HalfWholeSalePrice,
                     RetailPrice = RetailPrice,
-                    SalePrice = SalePrice,
                     QTY = QTY,
                     CompanyId = SelectedCompanyValue,
                     SupplierId = SelectedSupplierValue,
@@ -638,7 +622,7 @@ namespace Phony.ViewModel
                         if (FastResult)
                         {
                             ChildName = Items.FirstOrDefault().Name;
-                            ChildPrice = Items.FirstOrDefault().SalePrice.ToString();
+                            ChildPrice = Items.FirstOrDefault().RetailPrice.ToString();
                             ChildImage = Items.FirstOrDefault().Image;
                             OpenFastResult = true;
                         }
@@ -714,7 +698,6 @@ namespace Phony.ViewModel
             WholeSalePrice = DataGridSelectedItem.WholeSalePrice;
             HalfWholeSalePrice = DataGridSelectedItem.HalfWholeSalePrice;
             RetailPrice = DataGridSelectedItem.RetailPrice;
-            SalePrice = DataGridSelectedItem.SalePrice;
             QTY = DataGridSelectedItem.QTY;
             SelectedCompanyValue = DataGridSelectedItem.CompanyId;
             SelectedSupplierValue = DataGridSelectedItem.SupplierId;

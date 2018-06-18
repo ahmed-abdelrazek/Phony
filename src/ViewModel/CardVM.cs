@@ -37,7 +37,7 @@ namespace Phony.ViewModel
         ItemGroup _group;
         decimal _purchasePrice;
         decimal _wholeSalePrice;
-        decimal _salePrice;
+        decimal _retailPrice;
         decimal _qty;
         bool _byName;
         bool _byBarCode;
@@ -285,14 +285,14 @@ namespace Phony.ViewModel
             }
         }
 
-        public decimal SalePrice
+        public decimal RetailPrice
         {
-            get => _salePrice;
+            get => _retailPrice;
             set
             {
-                if (value != _salePrice)
+                if (value != _retailPrice)
                 {
-                    _salePrice = value;
+                    _retailPrice = value;
                     RaisePropertyChanged();
                 }
             }
@@ -497,8 +497,8 @@ namespace Phony.ViewModel
             {
                 CardsCount = $"إجمالى الكروت: {Cards.Count().ToString()}";
                 CardsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Cards.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
-                CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.SalePrice * i.QTY), 2).ToString()}";
-                CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.SalePrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
+                CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.RetailPrice * i.QTY), 2).ToString()}";
+                CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.RetailPrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
             }).Start();
         }
 
@@ -534,7 +534,7 @@ namespace Phony.ViewModel
                 i.Image = Image;
                 i.PurchasePrice = PurchasePrice;
                 i.WholeSalePrice = WholeSalePrice;
-                i.SalePrice = SalePrice;
+                i.RetailPrice = RetailPrice;
                 i.QTY = QTY;
                 i.CompanyId = SelectedCompanyValue;
                 i.SupplierId = SelectedSupplierValue;
@@ -571,7 +571,7 @@ namespace Phony.ViewModel
                     Group = ItemGroup.Card,
                     PurchasePrice = PurchasePrice,
                     WholeSalePrice = WholeSalePrice,
-                    SalePrice = SalePrice,
+                    RetailPrice = RetailPrice,
                     QTY = QTY,
                     CompanyId = SelectedCompanyValue,
                     SupplierId = SelectedSupplierValue,
@@ -620,7 +620,7 @@ namespace Phony.ViewModel
                         if (FastResult)
                         {
                             ChildName = Cards.FirstOrDefault().Name;
-                            ChildPrice = Cards.FirstOrDefault().SalePrice.ToString();
+                            ChildPrice = Cards.FirstOrDefault().RetailPrice.ToString();
                             ChildImage = Cards.FirstOrDefault().Image;
                             OpenFastResult = true;
                         }
@@ -694,7 +694,7 @@ namespace Phony.ViewModel
             Image = DataGridSelectedItem.Image;
             PurchasePrice = DataGridSelectedItem.PurchasePrice;
             WholeSalePrice = DataGridSelectedItem.WholeSalePrice;
-            SalePrice = DataGridSelectedItem.SalePrice;
+            RetailPrice = DataGridSelectedItem.RetailPrice;
             QTY = DataGridSelectedItem.QTY;
             SelectedCompanyValue = DataGridSelectedItem.CompanyId;
             SelectedSupplierValue = DataGridSelectedItem.SupplierId;
