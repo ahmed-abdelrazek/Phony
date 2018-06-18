@@ -10,7 +10,7 @@
         xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
         xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
         mc:Ignorable="d"
-        Title="العملاء" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="العملاء" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
         <vm:ClientVM/>
     </Controls:MetroWindow.DataContext>

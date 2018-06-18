@@ -11,7 +11,7 @@
         xmlns:converts="clr-namespace:Phony.Converters"
         xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
         mc:Ignorable="d"
-        Title="ارقام" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="ارقام" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.Resources>
         <converts:BinaryImageConverter x:Key="ImageToSource"/>
     </Controls:MetroWindow.Resources>

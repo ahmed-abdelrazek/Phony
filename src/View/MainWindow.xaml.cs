@@ -24,6 +24,20 @@ namespace Phony.View
             if (FrameWithinGrid.Source != MainWindowVM.CurrentSource)
             {
                 FrameWithinGrid.Source = MainWindowVM.CurrentSource;
+                if (FrameWithinGrid.Source == new Uri("Phony;component/Pages/Main.xaml", UriKind.Relative))
+                {
+                    if (WindowState != System.Windows.WindowState.Maximized)
+                    {
+                        WindowState = System.Windows.WindowState.Maximized;
+                    }
+                }
+                else
+                {
+                    if (WindowState != System.Windows.WindowState.Normal)
+                    { 
+                        WindowState = System.Windows.WindowState.Normal;
+                    }
+                }
             }
         }
 
