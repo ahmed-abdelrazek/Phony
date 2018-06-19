@@ -11,7 +11,7 @@ namespace Phony.Persistence.EntityConfigurations
             HasRequired(s => s.Supplier)
                 .WithMany(s => s.SuppliersMoves)
                 .HasForeignKey(s => s.SupplierId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
 
             HasRequired(s => s.Creator)
                 .WithMany()

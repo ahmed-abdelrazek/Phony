@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity.ModelConfiguration;
 
 namespace Phony.Persistence.EntityConfigurations
 {
@@ -16,7 +11,7 @@ namespace Phony.Persistence.EntityConfigurations
             HasRequired(t => t.Treasury)
                 .WithMany(t => t.TreasuriesMoves)
                 .HasForeignKey(t => t.TreasuryId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
 
             HasRequired(t => t.Creator)
                 .WithMany()

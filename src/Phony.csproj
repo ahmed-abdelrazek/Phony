@@ -194,6 +194,10 @@
     <Compile Include="Migrations\201806182204416_RemoveSalePriceFromItem.Designer.cs">
       <DependentUpon>201806182204416_RemoveSalePriceFromItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806190001420_WillCascadeOnDeleteToTrueForMoves.cs" />
+    <Compile Include="Migrations\201806190001420_WillCascadeOnDeleteToTrueForMoves.Designer.cs">
+      <DependentUpon>201806190001420_WillCascadeOnDeleteToTrueForMoves.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BillServiceMove.cs" />
     <Compile Include="Model\ClientMove.cs" />
@@ -443,6 +447,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806182204416_RemoveSalePriceFromItem.resx">
       <DependentUpon>201806182204416_RemoveSalePriceFromItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806190001420_WillCascadeOnDeleteToTrueForMoves.resx">
+      <DependentUpon>201806190001420_WillCascadeOnDeleteToTrueForMoves.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
