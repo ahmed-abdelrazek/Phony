@@ -43,7 +43,7 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <ComboBox ItemsSource="{Binding Clients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400" FontSize="14" FontWeight="Bold" Margin="5" Style="{StaticResource MaterialDesignComboBox}" IsEditable="True" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ClientSelectedValue}" materialDesign:HintAssist.Hint="اختار العميل" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=ByClientNameToggleButton}"/>
+                    <ComboBox ItemsSource="{Binding Clients, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400" FontSize="14" FontWeight="Bold" Margin="5" Style="{StaticResource MaterialDesignComboBox}" IsEditable="True" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding ClientSelectedValue}" materialDesign:HintAssist.Hint="اختار العميل" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=ByClientNameToggleButton}"/>
                     <TextBlock Text="من" Margin="20,0,5,0" VerticalAlignment="Center" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}"/>
                     <DatePicker Language="ar-EG" SelectedDate="{Binding FirstDate}" Margin="5" Width="100" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}" FirstDayOfWeek="Saturday"/>
                     <TextBlock Text="الى" Margin="10,0,5,0" VerticalAlignment="Center" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}"/>
@@ -59,7 +59,7 @@
                         <ColumnDefinition Width="100*"/>
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="BillNoComboBox" ItemsSource="{Binding Bills, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" FontWeight="Bold" Margin="5" Style="{StaticResource MaterialDesignComboBox}" IsEditable="True" SelectedValuePath="Id" DisplayMemberPath="Id" SelectedValue="{Binding BillSelectedValue}" materialDesign:HintAssist.Hint="ادخل رقم الفاتورة"/>
+                    <ComboBox x:Name="BillNoComboBox" ItemsSource="{Binding Bills, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" FontWeight="Bold" Margin="5" Style="{StaticResource MaterialDesignComboBox}" IsEditable="True" SelectedValuePath="Id" DisplayMemberPath="Id" SelectedValue="{Binding BillSelectedValue}" materialDesign:HintAssist.Hint="ادخل رقم الفاتورة"/>
                     <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" IsDefault="True" Margin="5" Width="30" Height="30" Command="{Binding Show}">
                         <materialDesign:PackIcon Kind="Printer" />
                     </Button>
