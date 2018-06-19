@@ -34,6 +34,8 @@ namespace Phony.ViewModel
         string _phone;
         string _group;
 
+        bool isBacking;
+
         public int ItemsCount
         {
             get => _itemsCount;
@@ -296,6 +298,10 @@ namespace Phony.ViewModel
 
         async Task CountEveryThing()
         {
+            if (isBacking)
+            {
+                return;
+            }
             using (var db = new PhonyDbContext())
             {
                 try
@@ -517,49 +523,80 @@ namespace Phony.ViewModel
             }
         }
 
-        private void DoRestoreBackup(object obj)
+        private async void DoRestoreBackup(object obj)
         {
-            var dlg = new CommonOpenFileDialog();
-            dlg.Title = "اختار نسخه احتياطية لاسترجعها";
-            dlg.IsFolderPicker = false;
-            dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
-            dlg.AddToMostRecentlyUsedList = false;
-            dlg.AllowNonFileSystemItems = false;
-            dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            dlg.EnsureFileExists = true;
-            dlg.EnsurePathExists = true;
-            dlg.Filters.Add(new CommonFileDialogFilter("Backup file", "*.bak"));
-            dlg.EnsureReadOnly = false;
-            dlg.EnsureValidNames = true;
-            dlg.Multiselect = false;
-            dlg.ShowPlacesList = true;
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            isBacking = true;
+            var progressbar = await Message.ShowProgressAsync("استرجع نسخه احتياطية", "جارى استعادة نسخه احتياطية الان");
+            progressbar.SetIndeterminate();
+            try
             {
-                var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
-                var backupFolder = ConfigurationManager.AppSettings["BackupFolder"];
-                var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
-                var database = sqlConStrBuilder.InitialCatalog;
-                string query = null;
-                using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
+                var dlg = new CommonOpenFileDialog();
+                dlg.Title = "اختار نسخه احتياطية لاسترجعها";
+                dlg.IsFolderPicker = false;
+                dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
+                dlg.AddToMostRecentlyUsedList = false;
+                dlg.AllowNonFileSystemItems = false;
+                dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                dlg.EnsureFileExists = true;
+                dlg.EnsurePathExists = true;
+                dlg.Filters.Add(new CommonFileDialogFilter("Backup file", "*.bak"));
+                dlg.EnsureReadOnly = false;
+                dlg.EnsureValidNames = true;
+                dlg.Multiselect = false;
+                dlg.ShowPlacesList = true;
+                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    query = $"ALTER DATABASE [{database}] SET Single_User WITH Rollback Immediate";
-                    using (var command = new SqlCommand(query, connection))
+                    var backupFolder = ConfigurationManager.AppSettings["BackupFolder"];
+                    var sqlConStrBuilder = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
+                    var database = sqlConStrBuilder.InitialCatalog;
+                    string query = null;
+                    using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
                     {
-                        connection.Open();
-                        command.ExecuteNonQuery();
+                        query = $"ALTER DATABASE [{database}] SET Single_User WITH Rollback Immediate";
+                        using (var command = new SqlCommand(query, connection))
+                        {
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                        }
+                        try
+                        {
+                            query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH REPLACE;";
+                            using (var command = new SqlCommand(query, connection))
+                            {
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH FILE = 1,  NOUNLOAD,  STATS = 10";
+                            using (var command = new SqlCommand(query, connection))
+                            {
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        query = $"USE master ALTER DATABASE [{database}] SET Multi_User";
+                        using (var command = new SqlCommand(query, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                        await progressbar.CloseAsync();
+                        await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                     }
-                    query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH  FILE = 1,  NOUNLOAD,  STATS = 10";
-                    using (var command = new SqlCommand(query, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    query = $"USE master ALTER DATABASE [{database}] SET Multi_User";
-                    using (var command = new SqlCommand(query, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
+            }
+            catch (Exception ex)
+            {
+                await progressbar.CloseAsync();
+                Core.SaveException(ex);
+            }
+            finally
+            {
+                if (progressbar.IsOpen)
+                {
+                    await progressbar.CloseAsync();
+                }
+                isBacking = false;
             }
         }
 
@@ -570,6 +607,9 @@ namespace Phony.ViewModel
 
         private async void DoTakeBackup(object obj)
         {
+            isBacking = true;
+            var progressbar = await Message.ShowProgressAsync("اخذ نسخه احتياطية", "جارى اخذ نسخه احتياطية الان");
+            progressbar.SetIndeterminate();
             try
             {
                 var dlg = new CommonOpenFileDialog();
@@ -593,8 +633,7 @@ namespace Phony.ViewModel
                         Properties.Settings.Default.BackUpsFolder += "\\";
                     }
                     Properties.Settings.Default.Save();
-                    var connectionString = ConfigurationManager.ConnectionStrings["PhonyDbContext"].ConnectionString;
-                    var sqlConStrBuilder = new SqlConnectionStringBuilder(connectionString);
+                    var sqlConStrBuilder = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
                     var backupFileName = $"{Properties.Settings.Default.BackUpsFolder}{sqlConStrBuilder.InitialCatalog} {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak";
                     using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
                     {
@@ -603,6 +642,7 @@ namespace Phony.ViewModel
                         {
                             connection.Open();
                             command.ExecuteNonQuery();
+                            await progressbar.CloseAsync();
                             await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                         }
                     }
@@ -610,8 +650,17 @@ namespace Phony.ViewModel
             }
             catch (Exception ex)
             {
+                await progressbar.CloseAsync();
                 await Core.SaveExceptionAsync(ex);
                 await Message.ShowMessageAsync("مشكله", "هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر");
+            }
+            finally
+            {
+                if (progressbar.IsOpen)
+                {
+                    await progressbar.CloseAsync();
+                }
+                isBacking = false;
             }
         }
 
