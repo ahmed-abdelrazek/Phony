@@ -373,7 +373,15 @@ namespace Phony.ViewModel
 
         private void DoOpenBarcodesWindow(object obj)
         {
-            new BarCodes().Show();
+            var opened = Application.Current.Windows.OfType<BarCodes>().Count();
+            if (opened == 0)
+            {
+                new BarCodes().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<BarCodes>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanSaveUser(object obj)
@@ -437,7 +445,15 @@ namespace Phony.ViewModel
 
         private void DoOpenSalesBillsWindow(object obj)
         {
-            new SalesBillsViewer().Show();
+            var opened = Application.Current.Windows.OfType<SalesBillsViewer>().Count();
+            if (opened == 0)
+            {
+                new SalesBillsViewer().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenBillsWindow(object obj)
@@ -447,7 +463,15 @@ namespace Phony.ViewModel
 
         private void DoOpenBillsWindow(object obj)
         {
-            new Bills().Show();
+            var opened = Application.Current.Windows.OfType<Bills>().Count();
+            if (opened == 0)
+            {
+                new Bills().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Bills>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenUsersWindow(object obj)
@@ -456,15 +480,20 @@ namespace Phony.ViewModel
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private void DoOpenUsersWindow(object obj)
         {
-            new View.Users().Show();
+            var opened = Application.Current.Windows.OfType<View.Users>().Count();
+            if (opened == 0)
+            {
+                new View.Users().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<View.Users>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenNumbersWindow(object obj)
@@ -474,7 +503,15 @@ namespace Phony.ViewModel
 
         private void DoOpenNumbersWindow(object obj)
         {
-            new Notes().Show();
+            var opened = Application.Current.Windows.OfType<Notes>().Count();
+            if (opened == 0)
+            {
+                new Notes().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Notes>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenStoreInfoWindow(object obj)
@@ -483,15 +520,20 @@ namespace Phony.ViewModel
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private void DoOpenStoreInfoWindow(object obj)
         {
-            new Stores().Show();
+            var opened = Application.Current.Windows.OfType<Stores>().Count();
+            if (opened == 0)
+            {
+                new Stores().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Stores>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenSalesMenWindow(object obj)
@@ -500,15 +542,20 @@ namespace Phony.ViewModel
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private void DoOpenSalesMenWindow(object obj)
         {
-            new SalesMen().Show();
+            var opened = Application.Current.Windows.OfType<SalesMen>().Count();
+            if (opened == 0)
+            {
+                new SalesMen().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<SalesMen>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanRestoreBackup(object obj)
@@ -517,10 +564,7 @@ namespace Phony.ViewModel
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private async void DoRestoreBackup(object obj)
@@ -678,7 +722,15 @@ namespace Phony.ViewModel
 
         private void DoOpenCompaniesWindow(object obj)
         {
-            new Companies().Show();
+            var opened = Application.Current.Windows.OfType<Companies>().Count();
+            if (opened == 0)
+            {
+                new Companies().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Companies>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenCardsWindow(object obj)
@@ -695,7 +747,15 @@ namespace Phony.ViewModel
 
         private void DoOpenCardsWindow(object obj)
         {
-            new Cards().Show();
+            var opened = Application.Current.Windows.OfType<Cards>().Count();
+            if (opened == 0)
+            {
+                new Cards().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Cards>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenSuppliersWindow(object obj)
@@ -712,7 +772,15 @@ namespace Phony.ViewModel
 
         private void DoOpenSuppliersWindow(object obj)
         {
-            new Suppliers().Show();
+            var opened = Application.Current.Windows.OfType<Suppliers>().Count();
+            if (opened == 0)
+            {
+                new Suppliers().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Suppliers>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenServicesWindow(object obj)
@@ -729,7 +797,15 @@ namespace Phony.ViewModel
 
         private void DoOpenServicesWindow(object obj)
         {
-            new Services().Show();
+            var opened = Application.Current.Windows.OfType<Services>().Count();
+            if (opened == 0)
+            {
+                new Services().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Services>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenShortagesWindow(object obj)
@@ -739,7 +815,15 @@ namespace Phony.ViewModel
 
         private void DoOpenShortagesWindow(object obj)
         {
-            new Shortages().Show();
+            var opened = Application.Current.Windows.OfType<Shortages>().Count();
+            if (opened == 0)
+            {
+                new Shortages().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Shortages>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenClientsWindow(object obj)
@@ -749,17 +833,33 @@ namespace Phony.ViewModel
 
         private void DoOpenClientsWindow(object obj)
         {
-            new Clients().Show();
-        }
-
-        private void DoOpenItemsWindow(object obj)
-        {
-            new Items().Show();
+            var opened = Application.Current.Windows.OfType<Clients>().Count();
+            if (opened == 0)
+            {
+                new Clients().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Clients>().FirstOrDefault().Activate();
+            }
         }
 
         private bool CanOpenItemsWindow(object obj)
         {
             return true;
+        }
+
+        private void DoOpenItemsWindow(object obj)
+        {
+            var opened = Application.Current.Windows.OfType<Items>().Count();
+            if (opened == 0)
+            {
+                new Items().Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<Items>().FirstOrDefault().Activate();
+            }
         }
     }
 }
