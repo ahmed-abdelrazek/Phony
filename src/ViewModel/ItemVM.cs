@@ -27,6 +27,7 @@ namespace Phony.ViewModel
         string _notes;
         string _childName;
         string _childPrice;
+        string _childQTY;
         static string _itemsCount;
         static string _itemsPurchasePrice;
         static string _itemsSalePrice;
@@ -150,6 +151,19 @@ namespace Phony.ViewModel
                 if (value != _childPrice)
                 {
                     _childPrice = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string ChildQTY
+        {
+            get => _childQTY;
+            set
+            {
+                if (value != _childQTY)
+                {
+                    _childQTY = value;
                     RaisePropertyChanged();
                 }
             }
@@ -623,6 +637,7 @@ namespace Phony.ViewModel
                         {
                             ChildName = Items.FirstOrDefault().Name;
                             ChildPrice = Items.FirstOrDefault().RetailPrice.ToString();
+                            ChildQTY= Items.FirstOrDefault().QTY.ToString();
                             ChildImage = Items.FirstOrDefault().Image;
                             OpenFastResult = true;
                         }
