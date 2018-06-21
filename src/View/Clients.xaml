@@ -1,15 +1,14 @@
 ﻿<Controls:MetroWindow x:Class="Phony.View.Clients"
-        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm ="clr-namespace:Phony.ViewModel"
-        xmlns:local="clr-namespace:Phony.View"
-        xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
-        xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
-        mc:Ignorable="d"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+                      xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
+                      xmlns:vm="clr-namespace:Phony.ViewModel"
+                      mc:Ignorable="d"
         Title="العملاء" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
         <vm:ClientVM/>
@@ -50,7 +49,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="اسم العميل" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الرصيد" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الرصيد" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
                 <DataGridTextColumn Binding="{Binding Site}" Header="الموقع"/>
                 <DataGridTextColumn Binding="{Binding Email}" Header="الايميل"/>
                 <DataGridTextColumn Binding="{Binding Phone}" Header="الهاتف"/>
@@ -132,7 +131,7 @@
                     <TextBlock Text="اسم العميل" Margin="5,0"/>
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم العميل" Margin="5" MaxLength="50"/>
                     <TextBlock Text="الرصيد" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <Controls:NumericUpDown Value="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" StringFormat="F" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
                     <TextBox Text="{Binding Site, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الموقع" Margin="5"/>
                     <TextBox Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الايميل" Margin="5"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الهاتف" Margin="5"/>
