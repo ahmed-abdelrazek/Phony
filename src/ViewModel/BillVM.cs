@@ -43,6 +43,7 @@ namespace Phony.ViewModel
         bool _isAddItemChildOpen;
         bool _isAddServiceChildOpen;
         bool _isAddBillNote;
+        bool _isSearchDropDownOpen;
         Client _selectedClient;
         Item _selectedItem;
         Service _selectedService;
@@ -317,14 +318,8 @@ namespace Phony.ViewModel
                 if (value != _byItem)
                 {
                     _byItem = value;
-                    if (_byItem)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchSelectedValue = 0;
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
-                        }
-                    }
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -338,14 +333,8 @@ namespace Phony.ViewModel
                 if (value != _byCard)
                 {
                     _byCard = value;
-                    if (_byCard)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchSelectedValue = 0;
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card));
-                        }
-                    }
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -359,14 +348,8 @@ namespace Phony.ViewModel
                 if (value != _byService)
                 {
                     _byService = value;
-                    if (_byService)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchSelectedValue = 0;
-                            SearchItems = new ObservableCollection<object>(db.Services);
-                        }
-                    }
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -380,6 +363,8 @@ namespace Phony.ViewModel
                 if (value != _byName)
                 {
                     _byName = value;
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -393,6 +378,8 @@ namespace Phony.ViewModel
                 if (value != _byShopCode)
                 {
                     _byShopCode = value;
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -406,6 +393,8 @@ namespace Phony.ViewModel
                 if (value != _byBarCode)
                 {
                     _byBarCode = value;
+                    SearchItems = new ObservableCollection<object>();
+                    SearchSelectedValue = 0;
                     RaisePropertyChanged();
                 }
             }
@@ -445,6 +434,19 @@ namespace Phony.ViewModel
                 if (value != _isAddBillNote)
                 {
                     _isAddBillNote = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool IsSearchDropDownOpen
+        {
+            get => _isSearchDropDownOpen;
+            set
+            {
+                if (value != _isSearchDropDownOpen)
+                {
+                    _isSearchDropDownOpen = value;
                     RaisePropertyChanged();
                 }
             }
@@ -599,7 +601,6 @@ namespace Phony.ViewModel
                 Items = new ObservableCollection<Item>(db.Items);
                 Services = new ObservableCollection<Service>(db.Services);
                 Users = new ObservableCollection<User>(db.Users);
-                SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
                 BillItemsMoves = new ObservableCollection<BillItemMove>();
                 BillServicesMoves = new ObservableCollection<BillServiceMove>();
             }
@@ -976,11 +977,11 @@ namespace Phony.ViewModel
 
         private bool CanSearch(object obj)
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            if (!string.IsNullOrWhiteSpace(SearchText))
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         private void DoSearch(object obj)
@@ -993,10 +994,10 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText));
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText)));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1009,10 +1010,11 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText);
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Barcode == SearchText));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText).Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1025,10 +1027,11 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText);
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText).Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1044,10 +1047,10 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Name.Contains(SearchText));
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Name.Contains(SearchText)));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1060,10 +1063,11 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Barcode == SearchText);
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Barcode == SearchText));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Barcode == SearchText).Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1076,10 +1080,11 @@ namespace Phony.ViewModel
                     {
                         using (var db = new PhonyDbContext())
                         {
-                            var result = db.Items.SingleOrDefault(c => c.Group == ItemGroup.Card && c.Shopcode == SearchText);
-                            if (result != null)
+                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText));
+                            if (SearchItems.Count > 0)
                             {
-                                SearchSelectedValue = result.Id;
+                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText).Id;
+                                IsSearchDropDownOpen = true;
                             }
                             else
                             {
@@ -1093,10 +1098,10 @@ namespace Phony.ViewModel
                 {
                     using (var db = new PhonyDbContext())
                     {
-                        var result = db.Services.SingleOrDefault(s => s.Name.Contains(SearchText));
-                        if (result != null)
+                        SearchItems = new ObservableCollection<object>(db.Services.Where(s => s.Name.Contains(SearchText)));
+                        if (SearchItems.Count > 0)
                         {
-                            SearchSelectedValue = result.Id;
+                            IsSearchDropDownOpen = true;
                         }
                         else
                         {
