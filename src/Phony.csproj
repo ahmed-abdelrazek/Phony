@@ -198,6 +198,10 @@
     <Compile Include="Migrations\201806190001420_WillCascadeOnDeleteToTrueForMoves.Designer.cs">
       <DependentUpon>201806190001420_WillCascadeOnDeleteToTrueForMoves.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806241630236_DebitCreditAndMotto.cs" />
+    <Compile Include="Migrations\201806241630236_DebitCreditAndMotto.Designer.cs">
+      <DependentUpon>201806241630236_DebitCreditAndMotto.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BillServiceMove.cs" />
     <Compile Include="Model\ClientMove.cs" />
@@ -450,6 +454,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806190001420_WillCascadeOnDeleteToTrueForMoves.resx">
       <DependentUpon>201806190001420_WillCascadeOnDeleteToTrueForMoves.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806241630236_DebitCreditAndMotto.resx">
+      <DependentUpon>201806241630236_DebitCreditAndMotto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

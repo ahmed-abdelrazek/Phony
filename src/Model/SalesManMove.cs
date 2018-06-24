@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Phony.Model
+﻿namespace Phony.Model
 {
     public class SalesManMove : BaseModel
     {
@@ -8,6 +6,8 @@ namespace Phony.Model
 
         public virtual SalesMan SalesMan { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal Debit { get; set; }
+
+        public decimal Credit { get; set; }
     }
 }

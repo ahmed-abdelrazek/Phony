@@ -9,7 +9,10 @@ namespace Phony.Model
             Bills = new ObservableCollection<Bill>();
             Treasuries = new ObservableCollection<Treasury>();
         }
+
         public string Name { get; set; }
+
+        public string Motto { get; set; }
 
         public byte[] Image { get; set; }
 

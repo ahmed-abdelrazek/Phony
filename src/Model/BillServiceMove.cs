@@ -8,6 +8,7 @@ namespace Phony.Model
         {
             Bills = new ObservableCollection<Bill>();
         }
+
         public long BillId { get; set; }
 
         public virtual Bill Bill { get; set; }

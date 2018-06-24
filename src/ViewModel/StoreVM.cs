@@ -18,6 +18,7 @@ namespace Phony.ViewModel
     {
         int _storeId;
         string _name;
+        string _motto;
         byte[] _image;
         string _address1;
         string _address2;
@@ -51,6 +52,19 @@ namespace Phony.ViewModel
                 if (value != _name)
                 {
                     _name = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string Motto
+        {
+            get => _motto;
+            set
+            {
+                if (value != _motto)
+                {
+                    _motto = value;
                     RaisePropertyChanged();
                 }
             }
@@ -221,6 +235,7 @@ namespace Phony.ViewModel
             {
                 store = db.Stores.Get(1);
                 Name = store.Name;
+                Motto = store.Motto;
                 Image = store.Image;
                 Address1 = store.Address1;
                 Address2= store.Address2;
@@ -256,6 +271,7 @@ namespace Phony.ViewModel
             {
                 store = db.Stores.Get(1);
                 store.Name = Name;
+                store.Motto = Motto;
                 store.Image = Image;
                 store.Address1 = Address1;
                 store.Address2 = Address2;

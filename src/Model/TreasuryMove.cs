@@ -6,8 +6,8 @@
 
         public virtual Treasury Treasury { get; set; }
 
-        public decimal In { get; set; }
+        public decimal Debit { get; set; }
 
-        public decimal Out { get; set; }
+        public decimal Credit { get; set; }
     }
 }

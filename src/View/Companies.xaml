@@ -38,7 +38,8 @@
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddCompanyFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteCompany}"/>
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllCompanies}"/>
-                <Button Content="اضافة رصيد" Margin="5" Command="{Binding AddBalance}"/>
+                <Button Content="استلام - علينا" Margin="5" Command="{Binding CompanyPay}"/>
+                <Button Content="دفع - لينا" Margin="5" Command="{Binding PayCompany}"/>
             </StackPanel>
         </StackPanel>
         <DataGrid IsReadOnly="True" ItemsSource="{Binding Companies, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedCompany, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
@@ -110,8 +111,8 @@
         </DataGrid>
         <StatusBar Grid.Row="2">
             <Label Content="{Binding CompaniesCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CompaniesPurchasePrice}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CompaniesSalePrice}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding CompaniesDebits}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding CompaniesCredits}" FontWeight="Bold" Margin="5"/>
             <Label Content="{Binding CompaniesProfit}" FontWeight="Bold" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الشركة" Width="250" Theme="Accent" IsOpen="{Binding IsAddCompanyFlyoutOpen}" Position="Left">

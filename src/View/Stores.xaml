@@ -30,6 +30,8 @@
             <StackPanel FlowDirection="RightToLeft">
                 <TextBlock Text="اسم المحل" Margin="5,5,5,0"/>
                 <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم المحل" Margin="5"/>
+                <TextBlock Text="شعار المحل" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Motto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="شعار المحل" Margin="5"/>
                 <StackPanel Margin="5">
                     <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
                     <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="250" Width="250" Margin="5" Stretch="Fill"/>

@@ -38,7 +38,8 @@
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddSalesManFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteSalesMan}"/>
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllSalesMen}"/>
-                <Button Content="تدفيع" Margin="5" Command="{Binding SalesManPay}"/>
+                <Button Content="استلام - علينا" Margin="5" Command="{Binding SalesManPay}"/>
+                <Button Content="دفع - لينا" Margin="5" Command="{Binding PaySalesMan}"/>
             </StackPanel>
         </StackPanel>
         <DataGrid IsReadOnly="True" ItemsSource="{Binding SalesMen, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedSalesMan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">

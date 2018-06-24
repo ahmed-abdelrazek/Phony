@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,8 +25,8 @@ namespace Phony.ViewModel
         string _phone;
         string _notes;
         static string _suppliersCount;
-        static string _suppliersPurchasePrice;
-        static string _suppliersSalePrice;
+        static string _suppliersDebits;
+        static string _suppliersCredits;
         static string _suppliersProfit;
         byte[] _image;
         decimal _balance;
@@ -140,27 +140,27 @@ namespace Phony.ViewModel
             }
         }
 
-        public string SuppliersPurchasePrice
+        public string SuppliersDebits
         {
-            get => _suppliersPurchasePrice;
+            get => _suppliersDebits;
             set
             {
-                if (value != _suppliersPurchasePrice)
+                if (value != _suppliersDebits)
                 {
-                    _suppliersPurchasePrice = value;
+                    _suppliersDebits = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public string SuppliersSalePrice
+        public string SuppliersCredits
         {
-            get => _suppliersSalePrice;
+            get => _suppliersCredits;
             set
             {
-                if (value != _suppliersSalePrice)
+                if (value != _suppliersCredits)
                 {
-                    _suppliersSalePrice = value;
+                    _suppliersCredits = value;
                     RaisePropertyChanged();
                 }
             }
@@ -280,7 +280,8 @@ namespace Phony.ViewModel
         public ICommand Search { get; set; }
         public ICommand AddSupplier { get; set; }
         public ICommand EditSupplier { get; set; }
-        public ICommand AddBalance { get; set; }
+        public ICommand SupplierPay { get; set; }
+        public ICommand PaySupplier { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -295,13 +296,7 @@ namespace Phony.ViewModel
                 SalesMen = new ObservableCollection<SalesMan>(db.SalesMen);
                 Users = new ObservableCollection<User>(db.Users);
             }
-            new Thread(() =>
-            {
-                SuppliersCount = $"إجمالى الموردين: {Suppliers.Count().ToString()}";
-                SuppliersPurchasePrice = $"اجمالى لينا: {decimal.Round(Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                SuppliersSalePrice = $"اجمالى علينا: {decimal.Round(Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                SuppliersProfit = $"تقدير لصافى لينا: {decimal.Round((Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance) + Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-            }).Start();
+            DebitCredit();
         }
 
         public void LoadCommands()
@@ -314,10 +309,33 @@ namespace Phony.ViewModel
             Search = new CustomCommand(DoSearch, CanSearch);
             AddSupplier = new CustomCommand(DoAddSupplier, CanAddSupplier);
             EditSupplier = new CustomCommand(DoEditSupplier, CanEditSupplier);
-            AddBalance = new CustomCommand(DoAddBalance, CanAddBalance);
+            SupplierPay = new CustomCommand(DoSupplierPayAsync, CanSupplierPay);
+            PaySupplier = new CustomCommand(DoPaySupplierAsync, CanPaySupplier);
         }
 
-        private bool CanAddBalance(object obj)
+        async void DebitCredit()
+        {
+            decimal Debit = decimal.Round(Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
+            decimal Credit = decimal.Round(Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
+            await Task.Run(() =>
+            {
+                SuppliersCount = $"مجموع العملاء: {Suppliers.Count().ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                SuppliersDebits = $"اجمالى لينا: {Debit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                SuppliersCredits = $"اجمالى علينا: {Credit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                SuppliersProfit = $"تقدير لصافى لينا: {(Debit + Credit).ToString()}";
+            });
+        }
+
+        private bool CanSupplierPay(object obj)
         {
             if (DataGridSelectedSupplier == null)
             {
@@ -326,17 +344,68 @@ namespace Phony.ViewModel
             return true;
         }
 
-        private async void DoAddBalance(object obj)
+        private async void DoSupplierPayAsync(object obj)
         {
-            var result = await SuppliersMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه الموردين {DataGridSelectedSupplier.Name}");
+            var result = await SuppliersMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلمته من المورد {DataGridSelectedSupplier.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await SuppliersMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
-                decimal supplierpaymentamount;
-                bool isvalidmoney = decimal.TryParse(result, out supplierpaymentamount);
+                bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
+                if (isvalidmoney)
+                {
+                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    {
+                        var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
+                        s.Balance += supplierpaymentamount;
+                        s.EditDate = DateTime.Now;
+                        s.EditById = CurrentUser.Id;
+                        var sm = new SupplierMove
+                        {
+                            SupplierId = DataGridSelectedSupplier.Id,
+                            Credit = supplierpaymentamount,
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id,
+                            EditDate = null,
+                            EditById = null
+                        };
+                        db.SuppliersMoves.Add(sm);
+                        db.Complete();
+                        Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
+                        DebitCredit();
+                        await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم اضافة للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
+                        DataGridSelectedSupplier = null;
+                        SupplierId = 0;
+                    }
+                }
+                else
+                {
+                    await SuppliersMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                }
+            }
+        }
+
+        private bool CanPaySupplier(object obj)
+        {
+            if (DataGridSelectedSupplier == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoPaySupplierAsync(object obj)
+        {
+            var result = await SuppliersMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمورد {DataGridSelectedSupplier.Name}");
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                await SuppliersMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+            }
+            else
+            {
+                bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -348,43 +417,27 @@ namespace Phony.ViewModel
                         var sm = new SupplierMove
                         {
                             SupplierId = DataGridSelectedSupplier.Id,
-                            Amount = supplierpaymentamount,
+                            Debit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
                         };
                         db.SuppliersMoves.Add(sm);
-                        if (supplierpaymentamount > 0)
+                        db.TreasuriesMoves.Add(new TreasuryMove
                         {
-                            db.TreasuriesMoves.Add(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                In = supplierpaymentamount,
-                                Out = 0,
-                                Notes = $"تدفيع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                        }
-                        else
-                        {
-                            db.TreasuriesMoves.Add(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                In = 0,
-                                Out = supplierpaymentamount,
-                                Notes = $"استلام من المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                        }
+                            TreasuryId = 1,
+                            Credit = supplierpaymentamount,
+                            Notes = $"تدفيع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id
+                        });
                         db.Complete();
+                        Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
+                        DebitCredit();
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم اضافة للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         DataGridSelectedSupplier = null;
                         SupplierId = 0;
-                        Suppliers.Remove(DataGridSelectedSupplier);
-                        Suppliers.Add(s);
                     }
                 }
                 else
@@ -420,9 +473,10 @@ namespace Phony.ViewModel
                 s.EditById = CurrentUser.Id;
                 db.Complete();
                 Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
-                SupplierId = 0;
-                DataGridSelectedSupplier = null;
+                DebitCredit();
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
+                DataGridSelectedSupplier = null;
+                SupplierId = 0;
             }
         }
 
@@ -457,6 +511,7 @@ namespace Phony.ViewModel
                 db.Suppliers.Add(s);
                 db.Complete();
                 Suppliers.Add(s);
+                DebitCredit();
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
             }
         }
@@ -501,6 +556,7 @@ namespace Phony.ViewModel
             {
                 Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
             }
+            DebitCredit();
         }
 
         private bool CanDeleteSupplier(object obj)
@@ -523,8 +579,9 @@ namespace Phony.ViewModel
                     db.Complete();
                     Suppliers.Remove(DataGridSelectedSupplier);
                 }
-                DataGridSelectedSupplier = null;
+                DebitCredit();
                 await SuppliersMessage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
+                DataGridSelectedSupplier = null;
             }
         }
 

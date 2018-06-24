@@ -8,6 +8,8 @@ namespace Phony.Model
 
         public virtual Supplier Supplier { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal Debit { get; set; }
+
+        public decimal Credit { get; set; }
     }
 }

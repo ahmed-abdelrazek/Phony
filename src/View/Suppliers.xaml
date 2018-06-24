@@ -38,7 +38,8 @@
                 <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddSupplierFlyout}"/>
                 <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteSupplier}"/>
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllSuppliers}"/>
-                <Button Content="تدفيع" Margin="5" Command="{Binding AddBalance}"/>
+                <Button Content="استلام - علينا" Margin="5" Command="{Binding SupplierPay}"/>
+                <Button Content="دفع - لينا" Margin="5" Command="{Binding PaySupplier}"/>
             </StackPanel>
         </StackPanel>
         <DataGrid IsReadOnly="True" ItemsSource="{Binding Suppliers, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Row="1" Margin="5" SelectedItem="{Binding DataGridSelectedSupplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
@@ -122,8 +123,8 @@
         </DataGrid>
         <StatusBar Grid.Row="2">
             <Label Content="{Binding SuppliersCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SuppliersPurchasePrice}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SuppliersSalePrice}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding SuppliersDebits}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding SuppliersCredits}" FontWeight="Bold" Margin="5"/>
             <Label Content="{Binding SuppliersProfit}" FontWeight="Bold" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الموردين" Width="250" Theme="Accent" IsOpen="{Binding IsAddSupplierFlyoutOpen}" Position="Left">

@@ -682,8 +682,8 @@ namespace Phony.ViewModel
                         db.TreasuriesMoves.Add(new TreasuryMove
                         {
                             TreasuryId = 1,
-                            In = BillClientPayment,
-                            Out = BillClientPaymentChange,
+                            Debit = BillClientPayment,
+                            Credit = BillClientPaymentChange,
                             Notes = $"فاتورة رقم {bi.Id}",
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id

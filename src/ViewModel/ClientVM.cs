@@ -7,7 +7,7 @@ using Phony.View;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -289,6 +289,7 @@ namespace Phony.ViewModel
         public ICommand OpenAddClientFlyout { get; set; }
         public ICommand FillUI { get; set; }
         public ICommand ClientPay { get; set; }
+        public ICommand PayClient { get; set; }
         public ICommand ReloadAllClients { get; set; }
         public ICommand AddClient { get; set; }
         public ICommand EditClient { get; set; }
@@ -306,13 +307,7 @@ namespace Phony.ViewModel
                 Clients = new ObservableCollection<Client>(db.Clients);
                 Users = new ObservableCollection<User>(db.Users);
             }
-            new Thread(() =>
-            {
-                ClientCount = $"مجموع العملاء: {Clients.Count().ToString()}";
-                ClientDebits = $"اجمالى لينا: {decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                ClientCredits = $"اجمالى علينا: {decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                ClientProfit = $"تقدير لصافى لينا: {decimal.Round((Clients.Where(c => c.Balance > 0).Sum(i => i.Balance) + Clients.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-            }).Start();
+            DebitCredit();
         }
 
         public void LoadCommands()
@@ -321,10 +316,33 @@ namespace Phony.ViewModel
             OpenAddClientFlyout = new CustomCommand(DoOpenAddClientFlyout, CanOpenAddClientFlyout);
             FillUI = new CustomCommand(DoFillUI, CanFillUI);
             ClientPay = new CustomCommand(DoClientPayAsync, CanClientPay);
+            PayClient = new CustomCommand(DoPayClientAsync, CanPayClient);
             ReloadAllClients = new CustomCommand(DoReloadAllClients, CanReloadAllClients);
             AddClient = new CustomCommand(DoAddClient, CanAddClient);
             EditClient = new CustomCommand(DoEditClient, CanEditClient);
             DeleteClient = new CustomCommand(DoDeleteClient, CanDeleteClient);
+        }
+
+        async void DebitCredit()
+        {
+            decimal Debit = decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
+            decimal Credit = decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
+            await Task.Run(() =>
+            {
+                ClientCount = $"مجموع العملاء: {Clients.Count().ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                ClientDebits = $"اجمالى لينا: {Debit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                ClientCredits = $"اجمالى علينا: {Credit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                ClientProfit = $"تقدير لصافى لينا: {(Debit + Credit).ToString()}";
+            });
         }
 
         private bool CanSearch(object obj)
@@ -410,7 +428,7 @@ namespace Phony.ViewModel
 
         private async void DoClientPayAsync(object obj)
         {
-            var result = await ClientsMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للعميل {DataGridSelectedClient.Name}");
+            var result = await ClientsMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد خصمه من حساب العميل {DataGridSelectedClient.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await ClientsMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
@@ -429,7 +447,7 @@ namespace Phony.ViewModel
                         var cm = new ClientMove
                         {
                             ClientId = DataGridSelectedClient.Id,
-                            Amount = clientpaymentamount,
+                            Credit = clientpaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
@@ -441,30 +459,77 @@ namespace Phony.ViewModel
                             db.TreasuriesMoves.Add(new TreasuryMove
                             {
                                 TreasuryId = 1,
-                                In = clientpaymentamount,
-                                Out = 0,
+                                Debit = clientpaymentamount,
                                 Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                                 CreateDate = DateTime.Now,
                                 CreatedById = CurrentUser.Id
                             });
                         }
-                        else
-                        {
-                            db.TreasuriesMoves.Add(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                In = 0,
-                                Out = clientpaymentamount,
-                                Notes = $"تدفيع العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                        }
                         db.Complete();
+                        Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
+                        DebitCredit();
                         await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         ClientId = 0;
-                        Clients.Remove(DataGridSelectedClient);
-                        Clients.Add(c);
+                        DataGridSelectedClient = null;
+                    }
+                }
+                else
+                {
+                    await ClientsMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                }
+            }
+        }
+
+        private bool CanPayClient(object obj)
+        {
+            if (DataGridSelectedClient == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoPayClientAsync(object obj)
+        {
+            var result = await ClientsMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لحساب للعميل {DataGridSelectedClient.Name}");
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                await ClientsMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+            }
+            else
+            {
+                bool isvalidmoney = decimal.TryParse(result, out decimal clientpaymentamount);
+                if (isvalidmoney)
+                {
+                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    {
+                        var c = db.Clients.Get(DataGridSelectedClient.Id);
+                        c.Balance += clientpaymentamount;
+                        c.EditDate = DateTime.Now;
+                        c.EditById = CurrentUser.Id;
+                        var cm = new ClientMove
+                        {
+                            ClientId = DataGridSelectedClient.Id,
+                            Debit = clientpaymentamount,
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id,
+                            EditDate = null,
+                            EditById = null
+                        };
+                        db.ClientsMoves.Add(cm);
+                        db.TreasuriesMoves.Add(new TreasuryMove
+                        {
+                            TreasuryId = 1,
+                            Credit = clientpaymentamount,
+                            Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id
+                        });
+                        db.Complete();
+                        Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
+                        DebitCredit();
+                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
+                        ClientId = 0;
                         DataGridSelectedClient = null;
                     }
                 }
@@ -521,6 +586,7 @@ namespace Phony.ViewModel
                 db.Clients.Add(c);
                 db.Complete();
                 Clients.Add(c);
+                DebitCredit();
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
             }
         }
@@ -549,9 +615,10 @@ namespace Phony.ViewModel
                 c.EditById = CurrentUser.Id;
                 db.Complete();
                 Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
-                ClientId = 0;
-                DataGridSelectedClient = null;
+                DebitCredit();
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
+                DataGridSelectedClient = null;
+                ClientId = 0;
             }
         }
 
@@ -575,8 +642,9 @@ namespace Phony.ViewModel
                     db.Complete();
                     Clients.Remove(DataGridSelectedClient);
                 }
-                DataGridSelectedClient = null;
+                DebitCredit();
                 await ClientsMessage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
+                DataGridSelectedClient = null;
             }
         }
     }

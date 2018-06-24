@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -266,11 +266,7 @@ namespace Phony.ViewModel
                 Services = new ObservableCollection<Service>(db.Services);
                 Users = new ObservableCollection<User>(db.Users);
             }
-            new Thread(() =>
-            {
-                ServicesCount = $"إجمالى الخدمات: {Services.Count().ToString()}";
-                ServicesPurchasePrice = $"اجمالى لينا: {decimal.Round(Services.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-            }).Start();
+            DebitCredit();
         }
 
         public void LoadCommands()
@@ -284,6 +280,20 @@ namespace Phony.ViewModel
             AddService = new CustomCommand(DoAddService, CanAddService);
             EditService = new CustomCommand(DoEditService, CanEditService);
             AddBalance = new CustomCommand(DoAddBalance, CanAddBalance);
+        }
+
+
+        async void DebitCredit()
+        {
+            decimal Debit = decimal.Round(Services.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
+            await Task.Run(() =>
+            {
+                ServicesCount = $"مجموع الخدمات: {Services.Count().ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                ServicesPurchasePrice = $"اجمالى لينا: {Debit.ToString()}";
+            });
         }
 
         private bool CanAddBalance(object obj)
@@ -304,8 +314,7 @@ namespace Phony.ViewModel
             }
             else
             {
-                decimal servicepaymentamount;
-                bool isvalidmoney = decimal.TryParse(result, out servicepaymentamount);
+                bool isvalidmoney = decimal.TryParse(result, out decimal servicepaymentamount);
                 if (isvalidmoney)
                 {
                     using (var db = new UnitOfWork(new PhonyDbContext()))
@@ -317,7 +326,7 @@ namespace Phony.ViewModel
                         var sm = new ServiceMove
                         {
                             ServiceId = DataGridSelectedService.Id,
-                            Amount = servicepaymentamount,
+                            Debit = servicepaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
@@ -325,10 +334,11 @@ namespace Phony.ViewModel
                         };
                         db.ServicesMoves.Add(sm);
                         db.Complete();
-                        await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
                         Services[Services.IndexOf(DataGridSelectedService)] = s;
-                        ServiceId = 0;
+                        DebitCredit();
+                        await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
                         DataGridSelectedService = null;
+                        ServiceId = 0;
                     }
                 }
                 else
@@ -363,9 +373,10 @@ namespace Phony.ViewModel
                 s.EditById = CurrentUser.Id;
                 db.Complete();
                 Services[Services.IndexOf(DataGridSelectedService)] = s;
-                ServiceId = 0;
-                DataGridSelectedService = null;
+                DebitCredit();
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
+                DataGridSelectedService = null;
+                ServiceId = 0;
             }
         }
 
@@ -399,6 +410,7 @@ namespace Phony.ViewModel
                 db.Services.Add(s);
                 db.Complete();
                 Services.Add(s);
+                DebitCredit();
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
             }
         }
@@ -443,6 +455,7 @@ namespace Phony.ViewModel
             {
                 Services = new ObservableCollection<Service>(db.Services);
             }
+            DebitCredit();
         }
 
         private bool CanDeleteService(object obj)
@@ -465,8 +478,9 @@ namespace Phony.ViewModel
                     db.Complete();
                     Services.Remove(DataGridSelectedService);
                 }
-                DataGridSelectedService = null;
+                DebitCredit();
                 await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
+                DataGridSelectedService = null;
             }
         }
 

@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,8 +25,8 @@ namespace Phony.ViewModel
         string _phone;
         string _notes;
         static string _companiesCount;
-        static string _companiesPurchasePrice;
-        static string _companiesSalePrice;
+        static string _companiesDebits;
+        static string _companiesCredits;
         static string _companiesProfit;
         byte[] _image;
         decimal _balance;
@@ -138,27 +138,27 @@ namespace Phony.ViewModel
             }
         }
 
-        public string CompaniesPurchasePrice
+        public string CompaniesDebits
         {
-            get => _companiesPurchasePrice;
+            get => _companiesDebits;
             set
             {
-                if (value != _companiesPurchasePrice)
+                if (value != _companiesDebits)
                 {
-                    _companiesPurchasePrice = value;
+                    _companiesDebits = value;
                     RaisePropertyChanged();
                 }
             }
         }
 
-        public string CompaniesSalePrice
+        public string CompaniesCredits
         {
-            get => _companiesSalePrice;
+            get => _companiesCredits;
             set
             {
-                if (value != _companiesSalePrice)
+                if (value != _companiesCredits)
                 {
-                    _companiesSalePrice = value;
+                    _companiesCredits = value;
                     RaisePropertyChanged();
                 }
             }
@@ -252,7 +252,8 @@ namespace Phony.ViewModel
         public ICommand Search { get; set; }
         public ICommand AddCompany { get; set; }
         public ICommand EditCompany { get; set; }
-        public ICommand AddBalance { get; set; }
+        public ICommand CompanyPay { get; set; }
+        public ICommand PayCompany { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -266,13 +267,7 @@ namespace Phony.ViewModel
                 Companies = new ObservableCollection<Company>(db.Companies);
                 Users = new ObservableCollection<User>(db.Users);
             }
-            new Thread(() =>
-            {
-                CompaniesCount = $"إجمالى الشركات: {Companies.Count().ToString()}";
-                CompaniesPurchasePrice = $"اجمالى لينا: {decimal.Round(Companies.Where(c => c.Balance > 0).Sum(i => i.Balance), 2).ToString()}";
-                CompaniesSalePrice = $"اجمالى علينا: {decimal.Round(Companies.Where(c => c.Balance < 0).Sum(i => i.Balance), 2).ToString()}";
-                CompaniesProfit = $"تقدير لصافى لينا: {decimal.Round((Companies.Where(c => c.Balance > 0).Sum(i => i.Balance) + Companies.Where(c => c.Balance < 0).Sum(i => i.Balance)), 2).ToString()}";
-            }).Start();
+            DebitCredit();
         }
 
         public void LoadCommands()
@@ -285,10 +280,33 @@ namespace Phony.ViewModel
             Search = new CustomCommand(DoSearch, CanSearch);
             AddCompany = new CustomCommand(DoAddCompany, CanAddCompany);
             EditCompany = new CustomCommand(DoEditCompany, CanEditCompany);
-            AddBalance = new CustomCommand(DoAddBalance, CanAddBalance);
+            CompanyPay = new CustomCommand(DoCompanyPayAsync, CanCompanyPay);
+            PayCompany = new CustomCommand(DoPayCompanyAsync, CanPayCompany);
         }
 
-        private bool CanAddBalance(object obj)
+        async void DebitCredit()
+        {
+            decimal Debit = decimal.Round(Companies.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
+            decimal Credit = decimal.Round(Companies.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
+            await Task.Run(() =>
+            {
+                CompaniesCount = $"مجموع العملاء: {Companies.Count().ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                CompaniesDebits = $"اجمالى لينا: {Debit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                CompaniesCredits = $"اجمالى علينا: {Credit.ToString()}";
+            });
+            await Task.Run(() =>
+            {
+                CompaniesProfit = $"تقدير لصافى لينا: {(Debit + Credit).ToString()}";
+            });
+        }
+
+        private bool CanCompanyPay(object obj)
         {
             if (DataGridSelectedCompany == null)
             {
@@ -297,9 +315,62 @@ namespace Phony.ViewModel
             return true;
         }
 
-        private async void DoAddBalance(object obj)
+        private async void DoCompanyPayAsync(object obj)
         {
-            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للشركة {DataGridSelectedCompany.Name}");
+            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}");
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                await CompaniesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+            }
+            else
+            {
+                bool isvalidmoney = decimal.TryParse(result, out decimal compantpaymentamount);
+                if (isvalidmoney)
+                {
+                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    {
+                        var s = db.Companies.Get(DataGridSelectedCompany.Id);
+                        s.Balance += compantpaymentamount;
+                        s.EditDate = DateTime.Now;
+                        s.EditById = CurrentUser.Id;
+                        //the company will give us money in form of balance or something
+                        var sm = new CompanyMove
+                        {
+                            CompanyId = DataGridSelectedCompany.Id,
+                            Credit = compantpaymentamount,
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id,
+                            EditDate = null,
+                            EditById = null
+                        };
+                        db.CompaniesMoves.Add(sm);
+                        db.Complete();
+                        Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
+                        DebitCredit();
+                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        DataGridSelectedCompany = null;
+                        CompanyId = 0;
+                    }
+                }
+                else
+                {
+                    await CompaniesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                }
+            }
+        }
+
+        private bool CanPayCompany(object obj)
+        {
+            if (DataGridSelectedCompany == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoPayCompanyAsync(object obj)
+        {
+            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await CompaniesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -315,46 +386,32 @@ namespace Phony.ViewModel
                         s.Balance -= compantpaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
+                        //Company gets money from us
                         var sm = new CompanyMove
                         {
                             CompanyId = DataGridSelectedCompany.Id,
-                            Amount = compantpaymentamount,
+                            Debit = compantpaymentamount,
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
                         };
                         db.CompaniesMoves.Add(sm);
-                        if (compantpaymentamount > 0)
+                        //the money is taken from our Treasury
+                        db.TreasuriesMoves.Add(new TreasuryMove
                         {
-                            db.TreasuriesMoves.Add(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                In = compantpaymentamount,
-                                Out = 0,
-                                Notes = $"تدفيع الشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                        }
-                        else
-                        {
-                            db.TreasuriesMoves.Add(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                In = 0,
-                                Out = compantpaymentamount,
-                                Notes = $"استلام من الشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                        }
+                            TreasuryId = 1,
+                            Credit = compantpaymentamount,
+                            Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
+                            CreateDate = DateTime.Now,
+                            CreatedById = CurrentUser.Id
+                        });
                         db.Complete();
-                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم شحن الشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
+                        DebitCredit();
+                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         DataGridSelectedCompany = null;
                         CompanyId = 0;
-                        Companies.Remove(DataGridSelectedCompany);
-                        Companies.Add(s);
                     }
                 }
                 else
@@ -389,9 +446,10 @@ namespace Phony.ViewModel
                 c.EditById = CurrentUser.Id;
                 db.Complete();
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
-                CompanyId = 0;
-                DataGridSelectedCompany = null;
+                DebitCredit();
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
+                DataGridSelectedCompany = null;
+                CompanyId = 0;
             }
         }
 
@@ -425,6 +483,7 @@ namespace Phony.ViewModel
                 db.Companies.Add(s);
                 db.Complete();
                 Companies.Add(s);
+                DebitCredit();
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
             }
         }
@@ -469,6 +528,7 @@ namespace Phony.ViewModel
             {
                 Companies = new ObservableCollection<Company>(db.Companies);
             }
+            DebitCredit();
         }
 
         private bool CanDeleteCompany(object obj)
@@ -491,8 +551,9 @@ namespace Phony.ViewModel
                     db.Complete();
                     Companies.Remove(DataGridSelectedCompany);
                 }
-                DataGridSelectedCompany = null;
+                DebitCredit();
                 await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
+                DataGridSelectedCompany = null;
             }
         }
 
