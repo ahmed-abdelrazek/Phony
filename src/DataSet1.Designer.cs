@@ -389,6 +389,8 @@ namespace Phony {
             
             private global::System.Data.DataColumn columnBillCreateDate;
             
+            private global::System.Data.DataColumn columnMotto;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public BillDataTable() {
@@ -584,6 +586,14 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn MottoColumn {
+                get {
+                    return this.columnMotto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -639,7 +649,8 @@ namespace Phony {
                         string Email2, 
                         string Site, 
                         string StoreNotes, 
-                        System.DateTime BillCreateDate) {
+                        System.DateTime BillCreateDate, 
+                        string Motto) {
                 BillRow rowBillRow = ((BillRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         BillId,
@@ -661,7 +672,8 @@ namespace Phony {
                         Email2,
                         Site,
                         StoreNotes,
-                        BillCreateDate};
+                        BillCreateDate,
+                        Motto};
                 rowBillRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowBillRow);
                 return rowBillRow;
@@ -704,6 +716,7 @@ namespace Phony {
                 this.columnSite = base.Columns["Site"];
                 this.columnStoreNotes = base.Columns["StoreNotes"];
                 this.columnBillCreateDate = base.Columns["BillCreateDate"];
+                this.columnMotto = base.Columns["Motto"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -749,6 +762,8 @@ namespace Phony {
                 base.Columns.Add(this.columnStoreNotes);
                 this.columnBillCreateDate = new global::System.Data.DataColumn("BillCreateDate", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBillCreateDate);
+                this.columnMotto = new global::System.Data.DataColumn("Motto", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMotto);
                 this.columnBillDiscount.AllowDBNull = false;
                 this.columnBillDiscount.DefaultValue = ((decimal)(0m));
                 this.columnBillTotalAfterDiscount.AllowDBNull = false;
@@ -1802,6 +1817,22 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public string Motto {
+                get {
+                    try {
+                        return ((string)(this[this.tableBill.MottoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Motto\' in table \'Bill\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBill.MottoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsBillIdNull() {
                 return this.IsNull(this.tableBill.BillIdColumn);
             }
@@ -2014,6 +2045,18 @@ namespace Phony {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetBillCreateDateNull() {
                 this[this.tableBill.BillCreateDateColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsMottoNull() {
+                return this.IsNull(this.tableBill.MottoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetMottoNull() {
+                this[this.tableBill.MottoColumn] = global::System.Convert.DBNull;
             }
         }
         
