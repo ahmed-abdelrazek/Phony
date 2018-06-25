@@ -259,3 +259,8 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Prerequisites/NDP472-KB4054530-x86-x64-AllOS-ENU.exe
+/Prerequisites/CRRuntime_64bit_13_0_22.msi
+/Prerequisites/CRRuntime_32bit_13_0_22.msi
+/Prerequisites/SQLEXPR2012_x64_ENU.exe
+/Prerequisites/SQLEXPR2012_x32_ENU.exe
