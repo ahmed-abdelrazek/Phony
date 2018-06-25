@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Phony_TargetDir=$(var.Phony.TargetDir)?>
+	<Product Id="*" Name="Phony" Language="1033" Version="1.2.4.0" Manufacturer="ShababConquer" UpgradeCode="edfe0001-4a7e-4aeb-a838-a8ec1ab6d0de">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="Phony" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="DesktopFolder" />
+			<ComponentGroupRef Id="StartMenuFolder" />
+		</Feature>
+		<UIRef Id="MyCustomDlgSequence" />
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLManufacturerFOLDER" Name="ShababConquer">
+					<Directory Id="INSTALLAppFOLDER" Name="Phony" />
+				</Directory>
+			</Directory>
+			<Directory Id="DesktopFolder" />
+			<Directory Id="StartMenuFolder" />
+		</Directory>
+	</Fragment>
+
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLAppFOLDER">
+			<Component Id="Phony.exe" Guid="6c8862c9-027a-4b36-acca-6d6aee97700d">
+				<File Id="Phony.exe" Name="Phony.exe" Source="$(var.Phony_TargetDir)Phony.exe" />
+			</Component>
+			<Component Id="Phony.exe.config" Guid="0b9bfe21-6b9d-42cd-9590-ea489f84bff6">
+				<File Id="Phony.exe.config" Name="Phony.exe.config" Source="$(var.Phony_TargetDir)Phony.exe.config" />
+			</Component>
+			<Component Id="AttachedCommandBehavior.dll" Guid="293406b1-3482-4ba3-a32e-d25dde0d5161">
+				<File Id="AttachedCommandBehavior.dll" Name="AttachedCommandBehavior.dll" Source="$(var.Phony_TargetDir)AttachedCommandBehavior.dll" />
+			</Component>
+			<Component Id="BarcodeLib.dll" Guid="ac404896-94b4-44f1-bc3b-ee62348ae4cd">
+				<File Id="BarcodeLib.dll" Name="BarcodeLib.dll" Source="$(var.Phony_TargetDir)BarcodeLib.dll" />
+			</Component>
+			<Component Id="BespokeFusion.dll" Guid="5116c86b-e38b-4e29-8a7b-ebb9c6c8bf4f">
+				<File Id="BespokeFusion.dll" Name="BespokeFusion.dll" Source="$(var.Phony_TargetDir)BespokeFusion.dll" />
+			</Component>
+			<Component Id="ControlzEx.dll" Guid="dc734390-b40e-4a1d-bced-ae42e2a731e1">
+				<File Id="ControlzEx.dll" Name="ControlzEx.dll" Source="$(var.Phony_TargetDir)ControlzEx.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.CrystalReports.Engine.dll" Guid="9dfbf88d-ee51-4bdd-818b-10ff1b4a50e4">
+				<File Id="CrystalDecisions.CrystalReports.Engine.dll" Name="CrystalDecisions.CrystalReports.Engine.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.CrystalReports.Engine.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportSource.dll" Guid="ab273734-c32b-489e-8a5d-697749a3d53c">
+				<File Id="CrystalDecisions.ReportSource.dll" Name="CrystalDecisions.ReportSource.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportSource.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.Shared.dll" Guid="54573f45-9c88-4def-b7d1-eb7b6e4d90e0">
+				<File Id="CrystalDecisions.Shared.dll" Name="CrystalDecisions.Shared.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.Shared.dll" />
+			</Component>
+			<Component Id="Dragablz.dll" Guid="5ac73144-423c-4533-93ef-128a80794373">
+				<File Id="Dragablz.dll" Name="Dragablz.dll" Source="$(var.Phony_TargetDir)Dragablz.dll" />
+			</Component>
+			<Component Id="EntityFramework.dll" Guid="e1073a7c-781c-4839-af28-77648ca669e6">
+				<File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Phony_TargetDir)EntityFramework.dll" />
+			</Component>
+			<Component Id="Exceptionless.dll" Guid="54f0997c-1a49-4c35-a8de-9044a8aca0d6">
+				<File Id="Exceptionless.dll" Name="Exceptionless.dll" Source="$(var.Phony_TargetDir)Exceptionless.dll" />
+			</Component>
+			<Component Id="EntityFramework.SqlServer.dll" Guid="e3a23ff8-e325-423d-8ec1-51f9bc7f5941">
+				<File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.Phony_TargetDir)EntityFramework.SqlServer.dll" />
+			</Component>
+			<Component Id="Exceptionless.Wpf.dll" Guid="ddbbb704-663c-42ad-b04c-ef42c20cb59a">
+				<File Id="Exceptionless.Wpf.dll" Name="Exceptionless.Wpf.dll" Source="$(var.Phony_TargetDir)Exceptionless.Wpf.dll" />
+			</Component>
+			<Component Id="MahApps.Metro.dll" Guid="dea37451-2fcb-40e0-87d7-96dd5dd2301c">
+				<File Id="MahApps.Metro.dll" Name="MahApps.Metro.dll" Source="$(var.Phony_TargetDir)MahApps.Metro.dll" />
+			</Component>
+			<Component Id="MahApps.Metro.SimpleChildWindow.dll" Guid="5fdb4654-50c9-4bf9-b42f-89ed11dbdedd">
+				<File Id="MahApps.Metro.SimpleChildWindow.dll" Name="MahApps.Metro.SimpleChildWindow.dll" Source="$(var.Phony_TargetDir)MahApps.Metro.SimpleChildWindow.dll" />
+			</Component>
+			<Component Id="MaterialDesignColors.dll" Guid="691c83f4-7887-4915-9830-95983ebf737c">
+				<File Id="MaterialDesignColors.dll" Name="MaterialDesignColors.dll" Source="$(var.Phony_TargetDir)MaterialDesignColors.dll" />
+			</Component>
+			<Component Id="MaterialDesignThemes.MahApps.dll" Guid="1b9ee553-4864-4097-8b2a-b1b1000e5ed6">
+				<File Id="MaterialDesignThemes.MahApps.dll" Name="MaterialDesignThemes.MahApps.dll" Source="$(var.Phony_TargetDir)MaterialDesignThemes.MahApps.dll" />
+			</Component>
+			<Component Id="MaterialDesignThemes.Wpf.dll" Guid="10ea9d0f-57bf-4383-8613-720a7cc11cdb">
+				<File Id="MaterialDesignThemes.Wpf.dll" Name="MaterialDesignThemes.Wpf.dll" Source="$(var.Phony_TargetDir)MaterialDesignThemes.Wpf.dll" />
+			</Component>
+			<Component Id="Microsoft.WindowsAPICodePack.dll" Guid="b1791145-39ce-4ef1-b783-ab287f06c2d2">
+				<File Id="Microsoft.WindowsAPICodePack.dll" Name="Microsoft.WindowsAPICodePack.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.dll" />
+			</Component>
+			<Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Guid="47128e4b-e400-4c15-9d31-8f37f6c04332">
+				<File Id="Microsoft.WindowsAPICodePack.Shell.dll" Name="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
+			</Component>
+			<Component Id="SAPBusinessObjects.WPF.Viewer.dll" Guid="8d628b50-dcde-4f58-83c3-69123cc38f3c">
+				<File Id="SAPBusinessObjects.WPF.Viewer.dll" Name="SAPBusinessObjects.WPF.Viewer.dll" Source="$(var.Phony_TargetDir)SAPBusinessObjects.WPF.Viewer.dll" />
+			</Component>
+			<Component Id="SAPBusinessObjects.WPF.ViewerShared.dll" Guid="5c52b9de-cf11-4d5a-b7b8-d790261a346b">
+				<File Id="SAPBusinessObjects.WPF.ViewerShared.dll" Name="SAPBusinessObjects.WPF.ViewerShared.dll" Source="$(var.Phony_TargetDir)SAPBusinessObjects.WPF.ViewerShared.dll" />
+			</Component>
+			<Component Id="System.Windows.Interactivity.dll" Guid="4ed7d2cc-2365-4890-966c-3cedd0dcf269">
+				<File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.Phony_TargetDir)System.Windows.Interactivity.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.DataDefModel.dll" Guid="cc90a204-a297-4ae2-9944-2edb3993acde">
+				<File Id="CrystalDecisions.ReportAppServer.DataDefModel.dll" Name="CrystalDecisions.ReportAppServer.DataDefModel.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.DataDefModel.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.ClientDoc.dll" Guid="43c2f3b6-42f7-46bb-a109-180b569cf1f9">
+				<File Id="CrystalDecisions.ReportAppServer.ClientDoc.dll" Name="CrystalDecisions.ReportAppServer.ClientDoc.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.ClientDoc.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.ReportDefModel.dll" Guid="418a260c-214e-482a-b038-77dfff00e7dc">
+				<File Id="CrystalDecisions.ReportAppServer.ReportDefModel.dll" Name="CrystalDecisions.ReportAppServer.ReportDefModel.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.ReportDefModel.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.Controllers.dll" Guid="cceaea9a-c094-46ad-af6c-c2d5f2bbbd83">
+				<File Id="CrystalDecisions.ReportAppServer.Controllers.dll" Name="CrystalDecisions.ReportAppServer.Controllers.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.Controllers.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.CommLayer.dll" Guid="3b17c09a-d6df-46db-b502-28a0624fcbe6">
+				<File Id="CrystalDecisions.ReportAppServer.CommLayer.dll" Name="CrystalDecisions.ReportAppServer.CommLayer.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.CommLayer.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.DataSetConversion.dll" Guid="1592fc0c-3390-4099-8d2a-750932096482">
+				<File Id="CrystalDecisions.ReportAppServer.DataSetConversion.dll" Name="CrystalDecisions.ReportAppServer.DataSetConversion.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.DataSetConversion.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.Prompting.dll" Guid="4c808236-65ae-4fce-9cf3-a64a10e6b5aa">
+				<File Id="CrystalDecisions.ReportAppServer.Prompting.dll" Name="CrystalDecisions.ReportAppServer.Prompting.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.Prompting.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.XmlSerialize.dll" Guid="ce84702a-2b1b-4992-a5bb-30c80302211e">
+				<File Id="CrystalDecisions.ReportAppServer.XmlSerialize.dll" Name="CrystalDecisions.ReportAppServer.XmlSerialize.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.XmlSerialize.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.CubeDefModel.dll" Guid="0dfc7a30-087c-4c88-8e2a-8b1b2800929a">
+				<File Id="CrystalDecisions.ReportAppServer.CubeDefModel.dll" Name="CrystalDecisions.ReportAppServer.CubeDefModel.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.CubeDefModel.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.CommonObjectModel.dll" Guid="67a39a66-e8e3-469a-9983-aa1ccec6ec97">
+				<File Id="CrystalDecisions.ReportAppServer.CommonObjectModel.dll" Name="CrystalDecisions.ReportAppServer.CommonObjectModel.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.CommonObjectModel.dll" />
+			</Component>
+			<Component Id="CrystalDecisions.ReportAppServer.ObjectFactory.dll" Guid="f74a8132-dd58-4a1e-ba31-256623706950">
+				<File Id="CrystalDecisions.ReportAppServer.ObjectFactory.dll" Name="CrystalDecisions.ReportAppServer.ObjectFactory.dll" Source="$(var.Phony_TargetDir)CrystalDecisions.ReportAppServer.ObjectFactory.dll" />
+			</Component>
+			<Component Id="FlashControlV71.dll" Guid="a20db46d-a854-40de-88aa-c6a5f3343a8e">
+				<File Id="FlashControlV71.dll" Name="FlashControlV71.dll" Source="$(var.Phony_TargetDir)FlashControlV71.dll" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+	
+	<Fragment>
+		<ComponentGroup Id="DesktopFolder" Directory="DesktopFolder">
+			<Component Id="DesktopShortCutCom" Guid="ED4B06FB-2D19-49c7-8362-034C263308D9" Permanent="no" SharedDllRefCount="no" Transitive="no">
+				<Shortcut Id="DesktopShortCut" Directory="DesktopFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppDesktopIcon" WorkingDirectory="DesktopFolder">
+					<Icon Id="AppDesktopIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
+				</Shortcut>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="DesktopShortCutCom" Type="string" Value="User's Desktop directory" KeyPath="yes" />
+				<RemoveFile Id="RemoveDesktopShortCut" On="uninstall" Name="Phony.exe" Directory="DesktopFolder" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="StartMenuFolder" Directory="StartMenuFolder">
+			<Component Id="StartShortCut" Guid="CDA4377F-D267-4071-888A-67C19C90E15A" Permanent="no" SharedDllRefCount="no" Transitive="no">
+				<Shortcut Id="_21511C47_F730_4900_A7ED_AB82CF9DFFA2" Directory="StartMenuFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppStartIcon" WorkingDirectory="StartMenuFolder">
+					<Icon Id="AppStartIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
+				</Shortcut>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="StartShortCut" Type="string" Value="User's Desktop directory" KeyPath="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+	<Fragment>
+		<UI Id="MyCustomDlgSequence">
+			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+			<TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+			<Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+			<Property Id="WixUI_Mode" Value="InstallDir" />
+
+			<DialogRef Id="BrowseDlg" />
+			<DialogRef Id="DiskCostDlg" />
+			<DialogRef Id="ErrorDlg" />
+			<DialogRef Id="FatalError" />
+			<DialogRef Id="FilesInUse" />
+			<DialogRef Id="MsiRMFilesInUse" />
+			<DialogRef Id="PrepareDlg" />
+			<DialogRef Id="ProgressDlg" />
+			<DialogRef Id="ResumeDlg" />
+			<DialogRef Id="UserExit" />
+
+			<Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+			<Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+
+			<Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+			<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="PrepareDlg">1</Publish>
+
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="1">NOT Installed</Publish>
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
+			<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">Installed AND PATCH</Publish>
+
+			<Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+			<Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+			<Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+			<Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+			<Property Id="ARPNOMODIFY" Value="1" />
+		</UI>
+
+		<UIRef Id="WixUI_Common" />
+	</Fragment>
+</Wix>
