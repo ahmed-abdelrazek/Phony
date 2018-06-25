@@ -333,15 +333,15 @@ namespace Phony.ViewModel
             });
             await Task.Run(() =>
             {
-                ClientDebits = $"اجمالى لينا: {Debit.ToString()}";
+                ClientDebits = $"اجمالى لينا: {Math.Abs(Debit).ToString()}";
             });
             await Task.Run(() =>
             {
-                ClientCredits = $"اجمالى علينا: {Credit.ToString()}";
+                ClientCredits = $"اجمالى علينا: {Math.Abs(Credit).ToString()}";
             });
             await Task.Run(() =>
             {
-                ClientProfit = $"تقدير لصافى لينا: {(Debit + Credit).ToString()}";
+                ClientProfit = $"تقدير لصافى لينا: {(Math.Abs(Debit) - Math.Abs(Credit)).ToString()}";
             });
         }
 
@@ -466,9 +466,9 @@ namespace Phony.ViewModel
                             });
                         }
                         db.Complete();
+                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                         DebitCredit();
-                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         ClientId = 0;
                         DataGridSelectedClient = null;
                     }
@@ -526,9 +526,9 @@ namespace Phony.ViewModel
                             CreatedById = CurrentUser.Id
                         });
                         db.Complete();
+                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم دفع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                         DebitCredit();
-                        await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
                         ClientId = 0;
                         DataGridSelectedClient = null;
                     }
@@ -586,8 +586,8 @@ namespace Phony.ViewModel
                 db.Clients.Add(c);
                 db.Complete();
                 Clients.Add(c);
-                DebitCredit();
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
+                DebitCredit();
             }
         }
 
@@ -614,9 +614,9 @@ namespace Phony.ViewModel
                 c.EditDate = DateTime.Now;
                 c.EditById = CurrentUser.Id;
                 db.Complete();
+                ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
                 Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                 DebitCredit();
-                ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
                 DataGridSelectedClient = null;
                 ClientId = 0;
             }
@@ -642,8 +642,8 @@ namespace Phony.ViewModel
                     db.Complete();
                     Clients.Remove(DataGridSelectedClient);
                 }
-                DebitCredit();
                 await ClientsMessage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
+                DebitCredit();
                 DataGridSelectedClient = null;
             }
         }

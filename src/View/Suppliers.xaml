@@ -50,7 +50,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="اسم المورد" FontSize="14"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الرصيد" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الرصيد" StringFormat="F" FontFamily="Segoe UI"/>
                 <DataGridTextColumn Binding="{Binding Site}" Header="الموقع"/>
                 <DataGridTextColumn Binding="{Binding Email}" Header="الايميل"/>
                 <DataGridTextColumn Binding="{Binding Phone}" Header="الهاتف"/>
@@ -133,7 +133,7 @@
                     <TextBlock Text="اسم المورد" Margin="5,0"/>
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم المورد" Margin="5" MaxLength="50"/>
                     <TextBlock Text="الرصيد" Margin="5,0"/>
-                    <Controls:NumericUpDown Value="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" StringFormat="F" Minimum="0" Controls:TextBoxHelper.Watermark="الرصيد" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
+                    <Controls:NumericUpDown Value="{Binding Balance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HasDecimals="True" StringFormat="F" Controls:TextBoxHelper.Watermark="الرصيد" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" NumericInputMode="Decimal" FontFamily="Segoe UI" FontSize="14"/>
                     <StackPanel Margin="5">
                         <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
                         <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="200" Margin="5" Stretch="Fill"/>

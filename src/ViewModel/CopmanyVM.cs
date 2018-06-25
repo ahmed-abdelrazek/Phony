@@ -294,15 +294,15 @@ namespace Phony.ViewModel
             });
             await Task.Run(() =>
             {
-                CompaniesDebits = $"اجمالى لينا: {Debit.ToString()}";
+                CompaniesDebits = $"اجمالى لينا: {Math.Abs(Debit).ToString()}";
             });
             await Task.Run(() =>
             {
-                CompaniesCredits = $"اجمالى علينا: {Credit.ToString()}";
+                CompaniesCredits = $"اجمالى علينا: {Math.Abs(Credit).ToString()}";
             });
             await Task.Run(() =>
             {
-                CompaniesProfit = $"تقدير لصافى لينا: {(Debit + Credit).ToString()}";
+                CompaniesProfit = $"تقدير لصافى لينا: {(Math.Abs(Debit) - Math.Abs(Credit)).ToString()}";
             });
         }
 
@@ -345,9 +345,9 @@ namespace Phony.ViewModel
                         };
                         db.CompaniesMoves.Add(sm);
                         db.Complete();
+                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
                         DebitCredit();
-                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         DataGridSelectedCompany = null;
                         CompanyId = 0;
                     }
@@ -407,9 +407,9 @@ namespace Phony.ViewModel
                             CreatedById = CurrentUser.Id
                         });
                         db.Complete();
+                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
                         DebitCredit();
-                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         DataGridSelectedCompany = null;
                         CompanyId = 0;
                     }
@@ -445,9 +445,9 @@ namespace Phony.ViewModel
                 c.EditDate = DateTime.Now;
                 c.EditById = CurrentUser.Id;
                 db.Complete();
+                CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
                 DebitCredit();
-                CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 DataGridSelectedCompany = null;
                 CompanyId = 0;
             }
@@ -483,8 +483,8 @@ namespace Phony.ViewModel
                 db.Companies.Add(s);
                 db.Complete();
                 Companies.Add(s);
-                DebitCredit();
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
+                DebitCredit();
             }
         }
 
@@ -551,8 +551,8 @@ namespace Phony.ViewModel
                     db.Complete();
                     Companies.Remove(DataGridSelectedCompany);
                 }
-                DebitCredit();
                 await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
+                DebitCredit();
                 DataGridSelectedCompany = null;
             }
         }
