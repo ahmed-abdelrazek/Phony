@@ -2,7 +2,15 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Phony_TargetDir=$(var.Phony.TargetDir)?>
 	<Product Id="*" Name="Phony" Language="1033" Version="1.2.4.0" Manufacturer="ShababConquer" UpgradeCode="edfe0001-4a7e-4aeb-a838-a8ec1ab6d0de">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-
+		<?if $(var.Platform) = x64 ?>
+		<?define Win64 = "yes" ?>
+		<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+		<?else ?>
+		<?define Win64 = "no" ?>
+		<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+		<?endif ?>
+		<?define ProductName = "Phony" ?>
+		<?define Manufacturer = "ShababConquer" ?>
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
@@ -12,13 +20,17 @@
 			<ComponentGroupRef Id="StartMenuFolder" />
 		</Feature>
 		<UIRef Id="MyCustomDlgSequence" />
+		<WixVariable Id="WixUILicenseRtf" Value="..\Prerequisites\ReadMe.rtf" />
+		<Icon Id="app.ico" SourceFile="..\src\Resources\PhonyIcon.ico" />
+		<Property Id="ARPPRODUCTICON" Value="app.ico" />
+		<Property Id="ARPHELPLINK" Value="http://shababco.blogspot.com/" />
 	</Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLManufacturerFOLDER" Name="ShababConquer">
-					<Directory Id="INSTALLAppFOLDER" Name="Phony" />
+			<Directory Id="$(var.PlatformProgramFilesFolder)">
+				<Directory Id="INSTALLManufacturerFOLDER" Name="$(var.Manufacturer)">
+					<Directory Id="INSTALLAppFOLDER" Name="$(var.ProductName)" />
 				</Directory>
 			</Directory>
 			<Directory Id="DesktopFolder" />
@@ -165,9 +177,10 @@
 
 	<Fragment>
 		<UI Id="MyCustomDlgSequence">
-			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
-			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
-			<TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="10" />
+			<TextStyle Id="WixUI_Font_Big"    FaceName="Tahoma" Size="12" />
+			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="14" />
+			<TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="12" Bold="yes" />
 
 			<Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
 			<Property Id="WixUI_Mode" Value="InstallDir" />
