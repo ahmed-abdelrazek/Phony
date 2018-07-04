@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Phony.Kernel;
 using Phony.ViewModel;
 using System;
 using System.Windows.Threading;
@@ -44,6 +45,25 @@ namespace Phony.View
         private void metroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void metroWindow_ContentRendered(object sender, EventArgs e)
+        {
+
+            if (!Properties.Settings.Default.IsConfigured)
+            {
+                try
+                {
+                    //todo Add option to settings to change connection string 
+                    //new Settings().ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    Properties.Settings.Default.IsConfigured = false;
+                    Properties.Settings.Default.Save();
+                    Core.SaveException(ex);
+                }
+            }
         }
     }
 }

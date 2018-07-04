@@ -1,5 +1,6 @@
 namespace Phony.Migrations
 {
+    using System;
     using System.Data.Entity.Migrations;
 
     public partial class DebitCreditAndMotto : DbMigration
@@ -33,6 +34,13 @@ namespace Phony.Migrations
             DropColumn("dbo.ClientMoves", "Amount");
             DropColumn("dbo.TreasuryMoves", "In");
             DropColumn("dbo.TreasuryMoves", "Out");
+            Sql($"SET IDENTITY_INSERT [dbo].[Users] ON; INSERT [dbo].[Users] ([Id], [Name], [Pass], [Group], [Phone], [Notes], [IsActive]) VALUES (1, N'admin', N'$MYHASH$V1$10000$xQaTtKU6U52if7+pq1NsSb+tTSvIrB7BVez88O5qKydHSgFP', 1, NULL, NULL, 1); SET IDENTITY_INSERT [dbo].[Users] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[Clients] ON; INSERT [dbo].[Clients] ([Id], [Name], [Balance], [Site], [Email], [Phone], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate]) VALUES (1, N'كاش', CAST(0.00 AS Decimal(18, 2)), NULL, NULL, NULL, NULL, 1, GETDATE(), NULL, NULL); SET IDENTITY_INSERT [dbo].[Clients] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[Companies] ON; INSERT [dbo].[Companies] ([Id], [Name], [Balance], [Image], [Site], [Email], [Phone], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate]) VALUES (1, N'لا يوجد', CAST(0.00 AS Decimal(18, 2)), NULL, NULL, NULL, NULL, NULL, 1, GETDATE(), NULL, NULL); SET IDENTITY_INSERT [dbo].[Companies] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[SalesMen] ON; INSERT [dbo].[SalesMen] ([Id], [Name], [Balance], [Site], [Email], [Phone], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate]) VALUES (1, N'لا يوجد', CAST(0.00 AS Decimal(18, 2)), NULL, NULL, NULL, NULL, 1, GETDATE(), NULL, NULL); SET IDENTITY_INSERT [dbo].[SalesMen] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[Stores] ON; INSERT [dbo].[Stores] ([Id], [Name], [Image], [Address1], [Address2], [Tel1], [Tel2], [Phone1], [Phone2], [Email1], [Email2], [Site], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate], [Motto]) VALUES (1, N'التوكل', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, GETDATE(), NULL, NULL, NULL); SET IDENTITY_INSERT [dbo].[Stores] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[Suppliers] ON; INSERT [dbo].[Suppliers] ([Id], [Name], [Balance], [Image], [Site], [Email], [Phone], [SalesManId], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate]) VALUES (1, N'لا يوجد', CAST(0.00 AS Decimal(18, 2)), NULL, NULL, NULL, NULL, 1, NULL, 1, GETDATE(), NULL, NULL); SET IDENTITY_INSERT [dbo].[Suppliers] OFF");
+            Sql($"SET IDENTITY_INSERT [dbo].[Treasuries] ON; INSERT [dbo].[Treasuries] ([Id], [Name], [Balance], [StoreId], [Notes], [CreatedById], [CreateDate], [EditById], [EditDate]) VALUES (1, N'الرئيسية', CAST(0.00 AS Decimal(18, 2)), 1, NULL, 1, GETDATE(), NULL, NULL); SET IDENTITY_INSERT [dbo].[Treasuries] OFF");
         }
         
         public override void Down()

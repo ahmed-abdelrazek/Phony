@@ -5,6 +5,7 @@ using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,10 +53,13 @@ namespace Phony.ViewModel
 
         Visibility _billClientPaymentChangeVisible;
 
+        List<Client> _clients;
+        List<Item> _items;
+        List<Service> _services;
+        List<User> _users;
+
         ObservableCollection<object> _searchItems;
-
         ObservableCollection<BillItemMove> _billItemsMoves;
-
         ObservableCollection<BillServiceMove> _billServicesMoves;
 
         public long SearchSelectedValue
@@ -143,7 +147,7 @@ namespace Phony.ViewModel
             {
                 if (value != _billTotal)
                 {
-                    _billTotal = value;
+                    _billTotal = Math.Round(value, 2);
                     RaisePropertyChanged();
                 }
             }
@@ -156,7 +160,7 @@ namespace Phony.ViewModel
             {
                 if (value != _billTotalAfterEachDiscount)
                 {
-                    _billTotalAfterEachDiscount = value;
+                    _billTotalAfterEachDiscount = Math.Round(value, 2);
                     RaisePropertyChanged();
                 }
             }
@@ -172,11 +176,11 @@ namespace Phony.ViewModel
                     _billDiscount = value;
                     if (_billDiscount > 0)
                     {
-                        BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100));
+                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2);
                     }
                     else
                     {
-                        BillTotalAfterDiscount = BillTotalAfterEachDiscount;
+                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount, 2);
                     }
                     RaisePropertyChanged();
                 }
@@ -190,7 +194,7 @@ namespace Phony.ViewModel
             {
                 if (value != _billTotalAfterDiscount)
                 {
-                    _billTotalAfterDiscount = value;
+                    _billTotalAfterDiscount = Math.Round(value, 2);
                     RaisePropertyChanged();
                 }
             }
@@ -206,7 +210,7 @@ namespace Phony.ViewModel
                     _billClientPayment = value;
                     if (_billClientPayment > BillTotalAfterDiscount)
                     {
-                        BillClientPaymentChange = _billClientPayment - BillTotalAfterDiscount;
+                        BillClientPaymentChange = Math.Round(_billClientPayment - BillTotalAfterDiscount, 2);
                         BillClientPaymentChangeVisible = Visibility.Visible;
                     }
                     else
@@ -226,7 +230,7 @@ namespace Phony.ViewModel
             {
                 if (value != _billClientPaymentChange)
                 {
-                    _billClientPaymentChange = value;
+                    _billClientPaymentChange = Math.Round(value, 2);
                     RaisePropertyChanged();
                 }
             }
@@ -568,13 +572,57 @@ namespace Phony.ViewModel
             }
         }
 
-        public ObservableCollection<Client> Clients { get; set; }
+        public List<Client> Clients
+        {
+            get => _clients;
+            set
+            {
+                if (value != _clients)
+                {
+                    _clients = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
-        public ObservableCollection<Item> Items { get; set; }
+        public List<Item> Items
+        {
+            get => _items;
+            set
+            {
+                if (value != _items)
+                {
+                    _items = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
-        public ObservableCollection<Service> Services { get; set; }
+        public List<Service> Services
+        {
+            get => _services;
+            set
+            {
+                if (value != _services)
+                {
+                    _services = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
-        public ObservableCollection<User> Users { get; set; }
+        public List<User> Users
+        {
+            get => _users;
+            set
+            {
+                if (value != _users)
+                {
+                    _users = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public ICommand Search { get; set; }
         public ICommand AddBillMove { get; set; }
@@ -595,15 +643,15 @@ namespace Phony.ViewModel
             ByName = true;
             ByItem = true;
             BillClientPaymentChangeVisible = Visibility.Collapsed;
-            using (var db = new PhonyDbContext())
+            using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                Clients = new ObservableCollection<Client>(db.Clients);
-                Items = new ObservableCollection<Item>(db.Items);
-                Services = new ObservableCollection<Service>(db.Services);
-                Users = new ObservableCollection<User>(db.Users);
-                BillItemsMoves = new ObservableCollection<BillItemMove>();
-                BillServicesMoves = new ObservableCollection<BillServiceMove>();
+                Clients = new List<Client>(db.Clients.GetAll());
+                Items = new List<Item>(db.Items.GetAll());
+                Services = new List<Service>(db.Services.GetAll());
+                Users = new List<User>(db.Users.GetAll());
             }
+            BillItemsMoves = new ObservableCollection<BillItemMove>();
+            BillServicesMoves = new ObservableCollection<BillServiceMove>();
             NewBillNo();
         }
 
@@ -799,22 +847,12 @@ namespace Phony.ViewModel
             BillDiscount = 0;
             BillTotalAfterDiscount = 0;
             BillClientPayment = 0;
+            SearchSelectedValue = 0;
             using (var db = new PhonyDbContext())
             {
-                if (ByItem)
-                {
-                    SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other));
-                }
-                else if (ByCard)
-                {
-                    SearchItems = new ObservableCollection<object>(db.Items.Where(c => c.Group == ItemGroup.Card));
-                }
-                else if (ByService)
-                {
-                    SearchItems = new ObservableCollection<object>(db.Services);
-                }
-                Services = new ObservableCollection<Service>(db.Services);
-                Items = new ObservableCollection<Item>(db.Items);
+                Clients = new List<Client>(db.Clients);
+                Items = new List<Item>(db.Items);
+                Services = new List<Service>(db.Services);
                 SearchSelectedValue = 0;
             }
         }
@@ -992,113 +1030,7 @@ namespace Phony.ViewModel
                 {
                     if (ByName)
                     {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText)));
-                            if (SearchItems.Count > 0)
-                            {
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الاسم");
-                            }
-                        }
-                    }
-                    else if (ByBarCode)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Barcode == SearchText));
-                            if (SearchItems.Count > 0)
-                            {
-                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText).Id;
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الباركود");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText));
-                            if (SearchItems.Count > 0)
-                            {
-                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText).Id;
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بكود المحل هذا");
-                            }
-                        }
-                    }
-                }
-                else if (ByCard)
-                {
-                    if (ByName)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Name.Contains(SearchText)));
-                            if (SearchItems.Count > 0)
-                            {
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الاسم");
-                            }
-                        }
-                    }
-                    else if (ByBarCode)
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Barcode == SearchText));
-                            if (SearchItems.Count > 0)
-                            {
-                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Barcode == SearchText).Id;
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الباركود");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var db = new PhonyDbContext())
-                        {
-                            SearchItems = new ObservableCollection<object>(db.Items.Where(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText));
-                            if (SearchItems.Count > 0)
-                            {
-                                SearchSelectedValue = db.Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText).Id;
-                                IsSearchDropDownOpen = true;
-                            }
-                            else
-                            {
-                                SearchSelectedValue = 0;
-                                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بكود المحل هذا");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    using (var db = new PhonyDbContext())
-                    {
-                        SearchItems = new ObservableCollection<object>(db.Services.Where(s => s.Name.Contains(SearchText)));
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText)));
                         if (SearchItems.Count > 0)
                         {
                             IsSearchDropDownOpen = true;
@@ -1106,8 +1038,93 @@ namespace Phony.ViewModel
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد خدمه بهذا الاسم");
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الاسم");
                         }
+                    }
+                    else if (ByBarCode)
+                    {
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Barcode == SearchText));
+                        if (SearchItems.Count > 0)
+                        {
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText).Id;
+                            IsSearchDropDownOpen = true;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الباركود");
+                        }
+                    }
+                    else
+                    {
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText));
+                        if (SearchItems.Count > 0)
+                        {
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText).Id;
+                            IsSearchDropDownOpen = true;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بكود المحل هذا");
+                        }
+                    }
+                }
+                else if (ByCard)
+                {
+                    if (ByName)
+                    {
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Name.Contains(SearchText)));
+                        if (SearchItems.Count > 0)
+                        {
+                            IsSearchDropDownOpen = true;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الاسم");
+                        }
+                    }
+                    else if (ByBarCode)
+                    {
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Barcode == SearchText));
+                        if (SearchItems.Count > 0)
+                        {
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Barcode == SearchText).Id;
+                            IsSearchDropDownOpen = true;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الباركود");
+                        }
+                    }
+                    else
+                    {
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText));
+                        if (SearchItems.Count > 0)
+                        {
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText).Id;
+                            IsSearchDropDownOpen = true;
+                        }
+                        else
+                        {
+                            SearchSelectedValue = 0;
+                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بكود المحل هذا");
+                        }
+                    }
+                }
+                else
+                {
+                    SearchItems = new ObservableCollection<object>(Services.Where(s => s.Name.Contains(SearchText)));
+                    if (SearchItems.Count > 0)
+                    {
+                        IsSearchDropDownOpen = true;
+                    }
+                    else
+                    {
+                        SearchSelectedValue = 0;
+                        BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد خدمه بهذا الاسم");
                     }
                 }
             }
