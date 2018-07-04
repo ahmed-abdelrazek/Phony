@@ -264,3 +264,5 @@ __pycache__/
 /Prerequisites/CRRuntime_32bit_13_0_22.msi
 /Prerequisites/SQLEXPR2012_x64_ENU.exe
 /Prerequisites/SQLEXPR2012_x32_ENU.exe
+/Prerequisites/CRRuntime_32bit_13_0_23.msi
+/Prerequisites/CRRuntime_64bit_13_0_23.msi

@@ -14,7 +14,7 @@
     <Chain>
       <ExePackage Id="NetFx472" SourceFile="..\Prerequisites\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" Permanent="yes" InstallCommand="/q" RepairCommand="/q" DetectCondition="DotNetInstall" InstallCondition="NOT DotNetInstall >= 4703056"/>
       <ExePackage Id="SQLEXPR2012" SourceFile="..\Prerequisites\SQLEXPR2012_x64_ENU.exe" Permanent="yes" Vital="no" InstallCommand="/QS /IACCEPTSQLSERVERLICENSETERMS /ACTION=Install /FEATURES=SQLEngine /INSTANCENAME=SQLEXPRESS /UpdateEnabled=False /INDICATEPROGRESS=False /SQLSVCSTARTUPTYPE=Automatic /BROWSERSVCSTARTUPTYPE=Automatic /ENABLERANU=True /NPENABLED=1 /TCPENABLED=1 /HIDECONSOLE" DetectCondition="Sql12 AND Sql14 AND Sql16 AND Sql17 AND Sqlexpress" InstallCondition="VersionNT64 >= v5.1 AND NOT (Sql12 OR Sql14 OR Sql16 OR Sql17) AND NOT Sqlexpress"/>
-      <MsiPackage Id="CRx64" SourceFile="..\Prerequisites\CRRuntime_64bit_13_0_22.msi" Permanent="yes" ForcePerMachine="yes" InstallCondition="VersionNT64 >= v5.1"/>
+      <MsiPackage Id="CRx64" SourceFile="..\Prerequisites\CRRuntime_64bit_13_0_23.msi" Permanent="no" Vital="no" ForcePerMachine="yes" InstallCondition="VersionNT64 >= v5.1"/>
       <MsiPackage Id="EasySetup" SourceFile="..\Installer\bin\Release\PhonySetup.msi"/>
     </Chain>
   </Bundle>
