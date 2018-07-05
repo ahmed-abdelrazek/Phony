@@ -8,7 +8,7 @@
                       xmlns:converts="clr-namespace:Phony.Converters"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="باركود" FlowDirection="RightToLeft" Height="600" Width="800" WindowState="Maximized" WindowStartupLocation="CenterScreen">
+        Title="باركود" FlowDirection="RightToLeft" Height="600" Width="800" Icon="{DynamicResource barcodeDrawingImage}" WindowState="Maximized" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.DataContext>
         <vm:BarcodeVM/>
     </Controls:MetroWindow.DataContext>

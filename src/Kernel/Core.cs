@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -20,10 +21,25 @@ namespace Phony.Kernel
         {
             try
             {
-                await Task.Run(() =>
+                if (Properties.Settings.Default.IsConfigured)
                 {
-                    Database.SetInitializer(new MigrateDatabaseToLatestVersion<PhonyDbContext, Migrations.Configuration>());
-                });
+                    using (SqlConnection connection = new SqlConnection(Properties.Settings.Default.ConnectionString))
+                    {
+                        try
+                        {
+                            connection.Open();
+                            connection.Close();
+                            using (var db = new PhonyDbContext())
+                            {
+                                var i = await db.Items.FirstOrDefaultAsync();
+                            }
+                        }
+                        catch (SqlException)
+                        {
+                            BespokeFusion.MaterialMessageBox.ShowError("هناك مشكله فى الاتصال بقاعدة البيانات");
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {

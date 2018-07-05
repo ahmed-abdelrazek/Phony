@@ -219,7 +219,10 @@ namespace Phony
             {
                 Console.WriteLine(ex.ToString());
             }
-            Core.StartUp_Engine();
+            new Thread(() =>
+            {
+                Core.StartUp_Engine();
+            }).Start();
             base.OnStartup(e);
         }
     }

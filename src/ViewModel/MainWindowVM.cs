@@ -41,7 +41,7 @@ namespace Phony.ViewModel
 
         private void DoOpenSettingsWindow(object obj)
         {
-            new Settings().ShowDialog();
+            new Settings(0).ShowDialog();
         }
 
         private void ChangeCurrentSource(object obj)

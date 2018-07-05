@@ -6,7 +6,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="النواقص" FlowDirection="RightToLeft" Height="450" Width="450" WindowStartupLocation="CenterScreen">
+        Title="النواقص" FlowDirection="RightToLeft" Height="450" Width="450" Icon="{DynamicResource package_variant_closedDrawingImage}" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.DataContext>
         <vm:ShortageVM/>
     </Controls:MetroWindow.DataContext>

@@ -8,7 +8,7 @@
                       xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_multiple_outlineDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
         <vm:UserVM/>
     </Controls:MetroWindow.DataContext>

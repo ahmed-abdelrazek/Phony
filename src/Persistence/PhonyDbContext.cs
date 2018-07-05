@@ -7,7 +7,7 @@ namespace Phony.Persistence
     public class PhonyDbContext : DbContext
     {
         public PhonyDbContext()
-            : base($"name=Phony.Properties.Settings.ConnectionString")
+            : base(Properties.Settings.Default.ConnectionString)
         {
         }
 

@@ -9,7 +9,7 @@
                       xmlns:converts="clr-namespace:Phony.Converters"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="الخدمات" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="خدمات شركات" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource workerDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.Resources>
         <converts:BinaryImageConverter x:Key="ImageToSource"/>
     </Controls:MetroWindow.Resources>

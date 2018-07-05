@@ -9,7 +9,7 @@
                       xmlns:converts="clr-namespace:Phony.Converters"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="فواتير" FlowDirection="RightToLeft" Height="600" Width="800" WindowState="Maximized" WindowStartupLocation="CenterScreen">
+        Title="فواتير" FlowDirection="RightToLeft" Height="600" Width="800" Icon="{DynamicResource File_Document_BoxDrawingImage}" WindowState="Maximized" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.Resources>
         <converts:BooleanToVisibilityCollapsedConvertor x:Key="BToV"/>
         <converts:InverseBooleanToVisibilityCollapsedConvertor x:Key="IBToV"/>

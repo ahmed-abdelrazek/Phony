@@ -9,7 +9,7 @@
                       xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="المندوبين" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="المندوبين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_switchDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
         <vm:SalesManVM/>
     </Controls:MetroWindow.DataContext>

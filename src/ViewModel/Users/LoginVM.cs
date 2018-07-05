@@ -3,6 +3,7 @@ using Phony.Kernel;
 using Phony.Persistence;
 using Phony.Utility;
 using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -100,36 +101,50 @@ namespace Phony.ViewModel.Users
 
         private async void DoLogIn(object obj)
         {
-            IsLogging = true;
-            try
+            if (!IsLogging)
             {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
+                IsLogging = true;
+                try
                 {
-                    Model.User u = null;
-                    await Task.Run(() =>
+                    using (SqlConnection connection = new SqlConnection(Properties.Settings.Default.ConnectionString))
                     {
-                        u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
-                    });
-                    if (u == null)
-                    {
-                        await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                        connection.Open();
+                        if (connection.State == System.Data.ConnectionState.Open)
+                        {
+                            connection.Close();
+                        }
                     }
-                    else
+                    using (var db = new UnitOfWork(new PhonyDbContext()))
                     {
-                        Id = u.Id;
-                        Name = u.Name;
-                        Group = u.Group;
-                        v.PageName = "Main";
+                        Model.User u = null;
+                        await Task.Run(() =>
+                        {
+                            u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
+                        });
+                        if (u == null)
+                        {
+                            await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            Id = u.Id;
+                            Name = u.Name;
+                            Group = u.Group;
+                            v.PageName = "Main";
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Core.SaveException(ex);
-                if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
+                catch (Exception ex)
                 {
-                    BespokeFusion.MaterialMessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
+                    Core.SaveException(ex);
+                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
+                    {
+                        BespokeFusion.MaterialMessageBox.ShowError($"البرنامج لا يستطيع الاتصال بقاعده البيانات {Environment.NewLine} قم باعادة تشغيل البرنامج لاعداده من البدايه");
+                    }
+                    Properties.Settings.Default.IsConfigured = false;
+                    Properties.Settings.Default.Save();
                 }
+                IsLogging = false;
             }
         }
 

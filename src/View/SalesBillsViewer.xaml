@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:Phony.ViewModel"
         xmlns:cr="clr-namespace:SAPBusinessObjects.WPF.Viewer;assembly=SAPBusinessObjects.WPF.Viewer"
         mc:Ignorable="d"
-        Title="طباعة الفواتير" FlowDirection="RightToLeft" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="طباعة الفواتير" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource PrinterDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.DataContext>
         <vm:SalesBillsViewerVM/>
     </Window.DataContext>

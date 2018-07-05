@@ -35,7 +35,7 @@ namespace Phony.View
                 else
                 {
                     if (WindowState != System.Windows.WindowState.Normal)
-                    { 
+                    {
                         WindowState = System.Windows.WindowState.Normal;
                     }
                 }
@@ -49,13 +49,11 @@ namespace Phony.View
 
         private void metroWindow_ContentRendered(object sender, EventArgs e)
         {
-
             if (!Properties.Settings.Default.IsConfigured)
             {
                 try
                 {
-                    //todo Add option to settings to change connection string 
-                    //new Settings().ShowDialog();
+                    new Settings(1).ShowDialog();
                 }
                 catch (Exception ex)
                 {
