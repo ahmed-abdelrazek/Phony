@@ -27,7 +27,7 @@
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
         <StatusBar Grid.Row="2">
-            <Label Content="{Binding ItemsCount}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding ItemsCount}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>

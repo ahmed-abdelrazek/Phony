@@ -155,10 +155,10 @@
             </Grid>
         </simpleChildWindow:ChildWindow>
         <StatusBar Grid.Row="2">
-            <Label Content="{Binding CardsCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CardsPurchasePrice}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CardsSalePrice}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CardsProfit}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding CardsCount}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CardsPurchasePrice}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CardsSalePrice}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CardsProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات كارت الشحن" Width="250" Theme="Accent" IsOpen="{Binding IsAddCardFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">

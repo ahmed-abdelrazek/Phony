@@ -110,10 +110,10 @@
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
         <StatusBar Grid.Row="2">
-            <Label Content="{Binding CompaniesCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CompaniesDebits}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CompaniesCredits}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding CompaniesProfit}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding CompaniesCount}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CompaniesDebits}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CompaniesCredits}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding CompaniesProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الشركة" Width="250" Theme="Accent" IsOpen="{Binding IsAddCompanyFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">

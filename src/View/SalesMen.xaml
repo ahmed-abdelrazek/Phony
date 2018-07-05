@@ -121,10 +121,10 @@
             </Grid>
         </simpleChildWindow:ChildWindow>
         <StatusBar Grid.Row="2">
-            <Label Content="{Binding SalesMenCount}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SalesMenDebits}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SalesMenCredits}" FontWeight="Bold" Margin="5"/>
-            <Label Content="{Binding SalesMenProfit}" FontWeight="Bold" Margin="5"/>
+            <Label Content="{Binding SalesMenCount}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding SalesMenDebits}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding SalesMenCredits}" FontWeight="Bold" FontSize="14" Margin="5"/>
+            <Label Content="{Binding SalesMenProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات المندوب" Width="250" Theme="Accent" IsOpen="{Binding IsAddSalesManFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
