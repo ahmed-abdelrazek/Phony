@@ -156,4 +156,27 @@ namespace Phony.ViewModel
         [Description("Pharmacode")]
         Pharmacode
     }
+
+    public enum DBCollections : byte
+    {
+        Bills,
+        BillsItemsMoves,
+        BillsServicesMoves,
+        Clients,
+        ClientsMoves,
+        Companies,
+        CompaniesMoves,
+        Items,
+        Notes,
+        SalesMen,
+        SalesMenMoves,
+        Services,
+        ServicesMoves,
+        Stores,
+        Suppliers,
+        SuppliersMoves,
+        Treasuries,
+        TreasuriesMoves,
+        Users
+    }
 }

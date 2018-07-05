@@ -1,12 +1,13 @@
-﻿using MahApps.Metro.Controls;
+﻿using LiteDB;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
-using Phony.Persistence;
+using Phony.Kernel;
+using Phony.Model;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -25,36 +26,6 @@ namespace Phony.View
         }
 
         public IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
-
-        SqlConnectionStringBuilder ClientConnectionStringBuilder = new SqlConnectionStringBuilder();
-
-        void FillConnectionString()
-        {
-            ClientConnectionStringBuilder.ConnectionString = null;
-
-            if ((bool)UseLocalDefaultCheckBox.IsChecked)
-            {
-                ClientConnectionStringBuilder.DataSource = ".\\SQLExpress";
-                ClientConnectionStringBuilder.InitialCatalog = "PhonyDb";
-                ClientConnectionStringBuilder.IntegratedSecurity = true;
-                ClientConnectionStringBuilder.MultipleActiveResultSets = true;
-            }
-            else
-            {
-                ClientConnectionStringBuilder.DataSource = ClientServerTextBox.Text;
-                ClientConnectionStringBuilder.InitialCatalog = ClientDataBaseTextBox.Text;
-                if ((bool)ClientWinAuthRadioButton.IsChecked)
-                {
-                    ClientConnectionStringBuilder.IntegratedSecurity = true;
-                }
-                else
-                {
-                    ClientConnectionStringBuilder.UserID = ClientUsernameTextBox.Text;
-                    ClientConnectionStringBuilder.Password = ClientPasswordTextBox.Text;
-                }
-                ClientConnectionStringBuilder.MultipleActiveResultSets = true;
-            }
-        }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -108,28 +79,9 @@ namespace Phony.View
                     ThemeAC.SelectedItem = cbi;
                 }
             }
-            if (!string.IsNullOrWhiteSpace(ClientConnectionStringBuilder.ConnectionString))
+            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.DBFullName))
             {
-                if (ClientConnectionStringBuilder.DataSource == ".\\SQLExpress" && ClientConnectionStringBuilder.InitialCatalog == "PhonyDb" && ClientConnectionStringBuilder.IntegratedSecurity == true)
-                {
-                    UseLocalDefaultCheckBox.IsChecked = true;
-                }
-                else
-                {
-                    UseLocalDefaultCheckBox.IsChecked = false;
-                }
-                if (ClientConnectionStringBuilder.IntegratedSecurity == true)
-                {
-                    ClientWinAuthRadioButton.IsChecked = true;
-                }
-                else
-                {
-                    ClientSQLAuthRadioButton.IsChecked = true;
-                }
-                ClientServerTextBox.Text = ClientConnectionStringBuilder.DataSource;
-                ClientDataBaseTextBox.Text = ClientConnectionStringBuilder.InitialCatalog;
-                ClientUsernameTextBox.Text = ClientConnectionStringBuilder.UserID;
-                ClientPasswordTextBox.Text = ClientConnectionStringBuilder.Password;
+                ClientServerTextBox.Text = Properties.Settings.Default.DBFullName;
             }
         }
 
@@ -187,23 +139,148 @@ namespace Phony.View
                     }
                 }
             }
-            FillConnectionString();
             Properties.Settings.Default.PrimaryColor = ThemePC.Text;
             Properties.Settings.Default.AccentColor = ThemeAC.Text;
             Properties.Settings.Default.SalesBillsPaperSize = BillReportPaperSizeCb.Text;
-            Properties.Settings.Default.ConnectionString = ClientConnectionStringBuilder.ConnectionString;
+            Properties.Settings.Default.DBFullName = ClientServerTextBox.Text;
             Properties.Settings.Default.Save();
             if (!Properties.Settings.Default.IsConfigured)
             {
                 try
                 {
-                    using (var db = new PhonyDbContext())
+
+                    if (!Properties.Settings.Default.IsConfigured)
                     {
-                        var i = await db.Items.FirstOrDefaultAsync();
+                        try
+                        {
+                            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                            {
+                                var userCol = db.GetCollection<User>(ViewModel.DBCollections.Users.ToString());
+                                var user = userCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (user == null)
+                                {
+                                    userCol.Insert(new User
+                                    {
+                                        Id = 1,
+                                        Name = "admin",
+                                        Pass = SecurePasswordHasher.Hash("admin"),
+                                        Group = ViewModel.UserGroup.Manager,
+                                        IsActive = true
+                                    });
+                                }
+                                var clientCol = db.GetCollection<Client>(ViewModel.DBCollections.Clients.ToString());
+                                var client = clientCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (client == null)
+                                {
+                                    clientCol.Insert(new Client
+                                    {
+                                        Id = 1,
+                                        Name = "كاش",
+                                        Balance = 0,
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                var companyCol = db.GetCollection<Company>(ViewModel.DBCollections.Companies.ToString());
+                                var company = companyCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (company == null)
+                                {
+                                    companyCol.Insert(new Company
+                                    {
+                                        Id = 1,
+                                        Name = "لا يوجد",
+                                        Balance = 0,
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                var salesMenCol = db.GetCollection<SalesMan>(ViewModel.DBCollections.SalesMen.ToString());
+                                var salesMen = salesMenCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (salesMenCol == null)
+                                {
+                                    salesMenCol.Insert(new SalesMan
+                                    {
+                                        Id = 1,
+                                        Name = "لا يوجد",
+                                        Balance = 0,
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                var suppliersCol = db.GetCollection<Supplier>(ViewModel.DBCollections.Suppliers.ToString());
+                                var supplier = suppliersCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (supplier == null)
+                                {
+                                    suppliersCol.Insert(new Supplier
+                                    {
+                                        Id = 1,
+                                        Name = "لا يوجد",
+                                        Balance = 0,
+                                        SalesManId = 1,
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                var storesCol = db.GetCollection<Store>(ViewModel.DBCollections.Stores.ToString());
+                                var store = storesCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (store == null)
+                                {
+                                    storesCol.Insert(new Store
+                                    {
+                                        Id = 1,
+                                        Name = "التوكل",
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                var treasuriesCol = db.GetCollection<Treasury>(ViewModel.DBCollections.Treasuries.ToString());
+                                var treasury = treasuriesCol.Find(u => u.Id == 1).FirstOrDefault();
+                                if (treasury == null)
+                                {
+                                    treasuriesCol.Insert(new Treasury
+                                    {
+                                        Id = 1,
+                                        Name = "الرئيسية",
+                                        StoreId = 1,
+                                        Balance = 0,
+                                        CreatedById = 1,
+                                        CreateDate = DateTime.Now,
+                                        EditById = null,
+                                        EditDate = null
+                                    });
+                                }
+                                db.GetCollection<Bill>(ViewModel.DBCollections.Treasuries.ToString());
+                                db.GetCollection<BillItemMove>(ViewModel.DBCollections.BillsItemsMoves.ToString());
+                                db.GetCollection<BillServiceMove>(ViewModel.DBCollections.BillsServicesMoves.ToString());
+                                db.GetCollection<ClientMove>(ViewModel.DBCollections.ClientsMoves.ToString());
+                                db.GetCollection<CompanyMove>(ViewModel.DBCollections.CompaniesMoves.ToString());
+                                db.GetCollection<Item>(ViewModel.DBCollections.Items.ToString());
+                                db.GetCollection<Note>(ViewModel.DBCollections.Notes.ToString());
+                                db.GetCollection<SalesManMove>(ViewModel.DBCollections.SalesMenMoves.ToString());
+                                db.GetCollection<ServiceMove>(ViewModel.DBCollections.ServicesMoves.ToString());
+                                db.GetCollection<SupplierMove>(ViewModel.DBCollections.SuppliersMoves.ToString());
+                                db.GetCollection<TreasuryMove>(ViewModel.DBCollections.TreasuriesMoves.ToString());
+                            }
+                            Properties.Settings.Default.IsConfigured = true;
+                            Properties.Settings.Default.Save();
+                        }
+                        catch (Exception ex)
+                        {
+                            Properties.Settings.Default.IsConfigured = false;
+                            Properties.Settings.Default.Save();
+                            Core.SaveException(ex);
+                        }
                     }
-                    Database.SetInitializer(new MigrateDatabaseToLatestVersion<PhonyDbContext, Migrations.Configuration>());
-                    Properties.Settings.Default.IsConfigured = true;
-                    Properties.Settings.Default.Save();
                 }
                 catch (Exception ex)
                 {

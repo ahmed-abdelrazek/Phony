@@ -20,8 +20,8 @@
     <Setting Name="SalesBillsPaperSize" Type="System.String" Scope="User">
       <Value Profile="(Default)">A4</Value>
     </Setting>
-    <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=.;Initial Catalog=Phony;Integrated Security=True</Value>
+    <Setting Name="DBFullName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%userprofile%\AppData\Local\ShababConquer\</Value>
     </Setting>
   </Settings>
 </SettingsFile>

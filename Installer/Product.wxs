@@ -71,14 +71,8 @@
 			<Component Id="Dragablz.dll" Guid="5ac73144-423c-4533-93ef-128a80794373">
 				<File Id="Dragablz.dll" Name="Dragablz.dll" Source="$(var.Phony_TargetDir)Dragablz.dll" />
 			</Component>
-			<Component Id="EntityFramework.dll" Guid="e1073a7c-781c-4839-af28-77648ca669e6">
-				<File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Phony_TargetDir)EntityFramework.dll" />
-			</Component>
 			<Component Id="Exceptionless.dll" Guid="54f0997c-1a49-4c35-a8de-9044a8aca0d6">
 				<File Id="Exceptionless.dll" Name="Exceptionless.dll" Source="$(var.Phony_TargetDir)Exceptionless.dll" />
-			</Component>
-			<Component Id="EntityFramework.SqlServer.dll" Guid="e3a23ff8-e325-423d-8ec1-51f9bc7f5941">
-				<File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.Phony_TargetDir)EntityFramework.SqlServer.dll" />
 			</Component>
 			<Component Id="Exceptionless.Wpf.dll" Guid="ddbbb704-663c-42ad-b04c-ef42c20cb59a">
 				<File Id="Exceptionless.Wpf.dll" Name="Exceptionless.Wpf.dll" Source="$(var.Phony_TargetDir)Exceptionless.Wpf.dll" />

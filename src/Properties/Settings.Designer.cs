@@ -97,13 +97,13 @@ namespace Phony.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.;Initial Catalog=Phony;Integrated Security=True")]
-        public string ConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("%userprofile%\\AppData\\Local\\ShababConquer\\")]
+        public string DBFullName {
             get {
-                return ((string)(this["ConnectionString"]));
+                return ((string)(this["DBFullName"]));
             }
             set {
-                this["ConnectionString"] = value;
+                this["DBFullName"] = value;
             }
         }
     }

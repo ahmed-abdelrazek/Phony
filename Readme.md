@@ -4,7 +4,7 @@ For more information about the Application, please see
 https://shababco.blogspot.com/ 
 
 ## The Application uses:
-	1- Entity Framework (Code First) https://github.com/aspnet/EntityFramework6
+	1- LiteDB https://github.com/mbdavid/LiteDB
 	2- MahApps https://github.com/MahApps/MahApps.Metro
 	3- MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
 	4- Modified version of MaterialMessageBox https://github.com/denpalrius/Material-Message-Box
@@ -17,10 +17,8 @@ https://shababco.blogspot.com/
 
 
 ## NOTE:
-	1- You must install SQL Server 2008 or later.
-	2- Netframework 4.7.1 or later.
-	3- Crystal Reports 13 SP 22 or later to have working reports (Optional)
-	4- Replace `connectionString="Data Source=.\SQLDEV2017;Initial Catalog=Phony;Integrated Security=True"` in Phony.exe.config file with yours
+	1- You must install dot Netframework 4.7.1 or later.
+	2- Crystal Reports 13 SP 22 or later to have working reports (Optional)
 
 ## Screenshots
 

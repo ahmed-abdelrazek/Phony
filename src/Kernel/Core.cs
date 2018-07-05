@@ -1,10 +1,7 @@
 ﻿using Exceptionless;
-using Phony.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity;
-using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,25 +18,7 @@ namespace Phony.Kernel
         {
             try
             {
-                if (Properties.Settings.Default.IsConfigured)
-                {
-                    using (SqlConnection connection = new SqlConnection(Properties.Settings.Default.ConnectionString))
-                    {
-                        try
-                        {
-                            connection.Open();
-                            connection.Close();
-                            using (var db = new PhonyDbContext())
-                            {
-                                var i = await db.Items.FirstOrDefaultAsync();
-                            }
-                        }
-                        catch (SqlException)
-                        {
-                            BespokeFusion.MaterialMessageBox.ShowError("هناك مشكله فى الاتصال بقاعدة البيانات");
-                        }
-                    }
-                }
+                //Todo Do something at statup
             }
             catch (Exception e)
             {
