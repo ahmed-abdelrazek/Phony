@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -272,16 +272,16 @@ namespace Phony.ViewModel
 
         public ObservableCollection<User> Users { get; set; }
 
+        public ICommand SupplierPay { get; set; }
+        public ICommand PaySupplier { get; set; }
+        public ICommand AddSupplier { get; set; }
+        public ICommand EditSupplier { get; set; }
+        public ICommand DeleteSupplier { get; set; }
         public ICommand OpenAddSupplierFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteSupplier { get; set; }
         public ICommand ReloadAllSuppliers { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddSupplier { get; set; }
-        public ICommand EditSupplier { get; set; }
-        public ICommand SupplierPay { get; set; }
-        public ICommand PaySupplier { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -290,11 +290,11 @@ namespace Phony.ViewModel
         public SupplierVM()
         {
             LoadCommands();
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
-                SalesMen = new ObservableCollection<SalesMan>(db.SalesMen);
-                Users = new ObservableCollection<User>(db.Users);
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
             }
             DebitCredit();
         }
@@ -356,13 +356,13 @@ namespace Phony.ViewModel
                 bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
+                        var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance += supplierpaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
-                        var sm = new SupplierMove
+                        db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
                             SupplierId = DataGridSelectedSupplier.Id,
                             Credit = supplierpaymentamount,
@@ -370,9 +370,7 @@ namespace Phony.ViewModel
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
-                        };
-                        db.SuppliersMoves.Add(sm);
-                        db.Complete();
+                        });
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم استلام للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
                         DebitCredit();
@@ -408,13 +406,13 @@ namespace Phony.ViewModel
                 bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
+                        var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance -= supplierpaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
-                        var sm = new SupplierMove
+                        db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
                             SupplierId = DataGridSelectedSupplier.Id,
                             Debit = supplierpaymentamount,
@@ -422,9 +420,8 @@ namespace Phony.ViewModel
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
-                        };
-                        db.SuppliersMoves.Add(sm);
-                        db.TreasuriesMoves.Add(new TreasuryMove
+                        });
+                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
                             TreasuryId = 1,
                             Credit = supplierpaymentamount,
@@ -432,7 +429,6 @@ namespace Phony.ViewModel
                             CreateDate = DateTime.Now,
                             CreatedById = CurrentUser.Id
                         });
-                        db.Complete();
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم دفع للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
                         DebitCredit();
@@ -443,6 +439,49 @@ namespace Phony.ViewModel
                 else
                 {
                     await SuppliersMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                }
+            }
+        }
+
+        private bool CanAddSupplier(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || SelectedSalesMan < 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void DoAddSupplier(object obj)
+        {
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            {
+                var exist = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                if (exist == null)
+                {
+                    var s = new Supplier
+                    {
+                        Name = Name,
+                        Balance = Balance,
+                        Site = Site,
+                        Email = Email,
+                        Phone = Phone,
+                        Image = Image,
+                        SalesManId = SelectedSalesMan,
+                        Notes = Notes,
+                        CreateDate = DateTime.Now,
+                        CreatedById = CurrentUser.Id,
+                        EditDate = null,
+                        EditById = null
+                    };
+                    db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Insert(s);
+                    Suppliers.Add(s);
+                    SuppliersMessage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
+                    DebitCredit();
+                }
+                else
+                {
+                    SuppliersMessage.ShowMessageAsync("موجود", "المورد موجود من قبل بالفعل");
                 }
             }
         }
@@ -458,9 +497,9 @@ namespace Phony.ViewModel
 
         private void DoEditSupplier(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
+                var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -471,7 +510,7 @@ namespace Phony.ViewModel
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
-                db.Complete();
+                db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Update(s);
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
                 Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
                 DebitCredit();
@@ -480,39 +519,28 @@ namespace Phony.ViewModel
             }
         }
 
-        private bool CanAddSupplier(object obj)
+        private bool CanDeleteSupplier(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || SelectedSalesMan < 1)
+            if (DataGridSelectedSupplier == null || DataGridSelectedSupplier.Id == 1)
             {
                 return false;
             }
             return true;
         }
 
-        private void DoAddSupplier(object obj)
+        private async void DoDeleteSupplier(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            var result = await SuppliersMessage.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
             {
-                var s = new Supplier
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Name = Name,
-                    Balance = Balance,
-                    Site = Site,
-                    Email = Email,
-                    Phone = Phone,
-                    Image = Image,
-                    SalesManId = SelectedSalesMan,
-                    Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
-                    EditDate = null,
-                    EditById = null
-                };
-                db.Suppliers.Add(s);
-                db.Complete();
-                Suppliers.Add(s);
-                SuppliersMessage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
+                    db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Delete(DataGridSelectedSupplier.Id);
+                    Suppliers.Remove(DataGridSelectedSupplier);
+                }
+                await SuppliersMessage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
                 DebitCredit();
+                DataGridSelectedSupplier = null;
             }
         }
 
@@ -529,9 +557,9 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Suppliers = new ObservableCollection<Supplier>(db.Suppliers.Where(i => i.Name.Contains(SearchText)));
+                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Suppliers.Count < 1)
                     {
                         SuppliersMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -552,37 +580,11 @@ namespace Phony.ViewModel
 
         private void DoReloadAllSuppliers(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll());
             }
             DebitCredit();
-        }
-
-        private bool CanDeleteSupplier(object obj)
-        {
-            if (DataGridSelectedSupplier == null || DataGridSelectedSupplier.Id == 1)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteSupplier(object obj)
-        {
-            var result = await SuppliersMessage.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Suppliers.Remove(db.Suppliers.Get(DataGridSelectedSupplier.Id));
-                    db.Complete();
-                    Suppliers.Remove(DataGridSelectedSupplier);
-                }
-                await SuppliersMessage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
-                DebitCredit();
-                DataGridSelectedSupplier = null;
-            }
         }
 
         private bool CanFillUI(object obj)

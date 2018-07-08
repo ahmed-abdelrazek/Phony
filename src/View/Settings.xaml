@@ -41,36 +41,19 @@
             <TabItem Header="قاعدة البيانات">
                 <StackPanel x:Name="ClientConnectionPanel" Margin="5">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="بيانات الاتصال بقاعده البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" VerticalAlignment="Center"/>
-                        <materialDesign:PackIcon Kind="Database" Margin="5" Foreground="{DynamicResource AccentColorBrush}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="UseLocalDefaultCheckBox" Content="استخدم الاعدادات الافتراضية" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsChecked="True"/>
                         <materialDesign:PackIcon Kind="Information" Margin="5" Foreground="{DynamicResource AccentBaseColorBrush}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsEnabled="{Binding IsChecked, Converter={StaticResource InverseBool}, ElementName=UseLocalDefaultCheckBox}">
-                        <RadioButton x:Name="ClientWinAuthRadioButton" IsChecked="True" Margin="5">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Windows" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
-                                <TextBlock Text="باستخدام وندز" Margin="0,2"/>
-                            </StackPanel>
-                        </RadioButton>
-                        <RadioButton x:Name="ClientSQLAuthRadioButton" Margin="{Binding Margin, ElementName=ClientWinAuthRadioButton}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Database" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
-                                <TextBlock Text="باستخدام سكول" Margin="0,2"/>
-                            </StackPanel>
-                        </RadioButton>
-                    </StackPanel>
                     <StackPanel IsEnabled="{Binding IsChecked, Converter={StaticResource InverseBool}, ElementName=UseLocalDefaultCheckBox}">
-                        <TextBlock Text="السيرفر" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
-                        <TextBox x:Name="ClientServerTextBox" materialDesign:HintAssist.Hint="Server (Name - (IP, Port) - Etc ...)" FlowDirection="LeftToRight"/>
-                        <TextBlock Text="اسم المستخدم" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}"/>
-                        <TextBox x:Name="ClientUsernameTextBox" materialDesign:HintAssist.Hint="Username" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}" FlowDirection="LeftToRight"/>
-                        <TextBlock Text="كلمة المرور" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}"/>
-                        <TextBox x:Name="ClientPasswordTextBox" materialDesign:HintAssist.Hint="Password" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}" FlowDirection="LeftToRight"/>
-                        <TextBlock Text="قاعدة البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
-                        <TextBox x:Name="ClientDataBaseTextBox" materialDesign:HintAssist.Hint="Database Name" FlowDirection="LeftToRight"/>
+                        <TextBlock Text="اختار مكان قاعده البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="DbFullPathTextBox" materialDesign:HintAssist.Hint="المسار الكامل" Width="250" FlowDirection="LeftToRight"/>
+                            <Button x:Name="SelectDbFolder" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}">
+                                <materialDesign:PackIcon Kind="Folder"/>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Text="مفتاح التشفير" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}"/>
+                        <TextBox x:Name="EncryptionkeyTextBox" materialDesign:HintAssist.Hint="Password" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}" FlowDirection="LeftToRight"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

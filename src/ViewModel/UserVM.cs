@@ -1,8 +1,8 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Extensions;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using System;
 using System.Collections.ObjectModel;
@@ -188,9 +188,9 @@ namespace Phony.ViewModel
                     Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
                 });
             }
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.Users);
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
             }
         }
 
@@ -203,44 +203,6 @@ namespace Phony.ViewModel
             Search = new CustomCommand(DoSearch, CanSearch);
             AddUser = new CustomCommand(DoAddUser, CanAddUser);
             EditUser = new CustomCommand(DoEditUser, CanEditUser);
-        }
-
-        private bool CanEditUser(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null ||string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
-            {
-                //if (DataGridSelectedUser.Name != ViewModel.Users.CurrentUser.Name && ViewModel.Users.CurrentUser.Group != UserGroup.Manager)
-                //{
-                return false;
-                //}
-            }
-            return true;
-        }
-
-        private void DoEditUser(object obj)
-        {
-            if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    var u = db.Users.Get(DataGridSelectedUser.Id);
-                    u.Name = Name;
-                    u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
-                    u.Group = (UserGroup)SelectedGroup;
-                    u.Phone = Phone;
-                    u.Notes = Notes;
-                    u.IsActive = IsActive;
-                    db.Complete();
-                    Users[Users.IndexOf(DataGridSelectedUser)] = u;
-                    UserId = 0;
-                    DataGridSelectedUser = null;
-                    Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
-                }
-            }
-            else
-            {
-                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
-            }
         }
 
         private bool CanAddUser(object obj)
@@ -256,28 +218,97 @@ namespace Phony.ViewModel
         {
             if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
             {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-
-                    var u = new User
+                    var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                    var user = userCol.Find(x => x.Name == Name).FirstOrDefault();
+                    if (user == null)
                     {
-                        Name = Name,
-                        Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password),
-                        Group = (UserGroup)SelectedGroup,
-                        Phone = Phone,
-                        Notes = Notes,
-                        IsActive = IsActive
-                    };
-                    db.Users.Add(u);
-                    db.Complete();
-                    Users.Add(u);
-                    Message.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
+                        var u = new User
+                        {
+                            Name = Name,
+                            Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password),
+                            Group = (UserGroup)SelectedGroup,
+                            Phone = Phone,
+                            Notes = Notes,
+                            IsActive = IsActive
+                        };
+                        userCol.Insert(u);
+                        Users.Add(u);
+                        Message.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
+                    }
+                    else
+                    {
+                        Message.ShowMessageAsync("تكرار مستخدمين", "هناك مستخدم بنفس الاسم بالفعل");
+                    }
                 }
-
             }
             else
             {
                 Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+            }
+        }
+
+        private bool CanEditUser(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
+            {
+                //if (DataGridSelectedUser.Name != ViewModel.Users.CurrentUser.Name && ViewModel.Users.CurrentUser.Group != UserGroup.Manager)
+                //{
+                return false;
+                //}
+            }
+            return true;
+        }
+
+        private void DoEditUser(object obj)
+        {
+            if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                    var u = userCol.Find(x => x.Id == DataGridSelectedUser.Id).FirstOrDefault();
+                    u.Name = Name;
+                    u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
+                    u.Group = (UserGroup)SelectedGroup;
+                    u.Phone = Phone;
+                    u.Notes = Notes;
+                    u.IsActive = IsActive;
+                    userCol.Update(u);
+                    Users[Users.IndexOf(DataGridSelectedUser)] = u;
+                    UserId = 0;
+                    DataGridSelectedUser = null;
+                    Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
+                }
+            }
+            else
+            {
+                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+            }
+        }
+
+        private bool CanDeleteUser(object obj)
+        {
+            if (DataGridSelectedUser == null || DataGridSelectedUser.Id == 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoDeleteUser(object obj)
+        {
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    db.GetCollection<User>(DBCollections.Users.ToString()).Delete(DataGridSelectedUser.Id);
+                    Users.Remove(DataGridSelectedUser);
+                }
+                DataGridSelectedUser = null;
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 
@@ -294,9 +325,9 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Users = new ObservableCollection<User>(db.Users);
+                    Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
                     if (Users.Count < 1)
                     {
                         Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -317,34 +348,9 @@ namespace Phony.ViewModel
 
         private void DoReloadAllUsers(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.Users);
-            }
-        }
-
-        private bool CanDeleteUser(object obj)
-        {
-            if (DataGridSelectedUser == null || DataGridSelectedUser.Id == 1)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteUser(object obj)
-        {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Users.Remove(db.Users.Get(DataGridSelectedUser.Id));
-                    db.Complete();
-                    Users.Remove(DataGridSelectedUser);
-                }
-                DataGridSelectedUser = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
             }
         }
 

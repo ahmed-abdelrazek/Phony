@@ -97,7 +97,7 @@ namespace Phony.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%userprofile%\\AppData\\Local\\ShababConquer\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DBFullName {
             get {
                 return ((string)(this["DBFullName"]));

@@ -1,6 +1,6 @@
-﻿using Phony.Kernel;
+﻿using LiteDB;
+using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -41,9 +41,9 @@ namespace Phony.ViewModel
 
         public ShortageVM()
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Items = new ObservableCollection<Item>(db.Items.Where(i => i.QTY <= 0));
+                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.QTY <= 0));
             }
             new Thread(() =>
             {

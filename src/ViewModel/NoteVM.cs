@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -26,7 +26,7 @@ namespace Phony.ViewModel
         bool _openFastResult;
         bool _isAddNoFlyoutOpen;
         Note _dataGridSelectedNo;
-        
+
         ObservableCollection<Note> _numbers;
 
         public long NoId
@@ -200,14 +200,14 @@ namespace Phony.ViewModel
 
         public ObservableCollection<User> Users { get; set; }
 
+        public ICommand AddNo { get; set; }
+        public ICommand EditNo { get; set; }
+        public ICommand DeleteNo { get; set; }
         public ICommand OpenAddNoFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteNo { get; set; }
         public ICommand ReloadAllNos { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddNo { get; set; }
-        public ICommand EditNo { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -217,49 +217,22 @@ namespace Phony.ViewModel
         {
             LoadCommands();
             ByName = true;
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.Notes);
-                Users = new ObservableCollection<User>(db.Users);
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
             }
         }
 
         public void LoadCommands()
         {
-            OpenAddNoFlyout = new CustomCommand(DoOpenAddNoFlyout, CanOpenAddNoFlyout);
-            FillUI = new CustomCommand(DoFillUI, CanFillUI);
-            DeleteNo = new CustomCommand(DoDeleteNo, CanDeleteNo);
-            ReloadAllNos = new CustomCommand(DoReloadAllNos, CanReloadAllNos);
-            Search = new CustomCommand(DoSearch, CanSearch);
             AddNo = new CustomCommand(DoAddNo, CanAddNo);
             EditNo = new CustomCommand(DoEditNo, CanEditNo);
-        }
-
-        private bool CanEditNo(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(Name) || NoId == 0 || DataGridSelectedNo == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private void DoEditNo(object obj)
-        {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
-            {
-                var n = db.Notes.Get(DataGridSelectedNo.Id);
-                n.Name = Name;
-                n.Phone = Phone;
-                n.Notes = Notes;
-                n.EditDate = DateTime.Now;
-                n.EditById = CurrentUser.Id;
-                db.Complete();
-                Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
-                NoId = 0;
-                DataGridSelectedNo = null;
-                Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
-            }
+            DeleteNo = new CustomCommand(DoDeleteNo, CanDeleteNo);
+            OpenAddNoFlyout = new CustomCommand(DoOpenAddNoFlyout, CanOpenAddNoFlyout);
+            FillUI = new CustomCommand(DoFillUI, CanFillUI);
+            ReloadAllNos = new CustomCommand(DoReloadAllNos, CanReloadAllNos);
+            Search = new CustomCommand(DoSearch, CanSearch);
         }
 
         private bool CanAddNo(object obj)
@@ -273,7 +246,7 @@ namespace Phony.ViewModel
 
         private void DoAddNo(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
                 var n = new Note
                 {
@@ -286,10 +259,60 @@ namespace Phony.ViewModel
                     EditDate = null,
                     EditById = null
                 };
-                db.Notes.Add(n);
-                db.Complete();
+                db.GetCollection<Note>(DBCollections.Notes.ToString()).Insert(n);
                 Numbers.Add(n);
                 Message.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
+            }
+        }
+
+        private bool CanEditNo(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || NoId == 0 || DataGridSelectedNo == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void DoEditNo(object obj)
+        {
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            {
+                var n = db.GetCollection<Note>(DBCollections.Notes.ToString()).FindById(DataGridSelectedNo.Id);
+                n.Name = Name;
+                n.Phone = Phone;
+                n.Notes = Notes;
+                n.EditDate = DateTime.Now;
+                n.EditById = CurrentUser.Id;
+                db.GetCollection<Note>(DBCollections.Notes.ToString()).Update(n);
+                Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
+                NoId = 0;
+                DataGridSelectedNo = null;
+                Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
+            }
+        }
+
+        private bool CanDeleteNo(object obj)
+        {
+            if (DataGridSelectedNo == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoDeleteNo(object obj)
+        {
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    db.GetCollection<Note>(DBCollections.Notes.ToString()).Delete(DataGridSelectedNo.Id);
+                    Numbers.Remove(DataGridSelectedNo);
+                }
+                DataGridSelectedNo = null;
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الرقم بنجاح");
             }
         }
 
@@ -306,9 +329,9 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Numbers = new ObservableCollection<Note>(db.Notes.Where(i => i.Name.Contains(SearchText)));
+                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).Find(i => i.Name.Contains(SearchText)));
                     if (Numbers.Count > 0)
                     {
                         if (FastResult)
@@ -338,34 +361,9 @@ namespace Phony.ViewModel
 
         private void DoReloadAllNos(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.Notes);
-            }
-        }
-
-        private bool CanDeleteNo(object obj)
-        {
-            if (DataGridSelectedNo == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteNo(object obj)
-        {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Notes.Remove(db.Notes.Get(DataGridSelectedNo.Id));
-                    db.Complete();
-                    Numbers.Remove(DataGridSelectedNo);
-                }
-                DataGridSelectedNo = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الرقم بنجاح");
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).FindAll());
             }
         }
 

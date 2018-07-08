@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -486,12 +486,12 @@ namespace Phony.ViewModel
         {
             LoadCommands();
             ByName = true;
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.Companies);
-                Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
-                Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Group == ItemGroup.Card));
-                Users = new ObservableCollection<User>(db.Users);
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).FindAll().ToList());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll().ToList());
+                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
             }
             new Thread(() =>
             {
@@ -514,41 +514,6 @@ namespace Phony.ViewModel
             EditCard = new CustomCommand(DoEditCard, CanEditCard);
         }
 
-        private bool CanEditCard(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(Name) || CardId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private void DoEditCard(object obj)
-        {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
-            {
-                var i = db.Items.Get(DataGridSelectedItem.Id);
-                i.Name = Name;
-                i.Barcode = Barcode;
-                i.Shopcode = Shopcode;
-                i.Image = Image;
-                i.PurchasePrice = PurchasePrice;
-                i.WholeSalePrice = WholeSalePrice;
-                i.RetailPrice = RetailPrice;
-                i.QTY = QTY;
-                i.CompanyId = SelectedCompanyValue;
-                i.SupplierId = SelectedSupplierValue;
-                i.Notes = Notes;
-                i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
-                db.Complete();
-                Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
-                CardId = 0;
-                DataGridSelectedItem = null;
-                CardsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
-            }
-        }
-
         private bool CanAddCard(object obj)
         {
             if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue == 0 || SelectedSupplierValue == 0)
@@ -560,8 +525,9 @@ namespace Phony.ViewModel
 
         private void DoAddCard(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
+                var itemCol = db.GetCollection<Item>(DBCollections.Items.ToString());
                 var i = new Item
                 {
                     Name = Name,
@@ -581,10 +547,69 @@ namespace Phony.ViewModel
                     EditDate = null,
                     EditById = null
                 };
-                db.Items.Add(i);
-                db.Complete();
+                itemCol.Insert(i);
                 Cards.Add(i);
                 CardsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
+            }
+        }
+
+        private bool CanEditCard(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || CardId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void DoEditCard(object obj)
+        {
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            {
+                var itemCol = db.GetCollection<Item>(DBCollections.Items.ToString());
+                var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
+                i.Name = Name;
+                i.Barcode = Barcode;
+                i.Shopcode = Shopcode;
+                i.Image = Image;
+                i.PurchasePrice = PurchasePrice;
+                i.WholeSalePrice = WholeSalePrice;
+                i.RetailPrice = RetailPrice;
+                i.QTY = QTY;
+                i.CompanyId = SelectedCompanyValue;
+                i.SupplierId = SelectedSupplierValue;
+                i.Notes = Notes;
+                i.EditDate = DateTime.Now;
+                i.EditById = CurrentUser.Id;
+                itemCol.Update(i);
+                Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
+                CardId = 0;
+                DataGridSelectedItem = null;
+                CardsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
+            }
+        }
+
+        private bool CanDeleteCard(object obj)
+        {
+            if (DataGridSelectedItem == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoDeleteCard(object obj)
+        {
+            var result = await CardsMessage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    db.GetCollection<Item>(DBCollections.Items.ToString()).Delete(DataGridSelectedItem.Id);
+                    Cards.Remove(DataGridSelectedItem);
+                }
+                DataGridSelectedItem = null;
+                await CardsMessage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 
@@ -601,19 +626,19 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
                     if (ByName)
                     {
-                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
                     }
                     else if (ByBarCode)
                     {
-                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     else
                     {
-                        Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     if (Cards.Count > 0)
                     {
@@ -645,34 +670,9 @@ namespace Phony.ViewModel
 
         private void DoReloadAllCards(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Cards = new ObservableCollection<Item>(db.Items.Where(i => i.Group == ItemGroup.Card));
-            }
-        }
-
-        private bool CanDeleteCard(object obj)
-        {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteCard(object obj)
-        {
-            var result = await CardsMessage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Items.Remove(db.Items.Get(DataGridSelectedItem.Id));
-                    db.Complete();
-                    Cards.Remove(DataGridSelectedItem);
-                }
-                DataGridSelectedItem = null;
-                await CardsMessage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card));
             }
         }
 

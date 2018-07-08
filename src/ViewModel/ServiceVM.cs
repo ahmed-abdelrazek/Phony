@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -244,15 +244,15 @@ namespace Phony.ViewModel
 
         public ObservableCollection<User> Users { get; set; }
 
+        public ICommand AddBalance { get; set; }
+        public ICommand AddService { get; set; }
+        public ICommand EditService { get; set; }
+        public ICommand DeleteService { get; set; }
         public ICommand OpenAddServiceFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteService { get; set; }
         public ICommand ReloadAllServices { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddService { get; set; }
-        public ICommand EditService { get; set; }
-        public ICommand AddBalance { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -261,10 +261,10 @@ namespace Phony.ViewModel
         public ServiceVM()
         {
             LoadCommands();
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.Services);
-                Users = new ObservableCollection<User>(db.Users);
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
             }
             DebitCredit();
         }
@@ -316,13 +316,14 @@ namespace Phony.ViewModel
                 bool isvalidmoney = decimal.TryParse(result, out decimal servicepaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new UnitOfWork(new PhonyDbContext()))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.Services.Get(DataGridSelectedService.Id);
+                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
                         s.EditDate = DateTime.Now;
                         s.EditById = CurrentUser.Id;
-                        var sm = new ServiceMove
+                        db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
+                        db.GetCollection<ServiceMove>(DBCollections.ServicesMoves.ToString()).Insert(new ServiceMove
                         {
                             ServiceId = DataGridSelectedService.Id,
                             Debit = servicepaymentamount,
@@ -330,9 +331,7 @@ namespace Phony.ViewModel
                             CreatedById = CurrentUser.Id,
                             EditDate = null,
                             EditById = null
-                        };
-                        db.ServicesMoves.Add(sm);
-                        db.Complete();
+                        });
                         await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
                         Services[Services.IndexOf(DataGridSelectedService)] = s;
                         DebitCredit();
@@ -343,6 +342,48 @@ namespace Phony.ViewModel
                 else
                 {
                     await ServicesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                }
+            }
+        }
+
+        private bool CanAddService(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void DoAddService(object obj)
+        {
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            {
+                var exist = db.GetCollection<Service>(DBCollections.Services.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                if (exist == null)
+                {
+                    var s = new Service
+                    {
+                        Name = Name,
+                        Balance = Balance,
+                        Site = Site,
+                        Email = Email,
+                        Phone = Phone,
+                        Image = Image,
+                        Notes = Notes,
+                        CreateDate = DateTime.Now,
+                        CreatedById = CurrentUser.Id,
+                        EditDate = null,
+                        EditById = null
+                    };
+                    db.GetCollection<Service>(DBCollections.Services.ToString()).Insert(s);
+                    Services.Add(s);
+                    ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
+                    DebitCredit();
+                }
+                else
+                {
+                    ServicesMessage.ShowMessageAsync("موجود", "الخدمة موجودة من قبل بالفعل");
                 }
             }
         }
@@ -358,9 +399,9 @@ namespace Phony.ViewModel
 
         private void DoEditService(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.Services.Get(DataGridSelectedService.Id);
+                var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -370,7 +411,7 @@ namespace Phony.ViewModel
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
                 s.EditById = CurrentUser.Id;
-                db.Complete();
+                db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
                 Services[Services.IndexOf(DataGridSelectedService)] = s;
                 DebitCredit();
@@ -379,38 +420,28 @@ namespace Phony.ViewModel
             }
         }
 
-        private bool CanAddService(object obj)
+        private bool CanDeleteService(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name))
+            if (DataGridSelectedService == null || DataGridSelectedService.Id == 1)
             {
                 return false;
             }
             return true;
         }
 
-        private void DoAddService(object obj)
+        private async void DoDeleteService(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            var result = await ServicesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
             {
-                var s = new Service
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Name = Name,
-                    Balance = Balance,
-                    Site = Site,
-                    Email = Email,
-                    Phone = Phone,
-                    Image = Image,
-                    Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
-                    EditDate = null,
-                    EditById = null
-                };
-                db.Services.Add(s);
-                db.Complete();
-                Services.Add(s);
-                ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
+                    db.GetCollection<Service>(DBCollections.Services.ToString()).Delete(DataGridSelectedService.Id);
+                    Services.Remove(DataGridSelectedService);
+                }
+                await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
                 DebitCredit();
+                DataGridSelectedService = null;
             }
         }
 
@@ -427,9 +458,9 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Services = new ObservableCollection<Service>(db.Services.Where(i => i.Name.Contains(SearchText)));
+                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Services.Count < 1)
                     {
                         ServicesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -450,37 +481,11 @@ namespace Phony.ViewModel
 
         private void DoReloadAllServices(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.Services);
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
             }
             DebitCredit();
-        }
-
-        private bool CanDeleteService(object obj)
-        {
-            if (DataGridSelectedService == null || DataGridSelectedService.Id == 1)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteService(object obj)
-        {
-            var result = await ServicesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Services.Remove(db.Services.Get(DataGridSelectedService.Id));
-                    db.Complete();
-                    Services.Remove(DataGridSelectedService);
-                }
-                await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
-                DebitCredit();
-                DataGridSelectedService = null;
-            }
         }
 
         private bool CanFillUI(object obj)

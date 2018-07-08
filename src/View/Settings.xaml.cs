@@ -7,6 +7,7 @@ using Phony.Kernel;
 using Phony.Model;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,7 @@ namespace Phony.View
         }
 
         public IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
+        DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -79,9 +81,11 @@ namespace Phony.View
                     ThemeAC.SelectedItem = cbi;
                 }
             }
+            ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.DBFullName))
             {
-                ClientServerTextBox.Text = Properties.Settings.Default.DBFullName;
+                DbFullPathTextBox.Text = ConnectionStringBuilder["Filename"].ToString();
+                EncryptionkeyTextBox.Text = ConnectionStringBuilder["Password"].ToString();
             }
         }
 
@@ -115,177 +119,162 @@ namespace Phony.View
             }
             if (!(bool)UseLocalDefaultCheckBox.IsChecked)
             {
-                if (string.IsNullOrWhiteSpace(ClientServerTextBox.Text))
+                if (string.IsNullOrWhiteSpace(DbFullPathTextBox.Text))
                 {
-                    await this.ShowMessageAsync("تحذير", "من فضلك ادخل بيانات السيرفر");
+                    await this.ShowMessageAsync("تحذير", "من فضلك اختار مكان لحفظ قاعده البيانات");
                     return;
-                }
-                else if (string.IsNullOrWhiteSpace(ClientDataBaseTextBox.Text))
-                {
-                    await this.ShowMessageAsync("تحذير", "من فضلك ادخل اسم قاعدة البيانات");
-                    return;
-                }
-                else if ((bool)ClientSQLAuthRadioButton.IsChecked)
-                {
-                    if (string.IsNullOrWhiteSpace(ClientUsernameTextBox.Text))
-                    {
-                        await this.ShowMessageAsync("تحذير", "من فضلك ادخل اسم مستخدم قاعدة البيانات");
-                        return;
-                    }
-                    else if (string.IsNullOrWhiteSpace(ClientPasswordTextBox.Text))
-                    {
-                        await this.ShowMessageAsync("تحذير", "من فضلك ادخل كلمة مرور مستخدم قاعدة البيانات");
-                        return;
-                    }
                 }
             }
             Properties.Settings.Default.PrimaryColor = ThemePC.Text;
             Properties.Settings.Default.AccentColor = ThemeAC.Text;
             Properties.Settings.Default.SalesBillsPaperSize = BillReportPaperSizeCb.Text;
-            Properties.Settings.Default.DBFullName = ClientServerTextBox.Text;
+            if (!(bool)UseLocalDefaultCheckBox.IsChecked)
+            {
+                ConnectionStringBuilder["Filename"] = DbFullPathTextBox.Text + "Phony.db";
+                if (string.IsNullOrWhiteSpace(EncryptionkeyTextBox.Text))
+                {
+                    ConnectionStringBuilder["Password"] = EncryptionkeyTextBox.Text;
+                }
+            }
+            else
+            {
+                ConnectionStringBuilder["Filename"] = Core.UserLocalAppFolderPath() + "..\\..\\Phony.db";
+            }
+            Properties.Settings.Default.DBFullName = ConnectionStringBuilder.ConnectionString;
             Properties.Settings.Default.Save();
             if (!Properties.Settings.Default.IsConfigured)
             {
-                try
+                if (!Properties.Settings.Default.IsConfigured)
                 {
-
-                    if (!Properties.Settings.Default.IsConfigured)
+                    try
                     {
-                        try
+                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
-                            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                            var userCol = db.GetCollection<User>(ViewModel.DBCollections.Users.ToString());
+                            var user = userCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (user == null)
                             {
-                                var userCol = db.GetCollection<User>(ViewModel.DBCollections.Users.ToString());
-                                var user = userCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (user == null)
+                                userCol.Insert(new User
                                 {
-                                    userCol.Insert(new User
-                                    {
-                                        Id = 1,
-                                        Name = "admin",
-                                        Pass = SecurePasswordHasher.Hash("admin"),
-                                        Group = ViewModel.UserGroup.Manager,
-                                        IsActive = true
-                                    });
-                                }
-                                var clientCol = db.GetCollection<Client>(ViewModel.DBCollections.Clients.ToString());
-                                var client = clientCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (client == null)
-                                {
-                                    clientCol.Insert(new Client
-                                    {
-                                        Id = 1,
-                                        Name = "كاش",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                var companyCol = db.GetCollection<Company>(ViewModel.DBCollections.Companies.ToString());
-                                var company = companyCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (company == null)
-                                {
-                                    companyCol.Insert(new Company
-                                    {
-                                        Id = 1,
-                                        Name = "لا يوجد",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                var salesMenCol = db.GetCollection<SalesMan>(ViewModel.DBCollections.SalesMen.ToString());
-                                var salesMen = salesMenCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (salesMenCol == null)
-                                {
-                                    salesMenCol.Insert(new SalesMan
-                                    {
-                                        Id = 1,
-                                        Name = "لا يوجد",
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                var suppliersCol = db.GetCollection<Supplier>(ViewModel.DBCollections.Suppliers.ToString());
-                                var supplier = suppliersCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (supplier == null)
-                                {
-                                    suppliersCol.Insert(new Supplier
-                                    {
-                                        Id = 1,
-                                        Name = "لا يوجد",
-                                        Balance = 0,
-                                        SalesManId = 1,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                var storesCol = db.GetCollection<Store>(ViewModel.DBCollections.Stores.ToString());
-                                var store = storesCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (store == null)
-                                {
-                                    storesCol.Insert(new Store
-                                    {
-                                        Id = 1,
-                                        Name = "التوكل",
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                var treasuriesCol = db.GetCollection<Treasury>(ViewModel.DBCollections.Treasuries.ToString());
-                                var treasury = treasuriesCol.Find(u => u.Id == 1).FirstOrDefault();
-                                if (treasury == null)
-                                {
-                                    treasuriesCol.Insert(new Treasury
-                                    {
-                                        Id = 1,
-                                        Name = "الرئيسية",
-                                        StoreId = 1,
-                                        Balance = 0,
-                                        CreatedById = 1,
-                                        CreateDate = DateTime.Now,
-                                        EditById = null,
-                                        EditDate = null
-                                    });
-                                }
-                                db.GetCollection<Bill>(ViewModel.DBCollections.Treasuries.ToString());
-                                db.GetCollection<BillItemMove>(ViewModel.DBCollections.BillsItemsMoves.ToString());
-                                db.GetCollection<BillServiceMove>(ViewModel.DBCollections.BillsServicesMoves.ToString());
-                                db.GetCollection<ClientMove>(ViewModel.DBCollections.ClientsMoves.ToString());
-                                db.GetCollection<CompanyMove>(ViewModel.DBCollections.CompaniesMoves.ToString());
-                                db.GetCollection<Item>(ViewModel.DBCollections.Items.ToString());
-                                db.GetCollection<Note>(ViewModel.DBCollections.Notes.ToString());
-                                db.GetCollection<SalesManMove>(ViewModel.DBCollections.SalesMenMoves.ToString());
-                                db.GetCollection<ServiceMove>(ViewModel.DBCollections.ServicesMoves.ToString());
-                                db.GetCollection<SupplierMove>(ViewModel.DBCollections.SuppliersMoves.ToString());
-                                db.GetCollection<TreasuryMove>(ViewModel.DBCollections.TreasuriesMoves.ToString());
+                                    Id = 1,
+                                    Name = "admin",
+                                    Pass = SecurePasswordHasher.Hash("admin"),
+                                    Group = ViewModel.UserGroup.Manager,
+                                    IsActive = true
+                                });
                             }
-                            Properties.Settings.Default.IsConfigured = true;
-                            Properties.Settings.Default.Save();
+                            var clientCol = db.GetCollection<Client>(ViewModel.DBCollections.Clients.ToString());
+                            var client = clientCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (client == null)
+                            {
+                                clientCol.Insert(new Client
+                                {
+                                    Id = 1,
+                                    Name = "كاش",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            var companyCol = db.GetCollection<Company>(ViewModel.DBCollections.Companies.ToString());
+                            var company = companyCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (company == null)
+                            {
+                                companyCol.Insert(new Company
+                                {
+                                    Id = 1,
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            var salesMenCol = db.GetCollection<SalesMan>(ViewModel.DBCollections.SalesMen.ToString());
+                            var salesMen = salesMenCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (salesMenCol == null)
+                            {
+                                salesMenCol.Insert(new SalesMan
+                                {
+                                    Id = 1,
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            var suppliersCol = db.GetCollection<Supplier>(ViewModel.DBCollections.Suppliers.ToString());
+                            var supplier = suppliersCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (supplier == null)
+                            {
+                                suppliersCol.Insert(new Supplier
+                                {
+                                    Id = 1,
+                                    Name = "لا يوجد",
+                                    Balance = 0,
+                                    SalesManId = 1,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            var storesCol = db.GetCollection<Store>(ViewModel.DBCollections.Stores.ToString());
+                            var store = storesCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (store == null)
+                            {
+                                storesCol.Insert(new Store
+                                {
+                                    Id = 1,
+                                    Name = "التوكل",
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            var treasuriesCol = db.GetCollection<Treasury>(ViewModel.DBCollections.Treasuries.ToString());
+                            var treasury = treasuriesCol.Find(x => x.Id == 1).FirstOrDefault();
+                            if (treasury == null)
+                            {
+                                treasuriesCol.Insert(new Treasury
+                                {
+                                    Id = 1,
+                                    Name = "الرئيسية",
+                                    StoreId = 1,
+                                    Balance = 0,
+                                    CreatedById = 1,
+                                    CreateDate = DateTime.Now,
+                                    EditById = null,
+                                    EditDate = null
+                                });
+                            }
+                            db.GetCollection<Bill>(ViewModel.DBCollections.Treasuries.ToString());
+                            db.GetCollection<BillItemMove>(ViewModel.DBCollections.BillsItemsMoves.ToString());
+                            db.GetCollection<BillServiceMove>(ViewModel.DBCollections.BillsServicesMoves.ToString());
+                            db.GetCollection<ClientMove>(ViewModel.DBCollections.ClientsMoves.ToString());
+                            db.GetCollection<CompanyMove>(ViewModel.DBCollections.CompaniesMoves.ToString());
+                            db.GetCollection<Item>(ViewModel.DBCollections.Items.ToString());
+                            db.GetCollection<Note>(ViewModel.DBCollections.Notes.ToString());
+                            db.GetCollection<SalesManMove>(ViewModel.DBCollections.SalesMenMoves.ToString());
+                            db.GetCollection<ServiceMove>(ViewModel.DBCollections.ServicesMoves.ToString());
+                            db.GetCollection<SupplierMove>(ViewModel.DBCollections.SuppliersMoves.ToString());
+                            db.GetCollection<TreasuryMove>(ViewModel.DBCollections.TreasuriesMoves.ToString());
                         }
-                        catch (Exception ex)
-                        {
-                            Properties.Settings.Default.IsConfigured = false;
-                            Properties.Settings.Default.Save();
-                            Core.SaveException(ex);
-                        }
+                        Properties.Settings.Default.IsConfigured = true;
+                        Properties.Settings.Default.Save();
                     }
-                }
-                catch (Exception ex)
-                {
-                    Kernel.Core.SaveException(ex);
-                    BespokeFusion.MaterialMessageBox.ShowError("هناك مشكله فى الاتصال بقاعدة البيانات");
+                    catch (Exception ex)
+                    {
+                        Properties.Settings.Default.IsConfigured = false;
+                        Properties.Settings.Default.Save();
+                        Core.SaveException(ex);
+                    }
                 }
                 Close();
             }

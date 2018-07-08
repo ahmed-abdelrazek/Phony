@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -483,14 +483,14 @@ namespace Phony.ViewModel
 
         public ObservableCollection<User> Users { get; set; }
 
+        public ICommand AddItem { get; set; }
+        public ICommand EditItem { get; set; }
+        public ICommand DeleteItem { get; set; }
         public ICommand OpenAddItemFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteItem { get; set; }
         public ICommand ReloadAllItems { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddItem { get; set; }
-        public ICommand EditItem { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -500,12 +500,12 @@ namespace Phony.ViewModel
         {
             LoadCommands();
             ByName = true;
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.Companies);
-                Suppliers = new ObservableCollection<Supplier>(db.Suppliers);
-                Items = new ObservableCollection<Item>(db.Items.Where(i => i.Group == ItemGroup.Other));
-                Users = new ObservableCollection<User>(db.Users);
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).FindAll());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll());
+                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Other));
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
             }
             new Thread(() =>
             {
@@ -528,42 +528,6 @@ namespace Phony.ViewModel
             EditItem = new CustomCommand(DoEditItem, CanEditItem);
         }
 
-        private bool CanEditItem(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private void DoEditItem(object obj)
-        {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
-            {
-                var i = db.Items.Get(DataGridSelectedItem.Id);
-                i.Name = Name;
-                i.Barcode = Barcode;
-                i.Shopcode = Shopcode;
-                i.Image = Image;
-                i.PurchasePrice = PurchasePrice;
-                i.WholeSalePrice = WholeSalePrice;
-                i.HalfWholeSalePrice = HalfWholeSalePrice;
-                i.RetailPrice = RetailPrice;
-                i.QTY = QTY;
-                i.CompanyId = SelectedCompanyValue;
-                i.SupplierId = SelectedSupplierValue;
-                i.Notes = Notes;
-                i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
-                db.Complete();
-                Items[Items.IndexOf(DataGridSelectedItem)] = i;
-                ItemId = 0;
-                DataGridSelectedItem = null;
-                ItemsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
-            }
-        }
-
         private bool CanAddItem(object obj)
         {
             if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1)
@@ -575,7 +539,7 @@ namespace Phony.ViewModel
 
         private void DoAddItem(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
                 var i = new Item
                 {
@@ -597,10 +561,69 @@ namespace Phony.ViewModel
                     EditDate = null,
                     EditById = null
                 };
-                db.Items.Add(i);
-                db.Complete();
+                db.GetCollection<Item>(DBCollections.Items.ToString()).Insert(i);
                 Items.Add(i);
                 ItemsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
+            }
+        }
+
+        private bool CanEditItem(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void DoEditItem(object obj)
+        {
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            {
+                var i = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(DataGridSelectedItem.Id);
+                i.Name = Name;
+                i.Barcode = Barcode;
+                i.Shopcode = Shopcode;
+                i.Image = Image;
+                i.PurchasePrice = PurchasePrice;
+                i.WholeSalePrice = WholeSalePrice;
+                i.HalfWholeSalePrice = HalfWholeSalePrice;
+                i.RetailPrice = RetailPrice;
+                i.QTY = QTY;
+                i.CompanyId = SelectedCompanyValue;
+                i.SupplierId = SelectedSupplierValue;
+                i.Notes = Notes;
+                i.EditDate = DateTime.Now;
+                i.EditById = CurrentUser.Id;
+                db.GetCollection<Item>(DBCollections.Items.ToString()).Update(i);
+                Items[Items.IndexOf(DataGridSelectedItem)] = i;
+                ItemId = 0;
+                DataGridSelectedItem = null;
+                ItemsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
+            }
+        }
+
+        private bool CanDeleteItem(object obj)
+        {
+            if (DataGridSelectedItem == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private async void DoDeleteItem(object obj)
+        {
+            var result = await ItemsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            if (result == MessageDialogResult.Affirmative)
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    db.GetCollection<Item>(DBCollections.Items.ToString()).Delete(DataGridSelectedItem.Id);
+                    Items.Remove(DataGridSelectedItem);
+                }
+                DataGridSelectedItem = null;
+                await ItemsMessage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
             }
         }
 
@@ -617,19 +640,19 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
                     if (ByName)
                     {
-                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
                     }
                     else if (ByBarCode)
                     {
-                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
+                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
                     }
                     else
                     {
-                        Items = new ObservableCollection<Item>(db.Items.Where(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
+                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
                     }
                     if (Items.Count > 0)
                     {
@@ -662,34 +685,9 @@ namespace Phony.ViewModel
 
         private void DoReloadAllItems(object obj)
         {
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Items = new ObservableCollection<Item>(db.Items.Where(i => i.Group == ItemGroup.Other));
-            }
-        }
-
-        private bool CanDeleteItem(object obj)
-        {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private async void DoDeleteItem(object obj)
-        {
-            var result = await ItemsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                using (var db = new UnitOfWork(new PhonyDbContext()))
-                {
-                    db.Items.Remove(db.Items.Get(DataGridSelectedItem.Id));
-                    db.Complete();
-                    Items.Remove(DataGridSelectedItem);
-                }
-                DataGridSelectedItem = null;
-                await ItemsMessage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
+                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Other));
             }
         }
 

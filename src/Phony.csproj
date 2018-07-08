@@ -161,6 +161,7 @@
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ColorConverterExtensions.cs" />
+    <Compile Include="Extensions\DataSetExtension.cs" />
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ImageConverterExtensions.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
@@ -224,7 +225,7 @@
     <Compile Include="Utility\CustomCommand.cs" />
     <Compile Include="ViewModel\CardVM.cs" />
     <Compile Include="ViewModel\ClientVM.cs" />
-    <Compile Include="ViewModel\CopmanyVM.cs" />
+    <Compile Include="ViewModel\CompanyVM.cs" />
     <Compile Include="ViewModel\ItemVM.cs" />
     <Compile Include="ViewModel\ListsVM.cs" />
     <Compile Include="Model\BaseModel.cs" />

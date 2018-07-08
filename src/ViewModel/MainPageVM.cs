@@ -1,13 +1,15 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Phony.Extensions;
 using Phony.Kernel;
-using Phony.Persistence;
+using Phony.Model;
 using Phony.Utility;
 using Phony.View;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -265,12 +267,12 @@ namespace Phony.ViewModel
             Timer.Tick += Timer_Tick;
             Timer.Interval = TimeSpan.FromMilliseconds(500);
             Timer.Start();
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var u = db.Users.Get(CurrentUser.Id);
+                var u = db.GetCollection<User>(DBCollections.Users.ToString()).Find(x => x.Id == CurrentUser.Id).FirstOrDefault();
                 UserName = u.Name;
                 Phone = u.Phone;
-                Group = Enumerations.GetEnumDescription((UserGroup)u.Group);
+                Group = Enumerations.GetEnumDescription(u.Group);
             }
         }
 
@@ -302,57 +304,54 @@ namespace Phony.ViewModel
             {
                 return;
             }
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
                 try
                 {
                     await Task.Run(() =>
                     {
-                        ItemsCount = db.Items.Where(i => i.Group == ItemGroup.Other).Count();
+                        ItemsCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Other);
                     });
                     await Task.Run(() =>
                     {
-                        ClientsCount = db.Clients.Count();
+                        ClientsCount = db.GetCollection<Client>(DBCollections.Clients.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        ShortagesCount = db.Items.Where(i => i.Group == ItemGroup.Other && i.QTY == 0).Count();
+                        ShortagesCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.QTY == 0);
                     });
                     await Task.Run(() =>
                     {
-                        ServicesCount = db.Services.Count();
+                        ServicesCount = db.GetCollection<Service>(DBCollections.Services.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SuppliersCount = db.Suppliers.Count();
+                        SuppliersCount = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        CardsCount = db.Items.Where(i => i.Group == ItemGroup.Card).Count();
+                        CardsCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Card);
                     });
                     await Task.Run(() =>
                     {
-                        CompaniesCount = db.Companies.Count();
+                        CompaniesCount = db.GetCollection<Company>(DBCollections.Companies.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SalesMenCount = db.SalesMen.Count();
+                        SalesMenCount = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        NumbersCount = db.Notes.Count();
+                        NumbersCount = db.GetCollection<Note>(DBCollections.Notes.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        UsersCount = db.Users.Count();
+                        UsersCount = db.GetCollection<User>(DBCollections.Users.ToString()).Count();
                     });
                 }
                 catch (Exception ex)
                 {
-                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
-                    {
-                        BespokeFusion.MaterialMessageBox.Show("البرنامج لا يستطيع الاتصال بقاعده البيانات لسبب ما تاكد من اتصالك");
-                    }
+                    Console.WriteLine(ex.ToString());
                 }
             }
         }
@@ -395,16 +394,17 @@ namespace Phony.ViewModel
 
         private async void DoSaveUser(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Model.User u = null;
+                var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                User u = null;
                 await Task.Run(() =>
                 {
-                    u = db.Users.GetLoginCredentials(UserName, Password);
+                    u = userCol.Find(x => x.Name == UserName).FirstOrDefault();
                 });
                 if (u == null)
                 {
-                    await Message.ShowMessageAsync("خطا", "تاكد ان كلمه المرور الحاليه صحيحة");
+                    await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم و ان كلمه المرور الحاليه صحيحة");
                 }
                 else if (string.IsNullOrWhiteSpace(NewPassword))
                 {
@@ -413,11 +413,14 @@ namespace Phony.ViewModel
                 }
                 else
                 {
-                    u.Name = UserName;
-                    u.Pass = SecurePasswordHasher.Hash(NewPassword);
-                    u.Phone = Phone;
+                    if (SecurePasswordHasher.Verify(Password, u.Pass))
+                    {
+                        u.Name = UserName;
+                        u.Pass = SecurePasswordHasher.Hash(NewPassword);
+                        u.Phone = Phone;
+                    }
                 }
-                await db.CompleteAsync();
+                userCol.Update(u);
                 Password = null;
                 NewPassword = null;
                 await Message.ShowMessageAsync("تمت", "تم تعديل بيانات المستخدم بنجاح");
@@ -590,43 +593,8 @@ namespace Phony.ViewModel
                 dlg.ShowPlacesList = true;
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    var backupFolder = ConfigurationManager.AppSettings["BackupFolder"];
-                    var sqlConStrBuilder = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
-                    var database = sqlConStrBuilder.InitialCatalog;
-                    string query = null;
-                    using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
-                    {
-                        query = $"ALTER DATABASE [{database}] SET Single_User WITH Rollback Immediate";
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            connection.Open();
-                            command.ExecuteNonQuery();
-                        }
-                        try
-                        {
-                            query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH REPLACE;";
-                            using (var command = new SqlCommand(query, connection))
-                            {
-                                command.ExecuteNonQuery();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                            query = $"USE master RESTORE DATABASE [{database}] FROM DISK='{dlg.FileName}' WITH FILE = 1,  NOUNLOAD,  STATS = 10";
-                            using (var command = new SqlCommand(query, connection))
-                            {
-                                command.ExecuteNonQuery();
-                            }
-                        }
-                        query = $"USE master ALTER DATABASE [{database}] SET Multi_User";
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.ExecuteNonQuery();
-                        }
-                        await progressbar.CloseAsync();
-                        await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
-                    }
+                    File.Copy(dlg.FileName, Properties.Settings.Default.DBFullName, true);
+                    await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
             }
             catch (Exception ex)
@@ -677,19 +645,8 @@ namespace Phony.ViewModel
                         Properties.Settings.Default.BackUpsFolder += "\\";
                     }
                     Properties.Settings.Default.Save();
-                    var sqlConStrBuilder = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
-                    var backupFileName = $"{Properties.Settings.Default.BackUpsFolder}{sqlConStrBuilder.InitialCatalog} {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak";
-                    using (var connection = new SqlConnection(sqlConStrBuilder.ConnectionString))
-                    {
-                        var query = $"BACKUP DATABASE [{sqlConStrBuilder.InitialCatalog}] TO DISK='{backupFileName}'";
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            connection.Open();
-                            command.ExecuteNonQuery();
-                            await progressbar.CloseAsync();
-                            await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
-                        }
-                    }
+                    File.Copy(Properties.Settings.Default.DBFullName, $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
+                    await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                 }
             }
             catch (Exception ex)

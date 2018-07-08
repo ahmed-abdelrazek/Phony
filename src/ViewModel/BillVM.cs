@@ -1,7 +1,7 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using Phony.View;
 using System;
@@ -643,12 +643,12 @@ namespace Phony.ViewModel
             ByName = true;
             ByItem = true;
             BillClientPaymentChangeVisible = Visibility.Collapsed;
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new List<Client>(db.Clients.GetAll());
-                Items = new List<Item>(db.Items.GetAll());
-                Services = new List<Service>(db.Services.GetAll());
-                Users = new List<User>(db.Users.GetAll());
+                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
+                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).FindAll());
+                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
+                Users = new List<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
             }
             BillItemsMoves = new ObservableCollection<BillItemMove>();
             BillServicesMoves = new ObservableCollection<BillServiceMove>();
@@ -687,67 +687,63 @@ namespace Phony.ViewModel
             {
                 billNote = await Message.ShowInputAsync("ملاحظة", $"اكتب اى شئ ليتم طباعته مع الفاتورة");
             }
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                using (var dbContextTransaction = db.Database.BeginTransaction())
+                try
                 {
-                    try
+                    var bi = new Bill
                     {
-                        var bi = new Bill
-                        {
-                            ClientId = SelectedClient.Id,
-                            StoreId = db.Stores.FirstOrDefault().Id,
-                            Discount = BillDiscount,
-                            TotalAfterDiscounts = BillTotalAfterDiscount,
-                            TotalPayed = BillClientPayment,
-                            Notes = billNote,
-                            CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
-                            EditById = null,
-                            EditDate = null
-                        };
-                        db.Bills.Add(bi);
-                        await db.SaveChangesAsync();
-                        foreach (var item in BillItemsMoves)
-                        {
-                            item.BillId = bi.Id;
-                            db.BillsItemsMoves.Add(item);
-                            var i = db.Items.SingleOrDefault(n => n.Id == item.ItemId);
-                            i.QTY -= item.QTY;
-                        }
-                        foreach (var service in BillServicesMoves)
-                        {
-                            service.BillId = bi.Id;
-                            db.BillsServicesMoves.Add(service);
-                            var s = db.Services.SingleOrDefault(n => n.Id == service.ServiceId);
-                            s.Balance -= service.ServicePayment;
-                        }
-                        if (BillClientPayment < BillTotalAfterDiscount)
-                        {
-                            var c = db.Clients.SingleOrDefault(n => n.Id == SelectedClient.Id);
-                            c.Balance += BillTotalAfterDiscount - BillClientPayment;
-                        }
-                        db.TreasuriesMoves.Add(new TreasuryMove
-                        {
-                            TreasuryId = 1,
-                            Debit = BillClientPayment,
-                            Credit = BillClientPaymentChange,
-                            Notes = $"فاتورة رقم {bi.Id}",
-                            CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
-                        });
-                        await db.SaveChangesAsync();
-                        dbContextTransaction.Commit();
-                        Clear();
-                        CurrentBillNo = bi.Id + 1;
-                        return bi.Id;
-                    }
-                    catch (Exception ex)
+                        ClientId = SelectedClient.Id,
+                        StoreId = 1,
+                        Discount = BillDiscount,
+                        TotalAfterDiscounts = BillTotalAfterDiscount,
+                        TotalPayed = BillClientPayment,
+                        Notes = billNote,
+                        CreateDate = DateTime.Now,
+                        CreatedById = CurrentUser.Id,
+                        EditById = null,
+                        EditDate = null
+                    };
+                    db.GetCollection<Bill>(DBCollections.Bills.ToString()).Insert(bi);
+                    foreach (var item in BillItemsMoves)
                     {
-                        dbContextTransaction.Rollback();
-                        await Core.SaveExceptionAsync(ex);
-                        return -1;
+                        item.BillId = bi.Id;
+                        db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves.ToString()).Insert(item);
+                        var i = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.ItemId);
+                        i.QTY -= item.QTY;
+                        db.GetCollection<Item>(DBCollections.Items.ToString()).Update(i);
                     }
+                    foreach (var service in BillServicesMoves)
+                    {
+                        service.BillId = bi.Id;
+                        db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves.ToString()).Insert(service);
+                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.ServiceId);
+                        s.Balance -= service.ServicePayment;
+                        db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
+                    }
+                    if (BillClientPayment < BillTotalAfterDiscount)
+                    {
+                        var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(SelectedClient.Id);
+                        c.Balance += BillTotalAfterDiscount - BillClientPayment;
+                        db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
+                    }
+                    db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                    {
+                        TreasuryId = 1,
+                        Debit = BillClientPayment,
+                        Credit = BillClientPaymentChange,
+                        Notes = $"فاتورة رقم {bi.Id}",
+                        CreateDate = DateTime.Now,
+                        CreatedById = CurrentUser.Id
+                    });
+                    Clear();
+                    CurrentBillNo = bi.Id + 1;
+                    return bi.Id;
+                }
+                catch (Exception ex)
+                {
+                    await Core.SaveExceptionAsync(ex);
+                    return -1;
                 }
             }
         }
@@ -848,11 +844,11 @@ namespace Phony.ViewModel
             BillTotalAfterDiscount = 0;
             BillClientPayment = 0;
             SearchSelectedValue = 0;
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new List<Client>(db.Clients);
-                Items = new List<Item>(db.Items);
-                Services = new List<Service>(db.Services);
+                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
+                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).FindAll());
+                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
                 SearchSelectedValue = 0;
             }
         }
@@ -1139,9 +1135,9 @@ namespace Phony.ViewModel
         {
             try
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    CurrentBillNo = db.Bills.OrderByDescending(p => p.Id).FirstOrDefault().Id + 1;
+                    CurrentBillNo = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll().LastOrDefault().Id + 1;
                 }
             }
             catch (Exception ex)

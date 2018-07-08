@@ -1,10 +1,10 @@
-﻿using Phony.Kernel;
+﻿using LiteDB;
+using Phony.Extensions;
+using Phony.Kernel;
 using Phony.Model;
-using Phony.Persistence;
 using Phony.Utility;
 using System;
 using System.Collections.ObjectModel;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -125,10 +125,10 @@ namespace Phony.ViewModel
                     _byClientName = value;
                     if (_byClientName)
                     {
-                        using (var db = new PhonyDbContext())
+                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
                             ClientSelectedValue = 0;
-                            Clients = new ObservableCollection<Client>(db.Clients);
+                            Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
                         }
                     }
                     RaisePropertyChanged();
@@ -146,9 +146,9 @@ namespace Phony.ViewModel
                     _byUserName = value;
                     if (_byUserName)
                     {
-                        using (var db = new PhonyDbContext())
+                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
-                            Users = new ObservableCollection<User>(db.Users);
+                            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
                         }
                     }
                     RaisePropertyChanged();
@@ -245,9 +245,9 @@ namespace Phony.ViewModel
             ByBillNo = true;
             IsReturnedVisible = Visibility.Collapsed;
             FirstDate = SecondDate = DateTime.Now;
-            using (var db = new PhonyDbContext())
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Bills = new ObservableCollection<Bill>(db.Bills);
+                Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindAll());
             }
             LoadCommands();
         }
@@ -267,9 +267,9 @@ namespace Phony.ViewModel
 
         void BillReturnedStatues(long id)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                IsReturned = db.Bills.Get(id).IsReturned;
+                IsReturned = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(id).IsReturned;
             }
         }
 
@@ -278,12 +278,10 @@ namespace Phony.ViewModel
             using (var ds = new DataSet1())
             {
                 var billno = id;
-                SqlDataAdapter adp = new SqlDataAdapter(string.Format(billCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Bill");
-                adp = new SqlDataAdapter(string.Format(billItemsCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Items");
-                adp = new SqlDataAdapter(string.Format(billServicesCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Services");
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    ds.Merge(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(x => x.Id == billno).ToList().ToDataSet());
+                }
                 if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
                 {
                     Reports.SalesBillA4 r = new Reports.SalesBillA4();
@@ -312,12 +310,10 @@ namespace Phony.ViewModel
             using (var ds = new DataSet1())
             {
                 var billno = id;
-                SqlDataAdapter adp = new SqlDataAdapter(string.Format(billCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Bill");
-                adp = new SqlDataAdapter(string.Format(billItemsCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Items");
-                adp = new SqlDataAdapter(string.Format(billServicesCommand, billno), Properties.Settings.Default.ConnectionString);
-                adp.Fill(ds, "Services");
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                {
+                    ds.Merge(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(x => x.Id == billno).ToList().ToDataSet());
+                }
                 if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
                 {
                     Reports.SalesBillA4 r = new Reports.SalesBillA4();
@@ -366,9 +362,9 @@ namespace Phony.ViewModel
 
         private void DoSaveReturned(object obj)
         {
-            using (var db = new UnitOfWork(new PhonyDbContext()))
+            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var b = db.Bills.Get(BillSelectedValue);
+                var b = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(BillSelectedValue);
                 if (!b.IsReturned)
                 {
                     b.IsReturned = IsReturned;
@@ -378,11 +374,12 @@ namespace Phony.ViewModel
                     {
                         if (IsReturned)
                         {
-                            var c = db.Clients.Get(b.ClientId);
+                            var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(b.ClientId);
                             c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
+                            db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
                         }
                     }
-                    db.Complete();
+                    db.GetCollection<Bill>(DBCollections.Bills.ToString()).Update(b);
                     BespokeFusion.MaterialMessageBox.Show("تم ارجاع الفاتورة بنجاح");
                 }
                 else
@@ -404,9 +401,9 @@ namespace Phony.ViewModel
             {
                 if (ClientSelectedValue > 0 && FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
-                    using (var db = new PhonyDbContext())
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.Bills.Where(b => b.ClientId == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.ClientId == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                     }
                 }
             }
@@ -414,9 +411,9 @@ namespace Phony.ViewModel
             {
                 if (ClientSelectedValue > 0)
                 {
-                    using (var db = new PhonyDbContext())
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.Bills.Where(b => b.ClientId == ClientSelectedValue));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.ClientId == ClientSelectedValue));
                     }
                 }
             }
@@ -424,17 +421,17 @@ namespace Phony.ViewModel
             {
                 if (FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
-                    using (var db = new PhonyDbContext())
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.Bills.Where(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                     }
                 }
             }
             else
             {
-                using (var db = new PhonyDbContext())
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Bills = new ObservableCollection<Bill>(db.Bills);
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindAll());
                 }
             }
         }

@@ -1,9 +1,11 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Kernel;
-using Phony.Persistence;
+using Phony.Model;
 using Phony.Utility;
 using System;
-using System.Data.SqlClient;
+using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -79,10 +81,12 @@ namespace Phony.ViewModel.Users
         MainWindowVM v = new MainWindowVM();
 
         View.MainWindow Message = Application.Current.Windows.OfType<View.MainWindow>().FirstOrDefault();
+        DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
 
         public LoginVM()
         {
             LoadCommands();
+            ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
         }
 
         private void LoadCommands()
@@ -106,41 +110,39 @@ namespace Phony.ViewModel.Users
                 IsLogging = true;
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(Properties.Settings.Default.ConnectionString))
+                    if (File.Exists(ConnectionStringBuilder["Filename"].ToString()))
                     {
-                        connection.Open();
-                        if (connection.State == System.Data.ConnectionState.Open)
+                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
-                            connection.Close();
-                        }
-                    }
-                    using (var db = new UnitOfWork(new PhonyDbContext()))
-                    {
-                        Model.User u = null;
-                        await Task.Run(() =>
-                        {
-                            u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
-                        });
-                        if (u == null)
-                        {
-                            await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            Id = u.Id;
-                            Name = u.Name;
-                            Group = u.Group;
-                            v.PageName = "Main";
+                            User u = null;
+                            await Task.Run(() =>
+                            {
+                                u = db.GetCollection<User>(DBCollections.Users.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                            });
+                            if (u == null)
+                            {
+                                await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                if (SecurePasswordHasher.Verify(new NetworkCredential("", SecurePassword).Password, u.Pass))
+                                {
+                                    Id = u.Id;
+                                    Name = u.Name;
+                                    Group = u.Group;
+                                    v.PageName = "Main";
+                                }
+                                else
+                                {
+                                    await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                                }
+                            }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Core.SaveException(ex);
-                    if (ex.ToString().Contains("A network-related or instance-specific error occurred while establishing a connection to SQL Server"))
-                    {
-                        BespokeFusion.MaterialMessageBox.ShowError($"البرنامج لا يستطيع الاتصال بقاعده البيانات {Environment.NewLine} قم باعادة تشغيل البرنامج لاعداده من البدايه");
-                    }
                     Properties.Settings.Default.IsConfigured = false;
                     Properties.Settings.Default.Save();
                 }
