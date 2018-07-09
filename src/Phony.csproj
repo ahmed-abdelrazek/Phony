@@ -161,7 +161,6 @@
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ColorConverterExtensions.cs" />
-    <Compile Include="Extensions\DataSetExtension.cs" />
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ImageConverterExtensions.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />

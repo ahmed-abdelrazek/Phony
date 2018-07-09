@@ -1145,7 +1145,7 @@ namespace Phony.ViewModel
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    CurrentBillNo = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll().LastOrDefault().Id + 1;
+                    CurrentBillNo = ++db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll().LastOrDefault().Id;
                 }
             }
             catch (Exception ex)
