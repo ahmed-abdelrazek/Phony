@@ -85,7 +85,7 @@ namespace Phony.ViewModel
 
         public void NavigateToPage(string Page)
         {
-            CurrentSource = new Uri("/Phony;component/Pages/" + Page + ".xaml", UriKind.Relative);
+            CurrentSource = new Uri("/PhonyLite;component/Pages/" + Page + ".xaml", UriKind.Relative);
         }
     }
 }

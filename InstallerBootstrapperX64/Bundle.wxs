@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Bundle Name="Phony Full Setup" Version="1.3.0.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="b67d5c76-c9b1-4db5-a0ca-4623cd283799">
+  <Bundle Name="Phony (Lite)" Version="1.0.0.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="033F24D5-39D9-4733-9B27-CEFC4DF4A3E2">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
       <bal:WixStandardBootstrapperApplication LicenseFile="..\Prerequisites\ReadMe.rtf" LogoFile="..\src\Resources\PhonyLogoWix.png"/>
     </BootstrapperApplicationRef>
@@ -9,7 +9,7 @@
     <Chain>
       <ExePackage Id="NetFx472" SourceFile="..\Prerequisites\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" Permanent="yes" InstallCommand="/q" RepairCommand="/q" DetectCondition="DotNetInstall" InstallCondition="NOT DotNetInstall >= 4703056"/>
       <MsiPackage Id="CRx64" SourceFile="..\Prerequisites\CRRuntime_64bit_13_0_23.msi" Permanent="no" Vital="no" ForcePerMachine="yes" InstallCondition="VersionNT64 >= v5.1"/>
-      <MsiPackage Id="EasySetup" SourceFile="..\Installer\bin\Release\PhonySetup.msi"/>
+      <MsiPackage Id="EasySetup" SourceFile="..\Installer\bin\Release\PhonyLiteSetup.msi"/>
     </Chain>
   </Bundle>
 </Wix>

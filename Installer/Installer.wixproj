@@ -6,7 +6,7 @@
     <ProductVersion>3.9</ProductVersion>
     <ProjectGuid>e156eecd-9f9d-4939-bf84-b9e00ba7f700</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>PhonySetup</OutputName>
+    <OutputName>PhonyLiteSetup</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\WiX Toolset\v4\wix.targets</WixTargetsPath>
   </PropertyGroup>

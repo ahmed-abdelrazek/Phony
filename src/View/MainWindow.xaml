@@ -7,7 +7,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:vm="clr-namespace:Phony.ViewModel"
                       mc:Ignorable="d"
-        Title="Phony" Height="500" Width="700" MinWidth="700" MinHeight="500" FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" Icon="/Phony;component/Resources/PhonyLogo.png" Closing="metroWindow_Closing" ContentRendered="metroWindow_ContentRendered">
+        Title="Phony Lite" Height="500" Width="700" MinWidth="700" MinHeight="500" FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" Icon="/PhonyLite;component/Resources/PhonyLogo.png" Closing="metroWindow_Closing" ContentRendered="metroWindow_ContentRendered">
     <Controls:MetroWindow.DataContext>
         <vm:MainWindowVM/>
     </Controls:MetroWindow.DataContext>

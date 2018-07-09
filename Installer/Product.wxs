@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Phony_TargetDir=$(var.Phony.TargetDir)?>
-	<Product Id="*" Name="Phony" Language="1033" Version="1.3.0.0" Manufacturer="ShababConquer" UpgradeCode="edfe0001-4a7e-4aeb-a838-a8ec1ab6d0de">
+	<Product Id="*" Name="Phony (Lite)" Language="1033" Version="1.0.0.0" Manufacturer="ShababConquer" UpgradeCode="2DCCA644-076B-48D3-9F48-B524C8843029">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 		<?if $(var.Platform) = x64 ?>
 		<?define Win64 = "yes" ?>
 		<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-		<?else ?>
+		<?else?>
 		<?define Win64 = "no" ?>
 		<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-		<?endif ?>
-		<?define ProductName = "Phony" ?>
+		<?endif?>
+		<?define ProductName = "Phony (Lite)" ?>
 		<?define Manufacturer = "ShababConquer" ?>
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="Phony" Level="1">
+		<Feature Id="ProductFeature" Title="Phony (Lite)" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentGroupRef Id="DesktopFolder" />
 			<ComponentGroupRef Id="StartMenuFolder" />
@@ -41,12 +41,12 @@
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLAppFOLDER">
-			<Component Id="Phony.exe" Guid="6c8862c9-027a-4b36-acca-6d6aee97700d">
-				<File Id="Phony.exe" Name="Phony.exe" Source="$(var.Phony_TargetDir)Phony.exe" />
-			</Component>
-			<Component Id="Phony.exe.config" Guid="0b9bfe21-6b9d-42cd-9590-ea489f84bff6">
-				<File Id="Phony.exe.config" Name="Phony.exe.config" Source="$(var.Phony_TargetDir)Phony.exe.config" />
-			</Component>
+      <Component Id="PhonyLite.exe" Guid="ec0de762-fbdd-4835-80a8-b3291452a0ea">
+        <File Id="PhonyLite.exe" Name="PhonyLite.exe" Source="$(var.Phony_TargetDir)PhonyLite.exe" />
+      </Component>
+      <Component Id="PhonyLite.exe.config" Guid="b698c981-96c2-4907-a38b-9d667fa006d1">
+        <File Id="PhonyLite.exe.config" Name="PhonyLite.exe.config" Source="$(var.Phony_TargetDir)PhonyLite.exe.config" />
+      </Component>
 			<Component Id="AttachedCommandBehavior.dll" Guid="293406b1-3482-4ba3-a32e-d25dde0d5161">
 				<File Id="AttachedCommandBehavior.dll" Name="AttachedCommandBehavior.dll" Source="$(var.Phony_TargetDir)AttachedCommandBehavior.dll" />
 			</Component>
@@ -143,13 +143,16 @@
 			<Component Id="FlashControlV71.dll" Guid="a20db46d-a854-40de-88aa-c6a5f3343a8e">
 				<File Id="FlashControlV71.dll" Name="FlashControlV71.dll" Source="$(var.Phony_TargetDir)FlashControlV71.dll" />
 			</Component>
+			<Component Id="LiteDB.dll" Guid="91a5a19b-8d26-45b2-a92b-3cebc4078d2c">
+			  <File Id="LiteDB.dll" Name="LiteDB.dll" Source="$(var.Phony_TargetDir)LiteDB.dll" />
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 	
 	<Fragment>
 		<ComponentGroup Id="DesktopFolder" Directory="DesktopFolder">
 			<Component Id="DesktopShortCutCom" Guid="ED4B06FB-2D19-49c7-8362-034C263308D9" Permanent="no" SharedDllRefCount="no" Transitive="no">
-				<Shortcut Id="DesktopShortCut" Directory="DesktopFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppDesktopIcon" WorkingDirectory="DesktopFolder">
+				<Shortcut Id="DesktopShortCut" Directory="DesktopFolder" Name="Phony (Lite).exe" Show="normal" Target="[INSTALLAppFOLDER]PhonyLite.exe" Icon="AppDesktopIcon" WorkingDirectory="DesktopFolder">
 					<Icon Id="AppDesktopIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
 				</Shortcut>
 				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="DesktopShortCutCom" Type="string" Value="User's Desktop directory" KeyPath="yes" />
@@ -161,7 +164,7 @@
 	<Fragment>
 		<ComponentGroup Id="StartMenuFolder" Directory="StartMenuFolder">
 			<Component Id="StartShortCut" Guid="CDA4377F-D267-4071-888A-67C19C90E15A" Permanent="no" SharedDllRefCount="no" Transitive="no">
-				<Shortcut Id="_21511C47_F730_4900_A7ED_AB82CF9DFFA2" Directory="StartMenuFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppStartIcon" WorkingDirectory="StartMenuFolder">
+				<Shortcut Id="_21511C47_F730_4900_A7ED_AB82CF9DFFA2" Directory="StartMenuFolder" Name="Phony (Lite).exe" Show="normal" Target="[INSTALLAppFOLDER]PhonyLite.exe" Icon="AppStartIcon" WorkingDirectory="StartMenuFolder">
 					<Icon Id="AppStartIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
 				</Shortcut>
 				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="StartShortCut" Type="string" Value="User's Desktop directory" KeyPath="yes" />
@@ -172,9 +175,9 @@
 	<Fragment>
 		<UI Id="MyCustomDlgSequence">
 			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="10" />
-			<TextStyle Id="WixUI_Font_Big"    FaceName="Tahoma" Size="12" />
+			<TextStyle Id="WixUI_Font_Big" FaceName="Tahoma" Size="12" />
 			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="14" />
-			<TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="12" Bold="yes" />
+			<TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="12" Bold="yes" />
 
 			<Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
 			<Property Id="WixUI_Mode" Value="InstallDir" />
