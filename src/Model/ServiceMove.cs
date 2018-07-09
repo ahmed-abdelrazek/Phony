@@ -1,9 +1,10 @@
-﻿namespace Phony.Model
+﻿using LiteDB;
+
+namespace Phony.Model
 {
     public class ServiceMove : BaseModel
     {
-        public long ServiceId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Services))]
         public virtual Service Service { get; set; }
 
         public decimal Debit { get; set; }

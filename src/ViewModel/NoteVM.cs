@@ -255,9 +255,9 @@ namespace Phony.ViewModel
                     Group = NoteGroup.Numbers,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                     EditDate = null,
-                    EditById = null
+                    Editor = null
                 };
                 db.GetCollection<Note>(DBCollections.Notes.ToString()).Insert(n);
                 Numbers.Add(n);
@@ -282,8 +282,6 @@ namespace Phony.ViewModel
                 n.Name = Name;
                 n.Phone = Phone;
                 n.Notes = Notes;
-                n.EditDate = DateTime.Now;
-                n.EditById = CurrentUser.Id;
                 db.GetCollection<Note>(DBCollections.Notes.ToString()).Update(n);
                 Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
                 NoId = 0;

@@ -110,6 +110,7 @@ namespace Phony.ViewModel.Users
                 IsLogging = true;
                 try
                 {
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
                     if (File.Exists(ConnectionStringBuilder["Filename"].ToString()))
                     {
                         using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

@@ -370,17 +370,15 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
                         s.Balance += SalesManpaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Update(s);
                         db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves.ToString()).Insert(new SalesManMove
                         {
-                            SalesManId = DataGridSelectedSalesMan.Id,
+                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id),
                             Credit = SalesManpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
                         SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
@@ -407,53 +405,50 @@ namespace Phony.ViewModel
 
         private async void DoPaySalesManAsync(object obj)
         {
-
+            var result = await SalesMenMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
+            if (string.IsNullOrWhiteSpace(result))
             {
-                var result = await SalesMenMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
-                if (string.IsNullOrWhiteSpace(result))
+                await SalesMenMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+            }
+            else
+            {
+                bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
+                if (isvalidmoney)
                 {
-                    await SalesMenMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    {
+                        var s = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
+                        s.Balance -= SalesManpaymentamount;
+                        db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Update(s);
+                        db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves.ToString()).Insert(new SalesManMove
+                        {
+                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id),
+                            Debit = SalesManpaymentamount,
+                            CreateDate = DateTime.Now,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            EditDate = null,
+                            Editor = null
+                        });
+                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        {
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                            Credit = SalesManpaymentamount,
+                            Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
+                            CreateDate = DateTime.Now,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            EditDate = null,
+                            Editor = null
+                        });
+                        await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
+                        SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
+                        DebitCredit();
+                        DataGridSelectedSalesMan = null;
+                        SalesManId = 0;
+                    }
                 }
                 else
                 {
-                    bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
-                    if (isvalidmoney)
-                    {
-                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
-                        {
-                            var s = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
-                            s.Balance -= SalesManpaymentamount;
-                            s.EditDate = DateTime.Now;
-                            s.EditById = CurrentUser.Id;
-                            db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Update(s);
-                            db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves.ToString()).Insert(new SalesManMove
-                            {
-                                SalesManId = DataGridSelectedSalesMan.Id,
-                                Debit = SalesManpaymentamount,
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id,
-                                EditDate = null,
-                                EditById = null
-                            });
-                            db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
-                            {
-                                TreasuryId = 1,
-                                Credit = SalesManpaymentamount,
-                                Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
-                                CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
-                            });
-                            await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
-                            SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
-                            DebitCredit();
-                            DataGridSelectedSalesMan = null;
-                            SalesManId = 0;
-                        }
-                    }
-                    else
-                    {
-                        await SalesMenMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
-                    }
+                    await SalesMenMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
@@ -483,9 +478,9 @@ namespace Phony.ViewModel
                         Phone = Phone,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                         EditDate = null,
-                        EditById = null
+                        Editor = null
                     };
                     db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Insert(c);
                     SalesMen.Add(c);
@@ -520,7 +515,7 @@ namespace Phony.ViewModel
                 s.Phone = Phone;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Update(s);
                 SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
                 SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;

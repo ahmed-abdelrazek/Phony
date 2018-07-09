@@ -553,13 +553,13 @@ namespace Phony.ViewModel
                     HalfWholeSalePrice = HalfWholeSalePrice,
                     RetailPrice = RetailPrice,
                     QTY = QTY,
-                    CompanyId = SelectedCompanyValue,
-                    SupplierId = SelectedSupplierValue,
+                    Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue),
+                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue),
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                     EditDate = null,
-                    EditById = null
+                    Editor = null
                 };
                 db.GetCollection<Item>(DBCollections.Items.ToString()).Insert(i);
                 Items.Add(i);
@@ -590,11 +590,9 @@ namespace Phony.ViewModel
                 i.HalfWholeSalePrice = HalfWholeSalePrice;
                 i.RetailPrice = RetailPrice;
                 i.QTY = QTY;
-                i.CompanyId = SelectedCompanyValue;
-                i.SupplierId = SelectedSupplierValue;
+                i.Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue);
+                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue);
                 i.Notes = Notes;
-                i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
                 db.GetCollection<Item>(DBCollections.Items.ToString()).Update(i);
                 Items[Items.IndexOf(DataGridSelectedItem)] = i;
                 ItemId = 0;
@@ -712,8 +710,8 @@ namespace Phony.ViewModel
             HalfWholeSalePrice = DataGridSelectedItem.HalfWholeSalePrice;
             RetailPrice = DataGridSelectedItem.RetailPrice;
             QTY = DataGridSelectedItem.QTY;
-            SelectedCompanyValue = DataGridSelectedItem.CompanyId;
-            SelectedSupplierValue = DataGridSelectedItem.SupplierId;
+            SelectedCompanyValue = DataGridSelectedItem.Company.Id;
+            SelectedSupplierValue = DataGridSelectedItem.Supplier.Id;
             Notes = DataGridSelectedItem.Notes;
             IsAddItemFlyoutOpen = true;
         }

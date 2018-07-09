@@ -320,17 +320,15 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
                         db.GetCollection<ServiceMove>(DBCollections.ServicesMoves.ToString()).Insert(new ServiceMove
                         {
-                            ServiceId = DataGridSelectedService.Id,
+                            Service = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id),
                             Debit = servicepaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         await ServicesMessage.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
                         Services[Services.IndexOf(DataGridSelectedService)] = s;
@@ -372,9 +370,9 @@ namespace Phony.ViewModel
                         Image = Image,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                         EditDate = null,
-                        EditById = null
+                        Editor = null
                     };
                     db.GetCollection<Service>(DBCollections.Services.ToString()).Insert(s);
                     Services.Add(s);
@@ -410,7 +408,7 @@ namespace Phony.ViewModel
                 s.Image = Image;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
                 Services[Services.IndexOf(DataGridSelectedService)] = s;

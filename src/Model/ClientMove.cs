@@ -1,9 +1,10 @@
-﻿namespace Phony.Model
+﻿using LiteDB;
+
+namespace Phony.Model
 {
     public class ClientMove : BaseModel
     {
-        public long ClientId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Clients))]
         public virtual Client Client { get; set; }
 
         public decimal Debit { get; set; }

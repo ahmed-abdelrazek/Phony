@@ -7,8 +7,7 @@ using Phony.Model;
 using Phony.Utility;
 using Phony.View;
 using System;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -258,6 +257,7 @@ namespace Phony.ViewModel
         MainWindowVM v = new MainWindowVM();
 
         MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+        DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
 
         DispatcherTimer Timer = new DispatcherTimer();
 
@@ -593,7 +593,8 @@ namespace Phony.ViewModel
                 dlg.ShowPlacesList = true;
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    File.Copy(dlg.FileName, Properties.Settings.Default.DBFullName, true);
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+                    File.Copy(dlg.FileName, ConnectionStringBuilder["Filename"].ToString(), true);
                     await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
             }
@@ -645,7 +646,8 @@ namespace Phony.ViewModel
                         Properties.Settings.Default.BackUpsFolder += "\\";
                     }
                     Properties.Settings.Default.Save();
-                    File.Copy(Properties.Settings.Default.DBFullName, $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+                    File.Copy(ConnectionStringBuilder["Filename"].ToString(), $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
                     await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                 }
             }

@@ -693,31 +693,31 @@ namespace Phony.ViewModel
                 {
                     var bi = new Bill
                     {
-                        ClientId = SelectedClient.Id,
-                        StoreId = 1,
+                        Client = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(SelectedClient.Id),
+                        Store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1),
                         Discount = BillDiscount,
                         TotalAfterDiscounts = BillTotalAfterDiscount,
                         TotalPayed = BillClientPayment,
                         Notes = billNote,
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id,
-                        EditById = null,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Editor = null,
                         EditDate = null
                     };
                     db.GetCollection<Bill>(DBCollections.Bills.ToString()).Insert(bi);
                     foreach (var item in BillItemsMoves)
                     {
-                        item.BillId = bi.Id;
+                        item.Bill = bi;
                         db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves.ToString()).Insert(item);
-                        var i = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.ItemId);
+                        var i = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.Item.Id);
                         i.QTY -= item.QTY;
                         db.GetCollection<Item>(DBCollections.Items.ToString()).Update(i);
                     }
                     foreach (var service in BillServicesMoves)
                     {
-                        service.BillId = bi.Id;
+                        service.Bill = bi;
                         db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves.ToString()).Insert(service);
-                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.ServiceId);
+                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id);
                         s.Balance -= service.ServicePayment;
                         db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
                     }
@@ -729,12 +729,14 @@ namespace Phony.ViewModel
                     }
                     db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                     {
-                        TreasuryId = 1,
+                        Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
                         Debit = BillClientPayment,
                         Credit = BillClientPaymentChange,
                         Notes = $"فاتورة رقم {bi.Id}",
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        EditDate = null,
+                        Editor = null
                     });
                     Clear();
                     CurrentBillNo = bi.Id + 1;
@@ -890,7 +892,7 @@ namespace Phony.ViewModel
             decimal balanceNeeded = 0;
             foreach (var item in BillServicesMoves)
             {
-                if (item.ServiceId == SearchSelectedValue)
+                if (item.Service.Id == SearchSelectedValue)
                 {
                     balanceNeeded += item.ServicePayment;
                 }
@@ -898,18 +900,21 @@ namespace Phony.ViewModel
             balanceNeeded += ServiceChildServiceCost;
             if (SelectedService.Balance >= balanceNeeded)
             {
-                BillServicesMoves.Add(new BillServiceMove
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    BillId = CurrentBillNo,
-                    ServiceId = SearchSelectedValue,
-                    ServicePayment = ServiceChildServiceCost,
-                    Discount = ChildDiscount,
-                    Notes = ServiceChildNotes,
-                    CreatedById = CurrentUser.Id,
-                    CreateDate = DateTime.Now,
-                    EditById = null,
-                    EditDate = null
-                });
+                    BillServicesMoves.Add(new BillServiceMove
+                    {
+                        Bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(CurrentBillNo),
+                        Service = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(SearchSelectedValue),
+                        ServicePayment = ServiceChildServiceCost,
+                        Discount = ChildDiscount,
+                        Notes = ServiceChildNotes,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        CreateDate = DateTime.Now,
+                        Editor = null,
+                        EditDate = null
+                    });
+                }
                 BillTotal += ServiceChildServiceCost;
                 BillTotalAfterEachDiscount += ServiceChildServiceCost - (ServiceChildServiceCost * (ChildDiscount / 100));
                 if (BillDiscount > 0)
@@ -942,7 +947,7 @@ namespace Phony.ViewModel
             decimal QTYNeeded = 0;
             foreach (var item in BillItemsMoves)
             {
-                if (item.ItemId == SearchSelectedValue)
+                if (item.Item.Id == SearchSelectedValue)
                 {
                     QTYNeeded += item.QTY;
                 }
@@ -951,19 +956,22 @@ namespace Phony.ViewModel
             if (SelectedItem.QTY >= QTYNeeded)
             {
                 var ItemToQtyPrice = SelectedItem.RetailPrice * ItemChildItemQTYSell;
-                BillItemsMoves.Add(new BillItemMove
+                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    BillId = CurrentBillNo,
-                    ItemId = SearchSelectedValue,
-                    QTY = ItemChildItemQTYSell,
-                    ItemPrice = SelectedItem.RetailPrice,
-                    Discount = ChildDiscount,
-                    Notes = ItemChildNotes,
-                    CreatedById = CurrentUser.Id,
-                    CreateDate = DateTime.Now,
-                    EditById = null,
-                    EditDate = null
-                });
+                    BillItemsMoves.Add(new BillItemMove
+                    {
+                        Bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(CurrentBillNo),
+                        Item = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(SearchSelectedValue),
+                        QTY = ItemChildItemQTYSell,
+                        ItemPrice = SelectedItem.RetailPrice,
+                        Discount = ChildDiscount,
+                        Notes = ItemChildNotes,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        CreateDate = DateTime.Now,
+                        Editor = null,
+                        EditDate = null
+                    });
+                }
                 BillTotal += ItemToQtyPrice;
                 BillTotalAfterEachDiscount += ItemToQtyPrice - (ItemToQtyPrice * (ChildDiscount / 100));
                 if (BillDiscount > 0)

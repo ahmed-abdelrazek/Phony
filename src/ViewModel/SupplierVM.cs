@@ -360,16 +360,14 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance += supplierpaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
-                            SupplierId = DataGridSelectedSupplier.Id,
+                            Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
                             Credit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم استلام للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
@@ -410,24 +408,24 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance -= supplierpaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
-                            SupplierId = DataGridSelectedSupplier.Id,
+                            Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
                             Debit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
-                            TreasuryId = 1,
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
                             Credit = supplierpaymentamount,
                             Notes = $"دفع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            EditDate = null,
+                            Editor = null
                         });
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم دفع للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
                         Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
@@ -467,12 +465,12 @@ namespace Phony.ViewModel
                         Email = Email,
                         Phone = Phone,
                         Image = Image,
-                        SalesManId = SelectedSalesMan,
+                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan),
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                         EditDate = null,
-                        EditById = null
+                        Editor = null
                     };
                     db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Insert(s);
                     Suppliers.Add(s);
@@ -506,10 +504,10 @@ namespace Phony.ViewModel
                 s.Email = Email;
                 s.Phone = Phone;
                 s.Image = Image;
-                s.SalesManId = SelectedSalesMan;
+                s.SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan);
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Update(s);
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
                 Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
@@ -605,7 +603,7 @@ namespace Phony.ViewModel
             Image = DataGridSelectedSupplier.Image;
             Email = DataGridSelectedSupplier.Email;
             Phone = DataGridSelectedSupplier.Phone;
-            SelectedSalesMan = DataGridSelectedSupplier.SalesManId;
+            SelectedSalesMan = DataGridSelectedSupplier.SalesMan.Id;
             Notes = DataGridSelectedSupplier.Notes;
             IsAddSupplierFlyoutOpen = true;
         }

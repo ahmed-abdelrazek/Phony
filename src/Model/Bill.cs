@@ -1,21 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using LiteDB;
 
 namespace Phony.Model
 {
     public class Bill : BaseModel
     {
-        public Bill()
-        {
-            BillsItemsMoves = new ObservableCollection<BillItemMove>();
-            BillsServicesMoves = new ObservableCollection<BillServiceMove>();
-        }
-
-        public long ClientId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Clients))]
         public virtual Client Client { get; set; }
 
-        public long StoreId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Stores))]
         public virtual Store Store { get; set; }
 
         public decimal Discount { get; set; }
@@ -25,9 +17,5 @@ namespace Phony.Model
         public decimal TotalPayed { get; set; }
 
         public bool IsReturned { get; set; }
-
-        public virtual ObservableCollection<BillItemMove> BillsItemsMoves { get; set; }
-
-        public virtual ObservableCollection<BillServiceMove> BillsServicesMoves { get; set; }
     }
 }

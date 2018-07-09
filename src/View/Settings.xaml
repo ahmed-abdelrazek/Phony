@@ -4,8 +4,8 @@
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:c ="clr-namespace:Phony.Converters"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:c="clr-namespace:Phony.Converters"
                       mc:Ignorable="d"
         Title="إعدادت" SizeToContent="Height" Width="330" WindowStartupLocation="CenterScreen" Icon="{DynamicResource settingsDrawingImage}" ResizeMode="NoResize" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.Resources>
@@ -67,4 +67,4 @@
             </Button>
         </StackPanel>
     </StackPanel>
-    </Controls:MetroWindow>
+</Controls:MetroWindow>

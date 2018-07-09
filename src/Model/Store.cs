@@ -1,15 +1,7 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Phony.Model
+﻿namespace Phony.Model
 {
     public class Store : BaseModel
     {
-        public Store()
-        {
-            Bills = new ObservableCollection<Bill>();
-            Treasuries = new ObservableCollection<Treasury>();
-        }
-
         public string Name { get; set; }
 
         public string Motto { get; set; }
@@ -33,9 +25,5 @@ namespace Phony.Model
         public string Email2 { get; set; }
 
         public string Site { get; set; }
-
-        public virtual ObservableCollection<Bill> Bills { get; set; }
-
-        public virtual ObservableCollection<Treasury> Treasuries { get; set; }
     }
 }

@@ -281,7 +281,7 @@ namespace Phony.ViewModel
                 store.Site = Site;
                 store.Notes = Notes;
                 store.EditDate = DateTime.Now;
-                store.EditById = CurrentUser.Id;
+                store.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 db.GetCollection<Store>(DBCollections.Stores.ToString()).Update(store);
                 Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
             }

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 
 namespace Phony.Model
 {
     public class SupplierMove : BaseModel
     {
-        public long SupplierId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Suppliers))]
         public virtual Supplier Supplier { get; set; }
 
         public decimal Debit { get; set; }

@@ -1,15 +1,7 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Phony.Model
+﻿namespace Phony.Model
 {
     public class Client : BaseModel
     {
-        public Client()
-        {
-            Bills = new ObservableCollection<Bill>();
-            ClientsMoves = new ObservableCollection<ClientMove>();
-        }
-
         public string Name { get; set; }
 
         public decimal Balance { get; set; }
@@ -19,9 +11,5 @@ namespace Phony.Model
         public string Email { get; set; }
 
         public string Phone { get; set; }
-
-        public virtual ObservableCollection<Bill> Bills { get; set; }
-
-        public virtual ObservableCollection<ClientMove> ClientsMoves { get; set; }
     }
 }

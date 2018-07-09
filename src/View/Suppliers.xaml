@@ -57,24 +57,24 @@
                 <DataGridTemplateColumn Header="المندوب">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesManId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesMan.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesManId}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.SalesMen}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding SalesMan.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CreatedById}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Creator.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CreatedById}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Creator.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
@@ -93,12 +93,12 @@
                 <DataGridTemplateColumn Header="عدل من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding EditById}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Editor.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" FlowDirection="RightToLeft" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding EditById}"/>
+                            <ComboBox IsEnabled="False" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Users}" FlowDirection="RightToLeft" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding Editor.Id}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>

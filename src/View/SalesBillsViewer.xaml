@@ -22,10 +22,7 @@
             <RowDefinition Height="135"/>
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card
-  Background="{DynamicResource PrimaryHueDarkBrush}"
-  Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-  Padding="8">
+        <materialDesign:Card Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Padding="8">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <RadioButton Content="برقم الفاتورة" Margin="5" IsChecked="{Binding ByBillNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

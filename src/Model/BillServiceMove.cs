@@ -1,26 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿using LiteDB;
 
 namespace Phony.Model
 {
     public class BillServiceMove : BaseModel
     {
-        public BillServiceMove()
-        {
-            Bills = new ObservableCollection<Bill>();
-        }
-
-        public long BillId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Bills))]
         public virtual Bill Bill { get; set; }
 
-        public long ServiceId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Services))]
         public virtual Service Service { get; set; }
 
         public decimal ServicePayment { get; set; }
 
         public decimal Discount { get; set; }
-
-        public virtual ObservableCollection<Bill> Bills { get; set; }
     }
 }

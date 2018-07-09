@@ -469,14 +469,14 @@ namespace Phony.ViewModel
 
         public ObservableCollection<User> Users { get; set; }
 
+        public ICommand AddCard { get; set; }
+        public ICommand EditCard { get; set; }
+        public ICommand DeleteCard { get; set; }
         public ICommand OpenAddCardFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteCard { get; set; }
         public ICommand ReloadAllCards { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddCard { get; set; }
-        public ICommand EditCard { get; set; }
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
@@ -539,13 +539,11 @@ namespace Phony.ViewModel
                     WholeSalePrice = WholeSalePrice,
                     RetailPrice = RetailPrice,
                     QTY = QTY,
-                    CompanyId = SelectedCompanyValue,
-                    SupplierId = SelectedSupplierValue,
+                    Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue),
+                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue),
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
-                    EditDate = null,
-                    EditById = null
+                    EditDate = null
                 };
                 itemCol.Insert(i);
                 Cards.Add(i);
@@ -576,11 +574,11 @@ namespace Phony.ViewModel
                 i.WholeSalePrice = WholeSalePrice;
                 i.RetailPrice = RetailPrice;
                 i.QTY = QTY;
-                i.CompanyId = SelectedCompanyValue;
-                i.SupplierId = SelectedSupplierValue;
+                i.Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue);
+                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue);
                 i.Notes = Notes;
                 i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
+                i.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 itemCol.Update(i);
                 Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
                 CardId = 0;
@@ -696,8 +694,8 @@ namespace Phony.ViewModel
             WholeSalePrice = DataGridSelectedItem.WholeSalePrice;
             RetailPrice = DataGridSelectedItem.RetailPrice;
             QTY = DataGridSelectedItem.QTY;
-            SelectedCompanyValue = DataGridSelectedItem.CompanyId;
-            SelectedSupplierValue = DataGridSelectedItem.SupplierId;
+            SelectedCompanyValue = DataGridSelectedItem.Company.Id;
+            SelectedSupplierValue = DataGridSelectedItem.Supplier.Id;
             Notes = DataGridSelectedItem.Notes;
             IsAddCardFlyoutOpen = true;
         }

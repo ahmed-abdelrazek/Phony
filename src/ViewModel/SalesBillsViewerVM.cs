@@ -16,9 +16,6 @@ namespace Phony.ViewModel
     {
         long _clientSelectedValue;
         long _billSelectedValue;
-        readonly string billCommand = "SELECT Bills.Id AS BillId, Bills.Discount AS BillDiscount, Bills.TotalAfterDiscounts AS BillTotalAfterDiscount, Bills.TotalPayed AS BillTotalPayed, Bills.Notes AS BillNotes, Bills.CreateDate AS BillCreateDate, Clients.[Name] AS ClientName, Users.[Name] AS UserName, [Stores].[Name] AS StoreName, [Stores].[Motto], CAST(Stores.[Image] AS VARBINARY(MAX)) AS StoreImage, Stores.Address1, Stores.Address2, Stores.Tel1, Stores.Tel2, Stores.Phone1, Stores.Phone2, Stores.Email1, Stores.Email2, Stores.[Site], Stores.Notes AS StoreNotes FROM [dbo].[Bills] JOIN [Clients] on [Clients].[Id] = [Bills].[ClientId] JOIN [Stores] on [Bills].[StoreId] = [dbo].[Stores].[Id] JOIN [Users] on [Users].[Id] = (CASE WHEN([Bills].[EditById] > 0) THEN [Bills].[EditById] ELSE([Bills].[CreatedById]) END) WHERE [Bills].[Id] = {0}";
-        readonly string billItemsCommand = "SELECT BillItemMoves.QTY AS ItemQTY, BillItemMoves.Discount AS ItemDiscount, BillItemMoves.Notes AS ItemNotes, Items.[Name] AS ItemName, Items.RetailPrice AS ItemSalePrice FROM [dbo].[BillItemMoves] JOIN [Items] on [BillItemMoves].[ItemId] = [dbo].[Items].[Id] WHERE [dbo].[BillItemMoves].[BillId] = {0}";
-        readonly string billServicesCommand = "SELECT BillServiceMoves.ServicePayment, BillServiceMoves.Discount AS ServiceDiscount, BillServiceMoves.Notes AS ServiceNotes, [Services].[Name] AS ServiceName FROM [dbo].[BillServiceMoves] JOIN [Services] on [BillServiceMoves].ServiceId = [dbo].[Services].[Id] WHERE [dbo].[BillServiceMoves].[BillId] = {0}";
         DateTime _firstDate;
         DateTime _secondDate;
         bool _byBillNo;
@@ -368,13 +365,11 @@ namespace Phony.ViewModel
                 if (!b.IsReturned)
                 {
                     b.IsReturned = IsReturned;
-                    b.EditById = CurrentUser.Id;
-                    b.EditDate = DateTime.Now;
                     if (b.TotalPayed < b.TotalAfterDiscounts)
                     {
                         if (IsReturned)
                         {
-                            var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(b.ClientId);
+                            var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(b.Client.Id);
                             c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
                             db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
                         }
@@ -403,7 +398,7 @@ namespace Phony.ViewModel
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.ClientId == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                     }
                 }
             }
@@ -413,7 +408,7 @@ namespace Phony.ViewModel
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.ClientId == ClientSelectedValue));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue));
                     }
                 }
             }

@@ -331,17 +331,15 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
                         s.Balance += compantpaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         //the company will give us money in form of balance or something
                         db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
                         {
-                            CompanyId = DataGridSelectedCompany.Id,
+                            Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
                             Credit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
@@ -382,26 +380,26 @@ namespace Phony.ViewModel
                     {
                         var s = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
                         s.Balance -= compantpaymentamount;
-                        s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
                         //Company gets money from us
                         db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
                         {
-                            CompanyId = DataGridSelectedCompany.Id,
+                            Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
                             Debit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                             EditDate = null,
-                            EditById = null
+                            Editor = null
                         });
                         //the money is taken from our Treasury
                         db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
-                            TreasuryId = 1,
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
                             Credit = compantpaymentamount,
                             Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            EditDate = null,
+                            Editor = null
                         });
                         await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
@@ -443,9 +441,9 @@ namespace Phony.ViewModel
                         Image = Image,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        CreatedById = CurrentUser.Id,
+                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
                         EditDate = null,
-                        EditById = null
+                        Editor = null
                     };
                     db.GetCollection<Company>(DBCollections.Companies.ToString()).Insert(s);
                     Companies.Add(s);
@@ -480,8 +478,6 @@ namespace Phony.ViewModel
                 c.Phone = Phone;
                 c.Image = Image;
                 c.Notes = Notes;
-                c.EditDate = DateTime.Now;
-                c.EditById = CurrentUser.Id;
                 db.GetCollection<Company>(DBCollections.Companies.ToString()).Update(c);
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;

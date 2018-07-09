@@ -1,9 +1,10 @@
-﻿namespace Phony.Model
+﻿using LiteDB;
+
+namespace Phony.Model
 {
     public class CompanyMove : BaseModel
     {
-        public long CompanyId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.Companies))]
         public virtual Company Company { get; set; }
 
         public decimal Debit { get; set; }

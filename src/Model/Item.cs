@@ -1,15 +1,10 @@
-﻿using Phony.ViewModel;
-using System.Collections.ObjectModel;
+﻿using LiteDB;
+using Phony.ViewModel;
 
 namespace Phony.Model
 {
     public class Item : BaseModel
     {
-        public Item()
-        {
-            BillsItemsMoves = new ObservableCollection<BillItemMove>();
-        }
-
         public string Name { get; set; }
 
         public string Barcode { get; set; }
@@ -30,14 +25,10 @@ namespace Phony.Model
 
         public decimal QTY { get; set; }
 
-        public long CompanyId { get; set; }
+        [BsonRef(nameof(DBCollections.Companies))]
+        public Company Company { get; set; }
 
-        public virtual Company Company { get; set; }
-
-        public long SupplierId { get; set; }
-
+        [BsonRef(nameof(DBCollections.Suppliers))]
         public virtual Supplier Supplier { get; set; }
-
-        public virtual ObservableCollection<BillItemMove> BillsItemsMoves { get; set; }
     }
 }

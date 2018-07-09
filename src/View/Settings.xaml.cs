@@ -5,10 +5,10 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Phony.Kernel;
 using Phony.Model;
+using Phony.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -85,7 +85,17 @@ namespace Phony.View
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.DBFullName))
             {
                 DbFullPathTextBox.Text = ConnectionStringBuilder["Filename"].ToString();
-                EncryptionkeyTextBox.Text = ConnectionStringBuilder["Password"].ToString();
+                if (ConnectionStringBuilder["Password"] != null)
+                {
+                    EncryptionkeyTextBox.Text = ConnectionStringBuilder["Password"].ToString();
+                }
+            }
+            else
+            {
+                if (!Properties.Settings.Default.IsConfigured)
+                {
+                    DbFullPathTextBox.Text = Core.UserLocalAppFolderPath() + "..\\..\\Phony.db";
+                }
             }
         }
 
@@ -131,14 +141,14 @@ namespace Phony.View
             if (!(bool)UseLocalDefaultCheckBox.IsChecked)
             {
                 ConnectionStringBuilder["Filename"] = DbFullPathTextBox.Text + "Phony.db";
-                if (string.IsNullOrWhiteSpace(EncryptionkeyTextBox.Text))
-                {
-                    ConnectionStringBuilder["Password"] = EncryptionkeyTextBox.Text;
-                }
             }
             else
             {
                 ConnectionStringBuilder["Filename"] = Core.UserLocalAppFolderPath() + "..\\..\\Phony.db";
+                if (!string.IsNullOrWhiteSpace(EncryptionkeyTextBox.Text))
+                {
+                    ConnectionStringBuilder["Password"] = EncryptionkeyTextBox.Text;
+                }
             }
             Properties.Settings.Default.DBFullName = ConnectionStringBuilder.ConnectionString;
             Properties.Settings.Default.Save();
@@ -150,8 +160,8 @@ namespace Phony.View
                     {
                         using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
-                            var userCol = db.GetCollection<User>(ViewModel.DBCollections.Users.ToString());
-                            var user = userCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                            var user = userCol.FindById(1);
                             if (user == null)
                             {
                                 userCol.Insert(new User
@@ -159,12 +169,12 @@ namespace Phony.View
                                     Id = 1,
                                     Name = "admin",
                                     Pass = SecurePasswordHasher.Hash("admin"),
-                                    Group = ViewModel.UserGroup.Manager,
+                                    Group = UserGroup.Manager,
                                     IsActive = true
                                 });
                             }
-                            var clientCol = db.GetCollection<Client>(ViewModel.DBCollections.Clients.ToString());
-                            var client = clientCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var clientCol = db.GetCollection<Client>(DBCollections.Clients.ToString());
+                            var client = clientCol.FindById(1);
                             if (client == null)
                             {
                                 clientCol.Insert(new Client
@@ -172,14 +182,14 @@ namespace Phony.View
                                     Id = 1,
                                     Name = "كاش",
                                     Balance = 0,
-                                    CreatedById = 1,
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var companyCol = db.GetCollection<Company>(ViewModel.DBCollections.Companies.ToString());
-                            var company = companyCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var companyCol = db.GetCollection<Company>(DBCollections.Companies.ToString());
+                            var company = companyCol.FindById(1);
                             if (company == null)
                             {
                                 companyCol.Insert(new Company
@@ -187,29 +197,29 @@ namespace Phony.View
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    CreatedById = 1,
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var salesMenCol = db.GetCollection<SalesMan>(ViewModel.DBCollections.SalesMen.ToString());
-                            var salesMen = salesMenCol.Find(x => x.Id == 1).FirstOrDefault();
-                            if (salesMenCol == null)
+                            var salesMenCol = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString());
+                            var salesMen = salesMenCol.FindById(1);
+                            if (salesMen == null)
                             {
                                 salesMenCol.Insert(new SalesMan
                                 {
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    CreatedById = 1,
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var suppliersCol = db.GetCollection<Supplier>(ViewModel.DBCollections.Suppliers.ToString());
-                            var supplier = suppliersCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var suppliersCol = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString());
+                            var supplier = suppliersCol.FindById(1);
                             if (supplier == null)
                             {
                                 suppliersCol.Insert(new Supplier
@@ -217,54 +227,43 @@ namespace Phony.View
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    SalesManId = 1,
-                                    CreatedById = 1,
+                                    SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var storesCol = db.GetCollection<Store>(ViewModel.DBCollections.Stores.ToString());
-                            var store = storesCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var storesCol = db.GetCollection<Store>(DBCollections.Stores.ToString());
+                            var store = storesCol.FindById(1);
                             if (store == null)
                             {
                                 storesCol.Insert(new Store
                                 {
                                     Id = 1,
                                     Name = "التوكل",
-                                    CreatedById = 1,
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var treasuriesCol = db.GetCollection<Treasury>(ViewModel.DBCollections.Treasuries.ToString());
-                            var treasury = treasuriesCol.Find(x => x.Id == 1).FirstOrDefault();
+                            var treasuriesCol = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString());
+                            var treasury = treasuriesCol.FindById(1);
                             if (treasury == null)
                             {
                                 treasuriesCol.Insert(new Treasury
                                 {
                                     Id = 1,
                                     Name = "الرئيسية",
-                                    StoreId = 1,
+                                    Store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1),
                                     Balance = 0,
-                                    CreatedById = 1,
+                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
-                                    EditById = null,
+                                    Editor = null,
                                     EditDate = null
                                 });
                             }
-                            db.GetCollection<Bill>(ViewModel.DBCollections.Treasuries.ToString());
-                            db.GetCollection<BillItemMove>(ViewModel.DBCollections.BillsItemsMoves.ToString());
-                            db.GetCollection<BillServiceMove>(ViewModel.DBCollections.BillsServicesMoves.ToString());
-                            db.GetCollection<ClientMove>(ViewModel.DBCollections.ClientsMoves.ToString());
-                            db.GetCollection<CompanyMove>(ViewModel.DBCollections.CompaniesMoves.ToString());
-                            db.GetCollection<Item>(ViewModel.DBCollections.Items.ToString());
-                            db.GetCollection<Note>(ViewModel.DBCollections.Notes.ToString());
-                            db.GetCollection<SalesManMove>(ViewModel.DBCollections.SalesMenMoves.ToString());
-                            db.GetCollection<ServiceMove>(ViewModel.DBCollections.ServicesMoves.ToString());
-                            db.GetCollection<SupplierMove>(ViewModel.DBCollections.SuppliersMoves.ToString());
-                            db.GetCollection<TreasuryMove>(ViewModel.DBCollections.TreasuriesMoves.ToString());
                         }
                         Properties.Settings.Default.IsConfigured = true;
                         Properties.Settings.Default.Save();

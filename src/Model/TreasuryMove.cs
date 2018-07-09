@@ -1,9 +1,10 @@
-﻿namespace Phony.Model
+﻿using LiteDB;
+
+namespace Phony.Model
 {
     public class TreasuryMove : BaseModel
     {
-        public long TreasuryId { get; set; }
-
+        [BsonRef(nameof(ViewModel.DBCollections.TreasuriesMoves))]
         public virtual Treasury Treasury { get; set; }
 
         public decimal Debit { get; set; }
