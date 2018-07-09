@@ -95,8 +95,8 @@
     <Reference Include="Exceptionless.Wpf, Version=4.3.2004.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Exceptionless.Wpf.4.3.2004\lib\net45\Exceptionless.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.6.4\lib\net47\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.5.0.16, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.1.5.0\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
@@ -305,7 +305,7 @@
     <Compile Include="Utility\CustomCommand.cs" />
     <Compile Include="ViewModel\CardVM.cs" />
     <Compile Include="ViewModel\ClientVM.cs" />
-    <Compile Include="ViewModel\CopmanyVM.cs" />
+    <Compile Include="ViewModel\CompanyVM.cs" />
     <Compile Include="ViewModel\ItemVM.cs" />
     <Compile Include="ViewModel\ListsVM.cs" />
     <Compile Include="Model\BaseModel.cs" />

@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModel
 {
-    public class CopmanyVM : CommonBase
+    public class CompanyVM : CommonBase
     {
         long _companyId;
         string _name;
@@ -259,7 +259,7 @@ namespace Phony.ViewModel
 
         Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
-        public CopmanyVM()
+        public CompanyVM()
         {
             LoadCommands();
             using (var db = new PhonyDbContext())
