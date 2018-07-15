@@ -112,7 +112,7 @@
             <Label Content="{Binding ServicesCount}" FontWeight="Bold" FontSize="14" Margin="5"/>
             <Label Content="{Binding ServicesPurchasePrice}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
-        <Controls:Flyout Grid.RowSpan="3" Header="بيانات الخدمة" Width="250" Theme="Accent" IsOpen="{Binding IsAddServiceFlyoutOpen}" Position="Left">
+        <Controls:Flyout Grid.RowSpan="3" Header="بيانات الخدمة" Width="250" Theme="Adapt" IsOpen="{Binding IsAddServiceFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم الخدمة" Margin="5" MaxLength="50"/>

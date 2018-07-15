@@ -17,14 +17,14 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel x:Name="TextBoxFirstPanel" Orientation="Horizontal" Margin="5">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=UserNameTextBox, Path=BorderBrush}" Kind="account" />
-                <TextBox x:Name="UserNameTextBox" MinWidth="200" Margin="5" BorderThickness="0,0,0,1" Text="{Binding Name, Mode=TwoWay}" Controls:TextBoxHelper.Watermark="اسم المستخدم" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:HintAssist.Hint="اسم المستخدم"/>
+                <TextBox x:Name="UserNameTextBox" Style="{DynamicResource MaterialDesignTextBox}" MinWidth="200" Margin="5" BorderThickness="0,0,0,1" Text="{Binding Name, Mode=TwoWay}" Controls:TextBoxHelper.Watermark="اسم المستخدم" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:TextFieldAssist.HasClearButton="True" materialDesign:HintAssist.Hint="اسم المستخدم"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="{Binding ElementName=TextBoxFirstPanel, Path=Margin}">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=PasswordTextBox, Path=BorderBrush}" Kind="keyvariant" />
-                <PasswordBox x:Name="PasswordTextBox" MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged"/>
+                <PasswordBox x:Name="PasswordTextBox" Style="{DynamicResource MaterialDesignPasswordBox}"  MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:TextFieldAssist.HasClearButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button Command="{Binding LogIn}" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
+                <Button Command="{Binding LogIn}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLogging}" materialDesign:ButtonProgressAssist.IsIndeterminate="True" materialDesign:ButtonProgressAssist.Opacity=".4" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
             </StackPanel>
         </StackPanel>
     </Grid>

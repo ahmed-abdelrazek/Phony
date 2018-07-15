@@ -160,7 +160,7 @@
             <Label Content="{Binding CardsSalePrice}" FontWeight="Bold" FontSize="14" Margin="5"/>
             <Label Content="{Binding CardsProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
-        <Controls:Flyout Grid.RowSpan="3" Header="بيانات كارت الشحن" Width="250" Theme="Accent" IsOpen="{Binding IsAddCardFlyoutOpen}" Position="Left">
+        <Controls:Flyout Grid.RowSpan="3" Header="بيانات كارت الشحن" Width="250" Theme="Adapt" IsOpen="{Binding IsAddCardFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم كارت الشحن" Margin="5" MaxLength="100"/>

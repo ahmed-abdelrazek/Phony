@@ -58,7 +58,7 @@
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <TextBox materialDesign:HintAssist.Hint="الاسم" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding UserName}"/>
+                            <TextBox materialDesign:HintAssist.Hint="الاسم" IsReadOnly="True" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding UserName}"/>
                             <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="كلمة المرور الحالية" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Password}"/>
                             <TextBox Grid.Row="2" materialDesign:HintAssist.Hint=" كلمة المرور الجديدة" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding NewPassword}"/>
                             <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="الهاتف" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Phone}"/>

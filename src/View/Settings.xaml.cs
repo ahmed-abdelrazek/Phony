@@ -85,9 +85,12 @@ namespace Phony.View
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.DBFullName))
             {
                 DbFullPathTextBox.Text = ConnectionStringBuilder["Filename"].ToString();
-                if (ConnectionStringBuilder["Password"] != null)
+                if (Properties.Settings.Default.DBFullName.Contains("Password=\""))
                 {
-                    EncryptionkeyTextBox.Text = ConnectionStringBuilder["Password"].ToString();
+                    if (ConnectionStringBuilder["Password"] != null)
+                    {
+                        EncryptionkeyTextBox.Text = ConnectionStringBuilder["Password"].ToString();
+                    }
                 }
             }
             else

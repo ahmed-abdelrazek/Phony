@@ -127,7 +127,7 @@
             <Label Content="{Binding SuppliersCredits}" FontWeight="Bold" FontSize="14" Margin="5"/>
             <Label Content="{Binding SuppliersProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
-        <Controls:Flyout Grid.RowSpan="3" Header="بيانات الموردين" Width="250" Theme="Accent" IsOpen="{Binding IsAddSupplierFlyoutOpen}" Position="Left">
+        <Controls:Flyout Grid.RowSpan="3" Header="بيانات الموردين" Width="250" Theme="Adapt" IsOpen="{Binding IsAddSupplierFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBlock Text="اسم المورد" Margin="5,0"/>

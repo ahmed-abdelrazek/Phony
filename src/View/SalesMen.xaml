@@ -126,7 +126,7 @@
             <Label Content="{Binding SalesMenCredits}" FontWeight="Bold" FontSize="14" Margin="5"/>
             <Label Content="{Binding SalesMenProfit}" FontWeight="Bold" FontSize="14" Margin="5"/>
         </StatusBar>
-        <Controls:Flyout Grid.RowSpan="3" Header="بيانات المندوب" Width="250" Theme="Accent" IsOpen="{Binding IsAddSalesManFlyoutOpen}" Position="Left">
+        <Controls:Flyout Grid.RowSpan="3" Header="بيانات المندوب" Width="250" Theme="Adapt" IsOpen="{Binding IsAddSalesManFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBlock Text="اسم المندوب" Margin="5,0"/>

@@ -43,7 +43,7 @@
                 <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllNos}"/>
             </StackPanel>
         </StackPanel>
-        <Controls:Flyout Header="بيانات الرقم" Width="290" Theme="Accent" IsOpen="{Binding IsAddNoFlyoutOpen}" Position="Left">
+        <Controls:Flyout Header="بيانات الرقم" Width="290" Theme="Adapt" IsOpen="{Binding IsAddNoFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5" MaxLength="100"/>
