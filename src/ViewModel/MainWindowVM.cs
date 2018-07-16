@@ -2,8 +2,6 @@
 using Phony.Utility;
 using Phony.View;
 using System;
-using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Phony.ViewModel
@@ -15,8 +13,6 @@ namespace Phony.ViewModel
 
         public ICommand ChangeSource { get; set; }
         public ICommand OpenSettingsWindow { get; set; }
-
-        MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
         public MainWindowVM()
         {
