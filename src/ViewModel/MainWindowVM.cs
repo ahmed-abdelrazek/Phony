@@ -16,8 +16,6 @@ namespace Phony.ViewModel
         public ICommand ChangeSource { get; set; }
         public ICommand OpenSettingsWindow { get; set; }
 
-        MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-
         public MainWindowVM()
         {
             LoadCommands();
