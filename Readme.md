@@ -6,7 +6,7 @@ https://shababco.blogspot.com/
 ## The Application uses:
 	1- LiteDB https://github.com/mbdavid/LiteDB
 	2- MahApps https://github.com/MahApps/MahApps.Metro
-	3- MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
+	3- Modified version of MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
 	4- Modified version of MaterialMessageBox https://github.com/denpalrius/Material-Message-Box
 	5- Modified version of BarcodeLib https://github.com/barnhill/barcodelib
 	6- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
@@ -22,13 +22,15 @@ https://shababco.blogspot.com/
 
 ## Screenshots
 
-![Alt text](https://imgur.com/1fYxRnW.png "Login Window")
+![Alt text](https://i.imgur.com/9gk8A0q.png "Login Window")
 
-![Alt text](https://imgur.com/0BdGsOs.png "Normal Main Window")
+![Alt text](https://i.imgur.com/VTW6pyt.png "Normal Main Window")
 
 ![Alt text](https://imgur.com/eiW2xTV.png "Maxmized Dark Main Window With Current User in Edit Mode")
 
-![Alt text](https://imgur.com/9PLejWG.png "Settings Window")
+![Alt text](https://i.imgur.com/GQi0yEx.png "Settings Window")
+
+![Alt text](https://i.imgur.com/UOYcTq1.png "DB Settings Window")
 
 ![Alt text](https://imgur.com/vznG30G.png "Settings Window with some colors")
 
@@ -38,8 +40,8 @@ https://shababco.blogspot.com/
 
 ![Alt text](https://imgur.com/iT64tMy.png "Items Window")
 
-![Alt text](https://imgur.com/FFosCKR.png "Items Window with Add New Item Flyout panel opened 1")
+![Alt text](https://i.imgur.com/N8138QU.png "Items Window with Add New Item Flyout panel opened 1")
 
-![Alt text](https://imgur.com/FzAnwvo.png "Items Window with Add New Item Flyout panel opened 2")
+![Alt text](https://i.imgur.com/GAX2FzB.png "Items Window with Add New Item Flyout panel opened 2")
 
-![Alt text](https://imgur.com/2tdF2LR.png "Store Info Window")
+![Alt text](https://i.imgur.com/SD8EmJB.png "Store Info Window")
