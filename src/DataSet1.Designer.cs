@@ -1215,6 +1215,8 @@ namespace Phony {
             
             private global::System.Data.DataColumn columnServiceNotes;
             
+            private global::System.Data.DataColumn columnServiceBalance;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public ServicesDataTable() {
@@ -1282,6 +1284,14 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public global::System.Data.DataColumn ServiceBalanceColumn {
+                get {
+                    return this.columnServiceBalance;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1317,13 +1327,14 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public ServicesRow AddServicesRow(string ServiceName, decimal ServicePayment, decimal ServiceDiscount, string ServiceNotes) {
+            public ServicesRow AddServicesRow(string ServiceName, decimal ServicePayment, decimal ServiceDiscount, string ServiceNotes, decimal ServiceBalance) {
                 ServicesRow rowServicesRow = ((ServicesRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ServiceName,
                         ServicePayment,
                         ServiceDiscount,
-                        ServiceNotes};
+                        ServiceNotes,
+                        ServiceBalance};
                 rowServicesRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowServicesRow);
                 return rowServicesRow;
@@ -1350,6 +1361,7 @@ namespace Phony {
                 this.columnServicePayment = base.Columns["ServicePayment"];
                 this.columnServiceDiscount = base.Columns["ServiceDiscount"];
                 this.columnServiceNotes = base.Columns["ServiceNotes"];
+                this.columnServiceBalance = base.Columns["ServiceBalance"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1363,8 +1375,11 @@ namespace Phony {
                 base.Columns.Add(this.columnServiceDiscount);
                 this.columnServiceNotes = new global::System.Data.DataColumn("ServiceNotes", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnServiceNotes);
+                this.columnServiceBalance = new global::System.Data.DataColumn("ServiceBalance", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnServiceBalance);
                 this.columnServicePayment.DefaultValue = ((decimal)(0m));
                 this.columnServiceDiscount.DefaultValue = ((decimal)(0m));
+                this.columnServiceBalance.DefaultValue = ((decimal)(0m));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2295,6 +2310,22 @@ namespace Phony {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public decimal ServiceBalance {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableServices.ServiceBalanceColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ServiceBalance\' in table \'Services\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableServices.ServiceBalanceColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public bool IsServiceNameNull() {
                 return this.IsNull(this.tableServices.ServiceNameColumn);
             }
@@ -2339,6 +2370,18 @@ namespace Phony {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
             public void SetServiceNotesNull() {
                 this[this.tableServices.ServiceNotesColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public bool IsServiceBalanceNull() {
+                return this.IsNull(this.tableServices.ServiceBalanceColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+            public void SetServiceBalanceNull() {
+                this[this.tableServices.ServiceBalanceColumn] = global::System.Convert.DBNull;
             }
         }
         

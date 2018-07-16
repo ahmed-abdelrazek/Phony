@@ -108,20 +108,23 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="اسم الخدمة: " VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Margin="5"/>
                 <TextBlock Text="{Binding ServiceChildServiceName}" Grid.Column="1" FontSize="14" FontWeight="Bold" Margin="5"/>
-                <TextBlock Text="التكلفة: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
-                <Controls:NumericUpDown Value="{Binding ServiceChildServiceCost}" Grid.Column="1" Grid.Row="1" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" NumericInputMode="Decimal"/>
-                <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
-                <StackPanel Orientation="Horizontal" Margin="5" Grid.Column="1" Grid.Row="2">
+                <TextBlock Text="الرصيد/الشحن: " VerticalAlignment="Center" Grid.Row="1" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Value="{Binding ServiceChildServiceBalance}" Grid.Column="1" Grid.Row="1" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" NumericInputMode="Decimal"/>
+                <TextBlock Text="التكلفة: " VerticalAlignment="Center" Grid.Row="2" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <Controls:NumericUpDown Value="{Binding ServiceChildServiceCost}" Grid.Column="2" Grid.Row="2" Minimum="0" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" NumericInputMode="Decimal"/>
+                <TextBlock Text="الخصم: " VerticalAlignment="Center" Grid.Row="3" FontSize="15" FontWeight="Bold" Margin="5"/>
+                <StackPanel Orientation="Horizontal" Margin="5" Grid.Column="1" Grid.Row="3">
                     <Controls:NumericUpDown Value="{Binding ChildDiscount}" Minimum="0" Maximum="100" Culture="ar-EG" HorizontalContentAlignment="Center" Margin="5" BorderThickness="0,0,0,1" NumericInputMode="Decimal" TextAlignment="Center" FontFamily="Segoe UI" FontSize="14" FontWeight="Bold" HideUpDownButtons="True"/>
                     <TextBlock Text="%" VerticalAlignment="Center" FontSize="14" FontWeight="Bold"/>
                 </StackPanel>
-                <TextBox Grid.ColumnSpan="2" Grid.Row="3" Text="{Binding ServiceChildNotes}" materialDesign:HintAssist.Hint="ملاحظات" Margin="5" MaxWidth="200" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
-                <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="4" Margin="5">
+                <TextBox Grid.ColumnSpan="2" Grid.Row="4" Text="{Binding ServiceChildNotes}" materialDesign:HintAssist.Hint="ملاحظات" Margin="5" MaxWidth="200" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+                <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="5" Margin="5">
                     <Button Content="اضافة" Command="{Binding AddServiceToBill}"/>
                 </StackPanel>
             </Grid>
@@ -228,7 +231,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding ServicePayment}" Header="الشحن" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الشحن" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding ServicePayment}" Header="التكلفة" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>

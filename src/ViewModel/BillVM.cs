@@ -21,6 +21,7 @@ namespace Phony.ViewModel
         decimal _itemChildItemPrice;
         decimal _itemChildItemQTYExist;
         decimal _itemChildItemQTYSell;
+        decimal _serviceChildServiceBalance;
         decimal _serviceChildServiceCost;
         decimal _childDiscount;
         decimal _billTotal;
@@ -109,6 +110,19 @@ namespace Phony.ViewModel
                 if (value != _itemChildItemQTYExist)
                 {
                     _itemChildItemQTYExist = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public decimal ServiceChildServiceBalance
+        {
+            get => _serviceChildServiceBalance;
+            set
+            {
+                if (value != _serviceChildServiceBalance)
+                {
+                    _serviceChildServiceBalance = value;
                     RaisePropertyChanged();
                 }
             }
@@ -871,6 +885,7 @@ namespace Phony.ViewModel
             {
                 IsAddServiceChildOpen = false;
                 ServiceChildServiceName = null;
+                ServiceChildServiceBalance = 0;
                 ServiceChildServiceCost = 0;
                 SelectedService = null;
                 ServiceChildNotes = null;
@@ -906,6 +921,7 @@ namespace Phony.ViewModel
                     {
                         Bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(CurrentBillNo),
                         Service = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(SearchSelectedValue),
+                        Balance = ServiceChildServiceBalance,
                         ServicePayment = ServiceChildServiceCost,
                         Discount = ChildDiscount,
                         Notes = ServiceChildNotes,

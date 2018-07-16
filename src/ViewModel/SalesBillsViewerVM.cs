@@ -322,27 +322,28 @@ namespace Phony.ViewModel
                     foreach (var service in Services)
                     {
                         servicedr["ServiceName"] = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
+                        servicedr["ServiceBalance"] = service.Balance;
                         servicedr["ServicePayment"] = service.ServicePayment;
                         servicedr["ServiceDiscount"] = service.Discount;
                         servicedr["ServiceNotes"] = service.Notes;
-                        ds.Tables["Services"].Rows.Add(itemdr);
+                        ds.Tables["Services"].Rows.Add(servicedr);
                     }
                 }
                 if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
                 {
                     Reports.SalesBillA4 r = new Reports.SalesBillA4();
+                    r.SetDataSource(ds);
                     await Task.Run(() =>
                     {
-                        r.SetDataSource(ds);
                         Report = r;
                     });
                 }
                 else
                 {
                     Reports.SalesBillA8 r = new Reports.SalesBillA8();
+                    r.SetDataSource(ds);
                     await Task.Run(() =>
                     {
-                        r.SetDataSource(ds);
                         Report = r;
                     });
                 }
@@ -404,27 +405,28 @@ namespace Phony.ViewModel
                     foreach (var service in Services)
                     {
                         servicedr["ServiceName"] = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
+                        servicedr["ServiceBalance"] = service.Balance;
                         servicedr["ServicePayment"] = service.ServicePayment;
                         servicedr["ServiceDiscount"] = service.Discount;
                         servicedr["ServiceNotes"] = service.Notes;
-                        ds.Tables["Services"].Rows.Add(itemdr);
+                        ds.Tables["Services"].Rows.Add(servicedr);
                     }
                 }
                 if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
                 {
                     Reports.SalesBillA4 r = new Reports.SalesBillA4();
+                    r.SetDataSource(ds);
                     await Task.Run(() =>
                     {
-                        r.SetDataSource(ds);
                         Report = r;
                     });
                 }
                 else
                 {
                     Reports.SalesBillA8 r = new Reports.SalesBillA8();
+                    r.SetDataSource(ds);
                     await Task.Run(() =>
                     {
-                        r.SetDataSource(ds);
                         Report = r;
                     });
                 }
