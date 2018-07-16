@@ -42,6 +42,6 @@ https://shababco.blogspot.com/
 
 ![Alt text](https://i.imgur.com/N8138QU.png "Items Window with Add New Item Flyout panel opened 1")
 
-![Alt text](https://i.imgur.com/GAX2FzB.png "Items Window with Add New Item Flyout panel opened 2")
+![Alt text](https://i.imgur.com/RhDLlTz.png "Items Window with Add New Item Flyout panel opened 2")
 
 ![Alt text](https://i.imgur.com/SD8EmJB.png "Store Info Window")
