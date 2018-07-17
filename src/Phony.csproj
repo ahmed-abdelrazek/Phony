@@ -107,12 +107,33 @@
     <Reference Include="MaterialDesignThemes.Wpf">
       <HintPath>..\Libraries\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism, Version=7.0.0.396, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.7.0.0.396\lib\net45\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Unity.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Unity.6.3.0\lib\net45\Prism.Unity.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="SAPBusinessObjects.WPF.Viewer, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="SAPBusinessObjects.WPF.ViewerShared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
@@ -126,8 +147,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -165,25 +185,24 @@
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
     <Compile Include="Kernel\Core.cs" />
     <Compile Include="Kernel\SecurePasswordHasher.cs" />
-    <Compile Include="Model\BillServiceMove.cs" />
-    <Compile Include="Model\ClientMove.cs" />
-    <Compile Include="Model\CompanyMove.cs" />
-    <Compile Include="Model\Enumeration.cs" />
-    <Compile Include="Model\Note.cs" />
-    <Compile Include="Model\SalesMan.cs" />
-    <Compile Include="Model\SalesManMove.cs" />
-    <Compile Include="Model\ServiceMove.cs" />
-    <Compile Include="Model\Store.cs" />
-    <Compile Include="Model\SupplierMove.cs" />
-    <Compile Include="Model\Treasury.cs" />
-    <Compile Include="Model\TreasuryMove.cs" />
+    <Compile Include="Models\BillServiceMove.cs" />
+    <Compile Include="Models\ClientMove.cs" />
+    <Compile Include="Models\CompanyMove.cs" />
+    <Compile Include="Models\Enumeration.cs" />
+    <Compile Include="Models\Note.cs" />
+    <Compile Include="Models\SalesMan.cs" />
+    <Compile Include="Models\SalesManMove.cs" />
+    <Compile Include="Models\ServiceMove.cs" />
+    <Compile Include="Models\Store.cs" />
+    <Compile Include="Models\SupplierMove.cs" />
+    <Compile Include="Models\Treasury.cs" />
+    <Compile Include="Models\TreasuryMove.cs" />
     <Compile Include="Extensions\IsNullOrEmptyExtension.cs" />
-    <Compile Include="Kernel\CommonBase.cs" />
-    <Compile Include="Model\Bill.cs" />
-    <Compile Include="Model\BillItemMove.cs" />
-    <Compile Include="Model\Client.cs" />
-    <Compile Include="Model\Company.cs" />
-    <Compile Include="Model\Supplier.cs" />
+    <Compile Include="Models\Bill.cs" />
+    <Compile Include="Models\BillItemMove.cs" />
+    <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Supplier.cs" />
     <Compile Include="Reports\SalesBillA4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -196,118 +215,117 @@
       <DependentUpon>SalesBillA8.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ViewModel\BarcodeVM.cs" />
-    <Compile Include="ViewModel\BillVM.cs" />
-    <Compile Include="ViewModel\MainPageVM.cs" />
-    <Compile Include="ViewModel\NoteVM.cs" />
-    <Compile Include="ViewModel\SalesBillsViewerVM.cs" />
-    <Compile Include="ViewModel\UserVM.cs" />
-    <Compile Include="View\BarCodes.xaml.cs">
+    <Compile Include="ViewModels\BarcodeVM.cs" />
+    <Compile Include="ViewModels\BillVM.cs" />
+    <Compile Include="ViewModels\MainPageVM.cs" />
+    <Compile Include="ViewModels\NoteVM.cs" />
+    <Compile Include="ViewModels\SalesBillsViewerVM.cs" />
+    <Compile Include="ViewModels\UserVM.cs" />
+    <Compile Include="Views\BarCodes.xaml.cs">
       <DependentUpon>BarCodes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Bills.xaml.cs">
+    <Compile Include="Views\Bills.xaml.cs">
       <DependentUpon>Bills.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ColorDialog.xaml.cs">
+    <Compile Include="Views\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Notes.xaml.cs">
+    <Compile Include="Views\Notes.xaml.cs">
       <DependentUpon>Notes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Main.xaml.cs">
+    <Compile Include="Views\Pages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Users\Login.xaml.cs">
+    <Compile Include="Views\Pages\Users\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utility\CustomCommand.cs" />
-    <Compile Include="ViewModel\CardVM.cs" />
-    <Compile Include="ViewModel\ClientVM.cs" />
-    <Compile Include="ViewModel\CompanyVM.cs" />
-    <Compile Include="ViewModel\ItemVM.cs" />
-    <Compile Include="ViewModel\ListsVM.cs" />
-    <Compile Include="Model\BaseModel.cs" />
-    <Compile Include="Model\User.cs" />
-    <Compile Include="ViewModel\MainWindowVM.cs" />
-    <Compile Include="ViewModel\SalesManVM.cs" />
-    <Compile Include="ViewModel\ServiceVM.cs" />
-    <Compile Include="ViewModel\ShortageVM.cs" />
-    <Compile Include="ViewModel\StoreVM.cs" />
-    <Compile Include="ViewModel\SupplierVM.cs" />
-    <Compile Include="ViewModel\Users\LoginVM.cs" />
-    <Compile Include="View\Cards.xaml.cs">
+    <Compile Include="ViewModels\CardVM.cs" />
+    <Compile Include="ViewModels\ClientVM.cs" />
+    <Compile Include="ViewModels\CompanyVM.cs" />
+    <Compile Include="ViewModels\ItemVM.cs" />
+    <Compile Include="ViewModels\ListsVM.cs" />
+    <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="ViewModels\MainWindowVM.cs" />
+    <Compile Include="ViewModels\SalesManVM.cs" />
+    <Compile Include="ViewModels\ServiceVM.cs" />
+    <Compile Include="ViewModels\ShortageVM.cs" />
+    <Compile Include="ViewModels\StoreVM.cs" />
+    <Compile Include="ViewModels\SupplierVM.cs" />
+    <Compile Include="ViewModels\Users\LoginVM.cs" />
+    <Compile Include="Views\Cards.xaml.cs">
       <DependentUpon>Cards.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Clients.xaml.cs">
+    <Compile Include="Views\Clients.xaml.cs">
       <DependentUpon>Clients.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Companies.xaml.cs">
+    <Compile Include="Views\Companies.xaml.cs">
       <DependentUpon>Companies.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Items.xaml.cs">
+    <Compile Include="Views\Items.xaml.cs">
       <DependentUpon>Items.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SalesBillsViewer.xaml.cs">
+    <Compile Include="Views\SalesBillsViewer.xaml.cs">
       <DependentUpon>SalesBillsViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SalesMen.xaml.cs">
+    <Compile Include="Views\SalesMen.xaml.cs">
       <DependentUpon>SalesMen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Services.xaml.cs">
+    <Compile Include="Views\Services.xaml.cs">
       <DependentUpon>Services.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Settings.xaml.cs">
+    <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Shortages.xaml.cs">
+    <Compile Include="Views\Shortages.xaml.cs">
       <DependentUpon>Shortages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Stores.xaml.cs">
+    <Compile Include="Views\Stores.xaml.cs">
       <DependentUpon>Stores.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Suppliers.xaml.cs">
+    <Compile Include="Views\Suppliers.xaml.cs">
       <DependentUpon>Suppliers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Users.xaml.cs">
+    <Compile Include="Views\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\BarCodes.xaml">
+    <Page Include="Views\BarCodes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Bills.xaml">
+    <Page Include="Views\Bills.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ColorDialog.xaml">
+    <Page Include="Views\ColorDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Notes.xaml">
+    <Page Include="Views\Notes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Main.xaml">
+    <Page Include="Views\Pages\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Users\Login.xaml">
+    <Page Include="Views\Pages\Users\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Cards.xaml">
+    <Page Include="Views\Cards.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Clients.xaml">
+    <Page Include="Views\Clients.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Companies.xaml">
+    <Page Include="Views\Companies.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Items.xaml">
+    <Page Include="Views\Items.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -317,39 +335,39 @@
     </Compile>
     <Compile Include="Kernel\AssemblyInfo.cs" />
     <Compile Include="Kernel\Encryption.cs" />
-    <Compile Include="View\MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\SalesBillsViewer.xaml">
+    <Page Include="Views\SalesBillsViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SalesMen.xaml">
+    <Page Include="Views\SalesMen.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Services.xaml">
+    <Page Include="Views\Services.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Settings.xaml">
+    <Page Include="Views\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Shortages.xaml">
+    <Page Include="Views\Shortages.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Stores.xaml">
+    <Page Include="Views\Stores.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Suppliers.xaml">
+    <Page Include="Views\Suppliers.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Users.xaml">
+    <Page Include="Views\Users.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Item.cs" />
-    <Compile Include="Model\Service.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

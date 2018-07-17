@@ -1,0 +1,61 @@
+﻿<Controls:MetroWindow x:Class="Phony.Views.Stores"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:converts="clr-namespace:Phony.Converters"
+                      xmlns:vm="clr-namespace:Phony.ViewModels"
+                      mc:Ignorable="d"
+        Title="بيانات المحل" FlowDirection="RightToLeft" ResizeMode="NoResize" Height="600" Width="350" Icon="{DynamicResource storeDrawingImage}" WindowStartupLocation="CenterScreen">
+    <Controls:MetroWindow.Resources>
+        <converts:BinaryImageConverter x:Key="ImageToSource"/>
+    </Controls:MetroWindow.Resources>
+    <Controls:MetroWindow.DataContext>
+        <vm:StoreVM/>
+    </Controls:MetroWindow.DataContext>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Command="{Binding Edit}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Margin="5" Height="20" Width="20" Kind="ContentSave" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="حفظ" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
+            <StackPanel FlowDirection="RightToLeft">
+                <TextBlock Text="اسم المحل" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم المحل" Margin="5"/>
+                <TextBlock Text="شعار المحل" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Motto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="شعار المحل" Margin="5"/>
+                <StackPanel Margin="5">
+                    <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>
+                    <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="250" Width="250" Margin="5" Stretch="Fill"/>
+                </StackPanel>
+                <TextBlock Text="العنوان 1" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Address1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="العنوان1" Margin="5"/>
+                <TextBlock Text="العنوان 2" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Address2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="العنوان2" Margin="5"/>
+                <TextBlock Text="الهاتف1" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Tel1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الهاتف1" Margin="5"/>
+                <TextBlock Text="الهاتف2" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Tel2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الهاتف2" Margin="5"/>
+                <TextBlock Text="المحمول 1" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Phone1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="المحمول1" Margin="5"/>
+                <TextBlock Text="المحمول 2" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Phone2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="المحمول2" Margin="5"/>
+                <TextBlock Text="الايميل 1" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Email1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الايميل1" Margin="5"/>
+                <TextBlock Text="الايميل 2" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Email2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الايميل2" Margin="5"/>
+                <TextBlock Text="الموقع" Margin="5,5,5,0"/>
+                <TextBox Text="{Binding Site, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الموقع" Margin="5"/>
+                <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="100" Width="280" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Controls:MetroWindow>

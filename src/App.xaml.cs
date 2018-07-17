@@ -1,7 +1,6 @@
 ﻿using Exceptionless;
 using MahApps.Metro;
 using MaterialDesignThemes.Wpf;
-using Phony.Kernel;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -219,10 +218,6 @@ namespace Phony
             {
                 Console.WriteLine(ex.ToString());
             }
-            new Thread(() =>
-            {
-                Core.StartUp_Engine();
-            }).Start();
             base.OnStartup(e);
         }
     }
