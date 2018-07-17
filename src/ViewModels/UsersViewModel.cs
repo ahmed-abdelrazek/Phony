@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class UserVM : BindableBase
+    public class UsersViewModel : BindableBase
     {
         int _userId;
         string _name;
@@ -176,7 +176,7 @@ namespace Phony.ViewModels
 
         Views.Users Message = Application.Current.Windows.OfType<Views.Users>().FirstOrDefault();
 
-        public UserVM()
+        public UsersViewModel()
         {
             LoadCommands();
             IsActive = true;

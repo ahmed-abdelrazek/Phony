@@ -10,7 +10,7 @@
                       mc:Ignorable="d"
         Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_multiple_outlineDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
-        <vm:UserVM/>
+        <vm:UsersViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

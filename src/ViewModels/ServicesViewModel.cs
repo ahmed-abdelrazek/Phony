@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class ServiceVM : BindableBase
+    public class ServicesViewModel : BindableBase
     {
         long _serviceId;
         string _name;
@@ -259,7 +259,7 @@ namespace Phony.ViewModels
 
         Services ServicesMessage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
 
-        public ServiceVM()
+        public ServicesViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

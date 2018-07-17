@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace Phony.ViewModels
 {
-    public class BarcodeVM : BindableBase
+    public class BarcodesViewModel : BindableBase
     {
         int _height;
         int _width;
@@ -262,7 +262,7 @@ namespace Phony.ViewModels
         public ICommand Encode { get; set; }
         public ICommand Save { get; set; }
 
-        public BarcodeVM()
+        public BarcodesViewModel()
         {
             Foreground = barCode.ForeColor.ToHexString();
             Background = barCode.BackColor.ToHexString();

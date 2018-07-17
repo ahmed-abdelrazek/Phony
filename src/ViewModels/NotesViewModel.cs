@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class NoteVM : BindableBase
+    public class NotesViewModel : BindableBase
     {
         long _noId;
         string _name;
@@ -214,7 +214,7 @@ namespace Phony.ViewModels
 
         Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
 
-        public NoteVM()
+        public NotesViewModel()
         {
             LoadCommands();
             ByName = true;

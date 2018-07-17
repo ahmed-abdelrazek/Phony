@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class CardVM : BindableBase
+    public class CardsViewModel : BindableBase
     {
         long _cardId;
         long _selectedCompanyValue;
@@ -483,7 +483,7 @@ namespace Phony.ViewModels
 
         Cards CardsMessage = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
 
-        public CardVM()
+        public CardsViewModel()
         {
             LoadCommands();
             ByName = true;

@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class StoreVM : BindableBase
+    public class StoresViewModel : BindableBase
     {
         int _storeId;
         string _name;
@@ -224,7 +224,7 @@ namespace Phony.ViewModels
 
         Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
 
-        public StoreVM()
+        public StoresViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

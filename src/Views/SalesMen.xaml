@@ -11,7 +11,7 @@
                       mc:Ignorable="d"
         Title="المندوبين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_switchDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
-        <vm:SalesManVM/>
+        <vm:SalesMenViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>

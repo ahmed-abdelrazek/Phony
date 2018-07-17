@@ -79,7 +79,7 @@ namespace Phony.ViewModels.Users
 
         public ICommand LogIn { get; set; }
 
-        MainWindowVM v = new MainWindowVM();
+        MainWindowViewModel v = new MainWindowViewModel();
 
         Views.MainWindow Message = Application.Current.Windows.OfType<Views.MainWindow>().FirstOrDefault();
         DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();

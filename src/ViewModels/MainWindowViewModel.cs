@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class MainWindowVM : BindableBase
+    public class MainWindowViewModel : BindableBase
     {
         static Uri _currentSource;
         static string _pageName;
@@ -14,7 +14,7 @@ namespace Phony.ViewModels
         public ICommand ChangeSource { get; set; }
         public ICommand OpenSettingsWindow { get; set; }
 
-        public MainWindowVM()
+        public MainWindowViewModel()
         {
             LoadCommands();
             if (string.IsNullOrWhiteSpace(PageName))

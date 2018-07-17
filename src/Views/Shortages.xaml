@@ -8,7 +8,7 @@
                       mc:Ignorable="d"
         Title="النواقص" FlowDirection="RightToLeft" Height="450" Width="450" Icon="{DynamicResource package_variant_closedDrawingImage}" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.DataContext>
-        <vm:ShortageVM/>
+        <vm:ShortagesViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>

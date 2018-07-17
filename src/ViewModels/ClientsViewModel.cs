@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class ClientVM : BindableBase
+    public class ClientsViewModel : BindableBase
     {
         long _clientsId;
         string _name;
@@ -300,7 +300,7 @@ namespace Phony.ViewModels
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        public ClientVM()
+        public ClientsViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

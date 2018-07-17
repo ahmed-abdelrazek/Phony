@@ -15,7 +15,7 @@
         <converts:BinaryImageConverter x:Key="ImageToSource"/>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.DataContext>
-        <vm:CardVM/>
+        <vm:CardsViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>

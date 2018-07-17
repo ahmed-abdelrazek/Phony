@@ -10,7 +10,7 @@
                       mc:Ignorable="d"
         Title="باركود" FlowDirection="RightToLeft" Height="600" Width="800" Icon="{DynamicResource barcodeDrawingImage}" WindowState="Maximized" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.DataContext>
-        <vm:BarcodeVM/>
+        <vm:BarcodesViewModel/>
     </Controls:MetroWindow.DataContext>
     <Controls:MetroWindow.Resources>
         <converts:BinaryImageConverter x:Key="ImageToSource"/>

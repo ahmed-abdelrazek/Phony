@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class SalesManVM : BindableBase
+    public class SalesMenViewModel : BindableBase
     {
         long _salesManId;
         string _name;
@@ -300,7 +300,7 @@ namespace Phony.ViewModels
 
         SalesMen SalesMenMessage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
 
-        public SalesManVM()
+        public SalesMenViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

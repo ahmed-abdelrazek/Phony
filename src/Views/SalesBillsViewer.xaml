@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="طباعة الفواتير" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource PrinterDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.DataContext>
-        <vm:SalesBillsViewerVM/>
+        <vm:SalesBillsViewerViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <converts:BooleanToVisibilityCollapsedConvertor x:Key="BToV"/>

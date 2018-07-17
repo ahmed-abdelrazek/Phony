@@ -14,7 +14,7 @@
         <converts:BinaryImageConverter x:Key="ImageToSource"/>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.DataContext>
-        <vm:ServiceVM/>
+        <vm:ServicesViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>

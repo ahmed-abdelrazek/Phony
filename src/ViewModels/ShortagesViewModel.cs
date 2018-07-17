@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Phony.ViewModels
 {
-    public class ShortageVM : BindableBase
+    public class ShortagesViewModel : BindableBase
     {
         static string _itemsCount;
 
@@ -39,7 +39,7 @@ namespace Phony.ViewModels
             }
         }
 
-        public ShortageVM()
+        public ShortagesViewModel()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {

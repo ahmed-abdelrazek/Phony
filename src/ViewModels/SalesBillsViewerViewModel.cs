@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class SalesBillsViewerVM : BindableBase
+    public class SalesBillsViewerViewModel : BindableBase
     {
         long _clientSelectedValue;
         long _billSelectedValue;
@@ -236,7 +236,7 @@ namespace Phony.ViewModels
 
         Users.LoginVM CurrentUser = new Users.LoginVM();
 
-        public SalesBillsViewerVM()
+        public SalesBillsViewerViewModel()
         {
             ByBillNo = true;
             IsReturnedVisible = Visibility.Collapsed;
@@ -248,7 +248,7 @@ namespace Phony.ViewModels
             LoadCommands();
         }
 
-        public SalesBillsViewerVM(long id) : this()
+        public SalesBillsViewerViewModel(long id) : this()
         {
             BillSelectedValue = id;
             LoadReport(id);

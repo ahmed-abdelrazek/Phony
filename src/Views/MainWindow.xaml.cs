@@ -22,9 +22,9 @@ namespace Phony.Views
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (FrameWithinGrid.Source != MainWindowVM.CurrentSource)
+            if (FrameWithinGrid.Source != MainWindowViewModel.CurrentSource)
             {
-                FrameWithinGrid.Source = MainWindowVM.CurrentSource;
+                FrameWithinGrid.Source = MainWindowViewModel.CurrentSource;
                 if (FrameWithinGrid.Source == new Uri("PhonyLite;component/Views/Pages/Main.xaml", UriKind.Relative))
                 {
                     if (WindowState != System.Windows.WindowState.Maximized)

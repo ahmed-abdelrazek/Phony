@@ -16,7 +16,7 @@ using System.Windows.Input;
 namespace Phony.ViewModels
 {
 
-    public class BillVM : BindableBase
+    public class BillsViewModel : BindableBase
     {
         long _searchSelectedValue;
         decimal _itemChildItemPrice;
@@ -652,7 +652,7 @@ namespace Phony.ViewModels
 
         Bills Message = Application.Current.Windows.OfType<Bills>().FirstOrDefault();
 
-        public BillVM()
+        public BillsViewModel()
         {
             LoadCommands();
             ByName = true;

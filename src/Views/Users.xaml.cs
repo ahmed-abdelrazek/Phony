@@ -17,7 +17,7 @@ namespace Phony.Views
         {
             if (this.DataContext != null)
             {
-                ((ViewModels.UserVM)this.DataContext).Password1 = ((PasswordBox)sender).SecurePassword;
+                ((ViewModels.UsersViewModel)this.DataContext).Password1 = ((PasswordBox)sender).SecurePassword;
             }
         }
 
@@ -25,7 +25,7 @@ namespace Phony.Views
         {
             if (this.DataContext != null)
             {
-                ((ViewModels.UserVM)this.DataContext).Password2 = ((PasswordBox)sender).SecurePassword;
+                ((ViewModels.UsersViewModel)this.DataContext).Password2 = ((PasswordBox)sender).SecurePassword;
             }
         }
     }

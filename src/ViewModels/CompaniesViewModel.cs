@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-    public class CompanyVM : BindableBase
+    public class CompaniesViewModel : BindableBase
     {
         long _companyId;
         string _name;
@@ -260,7 +260,7 @@ namespace Phony.ViewModels
 
         Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
-        public CompanyVM()
+        public CompaniesViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))

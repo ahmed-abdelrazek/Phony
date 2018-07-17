@@ -15,7 +15,7 @@
         <converts:InverseBooleanToVisibilityCollapsedConvertor x:Key="IBToV"/>
     </Controls:MetroWindow.Resources>
     <Controls:MetroWindow.DataContext>
-        <vm:BillVM/>
+        <vm:BillsViewModel/>
     </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>

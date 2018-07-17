@@ -215,12 +215,12 @@
       <DependentUpon>SalesBillA8.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ViewModels\BarcodeVM.cs" />
-    <Compile Include="ViewModels\BillVM.cs" />
+    <Compile Include="ViewModels\BarcodesViewModel.cs" />
+    <Compile Include="ViewModels\BillsViewModel.cs" />
     <Compile Include="ViewModels\MainPageVM.cs" />
-    <Compile Include="ViewModels\NoteVM.cs" />
-    <Compile Include="ViewModels\SalesBillsViewerVM.cs" />
-    <Compile Include="ViewModels\UserVM.cs" />
+    <Compile Include="ViewModels\NotesViewModel.cs" />
+    <Compile Include="ViewModels\SalesBillsViewerViewModel.cs" />
+    <Compile Include="ViewModels\UsersViewModel.cs" />
     <Compile Include="Views\BarCodes.xaml.cs">
       <DependentUpon>BarCodes.xaml</DependentUpon>
     </Compile>
@@ -239,19 +239,19 @@
     <Compile Include="Views\Pages\Users\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\CardVM.cs" />
-    <Compile Include="ViewModels\ClientVM.cs" />
-    <Compile Include="ViewModels\CompanyVM.cs" />
-    <Compile Include="ViewModels\ItemVM.cs" />
+    <Compile Include="ViewModels\CardsViewModel.cs" />
+    <Compile Include="ViewModels\ClientsViewModel.cs" />
+    <Compile Include="ViewModels\CompaniesViewModel.cs" />
+    <Compile Include="ViewModels\ItemsViewModel.cs" />
     <Compile Include="ViewModels\ListsVM.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="ViewModels\MainWindowVM.cs" />
-    <Compile Include="ViewModels\SalesManVM.cs" />
-    <Compile Include="ViewModels\ServiceVM.cs" />
-    <Compile Include="ViewModels\ShortageVM.cs" />
-    <Compile Include="ViewModels\StoreVM.cs" />
-    <Compile Include="ViewModels\SupplierVM.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\SalesMenViewModel.cs" />
+    <Compile Include="ViewModels\ServicesViewModel.cs" />
+    <Compile Include="ViewModels\ShortagesViewModel.cs" />
+    <Compile Include="ViewModels\StoresViewModel.cs" />
+    <Compile Include="ViewModels\SuppliersViewModel.cs" />
     <Compile Include="ViewModels\Users\LoginVM.cs" />
     <Compile Include="Views\Cards.xaml.cs">
       <DependentUpon>Cards.xaml</DependentUpon>

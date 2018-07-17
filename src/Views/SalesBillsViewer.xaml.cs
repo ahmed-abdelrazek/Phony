@@ -15,7 +15,7 @@ namespace Phony.Views
         public SalesBillsViewer(long billNo)
         {
             InitializeComponent();
-            this.DataContext = new ViewModels.SalesBillsViewerVM(billNo);
+            this.DataContext = new ViewModels.SalesBillsViewerViewModel(billNo);
         }
     }
 }
