@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
+using Phony.Kernel;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -34,183 +35,85 @@ namespace Phony.ViewModels
         public int StoreId
         {
             get => _storeId;
-            set
-            {
-                if (value != _storeId)
-                {
-                    _storeId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _storeId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Motto
         {
             get => _motto;
-            set
-            {
-                if (value != _motto)
-                {
-                    _motto = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _motto, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public string Address1
         {
             get => _address1;
-            set
-            {
-                if (value != _address1)
-                {
-                    _address1 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _address1, value);
         }
 
         public string Address2
         {
             get => _address2;
-            set
-            {
-                if (value != _address2)
-                {
-                    _address2 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _address2, value);
         }
 
         public string Tel1
         {
             get => _tel1;
-            set
-            {
-                if (value != _tel1)
-                {
-                    _tel1 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _tel1, value);
         }
 
         public string Tel2
         {
             get => _tel2;
-            set
-            {
-                if (value != _tel2)
-                {
-                    _tel2 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _tel2, value);
         }
 
         public string Phone1
         {
             get => _phone1;
-            set
-            {
-                if (value != _phone1)
-                {
-                    _phone1 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone1, value);
         }
 
         public string Phone2
         {
             get => _phone2;
-            set
-            {
-                if (value != _phone2)
-                {
-                    _phone2 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone2, value);
         }
 
         public string Email1
         {
             get => _email1;
-            set
-            {
-                if (value != _email1)
-                {
-                    _email1 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email1, value);
         }
 
         public string Email2
         {
             get => _email2;
-            set
-            {
-                if (value != _email2)
-                {
-                    _email2 = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email2, value);
         }
 
         public string Site
         {
             get => _site;
-            set
-            {
-                if (value != _site)
-                {
-                    _site = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _site, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         Store store;
@@ -220,8 +123,6 @@ namespace Phony.ViewModels
         public ICommand SelectImage { get; set; }
         public ICommand Edit { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
 
         public StoresViewModel()
@@ -229,19 +130,19 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
-                store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1);
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
+                store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1);
                 Name = store.Name;
                 Motto = store.Motto;
                 Image = store.Image;
                 Address1 = store.Address1;
-                Address2= store.Address2;
-                Tel1= store.Tel1;
-                Tel2=store.Tel2;
-                Phone1=store.Phone1;
-                Phone2=store.Phone2;
-                Email1=store.Email1;
-                Email2=store.Email2;
+                Address2 = store.Address2;
+                Tel1 = store.Tel1;
+                Tel2 = store.Tel2;
+                Phone1 = store.Phone1;
+                Phone2 = store.Phone2;
+                Email1 = store.Email1;
+                Email2 = store.Email2;
                 Site = store.Site;
                 Notes = store.Notes;
             }
@@ -266,7 +167,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1);
+                store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1);
                 store.Name = Name;
                 store.Motto = Motto;
                 store.Image = Image;
@@ -280,9 +181,9 @@ namespace Phony.ViewModels
                 store.Email2 = Email2;
                 store.Site = Site;
                 store.Notes = Notes;
+                store.Editor = Core.ReadUserSession();
                 store.EditDate = DateTime.Now;
-                store.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
-                db.GetCollection<Store>(DBCollections.Stores.ToString()).Update(store);
+                db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).Update(store);
                 Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
             }
         }

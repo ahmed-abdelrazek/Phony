@@ -6,14 +6,14 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:vm="clr-namespace:Phony.ViewModels.Users"
+      xmlns:w="clr-namespace:Phony.Helpers"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Login" FlowDirection="RightToLeft">
-
-    <Grid x:Name="GridDX">
-        <Grid.DataContext>
-            <vm:LoginVM/>
-        </Grid.DataContext>
+    <Page.DataContext>
+        <vm:LoginVM/>
+    </Page.DataContext>
+    <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel x:Name="TextBoxFirstPanel" Orientation="Horizontal" Margin="5">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=UserNameTextBox, Path=BorderBrush}" Kind="account" />
@@ -21,7 +21,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="{Binding ElementName=TextBoxFirstPanel, Path=Margin}">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=PasswordTextBox, Path=BorderBrush}" Kind="keyvariant" />
-                <PasswordBox x:Name="PasswordTextBox" Style="{DynamicResource MaterialDesignPasswordBox}"  MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:TextFieldAssist.HasClearButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged"/>
+                <PasswordBox x:Name="PasswordTextBox" w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Pass, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}"  MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" materialDesign:TextFieldAssist.HasClearButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Command="{Binding LogIn}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLogging}" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>

@@ -5,7 +5,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+                      xmlns:attach="clr-namespace:Phony.Helpers.AttachedCommandBehavior"
                       xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
                       xmlns:converts="clr-namespace:Phony.Converters"
                       xmlns:vm="clr-namespace:Phony.ViewModels"

@@ -33,170 +33,79 @@ namespace Phony.ViewModels
         public long NoId
         {
             get => _noId;
-            set
-            {
-                if (value != _noId)
-                {
-                    _noId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _noId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string ChildName
         {
             get => _childName;
-            set
-            {
-                if (value != _childName)
-                {
-                    _childName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childName, value);
         }
 
         public string ChildNo
         {
             get => _childNo;
-            set
-            {
-                if (value != _childNo)
-                {
-                    _childNo = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childNo, value);
         }
 
         public bool ByName
         {
             get => _byName;
-            set
-            {
-                if (value != _byName)
-                {
-                    _byName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byName, value);
         }
 
         public bool FastResult
         {
             get => _fastResult;
-            set
-            {
-                if (value != _fastResult)
-                {
-                    _fastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _fastResult, value);
         }
 
         public bool OpenFastResult
         {
             get => _openFastResult;
-            set
-            {
-                if (value != _openFastResult)
-                {
-                    _openFastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _openFastResult, value);
         }
 
         public bool IsAddNoFlyoutOpen
         {
             get => _isAddNoFlyoutOpen;
-            set
-            {
-                if (value != _isAddNoFlyoutOpen)
-                {
-                    _isAddNoFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddNoFlyoutOpen, value);
         }
 
         public Note DataGridSelectedNo
         {
             get => _dataGridSelectedNo;
-            set
-            {
-                if (value != _dataGridSelectedNo)
-                {
-                    _dataGridSelectedNo = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedNo, value);
         }
 
         public ObservableCollection<Note> Numbers
         {
             get => _numbers;
-            set
-            {
-                if (value != _numbers)
-                {
-                    _numbers = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _numbers, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -210,8 +119,6 @@ namespace Phony.ViewModels
         public ICommand ReloadAllNos { get; set; }
         public ICommand Search { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
 
         public NotesViewModel()
@@ -220,8 +127,8 @@ namespace Phony.ViewModels
             ByName = true;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
         }
 
@@ -256,11 +163,11 @@ namespace Phony.ViewModels
                     Group = NoteGroup.Numbers,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                    Creator = Core.ReadUserSession(),
                     EditDate = null,
                     Editor = null
                 };
-                db.GetCollection<Note>(DBCollections.Notes.ToString()).Insert(n);
+                db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Insert(n);
                 Numbers.Add(n);
                 Message.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
             }
@@ -279,11 +186,13 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var n = db.GetCollection<Note>(DBCollections.Notes.ToString()).FindById(DataGridSelectedNo.Id);
+                var n = db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).FindById(DataGridSelectedNo.Id);
                 n.Name = Name;
                 n.Phone = Phone;
                 n.Notes = Notes;
-                db.GetCollection<Note>(DBCollections.Notes.ToString()).Update(n);
+                n.Editor = Core.ReadUserSession();
+                n.EditDate = DateTime.Now;
+                db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Update(n);
                 Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
                 NoId = 0;
                 DataGridSelectedNo = null;
@@ -307,7 +216,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Note>(DBCollections.Notes.ToString()).Delete(DataGridSelectedNo.Id);
+                    db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Delete(DataGridSelectedNo.Id);
                     Numbers.Remove(DataGridSelectedNo);
                 }
                 DataGridSelectedNo = null;
@@ -330,7 +239,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).Find(i => i.Name.Contains(SearchText)));
+                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Find(i => i.Name.Contains(SearchText)));
                     if (Numbers.Count > 0)
                     {
                         if (FastResult)
@@ -362,7 +271,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes.ToString()).FindAll());
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes).FindAll());
             }
         }
 

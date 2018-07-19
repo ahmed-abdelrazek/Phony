@@ -25,10 +25,10 @@ namespace Phony.Models
 
         public decimal QTY { get; set; }
 
-        [BsonRef(nameof(DBCollections.Companies))]
+        [BsonRef(nameof(Data.DBCollections.Companies))]
         public Company Company { get; set; }
 
-        [BsonRef(nameof(DBCollections.Suppliers))]
+        [BsonRef(nameof(Data.DBCollections.Suppliers))]
         public virtual Supplier Supplier { get; set; }
     }
 }

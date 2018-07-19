@@ -4,10 +4,10 @@ namespace Phony.Models
 {
     public class Bill : BaseModel
     {
-        [BsonRef(nameof(ViewModels.DBCollections.Clients))]
+        [BsonRef(nameof(Data.DBCollections.Clients))]
         public virtual Client Client { get; set; }
 
-        [BsonRef(nameof(ViewModels.DBCollections.Stores))]
+        [BsonRef(nameof(Data.DBCollections.Stores))]
         public virtual Store Store { get; set; }
 
         public decimal Discount { get; set; }

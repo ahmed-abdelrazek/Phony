@@ -8,7 +8,7 @@ namespace Phony.Models
 
         public decimal Balance { get; set; }
 
-        [BsonRef(nameof(ViewModels.DBCollections.Stores))]
+        [BsonRef(nameof(Data.DBCollections.Stores))]
         public virtual Store Store { get; set; }
     }
 }

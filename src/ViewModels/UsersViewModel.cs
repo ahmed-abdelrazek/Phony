@@ -32,27 +32,13 @@ namespace Phony.ViewModels
         public int UserId
         {
             get => _userId;
-            set
-            {
-                if (value != _userId)
-                {
-                    _userId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _userId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public SecureString Password1 { private get; set; }
@@ -62,92 +48,43 @@ namespace Phony.ViewModels
         public byte SelectedGroup
         {
             get => _selectedGroup;
-            set
-            {
-                if (value != _selectedGroup)
-                {
-                    _selectedGroup = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedGroup, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public bool IsActive
         {
             get => _isActive;
-            set
-            {
-                if (value != _isActive)
-                {
-                    _isActive = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isActive, value);
         }
 
         public bool IsAddUserFlyoutOpen
         {
             get => _isAddUserFlyoutOpen;
-            set
-            {
-                if (value != _isAddUserFlyoutOpen)
-                {
-                    _isAddUserFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddUserFlyoutOpen, value);
         }
 
         public User DataGridSelectedUser
         {
             get => _dataGridSelectedUser;
-            set
-            {
-                if (value != _dataGridSelectedUser)
-                {
-                    _dataGridSelectedUser = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedUser, value);
         }
 
         public ObservableCollection<Enumeration<byte>> Groups { get; set; }
@@ -155,24 +92,17 @@ namespace Phony.ViewModels
         public ObservableCollection<User> Users
         {
             get => _users;
-            set
-            {
-                if (value != _users)
-                {
-                    _users = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _users, value);
         }
 
+        public ICommand AddUser { get; set; }
+        public ICommand EditUser { get; set; }
+        public ICommand DeleteUser { get; set; }
         public ICommand OpenAddUserFlyout { get; set; }
         public ICommand SelectImage { get; set; }
         public ICommand FillUI { get; set; }
-        public ICommand DeleteUser { get; set; }
         public ICommand ReloadAllUsers { get; set; }
         public ICommand Search { get; set; }
-        public ICommand AddUser { get; set; }
-        public ICommand EditUser { get; set; }
 
         Views.Users Message = Application.Current.Windows.OfType<Views.Users>().FirstOrDefault();
 
@@ -191,19 +121,19 @@ namespace Phony.ViewModels
             }
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
             }
         }
 
         public void LoadCommands()
         {
-            OpenAddUserFlyout = new DelegateCommand(DoOpenAddUserFlyout, CanOpenAddUserFlyout);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            DeleteUser = new DelegateCommand(DoDeleteUser, CanDeleteUser);
-            ReloadAllUsers = new DelegateCommand(DoReloadAllUsers, CanReloadAllUsers);
-            Search = new DelegateCommand(DoSearch, CanSearch);
             AddUser = new DelegateCommand(DoAddUser, CanAddUser);
             EditUser = new DelegateCommand(DoEditUser, CanEditUser);
+            DeleteUser = new DelegateCommand(DoDeleteUser, CanDeleteUser);
+            OpenAddUserFlyout = new DelegateCommand(DoOpenAddUserFlyout, CanOpenAddUserFlyout);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
+            ReloadAllUsers = new DelegateCommand(DoReloadAllUsers, CanReloadAllUsers);
+            Search = new DelegateCommand(DoSearch, CanSearch);
         }
 
         private bool CanAddUser()
@@ -221,7 +151,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                    var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
                     var user = userCol.Find(x => x.Name == Name).FirstOrDefault();
                     if (user == null)
                     {
@@ -268,7 +198,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                    var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
                     var u = userCol.Find(x => x.Id == DataGridSelectedUser.Id).FirstOrDefault();
                     u.Name = Name;
                     u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
@@ -305,7 +235,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<User>(DBCollections.Users.ToString()).Delete(DataGridSelectedUser.Id);
+                    db.GetCollection<User>(Data.DBCollections.Users.ToString()).Delete(DataGridSelectedUser.Id);
                     Users.Remove(DataGridSelectedUser);
                 }
                 DataGridSelectedUser = null;
@@ -328,7 +258,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
+                    Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
                     if (Users.Count < 1)
                     {
                         Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -351,7 +281,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
             }
         }
 

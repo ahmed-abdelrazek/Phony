@@ -5,7 +5,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:attach="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+                      xmlns:attach="clr-namespace:Phony.Helpers.AttachedCommandBehavior"
                       xmlns:converts="clr-namespace:Phony.Converters"
                       xmlns:vm="clr-namespace:Phony.ViewModels"
                       mc:Ignorable="d"
@@ -117,7 +117,7 @@
         </StatusBar>
         <Controls:Flyout Grid.RowSpan="3" Header="بيانات الشركة" Width="250" Theme="Adapt" IsOpen="{Binding IsAddCompanyFlyoutOpen}" Position="Left">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
-                <StackPanel FlowDirection="RightToLeft">
+                <StackPanel Margin="5" FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="اسم الشركة" Margin="5" MaxLength="50"/>
                     <StackPanel Margin="5">
                         <Button Content="اختار صورة" Margin="5" Command="{Binding SelectImage}"/>

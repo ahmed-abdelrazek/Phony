@@ -4,10 +4,10 @@ namespace Phony.Models
 {
     public class BillItemMove : BaseModel
     {
-        [BsonRef(nameof(ViewModels.DBCollections.Bills))]
+        [BsonRef(nameof(Data.DBCollections.Bills))]
         public virtual Bill Bill { get; set; }
 
-        [BsonRef(nameof(ViewModels.DBCollections.Items))]
+        [BsonRef(nameof(Data.DBCollections.Items))]
         public virtual Item Item { get; set; }
 
         public decimal ItemPrice { get; set; }

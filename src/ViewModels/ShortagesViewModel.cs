@@ -16,34 +16,20 @@ namespace Phony.ViewModels
         public string ItemsCount
         {
             get => _itemsCount;
-            set
-            {
-                if (value != _itemsCount)
-                {
-                    _itemsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemsCount, value);
         }
 
         public ObservableCollection<Item> Items
         {
             get => _items;
-            set
-            {
-                if (value != _items)
-                {
-                    _items = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _items, value);
         }
 
         public ShortagesViewModel()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.QTY <= 0));
+                Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.QTY <= 0));
             }
             new Thread(() =>
             {

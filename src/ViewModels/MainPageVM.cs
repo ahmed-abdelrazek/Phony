@@ -41,196 +41,91 @@ namespace Phony.ViewModels
         public int ItemsCount
         {
             get => _itemsCount;
-            set
-            {
-                if (value != _itemsCount)
-                {
-                    _itemsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemsCount, value);
         }
 
         public int ClientsCount
         {
             get => _clientsCount;
-            set
-            {
-                if (value != _clientsCount)
-                {
-                    _clientsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsCount, value);
         }
 
         public int ShortagesCount
         {
             get => _shortagesCount;
-            set
-            {
-                if (value != _shortagesCount)
-                {
-                    _shortagesCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _shortagesCount, value);
         }
 
         public int ServicesCount
         {
             get => _servicesCount;
-            set
-            {
-                if (value != _servicesCount)
-                {
-                    _servicesCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _servicesCount, value);
         }
 
         public int SuppliersCount
         {
             get => _suppliersCount;
-            set
-            {
-                if (value != _suppliersCount)
-                {
-                    _suppliersCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliersCount, value);
         }
 
         public int CardsCount
         {
             get => _cardsCount;
-            set
-            {
-                if (value != _cardsCount)
-                {
-                    _cardsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardsCount, value);
         }
 
         public int CompaniesCount
         {
             get => _companiesCount;
-            set
-            {
-                if (value != _companiesCount)
-                {
-                    _companiesCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companiesCount, value);
         }
 
         public int SalesMenCount
         {
             get => _salesMenCount;
-            set
-            {
-                if (value != _salesMenCount)
-                {
-                    _salesMenCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _salesMenCount, value);
         }
 
         public int NumbersCount
         {
             get => _numbersCount;
-            set
-            {
-                if (value != _numbersCount)
-                {
-                    _numbersCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _numbersCount, value);
         }
 
         public int UsersCount
         {
             get => _usersCount;
-            set
-            {
-                if (value != _usersCount)
-                {
-                    _usersCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _usersCount, value);
         }
 
         public string UserName
         {
             get => _userName;
-            set
-            {
-                if (value != _userName)
-                {
-                    _userName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _userName, value);
         }
 
         public string Password
         {
             get => _password;
-            set
-            {
-                if (value != _password)
-                {
-                    _password = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _password, value);
         }
 
         public string NewPassword
         {
             get => _newPassword;
-            set
-            {
-                if (value != _newPassword)
-                {
-                    _newPassword = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _newPassword, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string Group
         {
             get => _group;
-            set
-            {
-                if (value != _group)
-                {
-                    _group = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _group, value);
         }
 
         public ICommand ChangeSource { get; set; }
@@ -253,10 +148,10 @@ namespace Phony.ViewModels
         public ICommand SignOut { get; set; }
         public ICommand SaveUser { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
         DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
+
+        MainWindowViewModel v = new MainWindowViewModel();
 
         DispatcherTimer Timer = new DispatcherTimer();
 
@@ -268,7 +163,7 @@ namespace Phony.ViewModels
             Timer.Start();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var u = db.GetCollection<User>(DBCollections.Users.ToString()).Find(x => x.Id == CurrentUser.Id).FirstOrDefault();
+                var u = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Find(x => x.Id == Core.ReadUserSession().Id).FirstOrDefault();
                 UserName = u.Name;
                 Phone = u.Phone;
                 Group = Enumerations.GetEnumDescription(u.Group);
@@ -309,43 +204,43 @@ namespace Phony.ViewModels
                 {
                     await Task.Run(() =>
                     {
-                        ItemsCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Other);
+                        ItemsCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Other);
                     });
                     await Task.Run(() =>
                     {
-                        ClientsCount = db.GetCollection<Client>(DBCollections.Clients.ToString()).Count();
+                        ClientsCount = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        ShortagesCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.QTY == 0);
+                        ShortagesCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.QTY == 0);
                     });
                     await Task.Run(() =>
                     {
-                        ServicesCount = db.GetCollection<Service>(DBCollections.Services.ToString()).Count();
+                        ServicesCount = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SuppliersCount = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Count();
+                        SuppliersCount = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        CardsCount = db.GetCollection<Item>(DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Card);
+                        CardsCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Card);
                     });
                     await Task.Run(() =>
                     {
-                        CompaniesCount = db.GetCollection<Company>(DBCollections.Companies.ToString()).Count();
+                        CompaniesCount = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SalesMenCount = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).Count();
+                        SalesMenCount = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        NumbersCount = db.GetCollection<Note>(DBCollections.Notes.ToString()).Count();
+                        NumbersCount = db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Count();
                     });
                     await Task.Run(() =>
                     {
-                        UsersCount = db.GetCollection<User>(DBCollections.Users.ToString()).Count();
+                        UsersCount = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Count();
                     });
                 }
                 catch (Exception ex)
@@ -362,7 +257,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenBarcodesWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -395,7 +290,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
                 User u = null;
                 await Task.Run(() =>
                 {
@@ -433,11 +328,16 @@ namespace Phony.ViewModels
 
         private void DoSignOut()
         {
-            CurrentUser.Id = 0;
-            CurrentUser.Name = null;
-            CurrentUser.SecurePassword = null;
-            CurrentUser.Group = UserGroup.None;
-            //todo v.PageName = "Users/Login";
+            try
+            {
+                File.Delete(Core.UserLocalAppFolderPath() + "..\\..\\session");
+                v.PageName = "Users/Login";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Environment.Exit(0);
+            }
         }
 
         private bool CanOpenSalesBillsWindow()
@@ -478,7 +378,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenUsersWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -518,7 +418,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenStoreInfoWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -540,7 +440,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenSalesMenWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -562,7 +462,7 @@ namespace Phony.ViewModels
 
         private bool CanRestoreBackup()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -668,7 +568,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenCompaniesWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -693,7 +593,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenCardsWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -718,7 +618,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenSuppliersWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -743,7 +643,7 @@ namespace Phony.ViewModels
 
         private bool CanOpenServicesWindow()
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }

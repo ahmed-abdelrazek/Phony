@@ -55,417 +55,193 @@ namespace Phony.ViewModels
         public long CardId
         {
             get => _cardId;
-            set
-            {
-                if (value != _cardId)
-                {
-                    _cardId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Barcode
         {
             get => _barcode;
-            set
-            {
-                if (value != _barcode)
-                {
-                    _barcode = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _barcode, value);
         }
 
         public string Shopcode
         {
             get => _shopcode;
-            set
-            {
-                if (value != _shopcode)
-                {
-                    _shopcode = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _shopcode, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string ChildName
         {
             get => _childName;
-            set
-            {
-                if (value != _childName)
-                {
-                    _childName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childName, value);
         }
 
         public string ChildPrice
         {
             get => _childPrice;
-            set
-            {
-                if (value != _childPrice)
-                {
-                    _childPrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childPrice, value);
         }
 
         public string ChildBalance
         {
             get => _childBalance;
-            set
-            {
-                if (value != _childBalance)
-                {
-                    _childBalance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childBalance, value);
         }
 
         public string CardsCount
         {
             get => _cardsCount;
-            set
-            {
-                if (value != _cardsCount)
-                {
-                    _cardsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardsCount, value);
         }
 
         public string CardsPurchasePrice
         {
             get => _cardsPurchasePrice;
-            set
-            {
-                if (value != _cardsPurchasePrice)
-                {
-                    _cardsPurchasePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardsPurchasePrice, value);
         }
 
         public string CardsSalePrice
         {
             get => _cardsSalePrice;
-            set
-            {
-                if (value != _cardsSalePrice)
-                {
-                    _cardsSalePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardsSalePrice, value);
         }
 
         public string CardsProfit
         {
             get => _cardsProfit;
-            set
-            {
-                if (value != _cardsProfit)
-                {
-                    _cardsProfit = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cardsProfit, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public byte[] ChildImage
         {
             get => _childImage;
-            set
-            {
-                if (value != _childImage)
-                {
-                    _childImage = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childImage, value);
         }
 
         public ItemGroup Group
         {
             get => _group;
-            set
-            {
-                if (value != _group)
-                {
-                    _group = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _group, value);
         }
 
         public decimal PurchasePrice
         {
             get => _purchasePrice;
-            set
-            {
-                if (value != _purchasePrice)
-                {
-                    _purchasePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _purchasePrice, value);
         }
 
         public decimal WholeSalePrice
         {
             get => _wholeSalePrice;
-            set
-            {
-                if (value != _wholeSalePrice)
-                {
-                    _wholeSalePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _wholeSalePrice, value);
         }
 
         public decimal RetailPrice
         {
             get => _retailPrice;
-            set
-            {
-                if (value != _retailPrice)
-                {
-                    _retailPrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _retailPrice, value);
         }
 
         public decimal QTY
         {
             get => _qty;
-            set
-            {
-                if (value != _qty)
-                {
-                    _qty = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _qty, value);
         }
 
         public long SelectedCompanyValue
         {
             get => _selectedCompanyValue;
-            set
-            {
-                if (value != _selectedCompanyValue)
-                {
-                    _selectedCompanyValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedCompanyValue, value);
         }
 
         public long SelectedSupplierValue
         {
             get => _selectedSupplierValue;
-            set
-            {
-                if (value != _selectedSupplierValue)
-                {
-                    _selectedSupplierValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedSupplierValue, value);
         }
 
         public bool ByName
         {
             get => _byName;
-            set
-            {
-                if (value != _byName)
-                {
-                    _byName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byName, value);
         }
 
         public bool ByBarCode
         {
             get => _byBarCode;
-            set
-            {
-                if (value != _byBarCode)
-                {
-                    _byBarCode = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byBarCode, value);
         }
 
         public bool ByShopCode
         {
             get => _byShopCode;
-            set
-            {
-                if (value != _byShopCode)
-                {
-                    _byShopCode = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byShopCode, value);
         }
 
         public bool FastResult
         {
             get => _fastResult;
-            set
-            {
-                if (value != _fastResult)
-                {
-                    _fastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _fastResult, value);
         }
 
         public bool OpenFastResult
         {
             get => _openFastResult;
-            set
-            {
-                if (value != _openFastResult)
-                {
-                    _openFastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _openFastResult, value);
         }
 
         public bool IsAddCardFlyoutOpen
         {
             get => _isAddCardFlyoutOpen;
-            set
-            {
-                if (value != _isAddCardFlyoutOpen)
-                {
-                    _isAddCardFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddCardFlyoutOpen, value);
         }
 
         public Item DataGridSelectedItem
         {
             get => _dataGridSelectedItem;
-            set
-            {
-                if (value != _dataGridSelectedItem)
-                {
-                    _dataGridSelectedItem = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedItem, value);
         }
 
         public ObservableCollection<Company> Companies
         {
             get => _companies;
-            set
-            {
-                if (value != _companies)
-                {
-                    _companies = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companies, value);
         }
 
         public ObservableCollection<Supplier> Suppliers
         {
             get => _suppliers;
-            set
-            {
-                if (value != _suppliers)
-                {
-                    _suppliers = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliers, value);
         }
 
         public ObservableCollection<Item> Cards
         {
             get => _cards;
-            set
-            {
-                if (value != _cards)
-                {
-                    _cards = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _cards, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -479,8 +255,6 @@ namespace Phony.ViewModels
         public ICommand ReloadAllCards { get; set; }
         public ICommand Search { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Cards CardsMessage = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
 
         public CardsViewModel()
@@ -489,10 +263,10 @@ namespace Phony.ViewModels
             ByName = true;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).FindAll().ToList());
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll().ToList());
-                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll().ToList());
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll().ToList());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll().ToList());
+                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
             }
             new Thread(() =>
             {
@@ -505,14 +279,14 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
+            AddCard = new DelegateCommand(DoAddCard, CanAddCard).ObservesProperty(() => Name).ObservesProperty(() => SelectedCompanyValue).ObservesProperty(() => SelectedSupplierValue);
+            EditCard = new DelegateCommand(DoEditCard, CanEditCard).ObservesProperty(() => Name).ObservesProperty(() => CardId).ObservesProperty(() => SelectedCompanyValue).ObservesProperty(() => SelectedSupplierValue).ObservesProperty(() => DataGridSelectedItem);
+            DeleteCard = new DelegateCommand(DoDeleteCard, CanDeleteCard).ObservesProperty(() => DataGridSelectedItem);
             OpenAddCardFlyout = new DelegateCommand(DoOpenAddCardFlyout, CanOpenAddCardFlyout);
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            DeleteCard = new DelegateCommand(DoDeleteCard, CanDeleteCard);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedItem);
             ReloadAllCards = new DelegateCommand(DoReloadAllCards, CanReloadAllCards);
-            Search = new DelegateCommand(DoSearch, CanSearch);
-            AddCard = new DelegateCommand(DoAddCard, CanAddCard);
-            EditCard = new DelegateCommand(DoEditCard, CanEditCard);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         private bool CanAddCard()
@@ -528,7 +302,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var itemCol = db.GetCollection<Item>(DBCollections.Items.ToString());
+                var itemCol = db.GetCollection<Item>(Data.DBCollections.Items.ToString());
                 var i = new Item
                 {
                     Name = Name,
@@ -540,11 +314,14 @@ namespace Phony.ViewModels
                     WholeSalePrice = WholeSalePrice,
                     RetailPrice = RetailPrice,
                     QTY = QTY,
-                    Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue),
-                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue),
+                    Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(SelectedCompanyValue),
+                    Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue),
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    EditDate = null
+                    Creator = Core.ReadUserSession(),
+                    EditDate = null,
+                    Editor = null
+
                 };
                 itemCol.Insert(i);
                 Cards.Add(i);
@@ -565,7 +342,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var itemCol = db.GetCollection<Item>(DBCollections.Items.ToString());
+                var itemCol = db.GetCollection<Item>(Data.DBCollections.Items.ToString());
                 var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
                 i.Name = Name;
                 i.Barcode = Barcode;
@@ -575,11 +352,11 @@ namespace Phony.ViewModels
                 i.WholeSalePrice = WholeSalePrice;
                 i.RetailPrice = RetailPrice;
                 i.QTY = QTY;
-                i.Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(SelectedCompanyValue);
-                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue);
+                i.Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(SelectedCompanyValue);
+                i.Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue);
                 i.Notes = Notes;
+                i.Editor = Core.ReadUserSession();
                 i.EditDate = DateTime.Now;
-                i.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
                 itemCol.Update(i);
                 Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
                 CardId = 0;
@@ -604,7 +381,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Item>(DBCollections.Items.ToString()).Delete(DataGridSelectedItem.Id);
+                    db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Delete(DataGridSelectedItem.Id);
                     Cards.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
@@ -629,15 +406,15 @@ namespace Phony.ViewModels
                 {
                     if (ByName)
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
                     }
                     else if (ByBarCode)
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     else
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     if (Cards.Count > 0)
                     {
@@ -671,7 +448,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card));
+                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card));
             }
         }
 

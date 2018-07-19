@@ -163,7 +163,7 @@ namespace Phony.Views
                     {
                         using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                         {
-                            var userCol = db.GetCollection<User>(DBCollections.Users.ToString());
+                            var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
                             var user = userCol.FindById(1);
                             if (user == null)
                             {
@@ -176,7 +176,7 @@ namespace Phony.Views
                                     IsActive = true
                                 });
                             }
-                            var clientCol = db.GetCollection<Client>(DBCollections.Clients.ToString());
+                            var clientCol = db.GetCollection<Client>(Data.DBCollections.Clients.ToString());
                             var client = clientCol.FindById(1);
                             if (client == null)
                             {
@@ -185,13 +185,13 @@ namespace Phony.Views
                                     Id = 1,
                                     Name = "كاش",
                                     Balance = 0,
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var companyCol = db.GetCollection<Company>(DBCollections.Companies.ToString());
+                            var companyCol = db.GetCollection<Company>(Data.DBCollections.Companies.ToString());
                             var company = companyCol.FindById(1);
                             if (company == null)
                             {
@@ -200,13 +200,13 @@ namespace Phony.Views
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var salesMenCol = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString());
+                            var salesMenCol = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString());
                             var salesMen = salesMenCol.FindById(1);
                             if (salesMen == null)
                             {
@@ -215,13 +215,13 @@ namespace Phony.Views
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var suppliersCol = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString());
+                            var suppliersCol = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString());
                             var supplier = suppliersCol.FindById(1);
                             if (supplier == null)
                             {
@@ -230,14 +230,14 @@ namespace Phony.Views
                                     Id = 1,
                                     Name = "لا يوجد",
                                     Balance = 0,
-                                    SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(1),
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var storesCol = db.GetCollection<Store>(DBCollections.Stores.ToString());
+                            var storesCol = db.GetCollection<Store>(Data.DBCollections.Stores.ToString());
                             var store = storesCol.FindById(1);
                             if (store == null)
                             {
@@ -245,13 +245,13 @@ namespace Phony.Views
                                 {
                                     Id = 1,
                                     Name = "التوكل",
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null
                                 });
                             }
-                            var treasuriesCol = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString());
+                            var treasuriesCol = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString());
                             var treasury = treasuriesCol.FindById(1);
                             if (treasury == null)
                             {
@@ -259,9 +259,9 @@ namespace Phony.Views
                                 {
                                     Id = 1,
                                     Name = "الرئيسية",
-                                    Store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1),
+                                    Store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1),
                                     Balance = 0,
-                                    Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(1),
+                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
                                     CreateDate = DateTime.Now,
                                     Editor = null,
                                     EditDate = null

@@ -16,7 +16,7 @@ namespace Phony.Models
 
         public string Phone { get; set; }
 
-        [BsonRef(nameof(ViewModels.DBCollections.SalesMen))]
+        [BsonRef(nameof(Data.DBCollections.SalesMen))]
         public virtual SalesMan SalesMan { get; set; }
     }
 }

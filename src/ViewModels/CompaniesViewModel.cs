@@ -38,209 +38,97 @@ namespace Phony.ViewModels
         public long CompanyId
         {
             get => _companyId;
-            set
-            {
-                if (value != _companyId)
-                {
-                    _companyId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companyId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Site
         {
             get => _site;
-            set
-            {
-                if (value != _site)
-                {
-                    _site = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _site, value);
         }
 
         public string Email
         {
             get => _email;
-            set
-            {
-                if (value != _email)
-                {
-                    _email = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string CompaniesCount
         {
             get => _companiesCount;
-            set
-            {
-                if (value != _companiesCount)
-                {
-                    _companiesCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companiesCount, value);
         }
 
         public string CompaniesDebits
         {
             get => _companiesDebits;
-            set
-            {
-                if (value != _companiesDebits)
-                {
-                    _companiesDebits = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companiesDebits, value);
         }
 
         public string CompaniesCredits
         {
             get => _companiesCredits;
-            set
-            {
-                if (value != _companiesCredits)
-                {
-                    _companiesCredits = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companiesCredits, value);
         }
 
         public string CompaniesProfit
         {
             get => _companiesProfit;
-            set
-            {
-                if (value != _companiesProfit)
-                {
-                    _companiesProfit = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companiesProfit, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public decimal Balance
         {
             get => _balance;
-            set
-            {
-                if (value != _balance)
-                {
-                    _balance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _balance, value);
         }
 
         public bool IsAddCompanyFlyoutOpen
         {
             get => _isCompanyFlyoutOpen;
-            set
-            {
-                if (value != _isCompanyFlyoutOpen)
-                {
-                    _isCompanyFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isCompanyFlyoutOpen, value);
         }
 
         public Company DataGridSelectedCompany
         {
             get => _dataGridSelectedCompany;
-            set
-            {
-                if (value != _dataGridSelectedCompany)
-                {
-                    _dataGridSelectedCompany = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedCompany, value);
         }
 
         public ObservableCollection<Company> Companies
         {
             get => _companies;
-            set
-            {
-                if (value != _companies)
-                {
-                    _companies = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _companies, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -256,8 +144,6 @@ namespace Phony.ViewModels
         public ICommand ReloadAllCompanies { get; set; }
         public ICommand Search { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
         public CompaniesViewModel()
@@ -265,24 +151,24 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
 
         public void LoadCommands()
         {
+            CompanyPay = new DelegateCommand(DoCompanyPayAsync, CanCompanyPay).ObservesProperty(() => DataGridSelectedCompany);
+            PayCompany = new DelegateCommand(DoPayCompanyAsync, CanPayCompany).ObservesProperty(() => DataGridSelectedCompany);
+            AddCompany = new DelegateCommand(DoAddCompany, CanAddCompany).ObservesProperty(() => Name);
+            EditCompany = new DelegateCommand(DoEditCompany, CanEditCompany).ObservesProperty(() => Name).ObservesProperty(() => CompanyId).ObservesProperty(() => DataGridSelectedCompany);
+            DeleteCompany = new DelegateCommand(DoDeleteCompany, CanDeleteCompany).ObservesProperty(() => DataGridSelectedCompany).ObservesProperty(() => DataGridSelectedCompany.Id);
             OpenAddCompanyFlyout = new DelegateCommand(DoOpenAddCompanyFlyout, CanOpenAddCompanyFlyout);
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            DeleteCompany = new DelegateCommand(DoDeleteCompany, CanDeleteCompany);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedCompany);
             ReloadAllCompanies = new DelegateCommand(DoReloadAllCompanies, CanReloadAllCompanies);
-            Search = new DelegateCommand(DoSearch, CanSearch);
-            AddCompany = new DelegateCommand(DoAddCompany, CanAddCompany);
-            EditCompany = new DelegateCommand(DoEditCompany, CanEditCompany);
-            CompanyPay = new DelegateCommand(DoCompanyPayAsync, CanCompanyPay);
-            PayCompany = new DelegateCommand(DoPayCompanyAsync, CanPayCompany);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         async void DebitCredit()
@@ -330,15 +216,15 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                        var s = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
                         s.Balance += compantpaymentamount;
                         //the company will give us money in form of balance or something
-                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
+                        db.GetCollection<CompanyMove>(Data.DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
                         {
-                            Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
+                            Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
                             Credit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
@@ -379,26 +265,26 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                        var s = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
                         s.Balance -= compantpaymentamount;
                         //Company gets money from us
-                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
+                        db.GetCollection<CompanyMove>(Data.DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
                         {
-                            Company = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
+                            Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
                             Debit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
                         //the money is taken from our Treasury
-                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
                             Credit = compantpaymentamount,
                             Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
@@ -429,7 +315,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Company>(DBCollections.Companies.ToString()).Find(x=> x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var s = new Company
@@ -442,11 +328,11 @@ namespace Phony.ViewModels
                         Image = Image,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Company>(DBCollections.Companies.ToString()).Insert(s);
+                    db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Insert(s);
                     Companies.Add(s);
                     CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
                     DebitCredit();
@@ -471,7 +357,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var c = db.GetCollection<Company>(DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                var c = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
                 c.Name = Name;
                 c.Balance = Balance;
                 c.Site = Site;
@@ -479,7 +365,9 @@ namespace Phony.ViewModels
                 c.Phone = Phone;
                 c.Image = Image;
                 c.Notes = Notes;
-                db.GetCollection<Company>(DBCollections.Companies.ToString()).Update(c);
+                c.Editor = Core.ReadUserSession();
+                c.EditDate = DateTime.Now;
+                db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Update(c);
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
                 DebitCredit();
@@ -504,7 +392,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Company>(DBCollections.Companies.ToString()).Delete(DataGridSelectedCompany.Id);
+                    db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Delete(DataGridSelectedCompany.Id);
                     Companies.Remove(DataGridSelectedCompany);
                 }
                 await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
@@ -528,7 +416,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Companies.Count < 1)
                     {
                         CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -551,7 +439,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies.ToString()).FindAll());
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll());
             }
             DebitCredit();
         }

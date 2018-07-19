@@ -40,235 +40,109 @@ namespace Phony.ViewModels
         public long SupplierId
         {
             get => _supplierId;
-            set
-            {
-                if (value != _supplierId)
-                {
-                    _supplierId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _supplierId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Site
         {
             get => _site;
-            set
-            {
-                if (value != _site)
-                {
-                    _site = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _site, value);
         }
 
         public string Email
         {
             get => _email;
-            set
-            {
-                if (value != _email)
-                {
-                    _email = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string SuppliersCount
         {
             get => _suppliersCount;
-            set
-            {
-                if (value != _suppliersCount)
-                {
-                    _suppliersCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliersCount, value);
         }
 
         public string SuppliersDebits
         {
             get => _suppliersDebits;
-            set
-            {
-                if (value != _suppliersDebits)
-                {
-                    _suppliersDebits = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliersDebits, value);
         }
 
         public string SuppliersCredits
         {
             get => _suppliersCredits;
-            set
-            {
-                if (value != _suppliersCredits)
-                {
-                    _suppliersCredits = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliersCredits, value);
         }
 
         public string SuppliersProfit
         {
             get => _suppliersProfit;
-            set
-            {
-                if (value != _suppliersProfit)
-                {
-                    _suppliersProfit = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliersProfit, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public decimal Balance
         {
             get => _balance;
-            set
-            {
-                if (value != _balance)
-                {
-                    _balance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _balance, value);
         }
 
         public bool IsAddSupplierFlyoutOpen
         {
             get => _isSupplierFlyoutOpen;
-            set
-            {
-                if (value != _isSupplierFlyoutOpen)
-                {
-                    _isSupplierFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isSupplierFlyoutOpen, value);
         }
 
         public Supplier DataGridSelectedSupplier
         {
             get => _dataGridSelectedSupplier;
-            set
-            {
-                if (value != _dataGridSelectedSupplier)
-                {
-                    _dataGridSelectedSupplier = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedSupplier, value);
         }
 
         public long SelectedSalesMan
         {
             get => _selectedSalesMan;
-            set
-            {
-                if (value != _selectedSalesMan)
-                {
-                    _selectedSalesMan = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedSalesMan, value);
         }
 
         public ObservableCollection<Supplier> Suppliers
         {
             get => _suppliers;
-            set
-            {
-                if (value != _suppliers)
-                {
-                    _suppliers = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _suppliers, value);
         }
 
         public ObservableCollection<SalesMan> SalesMen
         {
             get => _salesMen;
-            set
-            {
-                if (value != _salesMen)
-                {
-                    _salesMen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _salesMen, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -284,8 +158,6 @@ namespace Phony.ViewModels
         public ICommand ReloadAllSuppliers { get; set; }
         public ICommand Search { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Suppliers SuppliersMessage = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
 
         public SuppliersViewModel()
@@ -293,9 +165,9 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll());
-                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
@@ -359,14 +231,14 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
+                        var s = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance += supplierpaymentamount;
-                        db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
+                        db.GetCollection<SupplierMove>(Data.DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
-                            Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
+                            Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
                             Credit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
@@ -407,24 +279,24 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
+                        var s = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                         s.Balance -= supplierpaymentamount;
-                        db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
+                        db.GetCollection<SupplierMove>(Data.DBCollections.SuppliersMoves.ToString()).Insert(new SupplierMove
                         {
-                            Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
+                            Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id),
                             Debit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
-                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
                             Credit = supplierpaymentamount,
                             Notes = $"دفع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
@@ -455,7 +327,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var s = new Supplier
@@ -466,14 +338,14 @@ namespace Phony.ViewModels
                         Email = Email,
                         Phone = Phone,
                         Image = Image,
-                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan),
+                        SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan),
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Insert(s);
+                    db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Insert(s);
                     Suppliers.Add(s);
                     SuppliersMessage.ShowMessageAsync("تمت العملية", "تم اضافة المورد بنجاح");
                     DebitCredit();
@@ -498,18 +370,18 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
+                var s = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(DataGridSelectedSupplier.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
                 s.Email = Email;
                 s.Phone = Phone;
                 s.Image = Image;
-                s.SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan);
+                s.SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(SelectedSalesMan);
                 s.Notes = Notes;
+                s.Editor = Core.ReadUserSession();
                 s.EditDate = DateTime.Now;
-                s.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
-                db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Update(s);
+                db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Update(s);
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
                 Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
                 DebitCredit();
@@ -534,7 +406,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Delete(DataGridSelectedSupplier.Id);
+                    db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Delete(DataGridSelectedSupplier.Id);
                     Suppliers.Remove(DataGridSelectedSupplier);
                 }
                 await SuppliersMessage.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
@@ -558,7 +430,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Suppliers.Count < 1)
                     {
                         SuppliersMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -581,7 +453,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers.ToString()).FindAll());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll());
             }
             DebitCredit();
         }

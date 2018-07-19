@@ -37,222 +37,103 @@ namespace Phony.ViewModels
         public int Height
         {
             get => _height;
-            set
-            {
-                if (value != _height)
-                {
-                    _height = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _height, value);
         }
 
         public int Width
         {
             get => _width;
-            set
-            {
-                if (value != _width)
-                {
-                    _width = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _width, value);
         }
 
         public int BarWidth
         {
             get => _barWidth;
-            set
-            {
-                if (value != _barWidth)
-                {
-                    _barWidth = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _barWidth, value);
         }
 
         public double AspectRatio
         {
             get => _aspectRatio;
-            set
-            {
-                if (value != _aspectRatio)
-                {
-                    _aspectRatio = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _aspectRatio, value);
         }
 
         public string EncodeValue
         {
             get => _encodeValue;
-            set
-            {
-                if (value != _encodeValue)
-                {
-                    _encodeValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _encodeValue, value);
         }
 
         public string SelectedRotate
         {
             get => _selectedRotate;
-            set
-            {
-                if (value != _selectedRotate)
-                {
-                    _selectedRotate = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedRotate, value);
         }
 
         public string Alignment
         {
             get => _alignment;
-            set
-            {
-                if (value != _alignment)
-                {
-                    _alignment = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _alignment, value);
         }
 
         public string Foreground
         {
             get => _foreground;
-            set
-            {
-                if (value != _foreground)
-                {
-                    _foreground = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _foreground, value);
         }
 
         public string Background
         {
             get => _background;
-            set
-            {
-                if (value != _background)
-                {
-                    _background = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _background, value);
         }
 
         public string AlternateLabelText
         {
             get => _alternateLabelText;
-            set
-            {
-                if (value != _alternateLabelText)
-                {
-                    _alternateLabelText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _alternateLabelText, value);
         }
 
         public string LabelLocation
         {
             get => _labelLocation;
-            set
-            {
-                if (value != _labelLocation)
-                {
-                    _labelLocation = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _labelLocation, value);
         }
 
         public string EncodedValue
         {
             get => _encodedValue;
-            set
-            {
-                if (value != _encodedValue)
-                {
-                    _encodedValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _encodedValue, value);
         }
 
         public string SelectedEncoder
         {
             get => _selectedEncoder;
-            set
-            {
-                if (value != _selectedEncoder)
-                {
-                    _selectedEncoder = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedEncoder, value);
         }
 
         public bool GenerateLabel
         {
             get => _generateLabel;
-            set
-            {
-                if (value != _generateLabel)
-                {
-                    _generateLabel = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _generateLabel, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public List<string> RotateTypes
         {
             get => _rotateTypes;
-            set
-            {
-                if (value != _rotateTypes)
-                {
-                    _rotateTypes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _rotateTypes, value);
         }
 
         public List<Enumeration<byte>> Encoders
         {
             get => _encoders;
-            set
-            {
-                if (value != _encoders)
-                {
-                    _encoders = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _encoders, value);
         }
 
         BarcodeLib.Barcode barCode = new BarcodeLib.Barcode();

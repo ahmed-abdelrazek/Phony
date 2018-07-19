@@ -40,248 +40,115 @@ namespace Phony.ViewModels
         public long ClientId
         {
             get => _clientsId;
-            set
-            {
-                if (value != _clientsId)
-                {
-                    _clientsId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Site
         {
             get => _site;
-            set
-            {
-                if (value != _site)
-                {
-                    _site = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _site, value);
         }
 
         public string Email
         {
             get => _email;
-            set
-            {
-                if (value != _email)
-                {
-                    _email = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string ChildName
         {
             get => _childName;
-            set
-            {
-                if (value != _childName)
-                {
-                    _childName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childName, value);
         }
 
         public string ChildPrice
         {
             get => _childPrice;
-            set
-            {
-                if (value != _childPrice)
-                {
-                    _childPrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childPrice, value);
         }
 
         public string ClientCount
         {
             get => _clientsCount;
-            set
-            {
-                if (value != _clientsCount)
-                {
-                    _clientsCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsCount, value);
         }
 
         public string ClientCredits
         {
             get => _clientsPurchasePrice;
-            set
-            {
-                if (value != _clientsPurchasePrice)
-                {
-                    _clientsPurchasePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsPurchasePrice, value);
         }
 
         public string ClientDebits
         {
             get => _clientsSalePrice;
-            set
-            {
-                if (value != _clientsSalePrice)
-                {
-                    _clientsSalePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsSalePrice, value);
         }
 
         public string ClientProfit
         {
             get => _clientsProfit;
-            set
-            {
-                if (value != _clientsProfit)
-                {
-                    _clientsProfit = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientsProfit, value);
         }
 
         public decimal Balance
         {
             get => _balance;
-            set
-            {
-                if (value != _balance)
-                {
-                    _balance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _balance, value);
         }
 
         public bool FastResult
         {
             get => _fastResult;
-            set
-            {
-                if (value != _fastResult)
-                {
-                    _fastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _fastResult, value);
         }
 
         public bool OpenFastResult
         {
             get => _openFastResult;
-            set
-            {
-                if (value != _openFastResult)
-                {
-                    _openFastResult = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _openFastResult, value);
         }
 
         public bool IsAddClientFlyoutOpen
         {
             get => _isAddClientFlyoutOpen;
-            set
-            {
-                if (value != _isAddClientFlyoutOpen)
-                {
-                    _isAddClientFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddClientFlyoutOpen, value);
         }
 
         public Client DataGridSelectedClient
         {
             get => _dataGridSelectedClient;
-            set
-            {
-                if (value != _dataGridSelectedClient)
-                {
-                    _dataGridSelectedClient = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedClient, value);
         }
 
         public ObservableCollection<Client> Clients
         {
             get => _clients;
-            set
-            {
-                if (value != _clients)
-                {
-                    _clients = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clients, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -298,30 +165,28 @@ namespace Phony.ViewModels
 
         Clients ClientsMessage = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         public ClientsViewModel()
         {
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
 
         public void LoadCommands()
         {
-            Search = new DelegateCommand(DoSearch, CanSearch);
+            ClientPay = new DelegateCommand(DoClientPayAsync, CanClientPay).ObservesProperty(() => DataGridSelectedClient);
+            PayClient = new DelegateCommand(DoPayClientAsync, CanPayClient).ObservesProperty(() => DataGridSelectedClient);
+            AddClient = new DelegateCommand(DoAddClient, CanAddClient).ObservesProperty(() => Name);
+            EditClient = new DelegateCommand(DoEditClient, CanEditClient).ObservesProperty(() => Name).ObservesProperty(() => ClientId).ObservesProperty(() => DataGridSelectedClient);
+            DeleteClient = new DelegateCommand(DoDeleteClient, CanDeleteClient).ObservesProperty(() => DataGridSelectedClient).ObservesProperty(() => DataGridSelectedClient.Id);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
             OpenAddClientFlyout = new DelegateCommand(DoOpenAddClientFlyout, CanOpenAddClientFlyout);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            ClientPay = new DelegateCommand(DoClientPayAsync, CanClientPay);
-            PayClient = new DelegateCommand(DoPayClientAsync, CanPayClient);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedClient);
             ReloadAllClients = new DelegateCommand(DoReloadAllClients, CanReloadAllClients);
-            AddClient = new DelegateCommand(DoAddClient, CanAddClient);
-            EditClient = new DelegateCommand(DoEditClient, CanEditClient);
-            DeleteClient = new DelegateCommand(DoDeleteClient, CanDeleteClient);
         }
 
         async void DebitCredit()
@@ -369,26 +234,26 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                        var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
                         c.Balance -= clientpaymentamount;
-                        db.GetCollection<ClientMove>(DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
+                        db.GetCollection<ClientMove>(Data.DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
                         {
-                            Client = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
+                            Client = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
                             Credit = clientpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
                         if (clientpaymentamount > 0)
                         {
-                            db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                            db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                             {
-                                Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                                Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
                                 Debit = clientpaymentamount,
                                 Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                                 CreateDate = DateTime.Now,
-                                Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                                Creator = Core.ReadUserSession(),
                                 EditDate = null,
                                 Editor = null
                             });
@@ -430,24 +295,24 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                        var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
                         c.Balance += clientpaymentamount;
-                        db.GetCollection<ClientMove>(DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
+                        db.GetCollection<ClientMove>(Data.DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
                         {
-                            Client = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
+                            Client = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
                             Debit = clientpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
-                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
                             Credit = clientpaymentamount,
                             Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
@@ -478,7 +343,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Client>(DBCollections.Clients.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var c = new Client
@@ -490,11 +355,11 @@ namespace Phony.ViewModels
                         Phone = Phone,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Client>(DBCollections.Clients.ToString()).Insert(c);
+                    db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Insert(c);
                     Clients.Add(c);
                     ClientsMessage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
                     DebitCredit();
@@ -519,14 +384,16 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
                 c.Name = Name;
                 c.Balance = Balance;
                 c.Site = Site;
                 c.Email = Email;
                 c.Phone = Phone;
                 c.Notes = Notes;
-                db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
+                c.Editor = Core.ReadUserSession();
+                c.EditDate = DateTime.Now;
+                db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Update(c);
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
                 Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                 DebitCredit();
@@ -551,7 +418,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Client>(DBCollections.Clients.ToString()).Delete(DataGridSelectedClient.Id);
+                    db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Delete(DataGridSelectedClient.Id);
                     Clients.Remove(DataGridSelectedClient);
                 }
                 await ClientsMessage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
@@ -575,7 +442,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Clients.Count > 0)
                     {
                         if (FastResult)
@@ -607,7 +474,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
+                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
             }
         }
 

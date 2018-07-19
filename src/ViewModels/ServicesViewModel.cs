@@ -38,209 +38,97 @@ namespace Phony.ViewModels
         public long ServiceId
         {
             get => _serviceId;
-            set
-            {
-                if (value != _serviceId)
-                {
-                    _serviceId = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _serviceId, value);
         }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
         public string Site
         {
             get => _site;
-            set
-            {
-                if (value != _site)
-                {
-                    _site = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _site, value);
         }
 
         public string Email
         {
             get => _email;
-            set
-            {
-                if (value != _email)
-                {
-                    _email = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _email, value);
         }
 
         public string Phone
         {
             get => _phone;
-            set
-            {
-                if (value != _phone)
-                {
-                    _phone = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _phone, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string Notes
         {
             get => _notes;
-            set
-            {
-                if (value != _notes)
-                {
-                    _notes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _notes, value);
         }
 
         public string ServicesCount
         {
             get => _servicesCount;
-            set
-            {
-                if (value != _servicesCount)
-                {
-                    _servicesCount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _servicesCount, value);
         }
 
         public string ServicesPurchasePrice
         {
             get => _servicesPurchasePrice;
-            set
-            {
-                if (value != _servicesPurchasePrice)
-                {
-                    _servicesPurchasePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _servicesPurchasePrice, value);
         }
 
         public string ServicesSalePrice
         {
             get => _servicesSalePrice;
-            set
-            {
-                if (value != _servicesSalePrice)
-                {
-                    _servicesSalePrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _servicesSalePrice, value);
         }
 
         public string ServicesProfit
         {
             get => _servicesProfit;
-            set
-            {
-                if (value != _servicesProfit)
-                {
-                    _servicesProfit = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _servicesProfit, value);
         }
 
         public byte[] Image
         {
             get => _image;
-            set
-            {
-                if (value != _image)
-                {
-                    _image = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _image, value);
         }
 
         public decimal Balance
         {
             get => _balance;
-            set
-            {
-                if (value != _balance)
-                {
-                    _balance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _balance, value);
         }
 
         public bool IsAddServiceFlyoutOpen
         {
             get => _isServiceFlyoutOpen;
-            set
-            {
-                if (value != _isServiceFlyoutOpen)
-                {
-                    _isServiceFlyoutOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isServiceFlyoutOpen, value);
         }
 
         public Service DataGridSelectedService
         {
             get => _dataGridSelectedService;
-            set
-            {
-                if (value != _dataGridSelectedService)
-                {
-                    _dataGridSelectedService = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedService, value);
         }
 
         public ObservableCollection<Service> Services
         {
             get => _services;
-            set
-            {
-                if (value != _services)
-                {
-                    _services = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _services, value);
         }
 
         public ObservableCollection<User> Users { get; set; }
@@ -255,8 +143,6 @@ namespace Phony.ViewModels
         public ICommand ReloadAllServices { get; set; }
         public ICommand Search { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Services ServicesMessage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
 
         public ServicesViewModel()
@@ -264,8 +150,8 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
@@ -319,15 +205,15 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
+                        var s = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
-                        db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
-                        db.GetCollection<ServiceMove>(DBCollections.ServicesMoves.ToString()).Insert(new ServiceMove
+                        db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Update(s);
+                        db.GetCollection<ServiceMove>(Data.DBCollections.ServicesMoves.ToString()).Insert(new ServiceMove
                         {
-                            Service = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id),
+                            Service = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id),
                             Debit = servicepaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                            Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
@@ -358,7 +244,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Service>(DBCollections.Services.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var s = new Service
@@ -371,11 +257,11 @@ namespace Phony.ViewModels
                         Image = Image,
                         Notes = Notes,
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Service>(DBCollections.Services.ToString()).Insert(s);
+                    db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Insert(s);
                     Services.Add(s);
                     ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
                     DebitCredit();
@@ -400,7 +286,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
+                var s = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -408,9 +294,9 @@ namespace Phony.ViewModels
                 s.Phone = Phone;
                 s.Image = Image;
                 s.Notes = Notes;
+                s.Editor = Core.ReadUserSession();
                 s.EditDate = DateTime.Now;
-                s.Editor = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id);
-                db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
+                db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Update(s);
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
                 Services[Services.IndexOf(DataGridSelectedService)] = s;
                 DebitCredit();
@@ -435,7 +321,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Service>(DBCollections.Services.ToString()).Delete(DataGridSelectedService.Id);
+                    db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Delete(DataGridSelectedService.Id);
                     Services.Remove(DataGridSelectedService);
                 }
                 await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
@@ -459,7 +345,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Find(x => x.Name.Contains(SearchText)));
                     if (Services.Count < 1)
                     {
                         ServicesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -482,7 +368,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
             }
             DebitCredit();
         }

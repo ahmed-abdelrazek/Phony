@@ -12,13 +12,5 @@ namespace Phony.Views.Pages.Users
         {
             InitializeComponent();
         }
-
-        private void PasswordTextBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (GridDX.DataContext != null)
-            {
-                ((ViewModels.Users.LoginVM)GridDX.DataContext).SecurePassword = ((PasswordBox)sender).SecurePassword;
-            }
-        }
     }
 }

@@ -8,8 +8,6 @@ using System;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -18,64 +16,27 @@ namespace Phony.ViewModels.Users
 {
     public class LoginVM : BindableBase
     {
-        static int _id;
-        static string _name;
-        static UserGroup _group;
+        string _name;
+        string _pass;
         bool _isLogging;
-
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                if (value != _id)
-                {
-                    _id = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
 
         public string Name
         {
             get => _name;
-            set
-            {
-                if (value != _name)
-                {
-                    _name = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _name, value);
         }
 
-        public UserGroup Group
+        public string Pass
         {
-            get => _group;
-            set
-            {
-                if (value != _group)
-                {
-                    _group = value;
-                    RaisePropertyChanged();
-                }
-            }
+            get => _pass;
+            set => SetProperty(ref _pass, value);
         }
 
         public bool IsLogging
         {
             get => _isLogging;
-            set
-            {
-                if (value != _isLogging)
-                {
-                    _isLogging = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isLogging, value);
         }
-
-        public SecureString SecurePassword { private get; set; }
 
         public ICommand LogIn { get; set; }
 
@@ -92,7 +53,7 @@ namespace Phony.ViewModels.Users
 
         private void LoadCommands()
         {
-            LogIn = new DelegateCommand(DoLogIn, CanDoLogIn).ObservesProperty(()=> Name); ;
+            LogIn = new DelegateCommand(DoLogIn, CanDoLogIn).ObservesProperty(() => Name); ;
         }
 
         private bool CanDoLogIn()
@@ -119,7 +80,7 @@ namespace Phony.ViewModels.Users
                             User u = null;
                             await Task.Run(() =>
                             {
-                                u = db.GetCollection<User>(DBCollections.Users.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                                u = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Find(x => x.Name == Name).FirstOrDefault();
                             });
                             if (u == null)
                             {
@@ -127,11 +88,9 @@ namespace Phony.ViewModels.Users
                             }
                             else
                             {
-                                if (SecurePasswordHasher.Verify(new NetworkCredential("", SecurePassword).Password, u.Pass))
+                                if (SecurePasswordHasher.Verify(Pass, u.Pass))
                                 {
-                                    Id = u.Id;
-                                    Name = u.Name;
-                                    Group = u.Group;
+                                    Core.WriteUserSession(u);
                                     v.PageName = "Main";
                                 }
                                 else

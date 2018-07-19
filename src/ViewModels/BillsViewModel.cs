@@ -67,576 +67,253 @@ namespace Phony.ViewModels
         public long SearchSelectedValue
         {
             get => _searchSelectedValue;
-            set
-            {
-                if (value != _searchSelectedValue)
-                {
-                    _searchSelectedValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchSelectedValue, value);
         }
 
         public decimal ItemChildItemPrice
         {
             get => _itemChildItemPrice;
-            set
-            {
-                if (value != _itemChildItemPrice)
-                {
-                    _itemChildItemPrice = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemChildItemPrice, value);
         }
 
         public decimal ItemChildItemQTYSell
         {
             get => _itemChildItemQTYSell;
-            set
-            {
-                if (value != _itemChildItemQTYSell)
-                {
-                    _itemChildItemQTYSell = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemChildItemQTYSell, value);
         }
 
         public decimal ItemChildItemQTYExist
         {
             get => _itemChildItemQTYExist;
-            set
-            {
-                if (value != _itemChildItemQTYExist)
-                {
-                    _itemChildItemQTYExist = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemChildItemQTYExist, value);
         }
 
         public decimal ServiceChildServiceBalance
         {
             get => _serviceChildServiceBalance;
-            set
-            {
-                if (value != _serviceChildServiceBalance)
-                {
-                    _serviceChildServiceBalance = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _serviceChildServiceBalance, value);
         }
 
         public decimal ServiceChildServiceCost
         {
             get => _serviceChildServiceCost;
-            set
-            {
-                if (value != _serviceChildServiceCost)
-                {
-                    _serviceChildServiceCost = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _serviceChildServiceCost, value);
         }
 
         public decimal ChildDiscount
         {
             get => _childDiscount;
-            set
-            {
-                if (value != _childDiscount)
-                {
-                    _childDiscount = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _childDiscount, value);
         }
 
         public decimal BillTotal
         {
             get => _billTotal;
-            set
-            {
-                if (value != _billTotal)
-                {
-                    _billTotal = Math.Round(value, 2);
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billTotal, value);
         }
 
         public decimal BillTotalAfterEachDiscount
         {
             get => _billTotalAfterEachDiscount;
-            set
-            {
-                if (value != _billTotalAfterEachDiscount)
-                {
-                    _billTotalAfterEachDiscount = Math.Round(value, 2);
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billTotalAfterEachDiscount, value);
         }
 
         public decimal BillDiscount
         {
             get => _billDiscount;
-            set
-            {
-                if (value != _billDiscount)
-                {
-                    _billDiscount = value;
-                    if (_billDiscount > 0)
-                    {
-                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2);
-                    }
-                    else
-                    {
-                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount, 2);
-                    }
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billDiscount, value);
         }
 
         public decimal BillTotalAfterDiscount
         {
             get => _billTotalAfterDiscount;
-            set
-            {
-                if (value != _billTotalAfterDiscount)
-                {
-                    _billTotalAfterDiscount = Math.Round(value, 2);
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billTotalAfterDiscount, value);
         }
 
         public decimal BillClientPayment
         {
             get => _billClientPayment;
-            set
-            {
-                if (value != _billClientPayment)
-                {
-                    _billClientPayment = value;
-                    if (_billClientPayment > BillTotalAfterDiscount)
-                    {
-                        BillClientPaymentChange = Math.Round(_billClientPayment - BillTotalAfterDiscount, 2);
-                        BillClientPaymentChangeVisible = Visibility.Visible;
-                    }
-                    else
-                    {
-                        BillClientPaymentChange = 0;
-                        BillClientPaymentChangeVisible = Visibility.Collapsed;
-                    }
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billClientPayment, value);
         }
 
         public decimal BillClientPaymentChange
         {
             get => _billClientPaymentChange;
-            set
-            {
-                if (value != _billClientPaymentChange)
-                {
-                    _billClientPaymentChange = Math.Round(value, 2);
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billClientPaymentChange, value);
         }
 
         public long CurrentBillNo
         {
             get => _currentBillNo;
-            set
-            {
-                if (value != _currentBillNo)
-                {
-                    _currentBillNo = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _currentBillNo, value);
         }
 
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                if (value != _searchText)
-                {
-                    _searchText = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchText, value);
         }
 
         public string ItemChildItemName
         {
             get => _itemChildItemName;
-            set
-            {
-                if (value != _itemChildItemName)
-                {
-                    _itemChildItemName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemChildItemName, value);
         }
 
         public string ServiceChildServiceName
         {
             get => _serviceChildServiceName;
-            set
-            {
-                if (value != _serviceChildServiceName)
-                {
-                    _serviceChildServiceName = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _serviceChildServiceName, value);
         }
 
         public string ServiceChildNotes
         {
             get => _serviceChildNotes;
-            set
-            {
-                if (value != _serviceChildNotes)
-                {
-                    _serviceChildNotes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _serviceChildNotes, value);
         }
 
         public string ItemChildNotes
         {
             get => _itemChildNotes;
-            set
-            {
-                if (value != _itemChildNotes)
-                {
-                    _itemChildNotes = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _itemChildNotes, value);
         }
 
         public bool ByItem
         {
             get => _byItem;
-            set
-            {
-                if (value != _byItem)
-                {
-                    _byItem = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byItem, value);
         }
 
         public bool ByCard
         {
             get => _byCard;
-            set
-            {
-                if (value != _byCard)
-                {
-                    _byCard = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byCard, value);
         }
 
         public bool ByService
         {
             get => _byService;
-            set
-            {
-                if (value != _byService)
-                {
-                    _byService = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byService, value);
         }
 
         public bool ByName
         {
             get => _byName;
-            set
-            {
-                if (value != _byName)
-                {
-                    _byName = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byName, value);
         }
 
         public bool ByShopCode
         {
             get => _byShopCode;
-            set
-            {
-                if (value != _byShopCode)
-                {
-                    _byShopCode = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byShopCode, value);
         }
 
         public bool ByBarCode
         {
             get => _byBarCode;
-            set
-            {
-                if (value != _byBarCode)
-                {
-                    _byBarCode = value;
-                    SearchItems = new ObservableCollection<object>();
-                    SearchSelectedValue = 0;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byBarCode, value);
         }
 
         public bool IsAddItemChildOpen
         {
             get => _isAddItemChildOpen;
-            set
-            {
-                if (value != _isAddItemChildOpen)
-                {
-                    _isAddItemChildOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddItemChildOpen, value);
         }
 
         public bool IsAddServiceChildOpen
         {
             get => _isAddServiceChildOpen;
-            set
-            {
-                if (value != _isAddServiceChildOpen)
-                {
-                    _isAddServiceChildOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddServiceChildOpen, value);
         }
 
         public bool IsAddBillNote
         {
             get => _isAddBillNote;
-            set
-            {
-                if (value != _isAddBillNote)
-                {
-                    _isAddBillNote = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isAddBillNote, value);
         }
 
         public bool IsSearchDropDownOpen
         {
             get => _isSearchDropDownOpen;
-            set
-            {
-                if (value != _isSearchDropDownOpen)
-                {
-                    _isSearchDropDownOpen = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isSearchDropDownOpen, value);
         }
 
         public Client SelectedClient
         {
             get => _selectedClient;
-            set
-            {
-                if (value != _selectedClient)
-                {
-                    _selectedClient = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedClient, value);
         }
 
         public Item SelectedItem
         {
             get => _selectedItem;
-            set
-            {
-                if (value != _selectedItem)
-                {
-                    _selectedItem = value;
-                }
-            }
+            set => SetProperty(ref _selectedItem, value);
         }
 
         public Service SelectedService
         {
             get => _selectedService;
-            set
-            {
-                if (value != _selectedService)
-                {
-                    _selectedService = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _selectedService, value);
         }
 
         public BillItemMove DataGridSelectedBillItemMove
         {
             get => _dataGridSelectedBillItemMove;
-            set
-            {
-                if (value != _dataGridSelectedBillItemMove)
-                {
-                    _dataGridSelectedBillItemMove = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedBillItemMove, value);
         }
 
         public BillServiceMove DataGridSelectedBillServiceMove
         {
             get => _dataGridSelectedBillServiceMove;
-            set
-            {
-                if (value != _dataGridSelectedBillServiceMove)
-                {
-                    _dataGridSelectedBillServiceMove = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _dataGridSelectedBillServiceMove, value);
         }
 
         public Visibility BillClientPaymentChangeVisible
         {
             get => _billClientPaymentChangeVisible;
-            set
-            {
-                if (value != _billClientPaymentChangeVisible)
-                {
-                    _billClientPaymentChangeVisible = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billClientPaymentChangeVisible, value);
         }
 
         public ObservableCollection<object> SearchItems
         {
             get => _searchItems;
-            set
-            {
-                if (value != _searchItems)
-                {
-                    _searchItems = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _searchItems, value);
         }
 
         public ObservableCollection<BillItemMove> BillItemsMoves
         {
             get => _billItemsMoves;
-            set
-            {
-                if (value != _billItemsMoves)
-                {
-                    _billItemsMoves = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billItemsMoves, value);
         }
 
         public ObservableCollection<BillServiceMove> BillServicesMoves
         {
             get => _billServicesMoves;
-            set
-            {
-                if (value != _billServicesMoves)
-                {
-                    _billServicesMoves = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billServicesMoves, value);
         }
 
         public List<Client> Clients
         {
             get => _clients;
-            set
-            {
-                if (value != _clients)
-                {
-                    _clients = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clients, value);
         }
 
         public List<Item> Items
         {
             get => _items;
-            set
-            {
-                if (value != _items)
-                {
-                    _items = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _items, value);
         }
 
         public List<Service> Services
         {
             get => _services;
-            set
-            {
-                if (value != _services)
-                {
-                    _services = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _services, value);
         }
 
         public List<User> Users
         {
             get => _users;
-            set
-            {
-                if (value != _users)
-                {
-                    _users = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _users, value);
         }
 
         public ICommand Search { get; set; }
@@ -648,8 +325,6 @@ namespace Phony.ViewModels
         public ICommand SaveBill { get; set; }
         public ICommand SaveAndShow { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Bills Message = Application.Current.Windows.OfType<Bills>().FirstOrDefault();
 
         public BillsViewModel()
@@ -660,10 +335,10 @@ namespace Phony.ViewModels
             BillClientPaymentChangeVisible = Visibility.Collapsed;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
-                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).FindAll());
-                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
-                Users = new List<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
+                Clients = new List<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
+                Items = new List<Item>(db.GetCollection<Item>(Data.DBCollections.Items).FindAll());
+                Services = new List<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
+                Users = new List<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
             }
             BillItemsMoves = new ObservableCollection<BillItemMove>();
             BillServicesMoves = new ObservableCollection<BillServiceMove>();
@@ -672,14 +347,14 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
-            Search = new DelegateCommand(DoSearch, CanSearch);
-            AddBillMove = new DelegateCommand(DoAddBillMove, CanAddBillMove);
-            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill);
-            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill);
-            DeleteBillMove = new DelegateCommand(DoDeleteBillMove, CanDeleteBillMove);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
+            AddBillMove = new DelegateCommand(DoAddBillMove, CanAddBillMove).ObservesProperty(() => SearchSelectedValue);
+            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill).ObservesProperty(() => ItemChildItemQTYSell);
+            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill).ObservesProperty(() => ServiceChildServiceCost);
+            DeleteBillMove = new DelegateCommand(DoDeleteBillMove, CanDeleteBillMove).ObservesProperty(() => DataGridSelectedBillItemMove).ObservesProperty(() => ByItem).ObservesProperty(() => DataGridSelectedBillServiceMove).ObservesProperty(() => ByService);
             RedoBill = new DelegateCommand(DoRedoBill, CanRedoBill);
-            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill);
-            SaveAndShow = new DelegateCommand(DoSaveAndShow, CanSaveAndShow);
+            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill).ObservesProperty(() => SelectedClient);
+            SaveAndShow = new DelegateCommand(DoSaveAndShow, CanSaveAndShow).ObservesProperty(() => SelectedClient);
         }
 
         async Task<long> SaveBillNoAsync()
@@ -708,48 +383,48 @@ namespace Phony.ViewModels
                 {
                     var bi = new Bill
                     {
-                        Client = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(SelectedClient.Id),
-                        Store = db.GetCollection<Store>(DBCollections.Stores.ToString()).FindById(1),
+                        Client = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(SelectedClient.Id),
+                        Store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1),
                         Discount = BillDiscount,
                         TotalAfterDiscounts = BillTotalAfterDiscount,
                         TotalPayed = BillClientPayment,
                         Notes = billNote,
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         Editor = null,
                         EditDate = null
                     };
-                    db.GetCollection<Bill>(DBCollections.Bills.ToString()).Insert(bi);
+                    db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).Insert(bi);
                     foreach (var item in BillItemsMoves)
                     {
                         item.Bill = bi;
-                        db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves.ToString()).Insert(item);
-                        var i = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.Item.Id);
+                        db.GetCollection<BillItemMove>(Data.DBCollections.BillsItemsMoves.ToString()).Insert(item);
+                        var i = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).FindById(item.Item.Id);
                         i.QTY -= item.QTY;
-                        db.GetCollection<Item>(DBCollections.Items.ToString()).Update(i);
+                        db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Update(i);
                     }
                     foreach (var service in BillServicesMoves)
                     {
                         service.Bill = bi;
-                        db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves.ToString()).Insert(service);
-                        var s = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id);
+                        db.GetCollection<BillServiceMove>(Data.DBCollections.BillsServicesMoves.ToString()).Insert(service);
+                        var s = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(service.Service.Id);
                         s.Balance -= service.ServicePayment;
-                        db.GetCollection<Service>(DBCollections.Services.ToString()).Update(s);
+                        db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Update(s);
                     }
                     if (BillClientPayment < BillTotalAfterDiscount)
                     {
-                        var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(SelectedClient.Id);
+                        var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(SelectedClient.Id);
                         c.Balance += BillTotalAfterDiscount - BillClientPayment;
-                        db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
+                        db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Update(c);
                     }
-                    db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                    db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
                     {
-                        Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries.ToString()).FindById(1),
+                        Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
                         Debit = BillClientPayment,
                         Credit = BillClientPaymentChange,
                         Notes = $"فاتورة رقم {bi.Id}",
                         CreateDate = DateTime.Now,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
@@ -863,9 +538,9 @@ namespace Phony.ViewModels
             SearchSelectedValue = 0;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
-                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).FindAll());
-                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services.ToString()).FindAll());
+                Clients = new List<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
+                Items = new List<Item>(db.GetCollection<Item>(Data.DBCollections.Items).FindAll());
+                Services = new List<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
                 SearchSelectedValue = 0;
             }
         }
@@ -920,13 +595,13 @@ namespace Phony.ViewModels
                 {
                     BillServicesMoves.Add(new BillServiceMove
                     {
-                        Bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(CurrentBillNo),
-                        Service = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(SearchSelectedValue),
+                        Bill = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(CurrentBillNo),
+                        Service = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(SearchSelectedValue),
                         Balance = ServiceChildServiceBalance,
                         ServicePayment = ServiceChildServiceCost,
                         Discount = ChildDiscount,
                         Notes = ServiceChildNotes,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         CreateDate = DateTime.Now,
                         Editor = null,
                         EditDate = null
@@ -977,13 +652,13 @@ namespace Phony.ViewModels
                 {
                     BillItemsMoves.Add(new BillItemMove
                     {
-                        Bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(CurrentBillNo),
-                        Item = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(SearchSelectedValue),
+                        Bill = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(CurrentBillNo),
+                        Item = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).FindById(SearchSelectedValue),
                         QTY = ItemChildItemQTYSell,
                         ItemPrice = SelectedItem.RetailPrice,
                         Discount = ChildDiscount,
                         Notes = ItemChildNotes,
-                        Creator = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(CurrentUser.Id),
+                        Creator = Core.ReadUserSession(),
                         CreateDate = DateTime.Now,
                         Editor = null,
                         EditDate = null
@@ -1162,7 +837,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    CurrentBillNo = ++db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll().LastOrDefault().Id;
+                    CurrentBillNo = ++db.GetCollection<Client>(Data.DBCollections.Clients).FindAll().LastOrDefault().Id;
                 }
             }
             catch (Exception ex)

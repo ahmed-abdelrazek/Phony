@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Phony.Kernel;
 using Phony.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -36,205 +37,90 @@ namespace Phony.ViewModels
         public long ClientSelectedValue
         {
             get => _clientSelectedValue;
-            set
-            {
-                if (value != _clientSelectedValue)
-                {
-                    _clientSelectedValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clientSelectedValue, value);
         }
 
         public long BillSelectedValue
         {
             get => _billSelectedValue;
-            set
-            {
-                if (value != _billSelectedValue)
-                {
-                    _billSelectedValue = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _billSelectedValue, value);
         }
 
         public DateTime FirstDate
         {
             get => _firstDate;
-            set
-            {
-                if (value != _firstDate)
-                {
-                    _firstDate = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _firstDate, value);
         }
 
         public DateTime SecondDate
         {
             get => _secondDate;
-            set
-            {
-                if (value != _secondDate)
-                {
-                    _secondDate = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _secondDate, value);
         }
 
         public bool ByBillNo
         {
             get => _byBillNo;
-            set
-            {
-                if (value != _byBillNo)
-                {
-                    _byBillNo = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byBillNo, value);
         }
 
         public bool By2Dates
         {
             get => _by2Dates;
-            set
-            {
-                if (value != _by2Dates)
-                {
-                    _by2Dates = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _by2Dates, value);
         }
 
         public bool ByClientName
         {
             get => _byClientName;
-            set
-            {
-                if (value != _byClientName)
-                {
-                    _byClientName = value;
-                    if (_byClientName)
-                    {
-                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
-                        {
-                            ClientSelectedValue = 0;
-                            Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients.ToString()).FindAll());
-                        }
-                    }
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byClientName, value);
         }
 
         public bool ByUserName
         {
             get => _byUserName;
-            set
-            {
-                if (value != _byUserName)
-                {
-                    _byUserName = value;
-                    if (_byUserName)
-                    {
-                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
-                        {
-                            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users.ToString()).FindAll());
-                        }
-                    }
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _byUserName, value);
         }
 
         public bool IsReturned
         {
             get => _isReturned;
-            set
-            {
-                if (value != _isReturned)
-                {
-                    _isReturned = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isReturned, value);
         }
 
         public Visibility IsReturnedVisible
         {
             get => _isReturnedVisible;
-            set
-            {
-                if (value != _isReturnedVisible)
-                {
-                    _isReturnedVisible = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _isReturnedVisible, value);
         }
 
         public ObservableCollection<Bill> Bills
         {
             get => _bills;
-            set
-            {
-                if (value != _bills)
-                {
-                    _bills = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _bills, value);
         }
 
         public ObservableCollection<Client> Clients
         {
             get => _clients;
-            set
-            {
-                if (value != _clients)
-                {
-                    _clients = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _clients, value);
         }
 
         public ObservableCollection<User> Users
         {
             get => _users;
-            set
-            {
-                if (value != _users)
-                {
-                    _users = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _users, value);
         }
 
         public CrystalDecisions.CrystalReports.Engine.ReportDocument Report
         {
             get => _report;
-            set
-            {
-                if (value != _report)
-                {
-                    _report = value;
-                    RaisePropertyChanged();
-                }
-            }
+            set => SetProperty(ref _report, value);
         }
 
         public ICommand GetBills { get; set; }
         public ICommand Show { get; set; }
         public ICommand SaveReturned { get; set; }
-
-        Users.LoginVM CurrentUser = new Users.LoginVM();
 
         public SalesBillsViewerViewModel()
         {
@@ -243,7 +129,7 @@ namespace Phony.ViewModels
             FirstDate = SecondDate = DateTime.Now;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindAll());
+                Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(Data.DBCollections.Bills).FindAll());
             }
             LoadCommands();
         }
@@ -257,15 +143,15 @@ namespace Phony.ViewModels
         public void LoadCommands()
         {
             GetBills = new DelegateCommand(DoGetBills, CanGetBills);
-            Show = new DelegateCommand(DoShow, CanShow);
-            SaveReturned = new DelegateCommand(DoSaveReturned, CanSaveReturned);
+            Show = new DelegateCommand(DoShow, CanShow).ObservesProperty(() => BillSelectedValue);
+            SaveReturned = new DelegateCommand(DoSaveReturned, CanSaveReturned).ObservesProperty(() => BillSelectedValue);
         }
 
         void BillReturnedStatues(long id)
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                IsReturned = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(id).IsReturned;
+                IsReturned = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(id).IsReturned;
             }
         }
 
@@ -275,7 +161,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(id);
+                    var bill = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(id);
                     DataRow billdr = ds.Tables["Bill"].NewRow();
                     billdr["BillId"] = bill.Id;
                     billdr["BillDiscount"] = bill.Discount;
@@ -285,11 +171,11 @@ namespace Phony.ViewModels
                     billdr["ClientName"] = bill.Client.Name;
                     if (bill.Editor == null)
                     {
-                        billdr["UserName"] = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(bill.Creator.Id).Name;
+                        billdr["UserName"] = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(bill.Creator.Id).Name;
                     }
                     else
                     {
-                        billdr["UserName"] = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(bill.Editor.Id).Name;
+                        billdr["UserName"] = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(bill.Editor.Id).Name;
                     }
                     billdr["StoreName"] = bill.Store.Name;
                     billdr["StoreImage"] = bill.Store.Image;
@@ -306,22 +192,22 @@ namespace Phony.ViewModels
                     billdr["BillCreateDate"] = bill.CreateDate;
                     billdr["Motto"] = bill.Store.Motto;
                     ds.Tables["Bill"].Rows.Add(billdr);
-                    var Items = db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves.ToString()).Find(x => x.Bill.Id == id);
+                    var Items = db.GetCollection<BillItemMove>(Data.DBCollections.BillsItemsMoves.ToString()).Find(x => x.Bill.Id == id);
                     DataRow itemdr = ds.Tables["Items"].NewRow();
                     foreach (var item in Items)
                     {
-                        itemdr["ItemName"] = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.Item.Id).Name;
+                        itemdr["ItemName"] = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).FindById(item.Item.Id).Name;
                         itemdr["ItemQTY"] = item.QTY;
                         itemdr["ItemDiscount"] = item.Discount;
                         itemdr["ItemSalePrice"] = item.ItemPrice;
                         itemdr["ItemNotes"] = item.Notes;
                         ds.Tables["Items"].Rows.Add(itemdr);
                     }
-                    var Services = db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves.ToString()).Find(x => x.Bill.Id == id);
+                    var Services = db.GetCollection<BillServiceMove>(Data.DBCollections.BillsServicesMoves.ToString()).Find(x => x.Bill.Id == id);
                     DataRow servicedr = ds.Tables["Services"].NewRow();
                     foreach (var service in Services)
                     {
-                        servicedr["ServiceName"] = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
+                        servicedr["ServiceName"] = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
                         servicedr["ServiceBalance"] = service.Balance;
                         servicedr["ServicePayment"] = service.ServicePayment;
                         servicedr["ServiceDiscount"] = service.Discount;
@@ -358,7 +244,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var bill = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(id);
+                    var bill = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(id);
                     DataRow billdr = ds.Tables["Bill"].NewRow();
                     billdr["BillId"] = bill.Id;
                     billdr["BillDiscount"] = bill.Discount;
@@ -368,11 +254,11 @@ namespace Phony.ViewModels
                     billdr["ClientName"] = bill.Client.Name;
                     if (bill.Editor == null)
                     {
-                        billdr["UserName"] = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(bill.Creator.Id).Name;
+                        billdr["UserName"] = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(bill.Creator.Id).Name;
                     }
                     else
                     {
-                        billdr["UserName"] = db.GetCollection<User>(DBCollections.Users.ToString()).FindById(bill.Editor.Id).Name;
+                        billdr["UserName"] = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(bill.Editor.Id).Name;
                     }
                     billdr["StoreName"] = bill.Store.Name;
                     billdr["StoreImage"] = bill.Store.Image;
@@ -389,22 +275,22 @@ namespace Phony.ViewModels
                     billdr["BillCreateDate"] = bill.CreateDate;
                     billdr["Motto"] = bill.Store.Motto;
                     ds.Tables["Bill"].Rows.Add(billdr);
-                    var Items = db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves.ToString()).Find(x => x.Bill.Id == id);
+                    var Items = db.GetCollection<BillItemMove>(Data.DBCollections.BillsItemsMoves.ToString()).Find(x => x.Bill.Id == id);
                     DataRow itemdr = ds.Tables["Items"].NewRow();
                     foreach (var item in Items)
                     {
-                        itemdr["ItemName"] = db.GetCollection<Item>(DBCollections.Items.ToString()).FindById(item.Item.Id).Name;
+                        itemdr["ItemName"] = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).FindById(item.Item.Id).Name;
                         itemdr["ItemQTY"] = item.QTY;
                         itemdr["ItemDiscount"] = item.Discount;
                         itemdr["ItemSalePrice"] = item.ItemPrice;
                         itemdr["ItemNotes"] = item.Notes;
                         ds.Tables["Items"].Rows.Add(itemdr);
                     }
-                    var Services = db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves.ToString()).Find(x => x.Bill.Id == id);
+                    var Services = db.GetCollection<BillServiceMove>(Data.DBCollections.BillsServicesMoves.ToString()).Find(x => x.Bill.Id == id);
                     DataRow servicedr = ds.Tables["Services"].NewRow();
                     foreach (var service in Services)
                     {
-                        servicedr["ServiceName"] = db.GetCollection<Service>(DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
+                        servicedr["ServiceName"] = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(service.Service.Id).Name;
                         servicedr["ServiceBalance"] = service.Balance;
                         servicedr["ServicePayment"] = service.ServicePayment;
                         servicedr["ServiceDiscount"] = service.Discount;
@@ -462,20 +348,22 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var b = db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindById(BillSelectedValue);
+                var b = db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).FindById(BillSelectedValue);
                 if (!b.IsReturned)
                 {
                     b.IsReturned = IsReturned;
+                    b.Editor = Core.ReadUserSession();
+                    b.EditDate = DateTime.Now;
                     if (b.TotalPayed < b.TotalAfterDiscounts)
                     {
                         if (IsReturned)
                         {
-                            var c = db.GetCollection<Client>(DBCollections.Clients.ToString()).FindById(b.Client.Id);
+                            var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(b.Client.Id);
                             c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
-                            db.GetCollection<Client>(DBCollections.Clients.ToString()).Update(c);
+                            db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Update(c);
                         }
                     }
-                    db.GetCollection<Bill>(DBCollections.Bills.ToString()).Update(b);
+                    db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).Update(b);
                     BespokeFusion.MaterialMessageBox.Show("تم ارجاع الفاتورة بنجاح");
                 }
                 else
@@ -499,7 +387,7 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                     }
                 }
             }
@@ -509,7 +397,7 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).Find(b => b.Client.Id == ClientSelectedValue));
                     }
                 }
             }
@@ -519,7 +407,7 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(Data.DBCollections.Bills.ToString()).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                     }
                 }
             }
@@ -527,7 +415,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills.ToString()).FindAll());
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(Data.DBCollections.Bills).FindAll());
                 }
             }
         }
