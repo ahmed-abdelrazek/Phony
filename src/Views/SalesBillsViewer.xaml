@@ -22,11 +22,11 @@
             <RowDefinition Height="135"/>
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Padding="8">
+        <materialDesign:Card Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource MetroDataGrid.HighlightTextBrush}" Padding="8">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="برقم الفاتورة" Margin="5" IsChecked="{Binding ByBillNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <StackPanel Orientation="Horizontal" Margin="50,0,0,0" Visibility="{Binding IsChecked, Converter={StaticResource BToV}, ElementName=ByBillNoRadioButton}">
+                    <RadioButton x:Name="ByBillNoRadioButton" Content="برقم الفاتورة" Margin="5" IsChecked="{Binding ByBillNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <StackPanel Orientation="Horizontal" Margin="50,0,0,0" Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=ByBillNoRadioButton}">
                         <TextBlock Text="اسم العميل" Margin="0,1,5,5" VerticalAlignment="Center"/>
                         <ToggleButton x:Name="ByClientNameToggleButton" VerticalAlignment="Center" Margin="5" IsChecked="{Binding ByClientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"/>
                         <TextBlock Text="التاريخ" Margin="15,1,0,5" VerticalAlignment="Center"/>

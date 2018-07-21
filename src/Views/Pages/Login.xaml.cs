@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
-namespace Phony.Views.Pages.Users
+namespace Phony.Views.Pages
 {
     /// <summary>
     /// Interaction logic for Login.xaml

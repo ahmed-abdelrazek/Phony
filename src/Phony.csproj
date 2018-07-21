@@ -230,7 +230,7 @@
     <Compile Include="Views\Pages\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Pages\Users\Login.xaml.cs">
+    <Compile Include="Views\Pages\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CardsViewModel.cs" />
@@ -246,7 +246,7 @@
     <Compile Include="ViewModels\ShortagesViewModel.cs" />
     <Compile Include="ViewModels\StoresViewModel.cs" />
     <Compile Include="ViewModels\SuppliersViewModel.cs" />
-    <Compile Include="ViewModels\Users\LoginVM.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Views\Cards.xaml.cs">
       <DependentUpon>Cards.xaml</DependentUpon>
     </Compile>
@@ -302,7 +302,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Pages\Users\Login.xaml">
+    <Page Include="Views\Pages\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

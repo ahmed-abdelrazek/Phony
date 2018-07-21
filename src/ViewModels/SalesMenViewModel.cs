@@ -178,15 +178,15 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
-            Search = new DelegateCommand(DoSearch, CanSearch);
+            SalesManPay = new DelegateCommand(DoSalesManPayAsync, CanSalesManPay).ObservesProperty(() => DataGridSelectedSalesMan);
+            PaySalesMan = new DelegateCommand(DoPaySalesManAsync, CanPaySalesMan).ObservesProperty(() => DataGridSelectedSalesMan);
+            AddSalesMan = new DelegateCommand(DoAddSalesMan, CanAddSalesMan).ObservesProperty(() => Name);
+            EditSalesMan = new DelegateCommand(DoEditSalesMan, CanEditSalesMan).ObservesProperty(() => Name).ObservesProperty(() => SalesManId).ObservesProperty(() => DataGridSelectedSalesMan);
+            DeleteSalesMan = new DelegateCommand(DoDeleteSalesMan, CanDeleteSalesMan).ObservesProperty(() => DataGridSelectedSalesMan);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
             OpenAddSalesManFlyout = new DelegateCommand(DoOpenAddSalesManFlyout, CanOpenAddSalesManFlyout);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            SalesManPay = new DelegateCommand(DoSalesManPayAsync, CanSalesManPay);
-            PaySalesMan = new DelegateCommand(DoPaySalesManAsync, CanPaySalesMan);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedSalesMan);
             ReloadAllSalesMen = new DelegateCommand(DoReloadAllSalesMen, CanReloadAllSalesMen);
-            AddSalesMan = new DelegateCommand(DoAddSalesMan, CanAddSalesMan);
-            EditSalesMan = new DelegateCommand(DoEditSalesMan, CanEditSalesMan);
-            DeleteSalesMan = new DelegateCommand(DoDeleteSalesMan, CanDeleteSalesMan);
         }
 
         async void DebitCredit()

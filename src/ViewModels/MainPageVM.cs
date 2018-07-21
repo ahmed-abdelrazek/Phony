@@ -204,7 +204,7 @@ namespace Phony.ViewModels
                 {
                     await Task.Run(() =>
                     {
-                        ItemsCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Other);
+                        ItemsCount = db.GetCollection<Item>(Data.DBCollections.Items).Count(x => x.Group == ItemGroup.Other);
                     });
                     await Task.Run(() =>
                     {
@@ -212,35 +212,35 @@ namespace Phony.ViewModels
                     });
                     await Task.Run(() =>
                     {
-                        ShortagesCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.QTY == 0);
+                        ShortagesCount = db.GetCollection<Item>(Data.DBCollections.Items).Count(x => x.QTY == 0);
                     });
                     await Task.Run(() =>
                     {
-                        ServicesCount = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Count();
+                        ServicesCount = db.GetCollection<Service>(Data.DBCollections.Services).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SuppliersCount = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).Count();
+                        SuppliersCount = db.GetCollection<Supplier>(Data.DBCollections.Suppliers).Count();
                     });
                     await Task.Run(() =>
                     {
-                        CardsCount = db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Count(x => x.Group == ItemGroup.Card);
+                        CardsCount = db.GetCollection<Item>(Data.DBCollections.Items).Count(x => x.Group == ItemGroup.Card);
                     });
                     await Task.Run(() =>
                     {
-                        CompaniesCount = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Count();
+                        CompaniesCount = db.GetCollection<Company>(Data.DBCollections.Companies).Count();
                     });
                     await Task.Run(() =>
                     {
-                        SalesMenCount = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Count();
+                        SalesMenCount = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).Count();
                     });
                     await Task.Run(() =>
                     {
-                        NumbersCount = db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Count();
+                        NumbersCount = db.GetCollection<Note>(Data.DBCollections.Notes).Count();
                     });
                     await Task.Run(() =>
                     {
-                        UsersCount = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Count();
+                        UsersCount = db.GetCollection<User>(Data.DBCollections.Users).Count();
                     });
                 }
                 catch (Exception ex)
@@ -331,7 +331,7 @@ namespace Phony.ViewModels
             try
             {
                 File.Delete(Core.UserLocalAppFolderPath() + "..\\..\\session");
-                v.PageName = "Users/Login";
+                v.PageName = "Login";
             }
             catch (Exception ex)
             {

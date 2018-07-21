@@ -158,15 +158,15 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
+            AddBalance = new DelegateCommand(DoAddBalance, CanAddBalance).ObservesProperty(() => DataGridSelectedService);
+            AddService = new DelegateCommand(DoAddService, CanAddService).ObservesProperty(() => Name);
+            EditService = new DelegateCommand(DoEditService, CanEditService).ObservesProperty(() => Name).ObservesProperty(() => ServiceId).ObservesProperty(() => DataGridSelectedService);
+            DeleteService = new DelegateCommand(DoDeleteService, CanDeleteService).ObservesProperty(() => DataGridSelectedService);
             OpenAddServiceFlyout = new DelegateCommand(DoOpenAddServiceFlyout, CanOpenAddServiceFlyout);
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            DeleteService = new DelegateCommand(DoDeleteService, CanDeleteService);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedService);
             ReloadAllServices = new DelegateCommand(DoReloadAllServices, CanReloadAllServices);
-            Search = new DelegateCommand(DoSearch, CanSearch);
-            AddService = new DelegateCommand(DoAddService, CanAddService);
-            EditService = new DelegateCommand(DoEditService, CanEditService);
-            AddBalance = new DelegateCommand(DoAddBalance, CanAddBalance);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         async void DebitCredit()

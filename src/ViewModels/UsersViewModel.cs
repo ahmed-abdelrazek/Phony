@@ -19,6 +19,8 @@ namespace Phony.ViewModels
     {
         int _userId;
         string _name;
+        string _password1;
+        string _password2;
         byte _selectedGroup;
         string _phone;
         string _searchText;
@@ -41,9 +43,17 @@ namespace Phony.ViewModels
             set => SetProperty(ref _name, value);
         }
 
-        public SecureString Password1 { private get; set; }
+        public string Password1
+        {
+            get => _password1;
+            set => SetProperty(ref _password1, value);
+        }
 
-        public SecureString Password2 { private get; set; }
+        public string Password2
+        {
+            get => _password2;
+            set => SetProperty(ref _password2, value);
+        }
 
         public byte SelectedGroup
         {
@@ -127,18 +137,18 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
-            AddUser = new DelegateCommand(DoAddUser, CanAddUser);
-            EditUser = new DelegateCommand(DoEditUser, CanEditUser);
-            DeleteUser = new DelegateCommand(DoDeleteUser, CanDeleteUser);
+            AddUser = new DelegateCommand(DoAddUser, CanAddUser).ObservesProperty(() => Name).ObservesProperty(() => Password1).ObservesProperty(() => Password2);
+            EditUser = new DelegateCommand(DoEditUser, CanEditUser).ObservesProperty(() => Name).ObservesProperty(() => Password1).ObservesProperty(() => Password2).ObservesProperty(() => UserId).ObservesProperty(() => DataGridSelectedUser);
+            DeleteUser = new DelegateCommand(DoDeleteUser, CanDeleteUser).ObservesProperty(() => DataGridSelectedUser);
             OpenAddUserFlyout = new DelegateCommand(DoOpenAddUserFlyout, CanOpenAddUserFlyout);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedUser);
             ReloadAllUsers = new DelegateCommand(DoReloadAllUsers, CanReloadAllUsers);
-            Search = new DelegateCommand(DoSearch, CanSearch);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         private bool CanAddUser()
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
+            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2))
             {
                 return false;
             }
@@ -182,12 +192,9 @@ namespace Phony.ViewModels
 
         private bool CanEditUser()
         {
-            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
+            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2))
             {
-                //if (DataGridSelectedUser.Name != ViewModel.Users.CurrentUser.Name && ViewModel.Users.CurrentUser.Group != UserGroup.Manager)
-                //{
                 return false;
-                //}
             }
             return true;
         }

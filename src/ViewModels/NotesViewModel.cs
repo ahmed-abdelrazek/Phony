@@ -134,13 +134,13 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
-            AddNo = new DelegateCommand(DoAddNo, CanAddNo);
-            EditNo = new DelegateCommand(DoEditNo, CanEditNo);
-            DeleteNo = new DelegateCommand(DoDeleteNo, CanDeleteNo);
+            AddNo = new DelegateCommand(DoAddNo, CanAddNo).ObservesProperty(() => Name);
+            EditNo = new DelegateCommand(DoEditNo, CanEditNo).ObservesProperty(() => Name).ObservesProperty(() => NoId).ObservesProperty(() => DataGridSelectedNo);
+            DeleteNo = new DelegateCommand(DoDeleteNo, CanDeleteNo).ObservesProperty(() => DataGridSelectedNo);
             OpenAddNoFlyout = new DelegateCommand(DoOpenAddNoFlyout, CanOpenAddNoFlyout);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedNo);
             ReloadAllNos = new DelegateCommand(DoReloadAllNos, CanReloadAllNos);
-            Search = new DelegateCommand(DoSearch, CanSearch);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         private bool CanAddNo()

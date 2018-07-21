@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Phony.ViewModels.Users
+namespace Phony.ViewModels
 {
-    public class LoginVM : BindableBase
+    public class LoginViewModel : BindableBase
     {
         string _name;
         string _pass;
@@ -45,7 +45,7 @@ namespace Phony.ViewModels.Users
         Views.MainWindow Message = Application.Current.Windows.OfType<Views.MainWindow>().FirstOrDefault();
         DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
 
-        public LoginVM()
+        public LoginViewModel()
         {
             LoadCommands();
             ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;

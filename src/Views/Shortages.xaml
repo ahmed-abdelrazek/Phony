@@ -15,7 +15,7 @@
             <RowDefinition Height="50*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Margin="5" SelectedItem="{Binding DataGridSelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Items, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Margin="5">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="الاسم" FontSize="14"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding PurchasePrice}" Header="سعر الشراء" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>

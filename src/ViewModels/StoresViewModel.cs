@@ -151,7 +151,7 @@ namespace Phony.ViewModels
         public void LoadCommands()
         {
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
-            Edit = new DelegateCommand(DoEdit, CanEdit);
+            Edit = new DelegateCommand(DoEdit, CanEdit).ObservesProperty(() => Name);
         }
 
         private bool CanEdit()

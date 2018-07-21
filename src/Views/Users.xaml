@@ -7,6 +7,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:attach="clr-namespace:Phony.Helpers.AttachedCommandBehavior"
                       xmlns:vm="clr-namespace:Phony.ViewModels"
+                      xmlns:w="clr-namespace:Phony.Helpers"
                       mc:Ignorable="d"
         Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_multiple_outlineDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Controls:MetroWindow.DataContext>
@@ -39,8 +40,8 @@
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5"/>
-                    <PasswordBox Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5" PasswordChanged="p1_PasswordChanged"/>
-                    <PasswordBox Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5" PasswordChanged="p2_PasswordChanged"/>
+                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password1, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5"/>
+                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password2, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5"/>
                     <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding SelectedGroup}" SelectedValuePath="Id" DisplayMemberPath="Name" Style="{DynamicResource MaterialDesignComboBox}" materialDesign:HintAssist.Hint="صلاحيات" Margin="5"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الرقم" Margin="5"/>
                     <Controls:ToggleSwitch Content="نشط" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FlowDirection="LeftToRight" materialDesign:HintAssist.Hint="نشط" Margin="5"/>

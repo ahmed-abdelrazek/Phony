@@ -109,37 +109,69 @@ namespace Phony.ViewModels
         public decimal BillTotal
         {
             get => _billTotal;
-            set => SetProperty(ref _billTotal, value);
+            set => SetProperty(ref _billTotal, Math.Round(value, 2));
         }
 
         public decimal BillTotalAfterEachDiscount
         {
             get => _billTotalAfterEachDiscount;
-            set => SetProperty(ref _billTotalAfterEachDiscount, value);
+            set => SetProperty(ref _billTotalAfterEachDiscount, Math.Round(value, 2));
         }
 
         public decimal BillDiscount
         {
             get => _billDiscount;
-            set => SetProperty(ref _billDiscount, value);
+            set
+            {
+                if (value != _billDiscount)
+                {
+                    _billDiscount = value;
+                    if (_billDiscount > 0)
+                    {
+                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2);
+                    }
+                    else
+                    {
+                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount, 2);
+                    }
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public decimal BillTotalAfterDiscount
         {
             get => _billTotalAfterDiscount;
-            set => SetProperty(ref _billTotalAfterDiscount, value);
+            set => SetProperty(ref _billTotalAfterDiscount, Math.Round(value, 2));
         }
 
         public decimal BillClientPayment
         {
             get => _billClientPayment;
-            set => SetProperty(ref _billClientPayment, value);
+            set
+            {
+                if (value != _billClientPayment)
+                {
+                    _billClientPayment = value;
+                    if (_billClientPayment > BillTotalAfterDiscount)
+                    {
+                        BillClientPaymentChange = Math.Round(_billClientPayment - BillTotalAfterDiscount, 2);
+                        BillClientPaymentChangeVisible = Visibility.Visible;
+                    }
+                    else
+                    {
+                        BillClientPaymentChange = 0;
+                        BillClientPaymentChangeVisible = Visibility.Collapsed;
+                    }
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         public decimal BillClientPaymentChange
         {
             get => _billClientPaymentChange;
-            set => SetProperty(ref _billClientPaymentChange, value);
+            set => SetProperty(ref _billClientPaymentChange, Math.Round(value, 2));
         }
 
         public long CurrentBillNo
@@ -349,11 +381,11 @@ namespace Phony.ViewModels
         {
             Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
             AddBillMove = new DelegateCommand(DoAddBillMove, CanAddBillMove).ObservesProperty(() => SearchSelectedValue);
-            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill).ObservesProperty(() => ItemChildItemQTYSell);
-            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill).ObservesProperty(() => ServiceChildServiceCost);
+            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill).ObservesProperty(() => ItemChildItemQTYSell).ObservesProperty(() => BillTotal).ObservesProperty(() => BillTotalAfterEachDiscount).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillClientPaymentChange);
+            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill).ObservesProperty(() => ServiceChildServiceCost).ObservesProperty(() => BillTotal).ObservesProperty(() => BillTotalAfterEachDiscount).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillClientPaymentChange);
             DeleteBillMove = new DelegateCommand(DoDeleteBillMove, CanDeleteBillMove).ObservesProperty(() => DataGridSelectedBillItemMove).ObservesProperty(() => ByItem).ObservesProperty(() => DataGridSelectedBillServiceMove).ObservesProperty(() => ByService);
             RedoBill = new DelegateCommand(DoRedoBill, CanRedoBill);
-            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill).ObservesProperty(() => SelectedClient);
+            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill).ObservesProperty(() => SelectedClient).ObservesProperty(() => BillItemsMoves.Count).ObservesProperty(() => BillServicesMoves.Count);
             SaveAndShow = new DelegateCommand(DoSaveAndShow, CanSaveAndShow).ObservesProperty(() => SelectedClient);
         }
 
@@ -837,7 +869,12 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    CurrentBillNo = ++db.GetCollection<Client>(Data.DBCollections.Clients).FindAll().LastOrDefault().Id;
+                    var x = db.GetCollection<Bill>(Data.DBCollections.Bills).FindAll().LastOrDefault().Id;
+                    if (x == 1)
+                    {
+                        x = 0;
+                    }
+                    CurrentBillNo = ++x;
                 }
             }
             catch (Exception ex)

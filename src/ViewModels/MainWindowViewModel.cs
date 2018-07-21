@@ -19,7 +19,7 @@ namespace Phony.ViewModels
             LoadCommands();
             if (string.IsNullOrWhiteSpace(PageName))
             {
-                PageName = "Users/Login";
+                PageName = "Login";
             }
             NavigateToPage(PageName);
         }

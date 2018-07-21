@@ -12,21 +12,5 @@ namespace Phony.Views
         {
             InitializeComponent();
         }
-
-        private void p1_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (this.DataContext != null)
-            {
-                ((ViewModels.UsersViewModel)this.DataContext).Password1 = ((PasswordBox)sender).SecurePassword;
-            }
-        }
-
-        private void p2_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (this.DataContext != null)
-            {
-                ((ViewModels.UsersViewModel)this.DataContext).Password2 = ((PasswordBox)sender).SecurePassword;
-            }
-        }
     }
 }

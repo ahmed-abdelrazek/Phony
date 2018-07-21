@@ -48,12 +48,12 @@
                         <TextBlock Text="اختار مكان قاعده البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox x:Name="DbFullPathTextBox" materialDesign:HintAssist.Hint="المسار الكامل" Width="250" FlowDirection="LeftToRight"/>
-                            <Button x:Name="SelectDbFolder" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}">
+                            <Button x:Name="SelectDbFolder" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
                                 <materialDesign:PackIcon Kind="Folder"/>
                             </Button>
                         </StackPanel>
-                        <TextBlock Text="مفتاح التشفير" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}"/>
-                        <TextBox x:Name="EncryptionkeyTextBox" materialDesign:HintAssist.Hint="Password" Visibility="{Binding IsChecked, Converter={StaticResource TrueToCollapsed}, ElementName=ClientWinAuthRadioButton}" FlowDirection="LeftToRight"/>
+                        <TextBlock Text="مفتاح التشفير" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
+                        <TextBox x:Name="EncryptionkeyTextBox" materialDesign:HintAssist.Hint="Password" FlowDirection="LeftToRight"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

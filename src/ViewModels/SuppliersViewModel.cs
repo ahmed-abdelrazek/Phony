@@ -174,16 +174,16 @@ namespace Phony.ViewModels
 
         public void LoadCommands()
         {
+            SupplierPay = new DelegateCommand(DoSupplierPayAsync, CanSupplierPay).ObservesProperty(() => DataGridSelectedSupplier);
+            PaySupplier = new DelegateCommand(DoPaySupplierAsync, CanPaySupplier).ObservesProperty(() => DataGridSelectedSupplier);
+            AddSupplier = new DelegateCommand(DoAddSupplier, CanAddSupplier).ObservesProperty(() => Name).ObservesProperty(() => SelectedSalesMan);
+            EditSupplier = new DelegateCommand(DoEditSupplier, CanEditSupplier).ObservesProperty(() => Name).ObservesProperty(() => SupplierId).ObservesProperty(() => SelectedSalesMan).ObservesProperty(() => DataGridSelectedSupplier);
+            DeleteSupplier = new DelegateCommand(DoDeleteSupplier, CanDeleteSupplier).ObservesProperty(() => DataGridSelectedSupplier);
             OpenAddSupplierFlyout = new DelegateCommand(DoOpenAddSupplierFlyout, CanOpenAddSupplierFlyout);
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
-            FillUI = new DelegateCommand(DoFillUI, CanFillUI);
-            DeleteSupplier = new DelegateCommand(DoDeleteSupplier, CanDeleteSupplier);
+            FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedSupplier);
             ReloadAllSuppliers = new DelegateCommand(DoReloadAllSuppliers, CanReloadAllSuppliers);
-            Search = new DelegateCommand(DoSearch, CanSearch);
-            AddSupplier = new DelegateCommand(DoAddSupplier, CanAddSupplier);
-            EditSupplier = new DelegateCommand(DoEditSupplier, CanEditSupplier);
-            SupplierPay = new DelegateCommand(DoSupplierPayAsync, CanSupplierPay);
-            PaySupplier = new DelegateCommand(DoPaySupplierAsync, CanPaySupplier);
+            Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
         }
 
         async void DebitCredit()
