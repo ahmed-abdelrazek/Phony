@@ -295,8 +295,6 @@ namespace Phony.ViewModel
         public ICommand EditSalesMan { get; set; }
         public ICommand DeleteSalesMan { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         SalesMen SalesMenMessage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
 
         public SalesManVM()
@@ -444,13 +442,13 @@ namespace Phony.ViewModel
                         var s = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
                         s.Balance += SalesManpaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         var sm = new SalesManMove
                         {
                             SalesManId = DataGridSelectedSalesMan.Id,
                             Credit = SalesManpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -498,13 +496,13 @@ namespace Phony.ViewModel
                             var s = db.SalesMen.Get(DataGridSelectedSalesMan.Id);
                             s.Balance -= SalesManpaymentamount;
                             s.EditDate = DateTime.Now;
-                            s.EditById = CurrentUser.Id;
+                            s.EditById = Core.ReadUserSession().Id;
                             var sm = new SalesManMove
                             {
                                 SalesManId = DataGridSelectedSalesMan.Id,
                                 Debit = SalesManpaymentamount,
                                 CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id,
+                                CreatedById = Core.ReadUserSession().Id,
                                 EditDate = null,
                                 EditById = null
                             };
@@ -515,7 +513,9 @@ namespace Phony.ViewModel
                                 Credit = SalesManpaymentamount,
                                 Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
                                 CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
+                                CreatedById = Core.ReadUserSession().Id,
+                                EditDate = null,
+                                EditById = null
                             });
                             db.Complete();
                             await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
@@ -572,7 +572,7 @@ namespace Phony.ViewModel
                     Phone = Phone,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };
@@ -605,7 +605,7 @@ namespace Phony.ViewModel
                 s.Phone = Phone;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
                 SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;

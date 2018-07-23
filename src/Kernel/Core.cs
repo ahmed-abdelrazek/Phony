@@ -1,4 +1,6 @@
 ﻿using Exceptionless;
+using Exceptionless.Json;
+using Phony.Model;
 using Phony.Persistence;
 using System;
 using System.Collections.Generic;
@@ -45,6 +47,16 @@ namespace Phony.Kernel
             {
                 await SaveExceptionAsync(e);
             }
+        }
+
+        public static void WriteUserSession(User user)
+        {
+            File.WriteAllText(UserLocalAppFolderPath() + "..\\..\\session", Encryption.EncryptText(JsonConvert.SerializeObject(user)));
+        }
+
+        public static User ReadUserSession()
+        {
+            return JsonConvert.DeserializeObject<User>(Encryption.DecryptText(File.ReadAllText(UserLocalAppFolderPath() + "..\\..\\session")));
         }
 
         /// <summary> 

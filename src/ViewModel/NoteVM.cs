@@ -209,8 +209,6 @@ namespace Phony.ViewModel
         public ICommand AddNo { get; set; }
         public ICommand EditNo { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
 
         public NoteVM()
@@ -253,7 +251,7 @@ namespace Phony.ViewModel
                 n.Phone = Phone;
                 n.Notes = Notes;
                 n.EditDate = DateTime.Now;
-                n.EditById = CurrentUser.Id;
+                n.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
                 NoId = 0;
@@ -282,7 +280,7 @@ namespace Phony.ViewModel
                     Group = NoteGroup.Numbers,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };

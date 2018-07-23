@@ -255,8 +255,6 @@ namespace Phony.ViewModel
         public ICommand CompanyPay { get; set; }
         public ICommand PayCompany { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
         public CompanyVM()
@@ -332,14 +330,14 @@ namespace Phony.ViewModel
                         var s = db.Companies.Get(DataGridSelectedCompany.Id);
                         s.Balance += compantpaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         //the company will give us money in form of balance or something
                         var sm = new CompanyMove
                         {
                             CompanyId = DataGridSelectedCompany.Id,
                             Credit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -385,14 +383,14 @@ namespace Phony.ViewModel
                         var s = db.Companies.Get(DataGridSelectedCompany.Id);
                         s.Balance -= compantpaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         //Company gets money from us
                         var sm = new CompanyMove
                         {
                             CompanyId = DataGridSelectedCompany.Id,
                             Debit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -404,7 +402,9 @@ namespace Phony.ViewModel
                             Credit = compantpaymentamount,
                             Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            CreatedById = Core.ReadUserSession().Id,
+                            EditDate = null,
+                            EditById = null
                         });
                         db.Complete();
                         await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
@@ -443,7 +443,7 @@ namespace Phony.ViewModel
                 c.Image = Image;
                 c.Notes = Notes;
                 c.EditDate = DateTime.Now;
-                c.EditById = CurrentUser.Id;
+                c.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
@@ -476,7 +476,7 @@ namespace Phony.ViewModel
                     Image = Image,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Phony_TargetDir=$(var.Phony.TargetDir)?>
-	<Product Id="*" Name="Phony" Language="1033" Version="1.3.0.0" Manufacturer="ShababConquer" UpgradeCode="edfe0001-4a7e-4aeb-a838-a8ec1ab6d0de">
+	<Product Id="*" Name="Phony" Language="1033" Version="1.3.1.0" Manufacturer="ShababConquer" UpgradeCode="0AFFCB47-42A5-4A25-B5D8-12972684287C">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 		<?if $(var.Platform) = x64 ?>
 		<?define Win64 = "yes" ?>
 		<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-		<?else ?>
+		<?else?>
 		<?define Win64 = "no" ?>
 		<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-		<?endif ?>
+		<?endif?>
 		<?define ProductName = "Phony" ?>
 		<?define Manufacturer = "ShababConquer" ?>
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -38,7 +38,6 @@
 		</Directory>
 	</Fragment>
 
-
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLAppFOLDER">
 			<Component Id="Phony.exe" Guid="6c8862c9-027a-4b36-acca-6d6aee97700d">
@@ -47,9 +46,7 @@
 			<Component Id="Phony.exe.config" Guid="0b9bfe21-6b9d-42cd-9590-ea489f84bff6">
 				<File Id="Phony.exe.config" Name="Phony.exe.config" Source="$(var.Phony_TargetDir)Phony.exe.config" />
 			</Component>
-			<Component Id="AttachedCommandBehavior.dll" Guid="293406b1-3482-4ba3-a32e-d25dde0d5161">
-				<File Id="AttachedCommandBehavior.dll" Name="AttachedCommandBehavior.dll" Source="$(var.Phony_TargetDir)AttachedCommandBehavior.dll" />
-			</Component>
+			
 			<Component Id="BarcodeLib.dll" Guid="ac404896-94b4-44f1-bc3b-ee62348ae4cd">
 				<File Id="BarcodeLib.dll" Name="BarcodeLib.dll" Source="$(var.Phony_TargetDir)BarcodeLib.dll" />
 			</Component>
@@ -178,9 +175,9 @@
 	<Fragment>
 		<UI Id="MyCustomDlgSequence">
 			<TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="10" />
-			<TextStyle Id="WixUI_Font_Big"    FaceName="Tahoma" Size="12" />
+			<TextStyle Id="WixUI_Font_Big" FaceName="Tahoma" Size="12" />
 			<TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="14" />
-			<TextStyle Id="WixUI_Font_Title"  FaceName="Tahoma" Size="12" Bold="yes" />
+			<TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="12" Bold="yes" />
 
 			<Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
 			<Property Id="WixUI_Mode" Value="InstallDir" />

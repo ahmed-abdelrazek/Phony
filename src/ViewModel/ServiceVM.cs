@@ -254,8 +254,6 @@ namespace Phony.ViewModel
         public ICommand EditService { get; set; }
         public ICommand AddBalance { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Services ServicesMessage = Application.Current.Windows.OfType<Services>().FirstOrDefault();
 
         public ServiceVM()
@@ -321,13 +319,13 @@ namespace Phony.ViewModel
                         var s = db.Services.Get(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         var sm = new ServiceMove
                         {
                             ServiceId = DataGridSelectedService.Id,
                             Debit = servicepaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -369,7 +367,7 @@ namespace Phony.ViewModel
                 s.Image = Image;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
                 Services[Services.IndexOf(DataGridSelectedService)] = s;
@@ -402,7 +400,7 @@ namespace Phony.ViewModel
                     Image = Image,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };

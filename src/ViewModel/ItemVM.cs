@@ -492,8 +492,6 @@ namespace Phony.ViewModel
         public ICommand AddItem { get; set; }
         public ICommand EditItem { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Items ItemsMessage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
 
         public ItemVM()
@@ -555,7 +553,7 @@ namespace Phony.ViewModel
                 i.SupplierId = SelectedSupplierValue;
                 i.Notes = Notes;
                 i.EditDate = DateTime.Now;
-                i.EditById = CurrentUser.Id;
+                i.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 Items[Items.IndexOf(DataGridSelectedItem)] = i;
                 ItemId = 0;
@@ -593,7 +591,7 @@ namespace Phony.ViewModel
                     SupplierId = SelectedSupplierValue,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };

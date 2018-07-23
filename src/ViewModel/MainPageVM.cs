@@ -8,6 +8,7 @@ using Phony.View;
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -251,8 +252,6 @@ namespace Phony.ViewModel
         public ICommand SignOut { get; set; }
         public ICommand SaveUser { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         MainWindowVM v = new MainWindowVM();
 
         MainWindow Message = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
@@ -267,7 +266,7 @@ namespace Phony.ViewModel
             Timer.Start();
             using (var db = new UnitOfWork(new PhonyDbContext()))
             {
-                var u = db.Users.Get(CurrentUser.Id);
+                var u = db.Users.Get(Core.ReadUserSession().Id);
                 UserName = u.Name;
                 Phone = u.Phone;
                 Group = Enumerations.GetEnumDescription((UserGroup)u.Group);
@@ -364,7 +363,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenBarcodesWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -431,10 +430,7 @@ namespace Phony.ViewModel
 
         private void DoSignOut(object obj)
         {
-            CurrentUser.Id = 0;
-            CurrentUser.Name = null;
-            CurrentUser.SecurePassword = null;
-            CurrentUser.Group = UserGroup.None;
+            File.Delete(Core.UserLocalAppFolderPath() + "..\\..\\session");
             v.PageName = "Users/Login";
         }
 
@@ -476,7 +472,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenUsersWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -516,7 +512,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenStoreInfoWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -538,7 +534,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenSalesMenWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -560,7 +556,7 @@ namespace Phony.ViewModel
 
         private bool CanRestoreBackup(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -710,7 +706,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenCompaniesWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -735,7 +731,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenCardsWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -760,7 +756,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenSuppliersWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }
@@ -785,7 +781,7 @@ namespace Phony.ViewModel
 
         private bool CanOpenServicesWindow(object obj)
         {
-            if (CurrentUser.Group == UserGroup.Manager)
+            if (Core.ReadUserSession().Group == UserGroup.Manager)
             {
                 return true;
             }

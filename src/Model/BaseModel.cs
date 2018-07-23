@@ -5,15 +5,6 @@ namespace Phony.Model
 {
     public class BaseModel : CommonBase
     {
-
-        ViewModel.Users.LoginVM CurrentUser = new ViewModel.Users.LoginVM();
-
-        public BaseModel()
-        {
-            EditDate = DateTime.Now;
-            EditById = CurrentUser.Id;
-        }
-
         public long Id { get; set; }
 
         public string Notes { get; set; }

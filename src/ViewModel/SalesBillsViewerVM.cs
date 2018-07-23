@@ -238,8 +238,6 @@ namespace Phony.ViewModel
         public ICommand Show { get; set; }
         public ICommand SaveReturned { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         public SalesBillsViewerVM()
         {
             ByBillNo = true;
@@ -372,7 +370,7 @@ namespace Phony.ViewModel
                 if (!b.IsReturned)
                 {
                     b.IsReturned = IsReturned;
-                    b.EditById = CurrentUser.Id;
+                    b.EditById = Core.ReadUserSession().Id;
                     b.EditDate = DateTime.Now;
                     if (b.TotalPayed < b.TotalAfterDiscounts)
                     {

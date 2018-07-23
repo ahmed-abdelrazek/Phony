@@ -22,6 +22,8 @@ namespace Phony.ViewModel
         string _phone;
         string _searchText;
         string _notes;
+        string _password1;
+        string _password2;
         bool _isActive;
         bool _isAddUserFlyoutOpen;
         User _dataGridSelectedUser;
@@ -54,9 +56,31 @@ namespace Phony.ViewModel
             }
         }
 
-        public SecureString Password1 { private get; set; }
+        public string Password1
+        {
+            get => _password1;
+            set
+            {
+                if (value != _password1)
+                {
+                    _password1 = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
-        public SecureString Password2 { private get; set; }
+        public string Password2
+        {
+            get => _password2;
+            set
+            {
+                if (value != _password2)
+                {
+                    _password2 = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         public byte SelectedGroup
         {
@@ -207,7 +231,7 @@ namespace Phony.ViewModel
 
         private bool CanEditUser(object obj)
         {
-            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null ||string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
+            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(new NetworkCredential("", Password1).Password) || string.IsNullOrWhiteSpace(new NetworkCredential("", Password2).Password))
             {
                 //if (DataGridSelectedUser.Name != ViewModel.Users.CurrentUser.Name && ViewModel.Users.CurrentUser.Group != UserGroup.Manager)
                 //{
@@ -219,13 +243,13 @@ namespace Phony.ViewModel
 
         private void DoEditUser(object obj)
         {
-            if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
+            if (Password1 == Password2)
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
                     var u = db.Users.Get(DataGridSelectedUser.Id);
                     u.Name = Name;
-                    u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
+                    u.Pass = SecurePasswordHasher.Hash(Password1);
                     u.Group = (UserGroup)SelectedGroup;
                     u.Phone = Phone;
                     u.Notes = Notes;
@@ -258,11 +282,10 @@ namespace Phony.ViewModel
             {
                 using (var db = new UnitOfWork(new PhonyDbContext()))
                 {
-
                     var u = new User
                     {
                         Name = Name,
-                        Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password),
+                        Pass = SecurePasswordHasher.Hash(Password1),
                         Group = (UserGroup)SelectedGroup,
                         Phone = Phone,
                         Notes = Notes,
@@ -273,7 +296,6 @@ namespace Phony.ViewModel
                     Users.Add(u);
                     Message.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
                 }
-
             }
             else
             {

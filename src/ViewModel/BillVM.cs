@@ -633,8 +633,6 @@ namespace Phony.ViewModel
         public ICommand SaveBill { get; set; }
         public ICommand SaveAndShow { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Bills Message = Application.Current.Windows.OfType<Bills>().FirstOrDefault();
 
         public BillVM()
@@ -702,7 +700,7 @@ namespace Phony.ViewModel
                             TotalPayed = BillClientPayment,
                             Notes = billNote,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditById = null,
                             EditDate = null
                         };
@@ -734,7 +732,9 @@ namespace Phony.ViewModel
                             Credit = BillClientPaymentChange,
                             Notes = $"فاتورة رقم {bi.Id}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            CreatedById = Core.ReadUserSession().Id,
+                            EditById = null,
+                            EditDate = null
                         });
                         await db.SaveChangesAsync();
                         dbContextTransaction.Commit();
@@ -909,7 +909,7 @@ namespace Phony.ViewModel
                     ServicePayment = ServiceChildServiceCost,
                     Discount = ChildDiscount,
                     Notes = ServiceChildNotes,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     CreateDate = DateTime.Now,
                     EditById = null,
                     EditDate = null
@@ -963,7 +963,7 @@ namespace Phony.ViewModel
                     ItemPrice = SelectedItem.RetailPrice,
                     Discount = ChildDiscount,
                     Notes = ItemChildNotes,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     CreateDate = DateTime.Now,
                     EditById = null,
                     EditDate = null

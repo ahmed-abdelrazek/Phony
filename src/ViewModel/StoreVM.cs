@@ -220,8 +220,6 @@ namespace Phony.ViewModel
         public ICommand SelectImage { get; set; }
         public ICommand Edit { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
 
         public StoreVM()
@@ -284,7 +282,7 @@ namespace Phony.ViewModel
                 store.Site = Site;
                 store.Notes = Notes;
                 store.EditDate = DateTime.Now;
-                store.EditById = CurrentUser.Id;
+                store.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
             }

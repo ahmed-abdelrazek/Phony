@@ -15,23 +15,9 @@ namespace Phony.ViewModel.Users
 {
     public class LoginVM : CommonBase
     {
-        static int _id;
-        static string _name;
-        static UserGroup _group;
+        string _name;
+        string _pass;
         bool _isLogging;
-
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                if (value != _id)
-                {
-                    _id = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
 
         public string Name
         {
@@ -46,14 +32,14 @@ namespace Phony.ViewModel.Users
             }
         }
 
-        public UserGroup Group
+        public string Pass
         {
-            get => _group;
+            get => _pass;
             set
             {
-                if (value != _group)
+                if (value != _pass)
                 {
-                    _group = value;
+                    _pass = value;
                     RaisePropertyChanged();
                 }
             }
@@ -71,8 +57,6 @@ namespace Phony.ViewModel.Users
                 }
             }
         }
-
-        public SecureString SecurePassword { private get; set; }
 
         public ICommand LogIn { get; set; }
 
@@ -119,7 +103,7 @@ namespace Phony.ViewModel.Users
                         Model.User u = null;
                         await Task.Run(() =>
                         {
-                            u = db.Users.GetLoginCredentials(Name, new NetworkCredential("", SecurePassword).Password);
+                            u = db.Users.GetLoginCredentials(Name, Pass);
                         });
                         if (u == null)
                         {
@@ -127,9 +111,7 @@ namespace Phony.ViewModel.Users
                         }
                         else
                         {
-                            Id = u.Id;
-                            Name = u.Name;
-                            Group = u.Group;
+                            Core.WriteUserSession(u);
                             v.PageName = "Main";
                         }
                     }

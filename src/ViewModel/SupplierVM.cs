@@ -283,8 +283,6 @@ namespace Phony.ViewModel
         public ICommand SupplierPay { get; set; }
         public ICommand PaySupplier { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Suppliers SuppliersMessage = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
 
         public SupplierVM()
@@ -361,13 +359,13 @@ namespace Phony.ViewModel
                         var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
                         s.Balance += supplierpaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         var sm = new SupplierMove
                         {
                             SupplierId = DataGridSelectedSupplier.Id,
                             Credit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -413,13 +411,13 @@ namespace Phony.ViewModel
                         var s = db.Suppliers.Get(DataGridSelectedSupplier.Id);
                         s.Balance -= supplierpaymentamount;
                         s.EditDate = DateTime.Now;
-                        s.EditById = CurrentUser.Id;
+                        s.EditById = Core.ReadUserSession().Id;
                         var sm = new SupplierMove
                         {
                             SupplierId = DataGridSelectedSupplier.Id,
                             Debit = supplierpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -430,7 +428,9 @@ namespace Phony.ViewModel
                             Credit = supplierpaymentamount,
                             Notes = $"دفع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            CreatedById = Core.ReadUserSession().Id,
+                            EditDate = null,
+                            EditById = null
                         });
                         db.Complete();
                         await SuppliersMessage.ShowMessageAsync("تمت العملية", $"تم دفع للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
@@ -470,7 +470,7 @@ namespace Phony.ViewModel
                 s.SalesManId = SelectedSalesMan;
                 s.Notes = Notes;
                 s.EditDate = DateTime.Now;
-                s.EditById = CurrentUser.Id;
+                s.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 SuppliersMessage.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
                 Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
@@ -504,7 +504,7 @@ namespace Phony.ViewModel
                     SalesManId = SelectedSalesMan,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };

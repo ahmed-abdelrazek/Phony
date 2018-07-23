@@ -30,7 +30,7 @@
     <ProductName>Phony</ProductName>
     <PublisherName>ShababConquer</PublisherName>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.3.0.0</ApplicationVersion>
+    <ApplicationVersion>1.3.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -65,9 +65,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AttachedCommandBehavior, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AttachedCommandBehavior.2.0.0.0\lib\net35\AttachedCommandBehavior.dll</HintPath>
-    </Reference>
     <Reference Include="BarcodeLib">
       <HintPath>..\Libraries\BarcodeLib.dll</HintPath>
     </Reference>
@@ -167,6 +164,14 @@
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ImageConverterExtensions.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\BehaviorBinding.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehavior.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehaviorBinding.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehaviorCollection.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\EventHandlerGenerator.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\ExecutionStrategy.cs" />
+    <Compile Include="Helpers\AttachedCommandBehavior\SimpleCommand.cs" />
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Kernel\Repositories\IBillItemMoveRepo.cs" />
     <Compile Include="Kernel\Repositories\IStoreRepo.cs" />
     <Compile Include="Kernel\Repositories\ITreasuryMoveRepo.cs" />

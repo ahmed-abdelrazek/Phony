@@ -295,8 +295,6 @@ namespace Phony.ViewModel
         public ICommand EditClient { get; set; }
         public ICommand DeleteClient { get; set; }
 
-        Users.LoginVM CurrentUser = new Users.LoginVM();
-
         Clients ClientsMessage = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
 
         public ClientVM()
@@ -443,13 +441,13 @@ namespace Phony.ViewModel
                         var c = db.Clients.Get(DataGridSelectedClient.Id);
                         c.Balance -= clientpaymentamount;
                         c.EditDate = DateTime.Now;
-                        c.EditById = CurrentUser.Id;
+                        c.EditById = Core.ReadUserSession().Id;
                         var cm = new ClientMove
                         {
                             ClientId = DataGridSelectedClient.Id,
                             Credit = clientpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -462,7 +460,9 @@ namespace Phony.ViewModel
                                 Debit = clientpaymentamount,
                                 Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                                 CreateDate = DateTime.Now,
-                                CreatedById = CurrentUser.Id
+                                CreatedById = Core.ReadUserSession().Id,
+                                EditDate = null,
+                                EditById = null
                             });
                         }
                         db.Complete();
@@ -506,13 +506,13 @@ namespace Phony.ViewModel
                         var c = db.Clients.Get(DataGridSelectedClient.Id);
                         c.Balance += clientpaymentamount;
                         c.EditDate = DateTime.Now;
-                        c.EditById = CurrentUser.Id;
+                        c.EditById = Core.ReadUserSession().Id;
                         var cm = new ClientMove
                         {
                             ClientId = DataGridSelectedClient.Id,
                             Debit = clientpaymentamount,
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id,
+                            CreatedById = Core.ReadUserSession().Id,
                             EditDate = null,
                             EditById = null
                         };
@@ -523,7 +523,9 @@ namespace Phony.ViewModel
                             Credit = clientpaymentamount,
                             Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                             CreateDate = DateTime.Now,
-                            CreatedById = CurrentUser.Id
+                            CreatedById = Core.ReadUserSession().Id,
+                            EditDate = null,
+                            EditById = null
                         });
                         db.Complete();
                         await ClientsMessage.ShowMessageAsync("تمت العملية", $"تم دفع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
@@ -579,7 +581,7 @@ namespace Phony.ViewModel
                     Phone = Phone,
                     Notes = Notes,
                     CreateDate = DateTime.Now,
-                    CreatedById = CurrentUser.Id,
+                    CreatedById = Core.ReadUserSession().Id,
                     EditDate = null,
                     EditById = null
                 };
@@ -612,7 +614,7 @@ namespace Phony.ViewModel
                 c.Phone = Phone;
                 c.Notes = Notes;
                 c.EditDate = DateTime.Now;
-                c.EditById = CurrentUser.Id;
+                c.EditById = Core.ReadUserSession().Id;
                 db.Complete();
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
                 Clients[Clients.IndexOf(DataGridSelectedClient)] = c;

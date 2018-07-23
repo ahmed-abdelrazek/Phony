@@ -7,10 +7,11 @@
       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:vm="clr-namespace:Phony.ViewModel.Users"
+      xmlns:w="clr-namespace:Phony.Helpers"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
       Title="Login" FlowDirection="RightToLeft">
-    
+
     <Grid x:Name="GridDX">
         <Grid.DataContext>
             <vm:LoginVM/>
@@ -22,7 +23,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="{Binding ElementName=TextBoxFirstPanel, Path=Margin}">
                 <materialDesign:PackIcon Margin="5" Height="24" Width="24" Foreground="{Binding ElementName=PasswordTextBox, Path=BorderBrush}" Kind="keyvariant" />
-                <PasswordBox x:Name="PasswordTextBox" MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور" PasswordChanged="PasswordTextBox_PasswordChanged"/>
+                <PasswordBox x:Name="PasswordTextBox" w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Pass, Mode=TwoWay}" MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Command="{Binding LogIn}" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
