@@ -3,12 +3,14 @@
                       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:UserControls="clr-namespace:Phony.Controls"
+                      xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:c="clr-namespace:Phony.Converters"
+                      xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
                       mc:Ignorable="d"
-        Title="إعدادت" SizeToContent="Height" Width="330" WindowStartupLocation="CenterScreen" Icon="{DynamicResource settingsDrawingImage}" ResizeMode="NoResize" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
+        Title="إعدادت" SizeToContent="Height" WindowStartupLocation="CenterScreen" Icon="{DynamicResource settingsDrawingImage}" FlowDirection="RightToLeft" Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.Resources>
         <ResourceDictionary>
             <c:BooleanToVisibilityCollapsedConvertor x:Key="TrueToCollapsed"/>
@@ -16,59 +18,71 @@
         </ResourceDictionary>
     </Controls:MetroWindow.Resources>
     <StackPanel>
-        <TabControl x:Name="SettingsTabControl" Controls:TabControlHelper.IsUnderlined="True">
-            <TabItem Header="البرنامج">
-                <StackPanel>
-                    <Label Content="اختار الثيم" HorizontalAlignment="Left" Margin="5 5 5 0" VerticalAlignment="Top" FontSize="14"/>
-                    <ComboBox x:Name="ThemeS" HorizontalAlignment="Left" Margin="5 0 5 5" Grid.Row="1" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">
-                        <ListBoxItem Content="ابيض"/>
-                        <ListBoxItem Content="اسود"/>
-                    </ComboBox>
-                    <Label Content="اختار اللون الاساسى" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
-                    <ComboBox x:Name="ThemePC" SelectedValuePath="Name" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300"/>
-                    <Label Content="اختار اللون الفرعى" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
-                    <ComboBox x:Name="ThemeAC" SelectedValuePath="Name" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300"/>
-                    <Label Content="اختار اللغه" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
-                    <ComboBox x:Name="LangCB" SelectedIndex="0" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">
-                        <ComboBoxItem Content="العربية"/>
-                    </ComboBox>
-                    <Label Content="اختار حجم ورقه فاتورة المبيعات" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
-                    <ComboBox x:Name="BillReportPaperSizeCb" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MaxWidth="400" MinWidth="300">
-                        <ComboBoxItem Content="A4"/>
-                        <ComboBoxItem Content="A8"/>
-                    </ComboBox>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="قاعدة البيانات">
-                <StackPanel x:Name="ClientConnectionPanel" Margin="5">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="UseLocalDefaultCheckBox" Content="استخدم الاعدادات الافتراضية" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsChecked="True"/>
-                        <materialDesign:PackIcon Kind="Information" Margin="5" Foreground="{DynamicResource AccentBaseColorBrush}"/>
-                    </StackPanel>
-                    <StackPanel IsEnabled="{Binding IsChecked, Converter={StaticResource InverseBool}, ElementName=UseLocalDefaultCheckBox}">
-                        <TextBlock Text="اختار مكان قاعده البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="DbFullPathTextBox" materialDesign:HintAssist.Hint="المسار الكامل" Width="250" FlowDirection="LeftToRight"/>
-                            <Button x:Name="SelectDbFolder" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
-                                <materialDesign:PackIcon Kind="Folder"/>
-                            </Button>
+        <dockablz:Layout>
+            <dragablz:TabablzControl BorderThickness="0" x:Name="SettingsTabControl" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
+                <TabItem Header="البرنامج">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="80"/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="اختار اللغه" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
+                            <ComboBox x:Name="LangCB" Grid.Row="1" SelectedIndex="0" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MinWidth="250" MaxWidth="350">
+                                <ComboBoxItem Content="العربية"/>
+                            </ComboBox>
+                            <Label Content="اختار حجم ورقه فاتورة المبيعات" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="5 5 5 0"/>
+                            <ComboBox x:Name="BillReportPaperSizeCb" Grid.Row="3" HorizontalAlignment="Left" Margin="5 0 5 5" VerticalAlignment="Top" MinWidth="250" MaxWidth="350">
+                                <ComboBoxItem Content="A4"/>
+                                <ComboBoxItem Content="A8"/>
+                            </ComboBox>
+                        </Grid>
+                        <StackPanel x:Name="ClientConnectionPanel" Grid.Column="1" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox x:Name="UseLocalDefaultCheckBox" Content="استخدم الاعدادات الافتراضية" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsChecked="True"/>
+                                <materialDesign:PackIcon Kind="Information" Margin="5" Foreground="{DynamicResource AccentBaseColorBrush}"/>
+                            </StackPanel>
+                            <StackPanel IsEnabled="{Binding IsChecked, Converter={StaticResource InverseBool}, ElementName=UseLocalDefaultCheckBox}">
+                                <TextBlock Text="اختار مكان قاعده البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="60"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="DbFullPathTextBox" materialDesign:HintAssist.Hint="المسار الكامل" Height="45" MinWidth="250" FlowDirection="LeftToRight" HorizontalScrollBarVisibility="Auto"/>
+                                    <Button x:Name="SelectDbFolder" Grid.Column="1" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
+                                        <materialDesign:PackIcon Kind="Folder"/>
+                                    </Button>
+                                </Grid>
+                                <TextBlock Text="مفتاح التشفير" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
+                                <TextBox x:Name="EncryptionkeyTextBox" MinWidth="250" materialDesign:HintAssist.Hint="Password" FlowDirection="LeftToRight"/>
+                            </StackPanel>
                         </StackPanel>
-                        <TextBlock Text="مفتاح التشفير" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
-                        <TextBox x:Name="EncryptionkeyTextBox" materialDesign:HintAssist.Hint="Password" FlowDirection="LeftToRight"/>
-                    </StackPanel>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="الشكل">
-                <UserControls:PaletteSelector/>
-            </TabItem>
-        </TabControl>
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
-            <Button x:Name="SaveB" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="10" Grid.Row="4" Height="48" Click="SaveB_Click">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="حفظ " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
-                    <materialDesign:PackIcon VerticalAlignment="Center" Height="32" Width="32" Kind="ContentSave" />
-                </StackPanel>
-            </Button>
-        </StackPanel>
+                        <Button x:Name="SaveB" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="10" Height="48" Click="SaveB_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="حفظ " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
+                                <materialDesign:PackIcon VerticalAlignment="Center" Height="32" Width="32" Kind="ContentSave" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="المظهر">
+                    <UserControls:PaletteSelector/>
+                </TabItem>
+                <TabItem Header="نقل">
+                    <UserControls:MSSQLMovement/>
+                </TabItem>
+            </dragablz:TabablzControl>
+        </dockablz:Layout>
     </StackPanel>
 </Controls:MetroWindow>

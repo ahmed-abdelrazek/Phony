@@ -155,6 +155,9 @@
     <Compile Include="Controls\ColorPicker.xaml.cs">
       <DependentUpon>ColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MSSQLMovement.xaml.cs">
+      <DependentUpon>MSSQLMovement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PaletteSelector.xaml.cs">
       <DependentUpon>PaletteSelector.xaml</DependentUpon>
     </Compile>
@@ -216,6 +219,7 @@
     <Compile Include="ViewModels\BarcodesViewModel.cs" />
     <Compile Include="ViewModels\BillsViewModel.cs" />
     <Compile Include="ViewModels\MainPageVM.cs" />
+    <Compile Include="ViewModels\MSSQLMovementViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
     <Compile Include="ViewModels\PaletteSelectorViewModel.cs" />
     <Compile Include="ViewModels\SalesBillsViewerViewModel.cs" />
@@ -289,6 +293,10 @@
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MSSQLMovement.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PaletteSelector.xaml">

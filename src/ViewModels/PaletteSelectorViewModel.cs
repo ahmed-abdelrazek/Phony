@@ -11,9 +11,27 @@ namespace Phony.ViewModels
 {
     public class PaletteSelectorViewModel : BindableBase
     {
+        bool _alternate;
+        bool _isDark;
+
+        public bool Alternate
+        {
+            get => _alternate;
+            set => SetProperty(ref _alternate, value);
+        }
+
+        public bool IsDark
+        {
+            get => _isDark;
+            set => SetProperty(ref _isDark, value);
+        }
+
         public PaletteSelectorViewModel()
         {
             Swatches = new SwatchesProvider().Swatches;
+            Alternate = Properties.Settings.Default.IsAlternateStyle;
+            IsDark = Properties.Settings.Default.IsDarkTheme;
+            ApplyStyle(Alternate);
         }
 
         public ICommand ToggleStyleCommand { get; } = new DelegateCommand<object>(o => ApplyStyle((bool)o));
@@ -40,21 +58,29 @@ namespace Phony.ViewModels
             {
                 tabablzControl.Style = style;
             }
+            Properties.Settings.Default.IsAlternateStyle = alternate;
+            Properties.Settings.Default.Save();
         }
 
         private static void ApplyBase(bool isDark)
         {
             new PaletteHelper().SetLightDark(isDark);
+            Properties.Settings.Default.IsDarkTheme = isDark;
+            Properties.Settings.Default.Save();
         }
 
         private static void ApplyPrimary(Swatch swatch)
         {
             new PaletteHelper().ReplacePrimaryColor(swatch);
+            Properties.Settings.Default.PrimaryColor = swatch.Name;
+            Properties.Settings.Default.Save();
         }
 
         private static void ApplyAccent(Swatch swatch)
         {
             new PaletteHelper().ReplaceAccentColor(swatch);
+            Properties.Settings.Default.AccentColor = swatch.Name;
+            Properties.Settings.Default.Save();
         }
     }
 }

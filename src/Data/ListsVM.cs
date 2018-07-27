@@ -46,28 +46,51 @@ namespace Phony.Data
 
     public enum Color
     {
+        [Description("احمر")]
         Red,
+        [Description("اخضر")]
         Green,
+        [Description("ازرق")]
         Blue,
+        [Description("أرجوانى")]
         Purple,
+        [Description("برتقالى")]
         Orange,
+        [Description("لمونى")]
         Lime,
+        [Description("زمردى")]
         Emerald,
+        [Description("شرشيري")]
         Teal,
+        [Description("سماوى")]
         Cyan,
+        [Description("ازرق فاتح")]
         Cobalt,
+        [Description("نيلى")]
         Indigo,
+        [Description("بنفسجي")]
         Violet,
+        [Description("زهرى")]
         Pink,
+        [Description("وردى")]
         Magenta,
+        [Description("قرمزى")]
         Crimson,
+        [Description("عنبرى")]
         Amber,
+        [Description("اصفر")]
         Yellow,
+        [Description("بنى")]
         Brown,
+        [Description("زيتونى")]
         Olive,
+        [Description("رصاصى")]
         Steel,
+        [Description("موف")]
         Mauve,
+        [Description("")]
         Taupe,
+        [Description("")]
         Sienna,
     }
 

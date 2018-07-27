@@ -2,14 +2,20 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Phony.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Theme" Type="System.String" Scope="User">
-      <Value Profile="(Default)">BaseLight</Value>
+    <Setting Name="IsDarkTheme" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsAlternateStyle" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PrimaryColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Teal</Value>
     </Setting>
     <Setting Name="AccentColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="DBFullName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="IsConfigured" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -19,9 +25,6 @@
     </Setting>
     <Setting Name="SalesBillsPaperSize" Type="System.String" Scope="User">
       <Value Profile="(Default)">A4</Value>
-    </Setting>
-    <Setting Name="DBFullName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

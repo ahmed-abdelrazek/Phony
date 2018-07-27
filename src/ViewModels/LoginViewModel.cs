@@ -53,7 +53,7 @@ namespace Phony.ViewModels
 
         private void LoadCommands()
         {
-            LogIn = new DelegateCommand(DoLogIn, CanDoLogIn).ObservesProperty(() => Name); ;
+            LogIn = new DelegateCommand(DoLogIn, CanDoLogIn).ObservesProperty(() => Name);
         }
 
         private bool CanDoLogIn()

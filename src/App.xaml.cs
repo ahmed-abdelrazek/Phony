@@ -184,11 +184,6 @@ namespace Phony
         protected override void OnStartup(StartupEventArgs e)
         {
             ExceptionlessClient.Default.Register();
-            if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.Theme))
-            {
-                Phony.Properties.Settings.Default.Theme = "BaseLight";
-                Phony.Properties.Settings.Default.Save();
-            }
             if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.PrimaryColor))
             {
                 Phony.Properties.Settings.Default.PrimaryColor = "Teal";
@@ -203,16 +198,17 @@ namespace Phony
             {
                 new PaletteHelper().ReplacePrimaryColor(Phony.Properties.Settings.Default.PrimaryColor);
                 new PaletteHelper().ReplaceAccentColor(Phony.Properties.Settings.Default.AccentColor);
-                if (Phony.Properties.Settings.Default.Theme == "BaseLight")
+                Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
+                if (Phony.Properties.Settings.Default.IsDarkTheme)
                 {
-                    new PaletteHelper().SetLightDark(false);
+                    new PaletteHelper().SetLightDark(true);
+                    ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme("BaseDark"));
                 }
                 else
                 {
-                    new PaletteHelper().SetLightDark(true);
+                    new PaletteHelper().SetLightDark(false);
+                    ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme("BaseLight"));
                 }
-                Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
-                ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme(Phony.Properties.Settings.Default.Theme));
             }
             catch (Exception ex)
             {

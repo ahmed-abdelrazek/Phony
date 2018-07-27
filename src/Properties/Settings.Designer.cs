@@ -25,13 +25,13 @@ namespace Phony.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("BaseLight")]
-        public string Theme {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsDarkTheme {
             get {
-                return ((string)(this["Theme"]));
+                return ((bool)(this["IsDarkTheme"]));
             }
             set {
-                this["Theme"] = value;
+                this["IsDarkTheme"] = value;
             }
         }
         
@@ -104,6 +104,18 @@ namespace Phony.Properties {
             }
             set {
                 this["DBFullName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAlternateStyle {
+            get {
+                return ((bool)(this["IsAlternateStyle"]));
+            }
+            set {
+                this["IsAlternateStyle"] = value;
             }
         }
     }
