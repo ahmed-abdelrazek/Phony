@@ -1,4 +1,4 @@
-﻿using Phony.ViewModels;
+﻿using Phony.Data;
 
 namespace Phony.Models
 {

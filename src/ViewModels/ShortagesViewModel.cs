@@ -29,7 +29,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.QTY <= 0));
+                Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items).Find(i => i.QTY <= 0));
             }
             new Thread(() =>
             {

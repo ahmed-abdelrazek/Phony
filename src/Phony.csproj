@@ -155,6 +155,9 @@
     <Compile Include="Controls\ColorPicker.xaml.cs">
       <DependentUpon>ColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PaletteSelector.xaml.cs">
+      <DependentUpon>PaletteSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BooleanToVisibilityCollapsedConvertor.cs" />
     <Compile Include="Converters\BinaryImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
@@ -165,6 +168,7 @@
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
     <Compile Include="Data\DBCollections.cs" />
+    <Compile Include="Data\SQL.cs" />
     <Compile Include="Extensions\ColorConverterExtensions.cs" />
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ImageConverterExtensions.cs" />
@@ -213,6 +217,7 @@
     <Compile Include="ViewModels\BillsViewModel.cs" />
     <Compile Include="ViewModels\MainPageVM.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
+    <Compile Include="ViewModels\PaletteSelectorViewModel.cs" />
     <Compile Include="ViewModels\SalesBillsViewerViewModel.cs" />
     <Compile Include="ViewModels\UsersViewModel.cs" />
     <Compile Include="Views\BarCodes.xaml.cs">
@@ -284,6 +289,10 @@
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PaletteSelector.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BarCodes.xaml">

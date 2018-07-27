@@ -1,8 +1,8 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Phony.Data;
 using Phony.Extensions;
-using Phony.Kernel;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -163,7 +163,7 @@ namespace Phony.ViewModels
             Timer.Start();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var u = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Find(x => x.Id == Core.ReadUserSession().Id).FirstOrDefault();
+                var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == Core.ReadUserSession().Id).FirstOrDefault();
                 UserName = u.Name;
                 Phone = u.Phone;
                 Group = Enumerations.GetEnumDescription(u.Group);
@@ -290,7 +290,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
+                var userCol = db.GetCollection<User>(DBCollections.Users);
                 User u = null;
                 await Task.Run(() =>
                 {
@@ -387,14 +387,14 @@ namespace Phony.ViewModels
 
         private void DoOpenUsersWindow()
         {
-            var opened = Application.Current.Windows.OfType<Views.Users>().Count();
+            var opened = Application.Current.Windows.OfType<Users>().Count();
             if (opened == 0)
             {
-                new Views.Users().Show();
+                new Users().Show();
             }
             else
             {
-                Application.Current.Windows.OfType<Views.Users>().FirstOrDefault().Activate();
+                Application.Current.Windows.OfType<Users>().FirstOrDefault().Activate();
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿using MahApps.Metro.Controls;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.ViewModels;
 using System;
 using System.Windows.Threading;

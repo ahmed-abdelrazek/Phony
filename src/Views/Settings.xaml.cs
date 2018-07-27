@@ -3,9 +3,8 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
-using Phony.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -157,126 +156,124 @@ namespace Phony.Views
             Properties.Settings.Default.Save();
             if (!Properties.Settings.Default.IsConfigured)
             {
-                if (!Properties.Settings.Default.IsConfigured)
+                try
                 {
-                    try
+                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                        var userCol = db.GetCollection<User>(DBCollections.Users);
+                        var user = userCol.FindById(1);
+                        if (user == null)
                         {
-                            var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
-                            var user = userCol.FindById(1);
-                            if (user == null)
+                            userCol.Insert(new User
                             {
-                                userCol.Insert(new User
-                                {
-                                    Id = 1,
-                                    Name = "admin",
-                                    Pass = SecurePasswordHasher.Hash("admin"),
-                                    Group = UserGroup.Manager,
-                                    IsActive = true
-                                });
-                            }
-                            var clientCol = db.GetCollection<Client>(Data.DBCollections.Clients.ToString());
-                            var client = clientCol.FindById(1);
-                            if (client == null)
-                            {
-                                clientCol.Insert(new Client
-                                {
-                                    Id = 1,
-                                    Name = "كاش",
-                                    Balance = 0,
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
-                            var companyCol = db.GetCollection<Company>(Data.DBCollections.Companies.ToString());
-                            var company = companyCol.FindById(1);
-                            if (company == null)
-                            {
-                                companyCol.Insert(new Company
-                                {
-                                    Id = 1,
-                                    Name = "لا يوجد",
-                                    Balance = 0,
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
-                            var salesMenCol = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString());
-                            var salesMen = salesMenCol.FindById(1);
-                            if (salesMen == null)
-                            {
-                                salesMenCol.Insert(new SalesMan
-                                {
-                                    Id = 1,
-                                    Name = "لا يوجد",
-                                    Balance = 0,
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
-                            var suppliersCol = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString());
-                            var supplier = suppliersCol.FindById(1);
-                            if (supplier == null)
-                            {
-                                suppliersCol.Insert(new Supplier
-                                {
-                                    Id = 1,
-                                    Name = "لا يوجد",
-                                    Balance = 0,
-                                    SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(1),
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
-                            var storesCol = db.GetCollection<Store>(Data.DBCollections.Stores.ToString());
-                            var store = storesCol.FindById(1);
-                            if (store == null)
-                            {
-                                storesCol.Insert(new Store
-                                {
-                                    Id = 1,
-                                    Name = "التوكل",
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
-                            var treasuriesCol = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString());
-                            var treasury = treasuriesCol.FindById(1);
-                            if (treasury == null)
-                            {
-                                treasuriesCol.Insert(new Treasury
-                                {
-                                    Id = 1,
-                                    Name = "الرئيسية",
-                                    Store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1),
-                                    Balance = 0,
-                                    Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(1),
-                                    CreateDate = DateTime.Now,
-                                    Editor = null,
-                                    EditDate = null
-                                });
-                            }
+                                Id = 1,
+                                Name = "admin",
+                                Pass = SecurePasswordHasher.Hash("admin"),
+                                Group = UserGroup.Manager,
+                                IsActive = true
+                            });
                         }
-                        Properties.Settings.Default.IsConfigured = true;
-                        Properties.Settings.Default.Save();
+                        var clientCol = db.GetCollection<Client>(DBCollections.Clients);
+                        var client = clientCol.FindById(1);
+                        if (client == null)
+                        {
+                            clientCol.Insert(new Client
+                            {
+                                Id = 1,
+                                Name = "كاش",
+                                Balance = 0,
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
+                        var companyCol = db.GetCollection<Company>(DBCollections.Companies);
+                        var company = companyCol.FindById(1);
+                        if (company == null)
+                        {
+                            companyCol.Insert(new Company
+                            {
+                                Id = 1,
+                                Name = "لا يوجد",
+                                Balance = 0,
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
+                        var salesMenCol = db.GetCollection<SalesMan>(DBCollections.SalesMen);
+                        var salesMen = salesMenCol.FindById(1);
+                        if (salesMen == null)
+                        {
+                            salesMenCol.Insert(new SalesMan
+                            {
+                                Id = 1,
+                                Name = "لا يوجد",
+                                Balance = 0,
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
+                        var suppliersCol = db.GetCollection<Supplier>(DBCollections.Suppliers);
+                        var supplier = suppliersCol.FindById(1);
+                        if (supplier == null)
+                        {
+                            suppliersCol.Insert(new Supplier
+                            {
+                                Id = 1,
+                                Name = "لا يوجد",
+                                Balance = 0,
+                                SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(1),
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
+                        var storesCol = db.GetCollection<Store>(DBCollections.Stores);
+                        var store = storesCol.FindById(1);
+                        if (store == null)
+                        {
+                            storesCol.Insert(new Store
+                            {
+                                Id = 1,
+                                Name = "التوكل",
+                                Motto = "لخدمات المحمول",
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
+                        var treasuriesCol = db.GetCollection<Treasury>(DBCollections.Treasuries);
+                        var treasury = treasuriesCol.FindById(1);
+                        if (treasury == null)
+                        {
+                            treasuriesCol.Insert(new Treasury
+                            {
+                                Id = 1,
+                                Name = "الرئيسية",
+                                Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
+                                Balance = 0,
+                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
+                                CreateDate = DateTime.Now,
+                                Editor = null,
+                                EditDate = null
+                            });
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Properties.Settings.Default.IsConfigured = false;
-                        Properties.Settings.Default.Save();
-                        Core.SaveException(ex);
-                    }
+                    Properties.Settings.Default.IsConfigured = true;
+                    Properties.Settings.Default.Save();
+                }
+                catch (Exception ex)
+                {
+                    Properties.Settings.Default.IsConfigured = false;
+                    Properties.Settings.Default.Save();
+                    Core.SaveException(ex);
                 }
                 Close();
             }

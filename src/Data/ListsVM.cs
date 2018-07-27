@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 
-namespace Phony.ViewModels
+namespace Phony.Data
 {
     public enum PaymentType : byte
     {
-        [Description("كاش")]
+        [Description("نقدى")]
         Cash,
         [Description("اجل")]
         Credit

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace Phony.Kernel
+namespace Phony.Data
 {
     public class AssemblyInfo
     {

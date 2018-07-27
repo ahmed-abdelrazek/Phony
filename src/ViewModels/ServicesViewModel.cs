@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -150,8 +150,8 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
@@ -205,12 +205,12 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
+                        var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
-                        db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Update(s);
-                        db.GetCollection<ServiceMove>(Data.DBCollections.ServicesMoves.ToString()).Insert(new ServiceMove
+                        db.GetCollection<Service>(DBCollections.Services).Update(s);
+                        db.GetCollection<ServiceMove>(DBCollections.ServicesMoves).Insert(new ServiceMove
                         {
-                            Service = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id),
+                            Service = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id),
                             Debit = servicepaymentamount,
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
@@ -244,7 +244,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var s = new Service
@@ -261,7 +261,7 @@ namespace Phony.ViewModels
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Insert(s);
+                    db.GetCollection<Service>(DBCollections.Services).Insert(s);
                     Services.Add(s);
                     ServicesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الخدمة بنجاح");
                     DebitCredit();
@@ -286,7 +286,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.GetCollection<Service>(Data.DBCollections.Services.ToString()).FindById(DataGridSelectedService.Id);
+                var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -296,7 +296,7 @@ namespace Phony.ViewModels
                 s.Notes = Notes;
                 s.Editor = Core.ReadUserSession();
                 s.EditDate = DateTime.Now;
-                db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Update(s);
+                db.GetCollection<Service>(DBCollections.Services).Update(s);
                 ServicesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
                 Services[Services.IndexOf(DataGridSelectedService)] = s;
                 DebitCredit();
@@ -321,7 +321,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Delete(DataGridSelectedService.Id);
+                    db.GetCollection<Service>(DBCollections.Services).Delete(DataGridSelectedService.Id);
                     Services.Remove(DataGridSelectedService);
                 }
                 await ServicesMessage.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
@@ -345,7 +345,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name.Contains(SearchText)));
                     if (Services.Count < 1)
                     {
                         ServicesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -368,7 +368,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(Data.DBCollections.Services).FindAll());
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
             }
             DebitCredit();
         }

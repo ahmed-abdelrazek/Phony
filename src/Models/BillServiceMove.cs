@@ -12,7 +12,7 @@ namespace Phony.Models
 
         public decimal Balance { get; set; }
 
-        public decimal ServicePayment { get; set; }
+        public decimal Cost { get; set; }
 
         public decimal Discount { get; set; }
     }

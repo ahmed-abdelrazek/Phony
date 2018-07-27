@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -127,8 +127,8 @@ namespace Phony.ViewModels
             ByName = true;
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
             }
         }
 
@@ -167,7 +167,7 @@ namespace Phony.ViewModels
                     EditDate = null,
                     Editor = null
                 };
-                db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Insert(n);
+                db.GetCollection<Note>(DBCollections.Notes).Insert(n);
                 Numbers.Add(n);
                 Message.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
             }
@@ -186,13 +186,13 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var n = db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).FindById(DataGridSelectedNo.Id);
+                var n = db.GetCollection<Note>(DBCollections.Notes).FindById(DataGridSelectedNo.Id);
                 n.Name = Name;
                 n.Phone = Phone;
                 n.Notes = Notes;
                 n.Editor = Core.ReadUserSession();
                 n.EditDate = DateTime.Now;
-                db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Update(n);
+                db.GetCollection<Note>(DBCollections.Notes).Update(n);
                 Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
                 NoId = 0;
                 DataGridSelectedNo = null;
@@ -216,7 +216,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Delete(DataGridSelectedNo.Id);
+                    db.GetCollection<Note>(DBCollections.Notes).Delete(DataGridSelectedNo.Id);
                     Numbers.Remove(DataGridSelectedNo);
                 }
                 DataGridSelectedNo = null;
@@ -239,7 +239,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes.ToString()).Find(i => i.Name.Contains(SearchText)));
+                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name.Contains(SearchText)));
                     if (Numbers.Count > 0)
                     {
                         if (FastResult)
@@ -271,7 +271,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(Data.DBCollections.Notes).FindAll());
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
             }
         }
 

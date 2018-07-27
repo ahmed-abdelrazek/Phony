@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -80,7 +80,7 @@ namespace Phony.ViewModels
                             User u = null;
                             await Task.Run(() =>
                             {
-                                u = db.GetCollection<User>(Data.DBCollections.Users.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                                u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Name == Name).FirstOrDefault();
                             });
                             if (u == null)
                             {

@@ -1,6 +1,6 @@
 using Microsoft.Win32;
+using Phony.Data;
 using Phony.Extensions;
-using Phony.Kernel;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -189,10 +189,12 @@ namespace Phony.ViewModels
 
         private void DoSave()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|TIFF (*.tif)|*.tif";
-            sfd.FilterIndex = 2;
-            sfd.AddExtension = true;
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|TIFF (*.tif)|*.tif",
+                FilterIndex = 2,
+                AddExtension = true
+            };
             if (sfd.ShowDialog() == true)
             {
                 BarcodeLib.SaveTypes savetype = BarcodeLib.SaveTypes.UNSPECIFIED;
@@ -339,8 +341,10 @@ namespace Phony.ViewModels
 
         private void DoSelectForeColor()
         {
-            ColorDialog colorDialog = new ColorDialog();
-            colorDialog.SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Foreground))).Color;
+            ColorDialog colorDialog = new ColorDialog
+            {
+                SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Foreground))).Color
+            };
             if ((bool)colorDialog.ShowDialog())
             {
                 Foreground = colorDialog.SelectedColor.ToHexString();
@@ -354,8 +358,10 @@ namespace Phony.ViewModels
 
         private void DoBackColor()
         {
-            ColorDialog colorDialog = new ColorDialog();
-            colorDialog.SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Background))).Color;
+            ColorDialog colorDialog = new ColorDialog
+            {
+                SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Background))).Color
+            };
             if ((bool)colorDialog.ShowDialog())
             {
                 Background = colorDialog.SelectedColor.ToHexString();

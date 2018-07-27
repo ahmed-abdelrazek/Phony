@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Phony.Kernel
+namespace Phony.Data
 {
     public sealed class SecurePasswordHasher
     {

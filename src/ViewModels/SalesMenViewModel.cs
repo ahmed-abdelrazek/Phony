@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -170,8 +170,8 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
             }
             DebitCredit();
         }
@@ -234,12 +234,12 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
+                        var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                         s.Balance += SalesManpaymentamount;
-                        db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Update(s);
-                        db.GetCollection<SalesManMove>(Data.DBCollections.SalesMenMoves.ToString()).Insert(new SalesManMove
+                        db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+                        db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                         {
-                            SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id),
+                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
                             Credit = SalesManpaymentamount,
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
@@ -283,21 +283,21 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
+                        var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                         s.Balance -= SalesManpaymentamount;
-                        db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Update(s);
-                        db.GetCollection<SalesManMove>(Data.DBCollections.SalesMenMoves.ToString()).Insert(new SalesManMove
+                        db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+                        db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                         {
-                            SalesMan = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id),
+                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
                             Debit = SalesManpaymentamount,
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
-                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Credit = SalesManpaymentamount,
                             Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
                             CreateDate = DateTime.Now,
@@ -332,7 +332,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var c = new SalesMan
@@ -348,7 +348,7 @@ namespace Phony.ViewModels
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Insert(c);
+                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(c);
                     SalesMen.Add(c);
                     SalesMenMessage.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
                     DebitCredit();
@@ -373,7 +373,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var s = db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).FindById(DataGridSelectedSalesMan.Id);
+                var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                 s.Name = Name;
                 s.Balance = Balance;
                 s.Site = Site;
@@ -382,7 +382,7 @@ namespace Phony.ViewModels
                 s.Notes = Notes;
                 s.Editor = Core.ReadUserSession();
                 s.EditDate = DateTime.Now;
-                db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Update(s);
+                db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
                 SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
                 SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
                 DebitCredit();
@@ -407,7 +407,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Delete(DataGridSelectedSalesMan.Id);
+                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
                     SalesMen.Remove(DataGridSelectedSalesMan);
                 }
                 await SalesMenMessage.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
@@ -431,7 +431,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name.Contains(SearchText)));
                     if (SalesMen.Count > 0)
                     {
                         if (FastResult)
@@ -463,7 +463,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
             }
             DebitCredit();
         }

@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -130,8 +130,8 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
-                store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1);
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
+                store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
                 Name = store.Name;
                 Motto = store.Motto;
                 Image = store.Image;
@@ -167,7 +167,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                store = db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).FindById(1);
+                store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
                 store.Name = Name;
                 store.Motto = Motto;
                 store.Image = Image;
@@ -183,7 +183,7 @@ namespace Phony.ViewModels
                 store.Notes = Notes;
                 store.Editor = Core.ReadUserSession();
                 store.EditDate = DateTime.Now;
-                db.GetCollection<Store>(Data.DBCollections.Stores.ToString()).Update(store);
+                db.GetCollection<Store>(DBCollections.Stores).Update(store);
                 Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
             }
         }

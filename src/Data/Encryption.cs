@@ -5,7 +5,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Phony.Kernel
+namespace Phony.Data
 {
     public class Encryption
     {

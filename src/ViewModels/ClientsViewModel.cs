@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -234,11 +234,11 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                        var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                         c.Balance -= clientpaymentamount;
-                        db.GetCollection<ClientMove>(Data.DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
+                        db.GetCollection<ClientMove>(DBCollections.ClientsMoves).Insert(new ClientMove
                         {
-                            Client = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
+                            Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
                             Credit = clientpaymentamount,
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
@@ -247,9 +247,9 @@ namespace Phony.ViewModels
                         });
                         if (clientpaymentamount > 0)
                         {
-                            db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                            db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                             {
-                                Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
+                                Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                                 Debit = clientpaymentamount,
                                 Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                                 CreateDate = DateTime.Now,
@@ -295,20 +295,20 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                        var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                         c.Balance += clientpaymentamount;
-                        db.GetCollection<ClientMove>(Data.DBCollections.ClientsMoves.ToString()).Insert(new ClientMove
+                        db.GetCollection<ClientMove>(DBCollections.ClientsMoves).Insert(new ClientMove
                         {
-                            Client = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id),
+                            Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
                             Debit = clientpaymentamount,
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
-                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Credit = clientpaymentamount,
                             Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
                             CreateDate = DateTime.Now,
@@ -343,7 +343,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var c = new Client
@@ -359,7 +359,7 @@ namespace Phony.ViewModels
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Insert(c);
+                    db.GetCollection<Client>(DBCollections.Clients).Insert(c);
                     Clients.Add(c);
                     ClientsMessage.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
                     DebitCredit();
@@ -384,7 +384,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var c = db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).FindById(DataGridSelectedClient.Id);
+                var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                 c.Name = Name;
                 c.Balance = Balance;
                 c.Site = Site;
@@ -393,7 +393,7 @@ namespace Phony.ViewModels
                 c.Notes = Notes;
                 c.Editor = Core.ReadUserSession();
                 c.EditDate = DateTime.Now;
-                db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Update(c);
+                db.GetCollection<Client>(DBCollections.Clients).Update(c);
                 ClientsMessage.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
                 Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
                 DebitCredit();
@@ -418,7 +418,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Delete(DataGridSelectedClient.Id);
+                    db.GetCollection<Client>(DBCollections.Clients).Delete(DataGridSelectedClient.Id);
                     Clients.Remove(DataGridSelectedClient);
                 }
                 await ClientsMessage.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
@@ -442,7 +442,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name.Contains(SearchText)));
                     if (Clients.Count > 0)
                     {
                         if (FastResult)
@@ -474,7 +474,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
+                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
             }
         }
 

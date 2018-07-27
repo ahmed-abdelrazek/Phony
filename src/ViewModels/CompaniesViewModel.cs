@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -216,15 +216,15 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                        var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
                         s.Balance += compantpaymentamount;
                         //the company will give us money in form of balance or something
-                        db.GetCollection<CompanyMove>(Data.DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
+                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                         {
-                            Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
+                            Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
                             Credit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
+                            Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
@@ -265,26 +265,26 @@ namespace Phony.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                     {
-                        var s = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                        var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
                         s.Balance -= compantpaymentamount;
                         //Company gets money from us
-                        db.GetCollection<CompanyMove>(Data.DBCollections.CompaniesMoves.ToString()).Insert(new CompanyMove
+                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                         {
-                            Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id),
+                            Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
                             Debit = compantpaymentamount,
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
+                            Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
                         //the money is taken from our Treasury
-                        db.GetCollection<TreasuryMove>(Data.DBCollections.TreasuriesMoves.ToString()).Insert(new TreasuryMove
+                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                         {
-                            Treasury = db.GetCollection<Treasury>(Data.DBCollections.Treasuries.ToString()).FindById(1),
+                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Credit = compantpaymentamount,
                             Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
                             CreateDate = DateTime.Now,
-                            Creator = db.GetCollection<User>(Data.DBCollections.Users.ToString()).FindById(Core.ReadUserSession().Id),
+                            Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
                             EditDate = null,
                             Editor = null
                         });
@@ -315,7 +315,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var exist = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Find(x => x.Name == Name).FirstOrDefault();
+                var exist = db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
                 {
                     var s = new Company
@@ -332,7 +332,7 @@ namespace Phony.ViewModels
                         EditDate = null,
                         Editor = null
                     };
-                    db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Insert(s);
+                    db.GetCollection<Company>(DBCollections.Companies).Insert(s);
                     Companies.Add(s);
                     CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
                     DebitCredit();
@@ -357,7 +357,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var c = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(DataGridSelectedCompany.Id);
+                var c = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
                 c.Name = Name;
                 c.Balance = Balance;
                 c.Site = Site;
@@ -367,7 +367,7 @@ namespace Phony.ViewModels
                 c.Notes = Notes;
                 c.Editor = Core.ReadUserSession();
                 c.EditDate = DateTime.Now;
-                db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Update(c);
+                db.GetCollection<Company>(DBCollections.Companies).Update(c);
                 CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
                 DebitCredit();
@@ -392,7 +392,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Delete(DataGridSelectedCompany.Id);
+                    db.GetCollection<Company>(DBCollections.Companies).Delete(DataGridSelectedCompany.Id);
                     Companies.Remove(DataGridSelectedCompany);
                 }
                 await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
@@ -416,7 +416,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).Find(x => x.Name.Contains(SearchText)));
+                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name.Contains(SearchText)));
                     if (Companies.Count < 1)
                     {
                         CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -439,7 +439,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll());
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll());
             }
             DebitCredit();
         }

@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
+using Phony.Data;
 using Phony.Extensions;
-using Phony.Kernel;
 using Phony.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -9,7 +9,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Security;
 using System.Windows;
 using System.Windows.Input;
 
@@ -131,7 +130,7 @@ namespace Phony.ViewModels
             }
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
             }
         }
 
@@ -161,14 +160,14 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
+                    var userCol = db.GetCollection<User>(DBCollections.Users);
                     var user = userCol.Find(x => x.Name == Name).FirstOrDefault();
                     if (user == null)
                     {
                         var u = new User
                         {
                             Name = Name,
-                            Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password),
+                            Pass = SecurePasswordHasher.Hash(Password1),
                             Group = (UserGroup)SelectedGroup,
                             Phone = Phone,
                             Notes = Notes,
@@ -205,10 +204,10 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    var userCol = db.GetCollection<User>(Data.DBCollections.Users.ToString());
+                    var userCol = db.GetCollection<User>(DBCollections.Users);
                     var u = userCol.Find(x => x.Id == DataGridSelectedUser.Id).FirstOrDefault();
                     u.Name = Name;
-                    u.Pass = SecurePasswordHasher.Hash(new NetworkCredential("", Password1).Password);
+                    u.Pass = SecurePasswordHasher.Hash(Password1);
                     u.Group = (UserGroup)SelectedGroup;
                     u.Phone = Phone;
                     u.Notes = Notes;
@@ -242,7 +241,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<User>(Data.DBCollections.Users.ToString()).Delete(DataGridSelectedUser.Id);
+                    db.GetCollection<User>(DBCollections.Users).Delete(DataGridSelectedUser.Id);
                     Users.Remove(DataGridSelectedUser);
                 }
                 DataGridSelectedUser = null;
@@ -265,7 +264,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
+                    Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
                     if (Users.Count < 1)
                     {
                         Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -288,7 +287,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
             }
         }
 

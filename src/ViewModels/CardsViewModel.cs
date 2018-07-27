@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Phony.Kernel;
+using Phony.Data;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -302,7 +302,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var itemCol = db.GetCollection<Item>(Data.DBCollections.Items.ToString());
+                var itemCol = db.GetCollection<Item>(DBCollections.Items);
                 var i = new Item
                 {
                     Name = Name,
@@ -314,8 +314,8 @@ namespace Phony.ViewModels
                     WholeSalePrice = WholeSalePrice,
                     RetailPrice = RetailPrice,
                     QTY = QTY,
-                    Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(SelectedCompanyValue),
-                    Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue),
+                    Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
+                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
                     Notes = Notes,
                     CreateDate = DateTime.Now,
                     Creator = Core.ReadUserSession(),
@@ -342,7 +342,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                var itemCol = db.GetCollection<Item>(Data.DBCollections.Items.ToString());
+                var itemCol = db.GetCollection<Item>(DBCollections.Items);
                 var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
                 i.Name = Name;
                 i.Barcode = Barcode;
@@ -352,8 +352,8 @@ namespace Phony.ViewModels
                 i.WholeSalePrice = WholeSalePrice;
                 i.RetailPrice = RetailPrice;
                 i.QTY = QTY;
-                i.Company = db.GetCollection<Company>(Data.DBCollections.Companies.ToString()).FindById(SelectedCompanyValue);
-                i.Supplier = db.GetCollection<Supplier>(Data.DBCollections.Suppliers.ToString()).FindById(SelectedSupplierValue);
+                i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
+                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
                 i.Notes = Notes;
                 i.Editor = Core.ReadUserSession();
                 i.EditDate = DateTime.Now;
@@ -381,7 +381,7 @@ namespace Phony.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
                 {
-                    db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Delete(DataGridSelectedItem.Id);
+                    db.GetCollection<Item>(DBCollections.Items).Delete(DataGridSelectedItem.Id);
                     Cards.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
@@ -406,15 +406,15 @@ namespace Phony.ViewModels
                 {
                     if (ByName)
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
                     }
                     else if (ByBarCode)
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     else
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
+                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
                     }
                     if (Cards.Count > 0)
                     {
@@ -448,7 +448,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
             {
-                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card));
+                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Card));
             }
         }
 

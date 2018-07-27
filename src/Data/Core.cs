@@ -7,7 +7,7 @@ using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Phony.Kernel
+namespace Phony.Data
 {
     public class Core
     {

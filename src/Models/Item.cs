@@ -1,5 +1,5 @@
 ﻿using LiteDB;
-using Phony.ViewModels;
+using Phony.Data;
 
 namespace Phony.Models
 {
@@ -25,10 +25,10 @@ namespace Phony.Models
 
         public decimal QTY { get; set; }
 
-        [BsonRef(nameof(Data.DBCollections.Companies))]
+        [BsonRef(nameof(DBCollections.Companies))]
         public Company Company { get; set; }
 
-        [BsonRef(nameof(Data.DBCollections.Suppliers))]
+        [BsonRef(nameof(DBCollections.Suppliers))]
         public virtual Supplier Supplier { get; set; }
     }
 }
