@@ -27,7 +27,7 @@ namespace Phony.ViewModels
 
         public ShortagesViewModel()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items).Find(i => i.QTY <= 0));
             }

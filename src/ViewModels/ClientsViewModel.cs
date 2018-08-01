@@ -168,7 +168,7 @@ namespace Phony.ViewModels
         public ClientsViewModel()
         {
             LoadCommands();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Clients = new ObservableCollection<Client>(db.GetCollection<Client>(Data.DBCollections.Clients).FindAll());
                 Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
@@ -232,7 +232,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal clientpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                         c.Balance -= clientpaymentamount;
@@ -293,7 +293,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal clientpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                         c.Balance += clientpaymentamount;
@@ -341,7 +341,7 @@ namespace Phony.ViewModels
 
         private void DoAddClient()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var exist = db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
@@ -382,7 +382,7 @@ namespace Phony.ViewModels
 
         private void DoEditClient()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
                 c.Name = Name;
@@ -416,7 +416,7 @@ namespace Phony.ViewModels
             var result = await ClientsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Client>(DBCollections.Clients).Delete(DataGridSelectedClient.Id);
                     Clients.Remove(DataGridSelectedClient);
@@ -440,7 +440,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name.Contains(SearchText)));
                     if (Clients.Count > 0)
@@ -472,7 +472,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllClients()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
             }

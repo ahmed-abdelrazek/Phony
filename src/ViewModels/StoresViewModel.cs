@@ -128,7 +128,7 @@ namespace Phony.ViewModels
         public StoresViewModel()
         {
             LoadCommands();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
                 store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
@@ -165,7 +165,7 @@ namespace Phony.ViewModels
 
         private void DoEdit()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
                 store.Name = Name;

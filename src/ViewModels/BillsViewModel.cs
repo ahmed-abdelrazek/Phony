@@ -365,7 +365,7 @@ namespace Phony.ViewModels
             ByName = true;
             ByItem = true;
             BillClientPaymentChangeVisible = Visibility.Collapsed;
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
                 Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
@@ -409,7 +409,7 @@ namespace Phony.ViewModels
             {
                 billNote = await Message.ShowInputAsync("ملاحظة", $"اكتب اى شئ ليتم طباعته مع الفاتورة");
             }
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 try
                 {
@@ -568,7 +568,7 @@ namespace Phony.ViewModels
             BillTotalAfterDiscount = 0;
             BillClientPayment = 0;
             SearchSelectedValue = 0;
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
                 Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
@@ -623,7 +623,7 @@ namespace Phony.ViewModels
             balanceNeeded += ServiceChildServiceCost;
             if (SelectedService.Balance >= balanceNeeded)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     BillServicesMoves.Add(new BillServiceMove
                     {
@@ -680,7 +680,7 @@ namespace Phony.ViewModels
             if (SelectedItem.QTY >= QTYNeeded)
             {
                 var ItemToQtyPrice = SelectedItem.RetailPrice * ItemChildItemQTYSell;
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     BillItemsMoves.Add(new BillItemMove
                     {
@@ -867,7 +867,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
                     if (x == 1)

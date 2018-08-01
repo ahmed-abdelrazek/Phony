@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Phony.Extensions;
 using Phony.Models;
 using System;
 using System.Data.SqlClient;
@@ -20,6 +21,7 @@ namespace Phony.Data
         {
             SqlConnection conn = new SqlConnection(_connectionString);
             {
+                conn.Open();
                 using (SqlCommand command = new SqlCommand("select * from [Users]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -28,7 +30,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt32(reader["Id"]);
                                     var userCol = db.GetCollection<User>(DBCollections.Users);
@@ -69,7 +71,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var clientCol = db.GetCollection<Client>(DBCollections.Clients);
@@ -84,8 +86,8 @@ namespace Phony.Data
                                         c.Notes = reader["Notes"].ToString();
                                         c.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         c.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        c.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        c.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        c.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        c.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         clientCol.Update(c);
                                     }
                                     else
@@ -101,8 +103,8 @@ namespace Phony.Data
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -118,7 +120,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var companyCol = db.GetCollection<Company>(DBCollections.Companies);
@@ -134,8 +136,8 @@ namespace Phony.Data
                                         c.Notes = reader["Notes"].ToString();
                                         c.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         c.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        c.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        c.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        c.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        c.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         companyCol.Update(c);
                                     }
                                     else
@@ -152,8 +154,8 @@ namespace Phony.Data
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -169,7 +171,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var salesmanCol = db.GetCollection<SalesMan>(DBCollections.SalesMen);
@@ -184,8 +186,8 @@ namespace Phony.Data
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        s.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         salesmanCol.Update(s);
                                     }
                                     else
@@ -201,8 +203,8 @@ namespace Phony.Data
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -218,7 +220,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var supplierCol = db.GetCollection<Supplier>(DBCollections.Suppliers);
@@ -235,8 +237,8 @@ namespace Phony.Data
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        s.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         supplierCol.Update(s);
                                     }
                                     else
@@ -254,8 +256,8 @@ namespace Phony.Data
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -271,7 +273,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var storeCol = db.GetCollection<Store>(DBCollections.Stores);
@@ -293,8 +295,8 @@ namespace Phony.Data
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        s.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         storeCol.Update(s);
                                     }
                                     else
@@ -317,8 +319,8 @@ namespace Phony.Data
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -326,7 +328,7 @@ namespace Phony.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Stores]", conn))
+                using (SqlCommand command = new SqlCommand("select * from [Treasuries]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -334,7 +336,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var id = Convert.ToInt64(reader["Id"]);
                                     var treasuryCol = db.GetCollection<Treasury>(DBCollections.Treasuries);
@@ -342,13 +344,13 @@ namespace Phony.Data
                                     {
                                         var t = treasuryCol.Find(x => x.Id == id).FirstOrDefault();
                                         t.Name = reader["Name"].ToString();
-                                        t.Balance = Convert.ToDecimal(reader["Motto"]);
+                                        t.Balance = Convert.ToDecimal(reader["Balance"]);
                                         t.Store = db.GetCollection<Store>(DBCollections.Stores).FindById(Convert.ToInt64(reader["StoreId"]));
                                         t.Notes = reader["Notes"].ToString();
                                         t.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
                                         t.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
-                                        t.Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        t.EditDate = Convert.ToDateTime(reader["EditDate"]);
+                                        t.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
+                                        t.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         treasuryCol.Update(t);
                                     }
                                     else
@@ -357,13 +359,13 @@ namespace Phony.Data
                                         {
                                             Id = id,
                                             Name = reader["Name"].ToString(),
-                                            Balance = Convert.ToDecimal(reader["Motto"]),
+                                            Balance = Convert.ToDecimal(reader["Balance"]),
                                             Store = db.GetCollection<Store>(DBCollections.Stores).FindById(Convert.ToInt64(reader["StoreId"])),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                             CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                            Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = Convert.ToDateTime(reader["EditDate"])
+                                            Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -379,7 +381,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var clientMoveCol = db.GetCollection<ClientMove>(DBCollections.ClientsMoves);
                                     clientMoveCol.Insert(new ClientMove
@@ -391,8 +393,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -407,7 +409,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var companyMoveCol = db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves);
                                     companyMoveCol.Insert(new CompanyMove
@@ -419,8 +421,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -435,7 +437,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var salesmanMoveCol = db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves);
                                     salesmanMoveCol.Insert(new SalesManMove
@@ -447,8 +449,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -463,7 +465,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var supplierMoveCol = db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves);
                                     supplierMoveCol.Insert(new SupplierMove
@@ -475,8 +477,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -491,7 +493,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var treasuryMoveCol = db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves);
                                     treasuryMoveCol.Insert(new TreasuryMove
@@ -503,8 +505,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -519,7 +521,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var serviceCol = db.GetCollection<Service>(DBCollections.Services);
                                     serviceCol.Insert(new Service
@@ -534,8 +536,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -550,7 +552,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var serviceMoveCol = db.GetCollection<ServiceMove>(DBCollections.ServicesMoves);
                                     serviceMoveCol.Insert(new ServiceMove
@@ -562,8 +564,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -578,7 +580,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var itemCol = db.GetCollection<Item>(DBCollections.Items);
                                     itemCol.Insert(new Item
@@ -599,8 +601,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -615,7 +617,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     var itemCol = db.GetCollection<Note>(DBCollections.Notes);
                                     itemCol.Insert(new Note
@@ -627,8 +629,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -643,7 +645,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     db.GetCollection<Bill>(DBCollections.Bills).Insert(new Bill
                                     {
@@ -657,8 +659,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -673,7 +675,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Insert(new BillItemMove
                                     {
@@ -686,8 +688,8 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -702,7 +704,7 @@ namespace Phony.Data
                         {
                             while (reader.Read())
                             {
-                                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                                 {
                                     db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Insert(new BillServiceMove
                                     {
@@ -714,13 +716,17 @@ namespace Phony.Data
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
                                         CreateDate = Convert.ToDateTime(reader["CreateDate"]),
-                                        Editor = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = Convert.ToDateTime(reader["EditDate"])
+                                        Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
+                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
                         }
                     }
+                }
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    conn.Close();
                 }
             }
         }

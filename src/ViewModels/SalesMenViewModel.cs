@@ -168,7 +168,7 @@ namespace Phony.ViewModels
         public SalesMenViewModel()
         {
             LoadCommands();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
@@ -232,7 +232,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                         s.Balance += SalesManpaymentamount;
@@ -281,7 +281,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                         s.Balance -= SalesManpaymentamount;
@@ -330,7 +330,7 @@ namespace Phony.ViewModels
 
         private void DoAddSalesMan()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var exist = db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
@@ -371,7 +371,7 @@ namespace Phony.ViewModels
 
         private void DoEditSalesMan()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
                 s.Name = Name;
@@ -405,7 +405,7 @@ namespace Phony.ViewModels
             var result = await SalesMenMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
                     SalesMen.Remove(DataGridSelectedSalesMan);
@@ -429,7 +429,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name.Contains(SearchText)));
                     if (SalesMen.Count > 0)
@@ -461,7 +461,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllSalesMen()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
             }

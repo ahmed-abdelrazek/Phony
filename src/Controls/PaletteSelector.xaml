@@ -98,14 +98,14 @@
             <ToggleButton IsChecked="{Binding Alternate}" Grid.Column="1" Margin="8 4 16 4" Command="{Binding ToggleStyleCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" />
             <TextBlock Grid.Column="2" VerticalAlignment="Center">الشكل البديل</TextBlock>
             <TextBlock Grid.Row="1" VerticalAlignment="Center">ابيض</TextBlock>
-            <ToggleButton Grid.Row="1" Grid.Column="1" Margin="8 4 16 4" Command="{Binding ToggleBaseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" />
+            <ToggleButton IsChecked="{Binding IsDark}" Grid.Row="1" Grid.Column="1" Margin="8 4 16 4" Command="{Binding ToggleBaseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" />
             <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">اسود</TextBlock>
         </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding Swatches, Mode=OneTime}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel/>
+                        <WrapPanel ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

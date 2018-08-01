@@ -48,7 +48,7 @@ namespace Phony.ViewModels
         public LoginViewModel()
         {
             LoadCommands();
-            ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+            ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
         }
 
         private void LoadCommands()
@@ -72,10 +72,10 @@ namespace Phony.ViewModels
                 IsLogging = true;
                 try
                 {
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
                     if (File.Exists(ConnectionStringBuilder["Filename"].ToString()))
                     {
-                        using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                        using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                         {
                             User u = null;
                             await Task.Run(() =>

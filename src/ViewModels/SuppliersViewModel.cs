@@ -163,7 +163,7 @@ namespace Phony.ViewModels
         public SuppliersViewModel()
         {
             LoadCommands();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll());
                 SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).FindAll());
@@ -229,7 +229,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
                         s.Balance += supplierpaymentamount;
@@ -277,7 +277,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal supplierpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
                         s.Balance -= supplierpaymentamount;
@@ -325,7 +325,7 @@ namespace Phony.ViewModels
 
         private void DoAddSupplier()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var exist = db.GetCollection<Supplier>(DBCollections.Suppliers).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
@@ -368,7 +368,7 @@ namespace Phony.ViewModels
 
         private void DoEditSupplier()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
                 s.Name = Name;
@@ -404,7 +404,7 @@ namespace Phony.ViewModels
             var result = await SuppliersMessage.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Supplier>(DBCollections.Suppliers).Delete(DataGridSelectedSupplier.Id);
                     Suppliers.Remove(DataGridSelectedSupplier);
@@ -428,7 +428,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).Find(x => x.Name.Contains(SearchText)));
                     if (Suppliers.Count < 1)
@@ -451,7 +451,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllSuppliers()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
             }

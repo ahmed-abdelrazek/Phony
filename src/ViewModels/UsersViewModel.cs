@@ -128,7 +128,7 @@ namespace Phony.ViewModels
                     Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
                 });
             }
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
             }
@@ -158,7 +158,7 @@ namespace Phony.ViewModels
         {
             if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     var userCol = db.GetCollection<User>(DBCollections.Users);
                     var user = userCol.Find(x => x.Name == Name).FirstOrDefault();
@@ -202,7 +202,7 @@ namespace Phony.ViewModels
         {
             if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     var userCol = db.GetCollection<User>(DBCollections.Users);
                     var u = userCol.Find(x => x.Id == DataGridSelectedUser.Id).FirstOrDefault();
@@ -239,7 +239,7 @@ namespace Phony.ViewModels
             var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<User>(DBCollections.Users).Delete(DataGridSelectedUser.Id);
                     Users.Remove(DataGridSelectedUser);
@@ -262,7 +262,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
                     if (Users.Count < 1)
@@ -285,7 +285,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllUsers()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
             }

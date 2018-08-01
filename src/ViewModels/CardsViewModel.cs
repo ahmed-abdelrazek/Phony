@@ -261,7 +261,7 @@ namespace Phony.ViewModels
         {
             LoadCommands();
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll().ToList());
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll().ToList());
@@ -300,7 +300,7 @@ namespace Phony.ViewModels
 
         private void DoAddCard()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var itemCol = db.GetCollection<Item>(DBCollections.Items);
                 var i = new Item
@@ -340,7 +340,7 @@ namespace Phony.ViewModels
 
         private void DoEditCard()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var itemCol = db.GetCollection<Item>(DBCollections.Items);
                 var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
@@ -379,7 +379,7 @@ namespace Phony.ViewModels
             var result = await CardsMessage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Item>(DBCollections.Items).Delete(DataGridSelectedItem.Id);
                     Cards.Remove(DataGridSelectedItem);
@@ -402,7 +402,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     if (ByName)
                     {
@@ -446,7 +446,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllCards()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Card));
             }

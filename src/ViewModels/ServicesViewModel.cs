@@ -148,7 +148,7 @@ namespace Phony.ViewModels
         public ServicesViewModel()
         {
             LoadCommands();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
@@ -203,7 +203,7 @@ namespace Phony.ViewModels
                 bool isvalidmoney = decimal.TryParse(result, out decimal servicepaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
                         var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
                         s.Balance += servicepaymentamount;
@@ -242,7 +242,7 @@ namespace Phony.ViewModels
 
         private void DoAddService()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var exist = db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name == Name).FirstOrDefault();
                 if (exist == null)
@@ -284,7 +284,7 @@ namespace Phony.ViewModels
 
         private void DoEditService()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
                 s.Name = Name;
@@ -319,7 +319,7 @@ namespace Phony.ViewModels
             var result = await ServicesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Service>(DBCollections.Services).Delete(DataGridSelectedService.Id);
                     Services.Remove(DataGridSelectedService);
@@ -343,7 +343,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name.Contains(SearchText)));
                     if (Services.Count < 1)
@@ -366,7 +366,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllServices()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
             }

@@ -125,7 +125,7 @@ namespace Phony.ViewModels
         {
             LoadCommands();
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
@@ -154,7 +154,7 @@ namespace Phony.ViewModels
 
         private void DoAddNo()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var n = new Note
                 {
@@ -184,7 +184,7 @@ namespace Phony.ViewModels
 
         private void DoEditNo()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var n = db.GetCollection<Note>(DBCollections.Notes).FindById(DataGridSelectedNo.Id);
                 n.Name = Name;
@@ -214,7 +214,7 @@ namespace Phony.ViewModels
             var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Note>(DBCollections.Notes).Delete(DataGridSelectedNo.Id);
                     Numbers.Remove(DataGridSelectedNo);
@@ -237,7 +237,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name.Contains(SearchText)));
                     if (Numbers.Count > 0)
@@ -269,7 +269,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllNos()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
             }

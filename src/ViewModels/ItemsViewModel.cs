@@ -268,7 +268,7 @@ namespace Phony.ViewModels
         {
             LoadCommands();
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll());
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
@@ -307,7 +307,7 @@ namespace Phony.ViewModels
 
         private void DoAddItem()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var i = new Item
                 {
@@ -346,7 +346,7 @@ namespace Phony.ViewModels
 
         private void DoEditItem()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var i = db.GetCollection<Item>(DBCollections.Items).FindById(DataGridSelectedItem.Id);
                 i.Name = Name;
@@ -385,7 +385,7 @@ namespace Phony.ViewModels
             var result = await ItemsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Item>(DBCollections.Items).Delete(DataGridSelectedItem.Id);
                     Items.Remove(DataGridSelectedItem);
@@ -408,7 +408,7 @@ namespace Phony.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     if (ByName)
                     {
@@ -453,7 +453,7 @@ namespace Phony.ViewModels
 
         private void DoReloadAllItems()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
             }

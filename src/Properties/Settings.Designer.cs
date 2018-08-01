@@ -37,6 +37,18 @@ namespace Phony.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAlternateStyle {
+            get {
+                return ((bool)(this["IsAlternateStyle"]));
+            }
+            set {
+                this["IsAlternateStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Teal")]
         public string PrimaryColor {
             get {
@@ -56,6 +68,18 @@ namespace Phony.Properties {
             }
             set {
                 this["AccentColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LiteDbConnectionString {
+            get {
+                return ((string)(this["LiteDbConnectionString"]));
+            }
+            set {
+                this["LiteDbConnectionString"] = value;
             }
         }
         
@@ -92,30 +116,6 @@ namespace Phony.Properties {
             }
             set {
                 this["SalesBillsPaperSize"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DBFullName {
-            get {
-                return ((string)(this["DBFullName"]));
-            }
-            set {
-                this["DBFullName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsAlternateStyle {
-            get {
-                return ((bool)(this["IsAlternateStyle"]));
-            }
-            set {
-                this["IsAlternateStyle"] = value;
             }
         }
     }

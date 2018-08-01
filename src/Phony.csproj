@@ -219,7 +219,7 @@
     <Compile Include="ViewModels\BarcodesViewModel.cs" />
     <Compile Include="ViewModels\BillsViewModel.cs" />
     <Compile Include="ViewModels\MainPageVM.cs" />
-    <Compile Include="ViewModels\MSSQLMovementViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\NotesViewModel.cs" />
     <Compile Include="ViewModels\PaletteSelectorViewModel.cs" />
     <Compile Include="ViewModels\SalesBillsViewerViewModel.cs" />

@@ -161,7 +161,7 @@ namespace Phony.ViewModels
             Timer.Tick += Timer_Tick;
             Timer.Interval = TimeSpan.FromMilliseconds(500);
             Timer.Start();
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == Core.ReadUserSession().Id).FirstOrDefault();
                 UserName = u.Name;
@@ -198,7 +198,7 @@ namespace Phony.ViewModels
             {
                 return;
             }
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 try
                 {
@@ -288,7 +288,7 @@ namespace Phony.ViewModels
 
         private async void DoSaveUser()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.DBFullName))
+            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 var userCol = db.GetCollection<User>(DBCollections.Users);
                 User u = null;
@@ -492,7 +492,7 @@ namespace Phony.ViewModels
                 dlg.ShowPlacesList = true;
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
                     File.Copy(dlg.FileName, ConnectionStringBuilder["Filename"].ToString(), true);
                     await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
@@ -545,7 +545,7 @@ namespace Phony.ViewModels
                         Properties.Settings.Default.BackUpsFolder += "\\";
                     }
                     Properties.Settings.Default.Save();
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.DBFullName;
+                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
                     File.Copy(ConnectionStringBuilder["Filename"].ToString(), $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
                     await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                 }
