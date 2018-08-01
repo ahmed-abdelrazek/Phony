@@ -4,7 +4,7 @@
     <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
       <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
         <Connections>
-          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="ConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="ConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Phony.Properties.Settings.GlobalReference.Default.ConnectionString" Provider="System.Data.SqlClient" />
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="ConnectionString" IsAppSettingsProperty="true" Modifier="Assembly" Name="ConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Phony.Properties.Settings.GlobalReference.Default.ConnectionString" Provider="System.Data.SqlClient" />
         </Connections>
         <Tables />
         <Sources />
@@ -59,6 +59,7 @@
               <xs:element name="ServicePayment" msprop:Generator_ColumnVarNameInTable="columnServicePayment" msprop:Generator_ColumnPropNameInRow="ServicePayment" msprop:Generator_ColumnPropNameInTable="ServicePaymentColumn" msprop:Generator_UserColumnName="ServicePayment" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="ServiceDiscount" msprop:Generator_ColumnVarNameInTable="columnServiceDiscount" msprop:Generator_ColumnPropNameInRow="ServiceDiscount" msprop:Generator_ColumnPropNameInTable="ServiceDiscountColumn" msprop:Generator_UserColumnName="ServiceDiscount" type="xs:decimal" default="0" minOccurs="0" />
               <xs:element name="ServiceNotes" msprop:Generator_ColumnVarNameInTable="columnServiceNotes" msprop:Generator_ColumnPropNameInRow="ServiceNotes" msprop:Generator_ColumnPropNameInTable="ServiceNotesColumn" msprop:Generator_UserColumnName="ServiceNotes" type="xs:string" minOccurs="0" />
+              <xs:element name="ServiceBalance" msprop:Generator_ColumnVarNameInTable="columnServiceBalance" msprop:Generator_ColumnPropNameInRow="ServiceBalance" msprop:Generator_ColumnPropNameInTable="ServiceBalanceColumn" msprop:Generator_UserColumnName="ServiceBalance" type="xs:decimal" default="0" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

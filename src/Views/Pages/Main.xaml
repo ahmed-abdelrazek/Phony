@@ -1,0 +1,127 @@
+﻿<Page x:Class="Phony.Views.Pages.Main"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:vm="clr-namespace:Phony.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="650" d:DesignWidth="750"
+      Title="Main" FlowDirection="RightToLeft">
+    <Page.DataContext>
+        <vm:MainPageVM/>
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="480*"/>
+            <ColumnDefinition MinWidth="220" MaxWidth="260"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+            <materialDesign:Flipper Margin="5,50,20,50" Style="{DynamicResource MaterialDesignCardFlipper}">
+                <materialDesign:Flipper.FrontContent>
+                    <Grid Height="300" Width="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="160" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone Mode="PrimaryLight" VerticalAlignment="Stretch">
+                            <materialDesign:PackIcon Kind="AccountCircle" Height="128" Width="128" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </materialDesign:ColorZone>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding UserName}" Margin="5" Foreground="{DynamicResource TextBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <Button Content="تعديل" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:Flipper.FlipCommand}" Margin="5,12,5,0"/>
+                            <Button Content="تسجيل الخروج" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding SignOut}" Margin="5,12,5,0"/>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Flipper.FrontContent>
+                <materialDesign:Flipper.BackContent>
+                    <Grid Height="350" Width="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone Mode="Accent" Padding="6">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Command="{x:Static materialDesign:Flipper.FlipCommand}" HorizontalAlignment="Left">
+                                    <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Right"/>
+                                </Button>
+                                <TextBlock Text="تعديل المستخدم" FontSize="14" FontWeight="Bold" Margin="8 0 0 0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </materialDesign:ColorZone>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBox materialDesign:HintAssist.Hint="الاسم" IsReadOnly="True" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding UserName}"/>
+                            <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="كلمة المرور الحالية" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Password}"/>
+                            <TextBox Grid.Row="2" materialDesign:HintAssist.Hint=" كلمة المرور الجديدة" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding NewPassword}"/>
+                            <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="الهاتف" Style="{DynamicResource MaterialDesignTextBox}" Foreground="{DynamicResource AccentColorBrush2}" Margin="5,12,5,0" Text="{Binding Phone}"/>
+                            <TextBlock Text="{Binding Group, StringFormat={} المجموعة: {0}}" Foreground="{DynamicResource AccentColorBrush2}" VerticalAlignment="Center" Grid.Row="4" Margin="5,12,5,0"/>
+                            <Button Content="حفظ" Grid.Row="5" Margin="5,10,5,10" HorizontalAlignment="Right" Command="{Binding SaveUser}"/>
+                        </Grid>
+                    </Grid>
+                </materialDesign:Flipper.BackContent>
+            </materialDesign:Flipper>
+        </StackPanel>
+        <Grid>
+            <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                <WrapPanel Margin="5,50">
+                    <Controls:Tile Title="الاصناف" Count="{Binding ItemsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenItemsWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="PackageVariant" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="العملاء" Count="{Binding ClientsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenClientsWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountMultiple" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="فواتير مبيعات" Margin="5" FontWeight="Bold" Command="{Binding OpenBillsWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="FileDocumentBox" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="طباعه فاتورة" Margin="5" FontWeight="Bold" Command="{Binding OpenSalesBillsWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Printer" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="نواقص" Count="{Binding ShortagesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenShortagesWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="PackageVariantClosed" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="خدمات شركات" Count="{Binding ServicesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenServicesWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Worker" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="موردين" Count="{Binding SuppliersCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenSuppliersWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="VanUtility" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="كروت شحن" Count="{Binding CardsCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenCardsWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="CreditCard" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="شركات" Count="{Binding CompaniesCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenCompaniesWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Briefcase" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="مندوبين" Count="{Binding SalesMenCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenSalesMenWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountSwitch" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="ارقام" Count="{Binding NumbersCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenNumbersWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Phone" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="مستخدمين" Count="{Binding UsersCount}" Margin="5" FontWeight="Bold" Command="{Binding OpenUsersWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="AccountMultipleOutline" />
+                    </Controls:Tile>
+                    <Controls:Tile Title="اخذ نسخه احتياطية" Margin="5" FontWeight="Bold" Command="{Binding TakeBackup}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="DatabasePlus"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="استرجاع نسخه احتياطية" Margin="5" FontWeight="Bold" Command="{Binding RestoreBackup}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Database"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="بيانات المحل" Margin="5" FontWeight="Bold" Command="{Binding OpenStoreInfoWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Store"/>
+                    </Controls:Tile>
+                    <Controls:Tile Title="الباركود" Margin="5" FontWeight="Bold" Command="{Binding OpenBarcodesWindow}">
+                        <materialDesign:PackIcon Margin="5" Height="48" Width="48" Kind="Barcode"/>
+                    </Controls:Tile>
+                </WrapPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

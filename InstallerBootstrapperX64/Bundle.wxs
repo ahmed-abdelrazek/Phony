@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-  <Bundle Name="Phony Full Setup" Version="1.3.1.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="DC600373-C1EE-483B-B332-C255AAB299CB">
+  <Bundle Name="Phony (Lite)" Version="1.0.0.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="033F24D5-39D9-4733-9B27-CEFC4DF4A3E2">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
       <bal:WixStandardBootstrapperApplication LicenseFile="..\Prerequisites\ReadMe.rtf" LogoFile="..\src\Resources\PhonyLogoWix.png"/>
     </BootstrapperApplicationRef>
 
     <util:RegistrySearch Id="NETFRAMEWORK47FULL" Root="HKLM" Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full" Value="Version" Result="value" Variable="DotNetInstall" Win64="yes"/>
-    <util:RegistrySearch Id="Sql12" Root="HKLM" Key="SOFTWARE\Microsoft\Microsoft SQL Server\110\ConfigurationState" Value="SQL_SNAC_CORE" Result="exists" Variable="Sql12" Win64="yes"/>
-    <util:RegistrySearch Id="Sql14" Root="HKLM" Key="SOFTWARE\Microsoft\Microsoft SQL Server\120\ConfigurationState" Value="SQL_SNAC_CORE" Result="exists" Variable="Sql14" Win64="yes"/>
-    <util:RegistrySearch Id="Sql16" Root="HKLM" Key="SOFTWARE\Microsoft\Microsoft SQL Server\130\ConfigurationState" Value="SQL_SNAC_CORE" Result="exists" Variable="Sql16" Win64="yes"/>
-    <util:RegistrySearch Id="Sql17" Root="HKLM" Key="SOFTWARE\Microsoft\Microsoft SQL Server\140\ConfigurationState" Value="SQL_WRITER" Result="exists" Variable="Sql17" Win64="yes"/>
-    <util:RegistrySearch Id="Sqlexpress" Root="HKLM" Key="SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS" Value="(Default)" Result="exists" Variable="Sqlexpress" Win64="yes"/>
     <Chain>
       <ExePackage Id="NetFx472" SourceFile="..\Prerequisites\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" Permanent="yes" InstallCommand="/q" RepairCommand="/q" DetectCondition="DotNetInstall" InstallCondition="NOT DotNetInstall >= 4703056"/>
-      <ExePackage Id="SQLEXPR2012" SourceFile="..\Prerequisites\SQLEXPR2012_x64_ENU.exe" Permanent="yes" Vital="no" InstallCommand="/QS /IACCEPTSQLSERVERLICENSETERMS /ACTION=Install /FEATURES=SQLEngine /INSTANCENAME=SQLEXPRESS /UpdateEnabled=False /INDICATEPROGRESS=False /SQLSVCSTARTUPTYPE=Automatic /BROWSERSVCSTARTUPTYPE=Automatic /ENABLERANU=True /NPENABLED=1 /TCPENABLED=1 /HIDECONSOLE" DetectCondition="Sql12 AND Sql14 AND Sql16 AND Sql17 AND Sqlexpress" InstallCondition="VersionNT64 >= v5.1 AND NOT (Sql12 OR Sql14 OR Sql16 OR Sql17) AND NOT Sqlexpress"/>
       <MsiPackage Id="CRx64" SourceFile="..\Prerequisites\CRRuntime_64bit_13_0_23.msi" Permanent="no" Vital="no" ForcePerMachine="yes" InstallCondition="VersionNT64 >= v5.1"/>
-      <MsiPackage Id="EasySetup" SourceFile="..\Installer\bin\Release\PhonySetup.msi"/>
+      <MsiPackage Id="LiteSetup" SourceFile="..\Installer\bin\Release\PhonyLiteSetup.msi"/>
     </Chain>
   </Bundle>
 </Wix>

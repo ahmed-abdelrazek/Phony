@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Phony_TargetDir=$(var.Phony.TargetDir)?>
-	<Product Id="*" Name="Phony" Language="1033" Version="1.3.1.0" Manufacturer="ShababConquer" UpgradeCode="0AFFCB47-42A5-4A25-B5D8-12972684287C">
+	<Product Id="*" Name="Phony (Lite)" Language="1033" Version="1.0.0.0" Manufacturer="ShababConquer" UpgradeCode="2DCCA644-076B-48D3-9F48-B524C8843029">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 		<?if $(var.Platform) = x64 ?>
 		<?define Win64 = "yes" ?>
@@ -9,12 +9,12 @@
 		<?define Win64 = "no" ?>
 		<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
 		<?endif?>
-		<?define ProductName = "Phony" ?>
+		<?define ProductName = "Phony (Lite)" ?>
 		<?define Manufacturer = "ShababConquer" ?>
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="Phony" Level="1">
+		<Feature Id="ProductFeature" Title="Phony (Lite)" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentGroupRef Id="DesktopFolder" />
 			<ComponentGroupRef Id="StartMenuFolder" />
@@ -38,14 +38,15 @@
 		</Directory>
 	</Fragment>
 
+
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLAppFOLDER">
-			<Component Id="Phony.exe" Guid="6c8862c9-027a-4b36-acca-6d6aee97700d">
-				<File Id="Phony.exe" Name="Phony.exe" Source="$(var.Phony_TargetDir)Phony.exe" />
-			</Component>
-			<Component Id="Phony.exe.config" Guid="0b9bfe21-6b9d-42cd-9590-ea489f84bff6">
-				<File Id="Phony.exe.config" Name="Phony.exe.config" Source="$(var.Phony_TargetDir)Phony.exe.config" />
-			</Component>
+      <Component Id="PhonyLite.exe" Guid="ec0de762-fbdd-4835-80a8-b3291452a0ea">
+        <File Id="PhonyLite.exe" Name="PhonyLite.exe" Source="$(var.Phony_TargetDir)PhonyLite.exe" />
+      </Component>
+      <Component Id="PhonyLite.exe.config" Guid="b698c981-96c2-4907-a38b-9d667fa006d1">
+        <File Id="PhonyLite.exe.config" Name="PhonyLite.exe.config" Source="$(var.Phony_TargetDir)PhonyLite.exe.config" />
+      </Component>
 			
 			<Component Id="BarcodeLib.dll" Guid="ac404896-94b4-44f1-bc3b-ee62348ae4cd">
 				<File Id="BarcodeLib.dll" Name="BarcodeLib.dll" Source="$(var.Phony_TargetDir)BarcodeLib.dll" />
@@ -68,14 +69,8 @@
 			<Component Id="Dragablz.dll" Guid="5ac73144-423c-4533-93ef-128a80794373">
 				<File Id="Dragablz.dll" Name="Dragablz.dll" Source="$(var.Phony_TargetDir)Dragablz.dll" />
 			</Component>
-			<Component Id="EntityFramework.dll" Guid="e1073a7c-781c-4839-af28-77648ca669e6">
-				<File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Phony_TargetDir)EntityFramework.dll" />
-			</Component>
 			<Component Id="Exceptionless.dll" Guid="54f0997c-1a49-4c35-a8de-9044a8aca0d6">
 				<File Id="Exceptionless.dll" Name="Exceptionless.dll" Source="$(var.Phony_TargetDir)Exceptionless.dll" />
-			</Component>
-			<Component Id="EntityFramework.SqlServer.dll" Guid="e3a23ff8-e325-423d-8ec1-51f9bc7f5941">
-				<File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.Phony_TargetDir)EntityFramework.SqlServer.dll" />
 			</Component>
 			<Component Id="Exceptionless.Wpf.dll" Guid="ddbbb704-663c-42ad-b04c-ef42c20cb59a">
 				<File Id="Exceptionless.Wpf.dll" Name="Exceptionless.Wpf.dll" Source="$(var.Phony_TargetDir)Exceptionless.Wpf.dll" />
@@ -95,12 +90,8 @@
 			<Component Id="MaterialDesignThemes.Wpf.dll" Guid="10ea9d0f-57bf-4383-8613-720a7cc11cdb">
 				<File Id="MaterialDesignThemes.Wpf.dll" Name="MaterialDesignThemes.Wpf.dll" Source="$(var.Phony_TargetDir)MaterialDesignThemes.Wpf.dll" />
 			</Component>
-			<Component Id="Microsoft.WindowsAPICodePack.dll" Guid="b1791145-39ce-4ef1-b783-ab287f06c2d2">
-				<File Id="Microsoft.WindowsAPICodePack.dll" Name="Microsoft.WindowsAPICodePack.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.dll" />
-			</Component>
-			<Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Guid="47128e4b-e400-4c15-9d31-8f37f6c04332">
-				<File Id="Microsoft.WindowsAPICodePack.Shell.dll" Name="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
-			</Component>
+			
+			
 			<Component Id="SAPBusinessObjects.WPF.Viewer.dll" Guid="8d628b50-dcde-4f58-83c3-69123cc38f3c">
 				<File Id="SAPBusinessObjects.WPF.Viewer.dll" Name="SAPBusinessObjects.WPF.Viewer.dll" Source="$(var.Phony_TargetDir)SAPBusinessObjects.WPF.Viewer.dll" />
 			</Component>
@@ -146,13 +137,25 @@
 			<Component Id="FlashControlV71.dll" Guid="a20db46d-a854-40de-88aa-c6a5f3343a8e">
 				<File Id="FlashControlV71.dll" Name="FlashControlV71.dll" Source="$(var.Phony_TargetDir)FlashControlV71.dll" />
 			</Component>
+			<Component Id="LiteDB.dll" Guid="91a5a19b-8d26-45b2-a92b-3cebc4078d2c">
+			  <File Id="LiteDB.dll" Name="LiteDB.dll" Source="$(var.Phony_TargetDir)LiteDB.dll" />
+			</Component>
+      <Component Id="Microsoft.Practices.ServiceLocation.dll" Guid="dece6b76-b277-4c53-b563-cd7e4946d1d8">
+        <File Id="Microsoft.Practices.ServiceLocation.dll" Name="Microsoft.Practices.ServiceLocation.dll" Source="$(var.Phony_TargetDir)Microsoft.Practices.ServiceLocation.dll" />
+      </Component>
+      <Component Id="Prism.Wpf.dll" Guid="fc1e7a43-4c82-4a69-8671-f0d699af7c36">
+        <File Id="Prism.Wpf.dll" Name="Prism.Wpf.dll" Source="$(var.Phony_TargetDir)Prism.Wpf.dll" />
+      </Component>
+      <Component Id="Prism.dll" Guid="8a54fe70-a7de-47c5-bba7-fa804ae277dc">
+        <File Id="Prism.dll" Name="Prism.dll" Source="$(var.Phony_TargetDir)Prism.dll" />
+      </Component>
 		</ComponentGroup>
 	</Fragment>
 	
 	<Fragment>
 		<ComponentGroup Id="DesktopFolder" Directory="DesktopFolder">
 			<Component Id="DesktopShortCutCom" Guid="ED4B06FB-2D19-49c7-8362-034C263308D9" Permanent="no" SharedDllRefCount="no" Transitive="no">
-				<Shortcut Id="DesktopShortCut" Directory="DesktopFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppDesktopIcon" WorkingDirectory="DesktopFolder">
+				<Shortcut Id="DesktopShortCut" Directory="DesktopFolder" Name="Phony (Lite).exe" Show="normal" Target="[INSTALLAppFOLDER]PhonyLite.exe" Icon="AppDesktopIcon" WorkingDirectory="DesktopFolder">
 					<Icon Id="AppDesktopIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
 				</Shortcut>
 				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="DesktopShortCutCom" Type="string" Value="User's Desktop directory" KeyPath="yes" />
@@ -164,7 +167,7 @@
 	<Fragment>
 		<ComponentGroup Id="StartMenuFolder" Directory="StartMenuFolder">
 			<Component Id="StartShortCut" Guid="CDA4377F-D267-4071-888A-67C19C90E15A" Permanent="no" SharedDllRefCount="no" Transitive="no">
-				<Shortcut Id="_21511C47_F730_4900_A7ED_AB82CF9DFFA2" Directory="StartMenuFolder" Name="Phony.exe" Show="normal" Target="[INSTALLAppFOLDER]Phony.exe" Icon="AppStartIcon" WorkingDirectory="StartMenuFolder">
+				<Shortcut Id="_21511C47_F730_4900_A7ED_AB82CF9DFFA2" Directory="StartMenuFolder" Name="Phony (Lite).exe" Show="normal" Target="[INSTALLAppFOLDER]PhonyLite.exe" Icon="AppStartIcon" WorkingDirectory="StartMenuFolder">
 					<Icon Id="AppStartIcon" SourceFile="..\src\Resources\PhonyIcon.ico" />
 				</Shortcut>
 				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Installer" Name="StartShortCut" Type="string" Value="User's Desktop directory" KeyPath="yes" />

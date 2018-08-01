@@ -6,7 +6,7 @@
     <ProductVersion>4.0</ProductVersion>
     <ProjectGuid>0b308f73-7957-4ca7-b3c3-306aad31cc94</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>PhonyBootstrapperX64</OutputName>
+    <OutputName>PhonyLiteBootstrapperX64</OutputName>
     <OutputType>Bundle</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\WiX Toolset\v4\wix.targets</WixTargetsPath>
   </PropertyGroup>
