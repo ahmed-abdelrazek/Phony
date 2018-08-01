@@ -9,7 +9,7 @@
     <Chain>
       <ExePackage Id="NetFx472" SourceFile="..\Prerequisites\NDP472-KB4054530-x86-x64-AllOS-ENU.exe" Permanent="yes" InstallCommand="/q" RepairCommand="/q" DetectCondition="DotNetInstall" InstallCondition="NOT DotNetInstall >= 4703056"/>
       <MsiPackage Id="CRx64" SourceFile="..\Prerequisites\CRRuntime_64bit_13_0_23.msi" Permanent="no" Vital="no" ForcePerMachine="yes" InstallCondition="VersionNT64 >= v5.1"/>
-      <MsiPackage Id="EasySetup" SourceFile="..\Installer\bin\Release\PhonyLiteSetup.msi"/>
+      <MsiPackage Id="LiteSetup" SourceFile="..\Installer\bin\Release\PhonyLiteSetup.msi"/>
     </Chain>
   </Bundle>
 </Wix>

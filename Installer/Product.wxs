@@ -47,9 +47,7 @@
       <Component Id="PhonyLite.exe.config" Guid="b698c981-96c2-4907-a38b-9d667fa006d1">
         <File Id="PhonyLite.exe.config" Name="PhonyLite.exe.config" Source="$(var.Phony_TargetDir)PhonyLite.exe.config" />
       </Component>
-			<Component Id="AttachedCommandBehavior.dll" Guid="293406b1-3482-4ba3-a32e-d25dde0d5161">
-				<File Id="AttachedCommandBehavior.dll" Name="AttachedCommandBehavior.dll" Source="$(var.Phony_TargetDir)AttachedCommandBehavior.dll" />
-			</Component>
+			
 			<Component Id="BarcodeLib.dll" Guid="ac404896-94b4-44f1-bc3b-ee62348ae4cd">
 				<File Id="BarcodeLib.dll" Name="BarcodeLib.dll" Source="$(var.Phony_TargetDir)BarcodeLib.dll" />
 			</Component>
@@ -92,12 +90,8 @@
 			<Component Id="MaterialDesignThemes.Wpf.dll" Guid="10ea9d0f-57bf-4383-8613-720a7cc11cdb">
 				<File Id="MaterialDesignThemes.Wpf.dll" Name="MaterialDesignThemes.Wpf.dll" Source="$(var.Phony_TargetDir)MaterialDesignThemes.Wpf.dll" />
 			</Component>
-			<Component Id="Microsoft.WindowsAPICodePack.dll" Guid="b1791145-39ce-4ef1-b783-ab287f06c2d2">
-				<File Id="Microsoft.WindowsAPICodePack.dll" Name="Microsoft.WindowsAPICodePack.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.dll" />
-			</Component>
-			<Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Guid="47128e4b-e400-4c15-9d31-8f37f6c04332">
-				<File Id="Microsoft.WindowsAPICodePack.Shell.dll" Name="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.Phony_TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" />
-			</Component>
+			
+			
 			<Component Id="SAPBusinessObjects.WPF.Viewer.dll" Guid="8d628b50-dcde-4f58-83c3-69123cc38f3c">
 				<File Id="SAPBusinessObjects.WPF.Viewer.dll" Name="SAPBusinessObjects.WPF.Viewer.dll" Source="$(var.Phony_TargetDir)SAPBusinessObjects.WPF.Viewer.dll" />
 			</Component>
@@ -146,6 +140,15 @@
 			<Component Id="LiteDB.dll" Guid="91a5a19b-8d26-45b2-a92b-3cebc4078d2c">
 			  <File Id="LiteDB.dll" Name="LiteDB.dll" Source="$(var.Phony_TargetDir)LiteDB.dll" />
 			</Component>
+      <Component Id="Microsoft.Practices.ServiceLocation.dll" Guid="dece6b76-b277-4c53-b563-cd7e4946d1d8">
+        <File Id="Microsoft.Practices.ServiceLocation.dll" Name="Microsoft.Practices.ServiceLocation.dll" Source="$(var.Phony_TargetDir)Microsoft.Practices.ServiceLocation.dll" />
+      </Component>
+      <Component Id="Prism.Wpf.dll" Guid="fc1e7a43-4c82-4a69-8671-f0d699af7c36">
+        <File Id="Prism.Wpf.dll" Name="Prism.Wpf.dll" Source="$(var.Phony_TargetDir)Prism.Wpf.dll" />
+      </Component>
+      <Component Id="Prism.dll" Guid="8a54fe70-a7de-47c5-bba7-fa804ae277dc">
+        <File Id="Prism.dll" Name="Prism.dll" Source="$(var.Phony_TargetDir)Prism.dll" />
+      </Component>
 		</ComponentGroup>
 	</Fragment>
 	
