@@ -108,12 +108,6 @@
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="Prism, Version=7.0.0.396, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.7.0.0.396\lib\net45\Prism.dll</HintPath>
     </Reference>
@@ -131,6 +125,7 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -186,6 +181,13 @@
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Data\Core.cs" />
     <Compile Include="Data\SecurePasswordHasher.cs" />
+    <Compile Include="Interop\comguids.cs" />
+    <Compile Include="Interop\errorhelper.cs" />
+    <Compile Include="Interop\helpers.cs" />
+    <Compile Include="Interop\nativemethods.cs" />
+    <Compile Include="Interop\nativetaskdialogshowstate.cs" />
+    <Compile Include="Interop\shellcominterfaces.cs" />
+    <Compile Include="Interop\shellwrapperdefinitions.cs" />
     <Compile Include="Models\BillServiceMove.cs" />
     <Compile Include="Models\ClientMove.cs" />
     <Compile Include="Models\CompanyMove.cs" />
@@ -292,6 +294,7 @@
     <Compile Include="Views\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPFFolderBrowserDialog.cs" />
     <Page Include="Controls\ColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

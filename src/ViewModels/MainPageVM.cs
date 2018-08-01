@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.Win32;
 using Phony.Data;
 using Phony.Extensions;
 using Phony.Models;
@@ -476,21 +476,14 @@ namespace Phony.ViewModels
             progressbar.SetIndeterminate();
             try
             {
-                var dlg = new CommonOpenFileDialog();
-                dlg.Title = "اختار نسخه احتياطية لاسترجعها";
-                dlg.IsFolderPicker = false;
-                dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
-                dlg.AddToMostRecentlyUsedList = false;
-                dlg.AllowNonFileSystemItems = false;
-                dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                dlg.EnsureFileExists = true;
-                dlg.EnsurePathExists = true;
-                dlg.Filters.Add(new CommonFileDialogFilter("Backup file", "*.bak"));
-                dlg.EnsureReadOnly = false;
-                dlg.EnsureValidNames = true;
-                dlg.Multiselect = false;
-                dlg.ShowPlacesList = true;
-                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                var dlg = new OpenFileDialog
+                {
+                    Title = "اختار نسخه احتياطية لاسترجعها",
+                    InitialDirectory = Properties.Settings.Default.BackUpsFolder,
+                    Filter = "Backup file|*.bak",
+                    CheckFileExists = true
+                };
+                if (dlg.ShowDialog() == true)
                 {
                     ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
                     File.Copy(dlg.FileName, ConnectionStringBuilder["Filename"].ToString(), true);
@@ -524,20 +517,13 @@ namespace Phony.ViewModels
             progressbar.SetIndeterminate();
             try
             {
-                var dlg = new CommonOpenFileDialog();
-                dlg.Title = "اختار مكان لحفظ النسخه الاحتياطية";
-                dlg.IsFolderPicker = true;
-                dlg.InitialDirectory = Properties.Settings.Default.BackUpsFolder;
-                dlg.AddToMostRecentlyUsedList = false;
-                dlg.AllowNonFileSystemItems = false;
-                dlg.DefaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                dlg.EnsureFileExists = true;
-                dlg.EnsurePathExists = true;
-                dlg.EnsureReadOnly = false;
-                dlg.EnsureValidNames = true;
-                dlg.Multiselect = false;
-                dlg.ShowPlacesList = true;
-                if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+                var dlg = new WPFFolderBrowserDialog
+                {
+                    Title = "اختار مكان لحفظ النسخه الاحتياطية",
+                    InitialDirectory = Properties.Settings.Default.BackUpsFolder,
+                    ShowPlacesList = true
+                };
+                if (dlg.ShowDialog() == true)
                 {
                     Properties.Settings.Default.BackUpsFolder = dlg.FileName;
                     if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))

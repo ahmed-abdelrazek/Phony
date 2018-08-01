@@ -12,8 +12,7 @@ https://shababco.blogspot.com/
 	6- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
 	7- Crystal Reports https://goo.gl/NCE3SQ
 	8- Exceptionless WPF https://github.com/exceptionless/Exceptionless
-	9- WindowsAPICodePack-Shell
-	10- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
+	9- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
 
 
 ## NOTE:
