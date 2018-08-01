@@ -162,6 +162,7 @@ namespace Phony.ViewModels
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     var bill = db.GetCollection<Bill>(DBCollections.Bills).FindById(id);
+                    var store = db.GetCollection<Store>(DBCollections.Stores).FindById(bill.Store.Id);
                     DataRow billdr = ds.Tables["Bill"].NewRow();
                     billdr["BillId"] = bill.Id;
                     billdr["BillDiscount"] = bill.Discount;
@@ -177,20 +178,20 @@ namespace Phony.ViewModels
                     {
                         billdr["UserName"] = db.GetCollection<User>(DBCollections.Users).FindById(bill.Editor.Id).Name;
                     }
-                    billdr["StoreName"] = bill.Store.Name;
-                    billdr["StoreImage"] = bill.Store.Image;
-                    billdr["Address1"] = bill.Store.Address1;
-                    billdr["Address2"] = bill.Store.Address2;
-                    billdr["Tel1"] = bill.Store.Tel1;
-                    billdr["Tel2"] = bill.Store.Tel2;
-                    billdr["Phone1"] = bill.Store.Phone1;
-                    billdr["Phone2"] = bill.Store.Phone2;
-                    billdr["Email1"] = bill.Store.Email1;
-                    billdr["Email2"] = bill.Store.Email2;
-                    billdr["Site"] = bill.Store.Site;
-                    billdr["StoreNotes"] = bill.Store.Notes;
+                    billdr["StoreName"] = store.Name;
+                    billdr["StoreImage"] = store.Image;
+                    billdr["Address1"] = store.Address1;
+                    billdr["Address2"] = store.Address2;
+                    billdr["Tel1"] = store.Tel1;
+                    billdr["Tel2"] = store.Tel2;
+                    billdr["Phone1"] = store.Phone1;
+                    billdr["Phone2"] = store.Phone2;
+                    billdr["Email1"] = store.Email1;
+                    billdr["Email2"] = store.Email2;
+                    billdr["Site"] = store.Site;
+                    billdr["StoreNotes"] = store.Notes;
                     billdr["BillCreateDate"] = bill.CreateDate;
-                    billdr["Motto"] = bill.Store.Motto;
+                    billdr["Motto"] = store.Motto;
                     ds.Tables["Bill"].Rows.Add(billdr);
                     var Items = db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Find(x => x.Bill.Id == id);
                     DataRow itemdr = ds.Tables["Items"].NewRow();
@@ -245,6 +246,7 @@ namespace Phony.ViewModels
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     var bill = db.GetCollection<Bill>(DBCollections.Bills).FindById(id);
+                    var store = db.GetCollection<Store>(DBCollections.Stores).FindById(bill.Store.Id);
                     DataRow billdr = ds.Tables["Bill"].NewRow();
                     billdr["BillId"] = bill.Id;
                     billdr["BillDiscount"] = bill.Discount;
@@ -260,20 +262,20 @@ namespace Phony.ViewModels
                     {
                         billdr["UserName"] = db.GetCollection<User>(DBCollections.Users).FindById(bill.Editor.Id).Name;
                     }
-                    billdr["StoreName"] = bill.Store.Name;
-                    billdr["StoreImage"] = bill.Store.Image;
-                    billdr["Address1"] = bill.Store.Address1;
-                    billdr["Address2"] = bill.Store.Address2;
-                    billdr["Tel1"] = bill.Store.Tel1;
-                    billdr["Tel2"] = bill.Store.Tel2;
-                    billdr["Phone1"] = bill.Store.Phone1;
-                    billdr["Phone2"] = bill.Store.Phone2;
-                    billdr["Email1"] = bill.Store.Email1;
-                    billdr["Email2"] = bill.Store.Email2;
-                    billdr["Site"] = bill.Store.Site;
-                    billdr["StoreNotes"] = bill.Store.Notes;
+                    billdr["StoreName"] = store.Name;
+                    billdr["StoreImage"] = store.Image;
+                    billdr["Address1"] = store.Address1;
+                    billdr["Address2"] = store.Address2;
+                    billdr["Tel1"] = store.Tel1;
+                    billdr["Tel2"] = store.Tel2;
+                    billdr["Phone1"] = store.Phone1;
+                    billdr["Phone2"] = store.Phone2;
+                    billdr["Email1"] = store.Email1;
+                    billdr["Email2"] = store.Email2;
+                    billdr["Site"] = store.Site;
+                    billdr["StoreNotes"] = store.Notes;
                     billdr["BillCreateDate"] = bill.CreateDate;
-                    billdr["Motto"] = bill.Store.Motto;
+                    billdr["Motto"] = store.Motto;
                     ds.Tables["Bill"].Rows.Add(billdr);
                     var Items = db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Find(x => x.Bill.Id == id);
                     DataRow itemdr = ds.Tables["Items"].NewRow();

@@ -174,8 +174,8 @@ namespace Phony.ViewModels
         {
             SelectForeColor = new DelegateCommand(DoSelectForeColor, CanSelectForeColor);
             SelectBackColor = new DelegateCommand(DoBackColor, CanBackColor);
-            Encode = new DelegateCommand(DoEncode, CanEncode);
-            Save = new DelegateCommand(DoSave, CanSave);
+            Encode = new DelegateCommand(DoEncode, CanEncode).ObservesProperty(()=> EncodeValue);
+            Save = new DelegateCommand(DoSave, CanSave).ObservesProperty(() => EncodedValue);
         }
 
         private bool CanSave()
