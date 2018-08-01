@@ -22,26 +22,48 @@ https://shababco.blogspot.com/
 
 ## Screenshots
 
-![Alt text](https://i.imgur.com/9gk8A0q.png "Login Window")
+![Alt text](Images\Capture01.PNG "Login Window")
 
-![Alt text](https://i.imgur.com/VTW6pyt.png "Normal Main Window")
+![Alt text](Images\Capture02.PNG "UI Settings")
 
-![Alt text](https://imgur.com/eiW2xTV.png "Maxmized Dark Main Window With Current User in Edit Mode")
+![Alt text](Images\Capture03.PNG "Database Settings")
 
-![Alt text](https://i.imgur.com/GQi0yEx.png "Settings Window")
+![Alt text](Images\Capture04.PNG "Move From SQLServer Version Settings")
 
-![Alt text](https://i.imgur.com/UOYcTq1.png "DB Settings Window")
+![Alt text](Images\Capture05.PNG "Move From SQLServer Version Advance Settings")
 
-![Alt text](https://imgur.com/vznG30G.png "Settings Window with some colors")
+![Alt text](Images\Capture06.PNG "Login Window with data")
 
-![Alt text](https://imgur.com/HW3zeQB.png "New Bill Window")
+![Alt text](Images\Capture07.PNG "Normal Main Window")
 
-![Alt text](https://imgur.com/Gy8GjPZ.png "Generate BarCode Window")
+![Alt text](Images\Capture08.PNG "Scrolled Normal Main Window")
 
-![Alt text](https://imgur.com/iT64tMy.png "Items Window")
+![Alt text](Images\Capture09.PNG "Maximized Main Window")
 
-![Alt text](https://i.imgur.com/N8138QU.png "Items Window with Add New Item Flyout panel opened 1")
+![Alt text](Images\Capture10.PNG "Items Window with 5000+ item")
 
-![Alt text](https://i.imgur.com/RhDLlTz.png "Items Window with Add New Item Flyout panel opened 2")
+![Alt text](Images\Capture11.PNG "Items Window with Add New Item Flyout panel opened 1")
 
-![Alt text](https://i.imgur.com/SD8EmJB.png "Store Info Window")
+![Alt text](Images\Capture12.PNG "Items Window with Add New Item Flyout panel opened 2")
+
+![Alt text](Images\Capture13.PNG "Sales Bills ")
+
+![Alt text](Images\Capture14.PNG "Add item to a sale bill")
+
+![Alt text](Images\Capture15.PNG "Sales bill with total discounts etc")
+
+![Alt text](Images\Capture16.PNG "A4 Sales Bill with item")
+
+![Alt text](Images\Capture17.PNG "A4 Sales Bill with service")
+
+![Alt text](Images\Capture18.PNG "A8 Sales Bill with item")
+
+![Alt text](Images\Capture19.PNG "A8 Sales Bill with service")
+
+![Alt text](Images\Capture21.PNG "Dark Login Window with different Accent and primary colors")
+
+![Alt text](Images\Capture22.PNG "Main Window with different Accent and primary colors")
+
+![Alt text](Images\Capture23.PNG "Main Window with different Accent and primary colors with edit current user")
+
+![Alt text](Images\Capture24.PNG "Barcode Encoder")
