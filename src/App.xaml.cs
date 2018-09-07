@@ -1,5 +1,4 @@
-﻿using Exceptionless;
-using MahApps.Metro;
+﻿using MahApps.Metro;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Diagnostics;
@@ -183,7 +182,6 @@ namespace Phony
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            ExceptionlessClient.Default.Register();
             if (string.IsNullOrWhiteSpace(Phony.Properties.Settings.Default.PrimaryColor))
             {
                 Phony.Properties.Settings.Default.PrimaryColor = "Teal";

@@ -1,5 +1,4 @@
-﻿using Exceptionless;
-using Exceptionless.Json;
+﻿using Newtonsoft.Json;
 using Phony.Models;
 using System;
 using System.Collections.Generic;
@@ -58,7 +57,6 @@ namespace Phony.Data
                     "----End of stack trace----\r\n"
                 }.ToArray());
             }
-            e.ToExceptionless().Submit();
         }
 
         /// <summary> 
@@ -90,7 +88,6 @@ namespace Phony.Data
                     e.StackTrace,
                     "----End of stack trace----\r\n"
                 }.ToArray());
-                e.ToExceptionless().Submit();
             });
         }
 

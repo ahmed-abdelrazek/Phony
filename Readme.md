@@ -6,12 +6,12 @@ https://shababco.blogspot.com/
 ## The Application uses:
 	1- LiteDB https://github.com/mbdavid/LiteDB
 	2- MahApps https://github.com/MahApps/MahApps.Metro
-	3- Modified version of MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
+	3- MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
 	4- Modified version of MaterialMessageBox https://github.com/denpalrius/Material-Message-Box
 	5- Modified version of BarcodeLib https://github.com/barnhill/barcodelib
 	6- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
 	7- Crystal Reports https://goo.gl/NCE3SQ
-	8- Exceptionless WPF https://github.com/exceptionless/Exceptionless
+	8- Newtonsoft.Json https://github.com/JamesNK/Newtonsoft.Json
 	9- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
 
 

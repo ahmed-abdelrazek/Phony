@@ -6,13 +6,13 @@ namespace Phony.Data
 {
     public class AssemblyInfo
     {
+        /// <summary>
+        /// Get the app info from the Assembly file
+        /// </summary>
+        /// <param name="assembly">Assembly.GetEntryAssembly()</param>
         public AssemblyInfo(Assembly assembly)
         {
-            if (assembly == null)
-            {
-                throw new ArgumentNullException("assembly");
-            }
-            this.assembly = assembly;
+            this.assembly = assembly ?? throw new ArgumentNullException("assembly");
         }
 
         private readonly Assembly assembly;
