@@ -17,8 +17,6 @@ namespace Phony
         internal NativeDialogShowState showState = NativeDialogShowState.PreShow;
 
         private IFileDialog nativeDialog;
-        //        private IFileDialogCustomize nativeDialogCustomize;
-        private NativeDialogEventSink nativeEventSink;
         private bool? canceled;
         private Window parentWindow;
 
@@ -64,13 +62,10 @@ namespace Phony
 
         internal void PopulateWithFileNames(Collection<string> names)
         {
-            IShellItemArray resultsArray;
-            uint count;
-            IShellItem directory;
             if (names != null)
             {
-                openDialogCoClass.GetResults(out resultsArray);
-                resultsArray.GetCount(out count);
+                openDialogCoClass.GetResults(out IShellItemArray resultsArray);
+                resultsArray.GetCount(out uint count);
 
                 names.Clear();
                 for (int i = 0; i < count; i++)
@@ -300,12 +295,12 @@ namespace Phony
             catch
             {
                 //If Vista Style dialog is unavailable, fall back to Windows Forms
-
-                System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-                dialog.SelectedPath = fileName;
-                dialog.ShowNewFolderButton = true;
-                dialog.Description = this.Title;
-
+                System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog
+                {
+                    SelectedPath = fileName,
+                    ShowNewFolderButton = true,
+                    Description = this.Title
+                };
                 result = (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK);
                 if (result.HasValue && result.Value)
                 {
@@ -352,10 +347,9 @@ namespace Phony
 
             if (directory != null)
             {
-                IShellItem folder;
                 try
                 {
-                    SHCreateItemFromParsingName(directory, IntPtr.Zero, new System.Guid(IIDGuid.IShellItem), out folder);
+                    SHCreateItemFromParsingName(directory, IntPtr.Zero, new System.Guid(IIDGuid.IShellItem), out IShellItem folder);
 
                     if (folder != null)
                         dialog.SetFolder(folder);
@@ -455,9 +449,7 @@ namespace Phony
 
         private IntPtr GetHandleFromWindow(Window window)
         {
-            if (window == null)
-                return NativeMethods.NO_PARENT;
-            return (new WindowInteropHelper(window)).Handle;
+            return window == null ? NativeMethods.NO_PARENT : (new WindowInteropHelper(window)).Handle;
         }
 
         private bool IsOptionSet(IFileDialog dialog, NativeMethods.FOS flag)
@@ -469,8 +461,7 @@ namespace Phony
 
         internal NativeMethods.FOS GetCurrentOptionFlags(IFileDialog dialog)
         {
-            NativeMethods.FOS currentFlags;
-            dialog.GetOptions(out currentFlags);
+            dialog.GetOptions(out NativeMethods.FOS currentFlags);
             return currentFlags;
         }
 
@@ -497,16 +488,14 @@ namespace Phony
 
         internal string GetFileNameFromShellItem(IShellItem item)
         {
-            string filename;
-            item.GetDisplayName(NativeMethods.SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out filename);
+            item.GetDisplayName(NativeMethods.SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out string filename);
             return filename;
         }
 
         internal IShellItem GetShellItemAt(IShellItemArray array, int i)
         {
-            IShellItem result;
             uint index = (uint)i;
-            array.GetItemAt(index, out result);
+            array.GetItemAt(index, out IShellItem result);
             return result;
         }
 

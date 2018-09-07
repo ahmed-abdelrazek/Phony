@@ -396,7 +396,7 @@ namespace Phony.Interop
         void GetId(out Guid pkfid);
 
         // Not yet supported - adding to fill slot in vtable
-        void spacer1();
+        void Spacer1();
         //[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         //void GetCategory(out mbtagKF_CATEGORY pCategory);
 
@@ -414,7 +414,7 @@ namespace Phony.Interop
         void GetRedirectionCapabilities(out uint pCapabilities);
 
         // Not yet supported - adding to fill slot in vtable
-        void spacer2();
+        void Spacer2();
         //[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         //void GetFolderDefinition(out tagKNOWNFOLDER_DEFINITION pKFD);
     }
