@@ -144,7 +144,7 @@ namespace Phony.ViewModels
         public ICommand ReloadAllCompanies { get; set; }
         public ICommand Search { get; set; }
 
-        Companies CompaniesMessage = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
+        Companies Message = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
 
         public CompaniesViewModel()
         {
@@ -195,19 +195,15 @@ namespace Phony.ViewModels
 
         private bool CanCompanyPay()
         {
-            if (DataGridSelectedCompany == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedCompany == null ? false : true;
         }
 
         private async void DoCompanyPayAsync()
         {
-            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}");
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await CompaniesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
@@ -228,7 +224,7 @@ namespace Phony.ViewModels
                             EditDate = null,
                             Editor = null
                         });
-                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        await Message.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
                         DebitCredit();
                         DataGridSelectedCompany = null;
@@ -237,26 +233,22 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    await CompaniesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
         private bool CanPayCompany()
         {
-            if (DataGridSelectedCompany == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedCompany == null ? false : true;
         }
 
         private async void DoPayCompanyAsync()
         {
-            var result = await CompaniesMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}");
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await CompaniesMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
             }
             else
             {
@@ -288,7 +280,7 @@ namespace Phony.ViewModels
                             EditDate = null,
                             Editor = null
                         });
-                        await CompaniesMessage.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                        await Message.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
                         Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
                         DebitCredit();
                         DataGridSelectedCompany = null;
@@ -297,21 +289,17 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    await CompaniesMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
         private bool CanAddCompany()
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) ? false : true;
         }
 
-        private void DoAddCompany()
+        private async void DoAddCompany()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -334,26 +322,22 @@ namespace Phony.ViewModels
                     };
                     db.GetCollection<Company>(DBCollections.Companies).Insert(s);
                     Companies.Add(s);
-                    CompaniesMessage.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
+                    await Message.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
                     DebitCredit();
                 }
                 else
                 {
-                    CompaniesMessage.ShowMessageAsync("موجود", "الشركة موجودة من قبل بالفعل");
+                    await Message.ShowMessageAsync("موجود", "الشركة موجودة من قبل بالفعل");
                 }
             }
         }
 
         private bool CanEditCompany()
         {
-            if (string.IsNullOrWhiteSpace(Name) || CompanyId == 0 || DataGridSelectedCompany == null)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || CompanyId == 0 || DataGridSelectedCompany == null ? false : true;
         }
 
-        private void DoEditCompany()
+        private async void DoEditCompany()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -368,7 +352,7 @@ namespace Phony.ViewModels
                 c.Editor = Core.ReadUserSession();
                 c.EditDate = DateTime.Now;
                 db.GetCollection<Company>(DBCollections.Companies).Update(c);
-                CompaniesMessage.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
                 Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
                 DebitCredit();
                 DataGridSelectedCompany = null;
@@ -378,16 +362,12 @@ namespace Phony.ViewModels
 
         private bool CanDeleteCompany()
         {
-            if (DataGridSelectedCompany == null || DataGridSelectedCompany.Id == 1)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedCompany == null || DataGridSelectedCompany.Id == 1 ? false : true;
         }
 
         private async void DoDeleteCompany()
         {
-            var result = await CompaniesMessage.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
@@ -395,7 +375,7 @@ namespace Phony.ViewModels
                     db.GetCollection<Company>(DBCollections.Companies).Delete(DataGridSelectedCompany.Id);
                     Companies.Remove(DataGridSelectedCompany);
                 }
-                await CompaniesMessage.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
                 DebitCredit();
                 DataGridSelectedCompany = null;
             }
@@ -403,14 +383,10 @@ namespace Phony.ViewModels
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -419,14 +395,14 @@ namespace Phony.ViewModels
                     Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name.Contains(SearchText)));
                     if (Companies.Count < 1)
                     {
-                        CompaniesMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
@@ -446,11 +422,7 @@ namespace Phony.ViewModels
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedCompany == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedCompany == null ? false : true;
         }
 
         private void DoFillUI()
@@ -494,14 +466,7 @@ namespace Phony.ViewModels
 
         private void DoOpenAddCompanyFlyout()
         {
-            if (IsAddCompanyFlyoutOpen)
-            {
-                IsAddCompanyFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddCompanyFlyoutOpen = true;
-            }
+            IsAddCompanyFlyoutOpen = IsAddCompanyFlyoutOpen ? false : true;
         }
     }
 }

@@ -145,11 +145,7 @@ namespace Phony.ViewModels
 
         private bool CanAddNo()
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) ? false : true;
         }
 
         private void DoAddNo()
@@ -175,11 +171,7 @@ namespace Phony.ViewModels
 
         private bool CanEditNo()
         {
-            if (string.IsNullOrWhiteSpace(Name) || NoId == 0 || DataGridSelectedNo == null)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || NoId == 0 || DataGridSelectedNo == null ? false : true;
         }
 
         private void DoEditNo()
@@ -202,11 +194,7 @@ namespace Phony.ViewModels
 
         private bool CanDeleteNo()
         {
-            if (DataGridSelectedNo == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedNo == null ? false : true;
         }
 
         private async void DoDeleteNo()
@@ -226,14 +214,10 @@ namespace Phony.ViewModels
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -251,14 +235,14 @@ namespace Phony.ViewModels
                     }
                     else
                     {
-                        Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
@@ -277,11 +261,7 @@ namespace Phony.ViewModels
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedNo == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedNo == null ? false : true;
         }
 
         private void DoFillUI()
@@ -300,14 +280,7 @@ namespace Phony.ViewModels
 
         private void DoOpenAddNoFlyout()
         {
-            if (IsAddNoFlyoutOpen)
-            {
-                IsAddNoFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddNoFlyoutOpen = true;
-            }
+            IsAddNoFlyoutOpen = IsAddNoFlyoutOpen ? false : true;
         }
     }
 }

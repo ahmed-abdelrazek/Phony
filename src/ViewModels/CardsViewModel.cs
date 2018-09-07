@@ -255,7 +255,7 @@ namespace Phony.ViewModels
         public ICommand ReloadAllCards { get; set; }
         public ICommand Search { get; set; }
 
-        Cards CardsMessage = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
+        Cards Message = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
 
         public CardsViewModel()
         {
@@ -298,7 +298,7 @@ namespace Phony.ViewModels
             return true;
         }
 
-        private void DoAddCard()
+        private async void DoAddCard()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -325,20 +325,18 @@ namespace Phony.ViewModels
                 };
                 itemCol.Insert(i);
                 Cards.Add(i);
-                CardsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
             }
         }
 
         private bool CanEditCard()
         {
-            if (string.IsNullOrWhiteSpace(Name) || CardId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || CardId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null
+                ? false
+                : true;
         }
 
-        private void DoEditCard()
+        private async void DoEditCard()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -361,22 +359,18 @@ namespace Phony.ViewModels
                 Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
                 CardId = 0;
                 DataGridSelectedItem = null;
-                CardsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
             }
         }
 
         private bool CanDeleteCard()
         {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedItem == null ? false : true;
         }
 
         private async void DoDeleteCard()
         {
-            var result = await CardsMessage.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
@@ -385,20 +379,16 @@ namespace Phony.ViewModels
                     Cards.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await CardsMessage.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
             }
         }
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -428,14 +418,14 @@ namespace Phony.ViewModels
                     }
                     else
                     {
-                        CardsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
@@ -454,11 +444,7 @@ namespace Phony.ViewModels
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedItem == null ? false : true;
         }
 
         private void DoFillUI()
@@ -506,14 +492,7 @@ namespace Phony.ViewModels
 
         private void DoOpenAddCardFlyout()
         {
-            if (IsAddCardFlyoutOpen)
-            {
-                IsAddCardFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddCardFlyoutOpen = true;
-            }
+            IsAddCardFlyoutOpen = IsAddCardFlyoutOpen ? false : true;
         }
     }
 }

@@ -750,7 +750,7 @@ namespace Phony.ViewModels
             return false;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -766,7 +766,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الاسم");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بهذا الاسم");
                         }
                     }
                     else if (ByBarCode)
@@ -780,7 +780,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بهذا الباركود");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بهذا الباركود");
                         }
                     }
                     else
@@ -794,7 +794,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد صنف بكود المحل هذا");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بكود المحل هذا");
                         }
                     }
                 }
@@ -810,7 +810,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الاسم");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بهذا الاسم");
                         }
                     }
                     else if (ByBarCode)
@@ -824,7 +824,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بهذا الباركود");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بهذا الباركود");
                         }
                     }
                     else
@@ -838,7 +838,7 @@ namespace Phony.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد كارت شحن بكود المحل هذا");
+                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بكود المحل هذا");
                         }
                     }
                 }
@@ -852,7 +852,7 @@ namespace Phony.ViewModels
                     else
                     {
                         SearchSelectedValue = 0;
-                        BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد خدمه بهذا الاسم");
+                        await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد خدمه بهذا الاسم");
                     }
                 }
             }

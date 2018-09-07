@@ -147,11 +147,7 @@ namespace Phony.ViewModels
 
         private bool CanAddUser()
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2) ? false : true;
         }
 
         private void DoAddUser()
@@ -191,11 +187,9 @@ namespace Phony.ViewModels
 
         private bool CanEditUser()
         {
-            if (string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2)
+                ? false
+                : true;
         }
 
         private void DoEditUser()
@@ -227,11 +221,7 @@ namespace Phony.ViewModels
 
         private bool CanDeleteUser()
         {
-            if (DataGridSelectedUser == null || DataGridSelectedUser.Id == 1)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedUser == null || DataGridSelectedUser.Id == 1 ? false : true;
         }
 
         private async void DoDeleteUser()
@@ -251,14 +241,10 @@ namespace Phony.ViewModels
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -267,14 +253,14 @@ namespace Phony.ViewModels
                     Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
                     if (Users.Count < 1)
                     {
-                        Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 

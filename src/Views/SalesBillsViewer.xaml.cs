@@ -1,11 +1,11 @@
-﻿using System.Windows;
+﻿using MahApps.Metro.Controls;
 
 namespace Phony.Views
 {
     /// <summary>
     /// Interaction logic for SalesBillsViewer.xaml
     /// </summary>
-    public partial class SalesBillsViewer : Window
+    public partial class SalesBillsViewer : MetroWindow
     {
         public SalesBillsViewer()
         {

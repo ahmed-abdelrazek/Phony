@@ -163,7 +163,7 @@ namespace Phony.ViewModels
         public ICommand FillUI { get; set; }
         public ICommand ReloadAllSalesMen { get; set; }
 
-        SalesMen SalesMenMessage = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
+        SalesMen Message = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
 
         public SalesMenViewModel()
         {
@@ -213,19 +213,15 @@ namespace Phony.ViewModels
 
         private bool CanSalesManPay()
         {
-            if (DataGridSelectedSalesMan == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedSalesMan == null ? false : true;
         }
 
         private async void DoSalesManPayAsync()
         {
-            var result = await SalesMenMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلامته من المندوب {DataGridSelectedSalesMan.Name}");
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلامته من المندوب {DataGridSelectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await SalesMenMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
             }
             else
             {
@@ -246,7 +242,7 @@ namespace Phony.ViewModels
                             EditDate = null,
                             Editor = null
                         });
-                        await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
+                        await Message.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
                         SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
                         DebitCredit();
                         DataGridSelectedSalesMan = null;
@@ -255,26 +251,22 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    await SalesMenMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
         private bool CanPaySalesMan()
         {
-            if (DataGridSelectedSalesMan == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedSalesMan == null ? false : true;
         }
 
         private async void DoPaySalesManAsync()
         {
-            var result = await SalesMenMessage.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
-                await SalesMenMessage.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
             }
             else
             {
@@ -305,7 +297,7 @@ namespace Phony.ViewModels
                             EditDate = null,
                             Editor = null
                         });
-                        await SalesMenMessage.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
+                        await Message.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
                         SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
                         DebitCredit();
                         DataGridSelectedSalesMan = null;
@@ -314,21 +306,17 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    await SalesMenMessage.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
                 }
             }
         }
 
         private bool CanAddSalesMan()
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) ? false : true;
         }
 
-        private void DoAddSalesMan()
+        private async void DoAddSalesMan()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -350,26 +338,22 @@ namespace Phony.ViewModels
                     };
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(c);
                     SalesMen.Add(c);
-                    SalesMenMessage.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
+                    await Message.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
                     DebitCredit();
                 }
                 else
                 {
-                    SalesMenMessage.ShowMessageAsync("موجود", "المندوب موجود من قبل بالفعل");
+                    await Message.ShowMessageAsync("موجود", "المندوب موجود من قبل بالفعل");
                 }
             }
         }
 
         private bool CanEditSalesMan()
         {
-            if (string.IsNullOrWhiteSpace(Name) || SalesManId == 0 || DataGridSelectedSalesMan == null)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || SalesManId == 0 || DataGridSelectedSalesMan == null ? false : true;
         }
 
-        private void DoEditSalesMan()
+        private async void DoEditSalesMan()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -383,7 +367,7 @@ namespace Phony.ViewModels
                 s.Editor = Core.ReadUserSession();
                 s.EditDate = DateTime.Now;
                 db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
-                SalesMenMessage.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
                 SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
                 DebitCredit();
                 DataGridSelectedSalesMan = null;
@@ -393,16 +377,12 @@ namespace Phony.ViewModels
 
         private bool CanDeleteSalesMan()
         {
-            if (DataGridSelectedSalesMan == null || DataGridSelectedSalesMan.Id == 1)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedSalesMan == null || DataGridSelectedSalesMan.Id == 1 ? false : true;
         }
 
         private async void DoDeleteSalesMan()
         {
-            var result = await SalesMenMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
@@ -410,7 +390,7 @@ namespace Phony.ViewModels
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
                     SalesMen.Remove(DataGridSelectedSalesMan);
                 }
-                await SalesMenMessage.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
                 DebitCredit();
                 DataGridSelectedSalesMan = null;
             }
@@ -418,14 +398,10 @@ namespace Phony.ViewModels
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -443,14 +419,14 @@ namespace Phony.ViewModels
                     }
                     else
                     {
-                        SalesMenMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
@@ -470,11 +446,7 @@ namespace Phony.ViewModels
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedSalesMan == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedSalesMan == null ? false : true;
         }
 
         private void DoFillUI()
@@ -496,14 +468,7 @@ namespace Phony.ViewModels
 
         private void DoOpenAddSalesManFlyout()
         {
-            if (IsAddSalesManFlyoutOpen)
-            {
-                IsAddSalesManFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddSalesManFlyoutOpen = true;
-            }
+            IsAddSalesManFlyoutOpen = IsAddSalesManFlyoutOpen ? false : true;
         }
     }
 }

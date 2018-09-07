@@ -1,3 +1,4 @@
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Phony.Data;
 using Phony.Extensions;
@@ -8,6 +9,8 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -143,6 +146,8 @@ namespace Phony.ViewModels
         public ICommand Encode { get; set; }
         public ICommand Save { get; set; }
 
+        readonly BarCodes Message = Application.Current.Windows.OfType<BarCodes>().FirstOrDefault();
+
         public BarcodesViewModel()
         {
             Foreground = barCode.ForeColor.ToHexString();
@@ -174,7 +179,7 @@ namespace Phony.ViewModels
         {
             SelectForeColor = new DelegateCommand(DoSelectForeColor, CanSelectForeColor);
             SelectBackColor = new DelegateCommand(DoBackColor, CanBackColor);
-            Encode = new DelegateCommand(DoEncode, CanEncode).ObservesProperty(()=> EncodeValue);
+            Encode = new DelegateCommand(DoEncode, CanEncode).ObservesProperty(() => EncodeValue);
             Save = new DelegateCommand(DoSave, CanSave).ObservesProperty(() => EncodedValue);
         }
 
@@ -220,7 +225,7 @@ namespace Phony.ViewModels
             return true;
         }
 
-        private void DoEncode()
+        private async void DoEncode()
         {
             int W = 202;
             int H = 101;
@@ -275,12 +280,12 @@ namespace Phony.ViewModels
                 {
                     try
                     {
-                        barCode.BarWidth = BarWidth < 1 ? 2 : (int?)BarWidth;
+                        barCode.BarWidth = BarWidth < 1 ? 2 : BarWidth;
                     }
                     catch (Exception ex)
                     {
                         Core.SaveException(ex);
-                        BespokeFusion.MaterialMessageBox.Show("هناك مشكله تخص عرض الكود");
+                        await Message.ShowMessageAsync("مشكلة", "هناك مشكله تخص عرض الكود");
                     }
                     try
                     {
@@ -289,19 +294,12 @@ namespace Phony.ViewModels
                     catch (Exception ex)
                     {
                         Core.SaveException(ex);
-                        BespokeFusion.MaterialMessageBox.Show("هناك مشكله تخص النسبة ");
+                        await Message.ShowMessageAsync("مشكلة ", "هناك مشكله تخص النسبة");
                     }
                     barCode.IncludeLabel = GenerateLabel;
                     barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);
 
-                    if (!String.IsNullOrEmpty(AlternateLabelText))
-                    {
-                        barCode.AlternateLabel = AlternateLabelText;
-                    }
-                    else
-                    {
-                        barCode.AlternateLabel = EncodeValue;
-                    }
+                    barCode.AlternateLabel = !String.IsNullOrEmpty(AlternateLabelText) ? AlternateLabelText : EncodeValue;
                     switch (LabelLocation)
                     {
                         case "اسفل - يمين": barCode.LabelPosition = BarcodeLib.LabelPositions.BOTTOMRIGHT; break;

@@ -232,7 +232,7 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding Balance}" Header="الشحن" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
-                <Controls:DataGridNumericUpDownColumn Binding="{Binding ServicePayment}" Header="التكلفة" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
+                <Controls:DataGridNumericUpDownColumn Binding="{Binding Cost}" Header="التكلفة" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
                 <Controls:DataGridNumericUpDownColumn Binding="{Binding Discount}" Header="الخصم" StringFormat="F" Minimum="0" FontFamily="Segoe UI"/>
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>

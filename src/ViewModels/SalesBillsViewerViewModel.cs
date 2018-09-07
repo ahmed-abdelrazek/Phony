@@ -1,11 +1,14 @@
 ﻿using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.Models;
+using Phony.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -139,6 +142,9 @@ namespace Phony.ViewModels
             BillSelectedValue = id;
             LoadReport(id);
         }
+
+
+        SalesBillsViewer Message = Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault();
 
         public void LoadCommands()
         {
@@ -346,7 +352,7 @@ namespace Phony.ViewModels
             return false;
         }
 
-        private void DoSaveReturned()
+        private async void DoSaveReturned()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -366,12 +372,12 @@ namespace Phony.ViewModels
                         }
                     }
                     db.GetCollection<Bill>(DBCollections.Bills).Update(b);
-                    BespokeFusion.MaterialMessageBox.Show("تم ارجاع الفاتورة بنجاح");
+                    await Message.ShowMessageAsync("نجاح العملية", "تم ارجاع الفاتورة بنجاح");
                 }
                 else
                 {
                     IsReturned = true;
-                    BespokeFusion.MaterialMessageBox.Show("لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
+                    await Message.ShowMessageAsync("خطأ", "لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
                 }
             }
         }

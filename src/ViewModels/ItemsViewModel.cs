@@ -262,7 +262,7 @@ namespace Phony.ViewModels
         public ICommand ReloadAllItems { get; set; }
         public ICommand Search { get; set; }
 
-        Items ItemsMessage = Application.Current.Windows.OfType<Items>().FirstOrDefault();
+        Items Message = Application.Current.Windows.OfType<Items>().FirstOrDefault();
 
         public ItemVM()
         {
@@ -298,14 +298,10 @@ namespace Phony.ViewModels
 
         private bool CanAddItem()
         {
-            if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 ? false : true;
         }
 
-        private void DoAddItem()
+        private async void DoAddItem()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -331,20 +327,18 @@ namespace Phony.ViewModels
                 };
                 db.GetCollection<Item>(DBCollections.Items).Insert(i);
                 Items.Add(i);
-                ItemsMessage.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
             }
         }
 
         private bool CanEditItem()
         {
-            if (string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null
+                ? false
+                : true;
         }
 
-        private void DoEditItem()
+        private async void DoEditItem()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -367,22 +361,18 @@ namespace Phony.ViewModels
                 Items[Items.IndexOf(DataGridSelectedItem)] = i;
                 ItemId = 0;
                 DataGridSelectedItem = null;
-                ItemsMessage.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
             }
         }
 
         private bool CanDeleteItem()
         {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedItem == null ? false : true;
         }
 
         private async void DoDeleteItem()
         {
-            var result = await ItemsMessage.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
@@ -391,20 +381,16 @@ namespace Phony.ViewModels
                     Items.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await ItemsMessage.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
+                await Message.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
             }
         }
 
         private bool CanSearch()
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
-            {
-                return false;
-            }
-            return true;
+            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private void DoSearch()
+        private async void DoSearch()
         {
             try
             {
@@ -435,14 +421,14 @@ namespace Phony.ViewModels
                     }
                     else
                     {
-                        ItemsMessage.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
+                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
                     }
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                BespokeFusion.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
             }
         }
 
