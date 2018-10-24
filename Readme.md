@@ -14,10 +14,13 @@ https://shababco.blogspot.com/
 	8- Newtonsoft.Json https://github.com/JamesNK/Newtonsoft.Json
 	9- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
 
-
-## NOTE:
-	1- You must install dot Netframework 4.7.1 or later.
-	2- Crystal Reports 13 SP 22 or later to have working reports (Optional)
+## How To Build:
+	1- You need Visual Studio 2017 Community Edition or higher with dot Netframework 4.7.1, NuGet and Desktop workload installed https://visualstudio.microsoft.com/
+	2- Crystal Reports 13 SP 23 for Visual Studio or higher https://www.crystalreports.com/crvs/confirm/
+	
+## How To Run:
+	1- You must install dot Netframework 4.7.1 or later https://www.microsoft.com/net/download/dotnet-framework-runtime/net471
+	2- Crystal Reports 13 SP 22 runtime or later to have working reports (Optional) https://goo.gl/NCE3SQ
 
 ## Screenshots
 
