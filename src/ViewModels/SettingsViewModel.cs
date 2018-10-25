@@ -364,7 +364,24 @@ namespace Phony.ViewModels
 
         private void DoSelectLiteDbFolder()
         {
-            throw new NotImplementedException();
+            var dlg = new WPFFolderBrowserDialog
+            {
+                Title = "مجلد لحفظ قاعدة البيانات",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                ShowPlacesList = true
+            };
+            if (dlg.ShowDialog() == true)
+            {
+                LiteDbFullPath = dlg.FileName;
+                if (!LiteDbFullPath.EndsWith("Phony.db"))
+                {
+                    if (!LiteDbFullPath.EndsWith("\\"))
+                    {
+                        LiteDbFullPath = LiteDbFullPath + "\\";
+                    }
+                    LiteDbFullPath += "Phony.db";
+                }
+            }
         }
 
         private bool CanMoveData()
