@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <?define Phony_TargetDir=$(var.Phony.TargetDir)?>
-  <Product Id="*" Name="Phony (Lite)" Language="1033" Version="1.0.0.0" Manufacturer="ShababConquer" UpgradeCode="2DCCA644-076B-48D3-9F48-B524C8843029">
+  <Product Id="*" Name="Phony (Lite)" Language="1033" Version="1.0.1.0" Manufacturer="ShababConquer" UpgradeCode="0BC74D6F-D73D-4680-872D-4851F197AD6C">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <?if $(var.Platform) = x64 ?>
     <?define Win64 = "yes" ?>

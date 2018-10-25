@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx" xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
-	<Bundle Name="Phony (Lite)" Version="1.0.0.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="D8C3D453-A303-4711-9B5C-C62C56A4C431">
+	<Bundle Name="Phony (Lite)" Version="1.0.1.0" Compressed="yes" Manufacturer="ShababConquer" UpgradeCode="0F8463E4-16B1-4045-99B5-D1DA81A3ADE8">
 		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
 			<bal:WixStandardBootstrapperApplication LicenseFile="..\Prerequisites\ReadMe.rtf" LogoFile="..\src\Resources\PhonyLogoWix.png"/>
 		</BootstrapperApplicationRef>
