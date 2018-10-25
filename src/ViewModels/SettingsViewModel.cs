@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -24,12 +25,12 @@ namespace Phony.ViewModels
         string _sqlUserName;
         string _sqlPassword;
         string _sqlDataBase;
+        string _appVersion;
         bool _liteUseDefault;
         bool _sqlUseDefault;
         bool _sqlIsWinAuth;
         bool _sqlIsSQLAuth;
         bool _sqlIsImporting;
-
 
         public int ReportsSizeIndex
         {
@@ -79,6 +80,12 @@ namespace Phony.ViewModels
             set => SetProperty(ref _sqlDataBase, value);
         }
 
+        public string AppVersion
+        {
+            get => _appVersion;
+            set => SetProperty(ref _appVersion, value);
+        }
+
         public bool LiteUseDefault
         {
             get => _liteUseDefault;
@@ -121,6 +128,8 @@ namespace Phony.ViewModels
 
         public SettingsViewModel()
         {
+            AssemblyInfo ai = new AssemblyInfo(Assembly.GetEntryAssembly());
+            AppVersion = "رقم الاصدار: " + ai.Version;
             if (Properties.Settings.Default.IsConfigured)
             {
                 LiteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;

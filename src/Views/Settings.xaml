@@ -86,6 +86,24 @@
                 <TabItem Header="النقل">
                     <UserControls:MSSQLMovement/>
                 </TabItem>
+                <TabItem Header="عن البرنامج">
+                    <RichTextBox IsReadOnly="True">
+                        <FlowDocument>
+                            <Paragraph TextAlignment="Justify" FontSize="36">تلفونى</Paragraph>
+                            <Paragraph TextAlignment="Justify" FontSize="24">هو برنامج حر و مفتوح المصدر تحت رخصة MIT مواجهه لادارة محلات الهواتف الصغيرة.</Paragraph>
+                            <Paragraph TextAlignment="Justify" FontSize="24">يمكنك الحصول على نسخة من الكود المصدرى من خلال زيارة الرابط
+                                <Hyperlink NavigateUri="https://github.com/ahmedflix25/Phony" TargetName="Github">https://github.com/ahmedflix25/Phony</Hyperlink>
+                                <LineBreak/>
+                                للتواصل مع المبرمج
+                                <LineBreak/>
+                                ahmed_master23@hotmail.com
+                            </Paragraph>
+                            <Paragraph TextAlignment="Justify" FontSize="24">
+                                <Run Text="{Binding AppVersion}"/>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+                </TabItem>
             </dragablz:TabablzControl>
         </dockablz:Layout>
     </StackPanel>
