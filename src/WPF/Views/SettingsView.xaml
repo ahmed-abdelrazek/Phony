@@ -1,0 +1,36 @@
+﻿<Controls:MetroWindow x:Class="Phony.WPF.Views.SettingsView"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+                      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:dockablz="clr-namespace:Dragablz.Dockablz;assembly=Dragablz"
+                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      dialogs:DialogParticipation.Register="{Binding}"
+                      xmlns:cal="http://www.caliburnproject.org"
+                      xmlns:local="clr-namespace:Phony.WPF.Views"
+                      xmlns:c="clr-namespace:Phony.WPF.Converters"
+                      mc:Ignorable="d"
+        Title="إعدادت" SizeToContent="Height" Width="800" WindowStartupLocation="CenterScreen" Icon="{DynamicResource settingsDrawingImage}" FlowDirection="RightToLeft">
+    <Controls:MetroWindow.Resources>
+        <ResourceDictionary>
+            <c:BooleanToVisibilityCollapsedConvertor x:Key="TrueToCollapsed"/>
+            <c:InverseBooleanConverter x:Key="InverseBool"/>
+        </ResourceDictionary>
+    </Controls:MetroWindow.Resources>
+    <StackPanel>
+        <dockablz:Layout>
+            <dragablz:TabablzControl BorderThickness="0" x:Name="Items" Controls:TabControlHelper.Underlined="SelectedTabItem">
+                <dragablz:TabablzControl.HeaderItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="DisplayName" Text="{Binding DisplayName}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </dragablz:TabablzControl.HeaderItemTemplate>
+            </dragablz:TabablzControl>
+        </dockablz:Layout>
+    </StackPanel>
+</Controls:MetroWindow>

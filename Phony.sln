@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28621.142
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phony", "src\Phony.csproj", "{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "src\WPF\WPF.csproj", "{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{E156EECD-9F9D-4939-BF84-B9E00BA7F700}"
 EndProject
@@ -17,6 +17,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstallerBootstrapperX64", 
 		{E156EECD-9F9D-4939-BF84-B9E00BA7F700} = {E156EECD-9F9D-4939-BF84-B9E00BA7F700}
 		{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC} = {2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCore", "src\DataCore\DataCore.csproj", "{514652A4-D240-49ED-8258-F87000000257}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,14 @@ Global
 		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|Any CPU.ActiveCfg = Release|x86
 		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|x86.ActiveCfg = Release|x86
 		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|x86.Build.0 = Release|x86
+		{514652A4-D240-49ED-8258-F87000000257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Debug|x86.Build.0 = Debug|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Release|x86.ActiveCfg = Release|Any CPU
+		{514652A4-D240-49ED-8258-F87000000257}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

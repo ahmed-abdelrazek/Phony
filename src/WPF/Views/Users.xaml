@@ -1,0 +1,74 @@
+﻿<Controls:MetroWindow x:Class="Phony.WPF.Views.Users"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:attach="clr-namespace:Phony.WPF.Helpers.AttachedCommandBehavior"
+                      xmlns:vm="clr-namespace:Phony.WPF.ViewModels"
+                      xmlns:w="clr-namespace:Phony.WPF.Helpers"
+                      mc:Ignorable="d"
+        Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_multiple_outlineDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Controls:MetroWindow.DataContext>
+        <vm:UsersViewModel/>
+    </Controls:MetroWindow.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="5">
+            <TextBlock Text="البحث"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5" Style="{StaticResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="ادخل اسم المستخدم"/>
+                <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionLightButton}" IsDefault="True" Margin="5" Width="30" Height="30" Command="{Binding Search}">
+                    <materialDesign:PackIcon Kind="Magnify" />
+                </Button>
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="اضافة" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding OpenAddUserFlyout}"/>
+                <Button Content="حذف" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding DeleteUser}"/>
+                <Button Content="تحميل الكل" Margin="5" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding ReloadAllUsers}"/>
+            </StackPanel>
+        </StackPanel>
+        <Controls:Flyout Header="بيانات المستخدم" Width="290" Theme="Adapt" IsOpen="{Binding IsAddUserFlyoutOpen}" Position="Left">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
+                <StackPanel FlowDirection="RightToLeft">
+                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5"/>
+                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password1, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5"/>
+                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password2, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5"/>
+                    <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding SelectedGroup}" SelectedValuePath="Id" DisplayMemberPath="Name" Style="{DynamicResource MaterialDesignComboBox}" materialDesign:HintAssist.Hint="صلاحيات" Margin="5"/>
+                    <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الرقم" Margin="5"/>
+                    <Controls:ToggleSwitch Content="نشط" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FlowDirection="LeftToRight" materialDesign:HintAssist.Hint="نشط" Margin="5"/>
+                    <TextBox materialDesign:HintAssist.Hint="ملاحظات" Margin="5" Style="{DynamicResource MaterialDesignTextAreaTextBox}" AcceptsReturn="True" Height="150" Width="250" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Content="اضافة" Margin="5" Command="{Binding AddUser}"/>
+                        <Button Content="تعديل" Margin="5" Command="{Binding EditUser}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Controls:Flyout>
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Users, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Column="1" Margin="1,0,0,1" SelectedItem="{Binding DataGridSelectedUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}" GridLinesVisibility="All">
+            <DataGrid.Resources>
+                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" Header="الاسم"/>
+                <DataGridTextColumn Binding="{Binding Phone}" Header="الرقم"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsActive}" Header="نشط"/>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Notes}" TextWrapping="Wrap" Margin="10,2,10,10" />
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+    </Grid>
+</Controls:MetroWindow>
