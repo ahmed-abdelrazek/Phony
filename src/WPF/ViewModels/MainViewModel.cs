@@ -270,7 +270,7 @@ namespace Phony.WPF.ViewModels
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            await CountEveryThing();
+            //await CountEveryThing();
         }
 
         public void OpenItemsWindow()

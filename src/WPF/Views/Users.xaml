@@ -5,14 +5,9 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:attach="clr-namespace:Phony.WPF.Helpers.AttachedCommandBehavior"
-                      xmlns:vm="clr-namespace:Phony.WPF.ViewModels"
-                      xmlns:w="clr-namespace:Phony.WPF.Helpers"
+                      xmlns:cal="http://www.caliburnproject.org"
                       mc:Ignorable="d"
         Title="المستخدمين" FlowDirection="RightToLeft" Height="450" Width="800" Icon="{DynamicResource account_multiple_outlineDrawingImage}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
-    <Controls:MetroWindow.DataContext>
-        <vm:UsersViewModel/>
-    </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -40,8 +35,8 @@
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FlowDirection="LeftToRight">
                 <StackPanel FlowDirection="RightToLeft">
                     <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الاسم" Margin="5"/>
-                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password1, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5"/>
-                    <PasswordBox w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Password2, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5"/>
+                    <PasswordBox x:Name="Password1" materialDesign:HintAssist.Hint="كلمة المرور" Margin="5"/>
+                    <PasswordBox x:Name="Password2" materialDesign:HintAssist.Hint="اعادة كلمة المرور" Margin="5"/>
                     <ComboBox ItemsSource="{Binding Groups}" SelectedValue="{Binding SelectedGroup}" SelectedValuePath="Id" DisplayMemberPath="Name" Style="{DynamicResource MaterialDesignComboBox}" materialDesign:HintAssist.Hint="صلاحيات" Margin="5"/>
                     <TextBox Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MaterialDesignTextBox}" materialDesign:HintAssist.Hint="الرقم" Margin="5"/>
                     <Controls:ToggleSwitch Content="نشط" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource MahApps.Metro.Styles.ToggleSwitch.Win10}" FlowDirection="LeftToRight" materialDesign:HintAssist.Hint="نشط" Margin="5"/>
@@ -53,7 +48,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Controls:Flyout>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Users, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Column="1" Margin="1,0,0,1" SelectedItem="{Binding DataGridSelectedUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}" GridLinesVisibility="All">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Users, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Column="1" Margin="1,0,0,1" SelectedItem="{Binding DataGridSelectedUser, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" cal:Message.Attach="[Event MouseDoubleClick] = [Action FillUI($this)]" GridLinesVisibility="All">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />

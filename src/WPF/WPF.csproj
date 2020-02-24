@@ -320,14 +320,7 @@
     <Compile Include="Extensions\Enumerations.cs" />
     <Compile Include="Extensions\ImageConverterExtensions.cs" />
     <Compile Include="Extensions\ReportSourceBehaviour.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\BehaviorBinding.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehavior.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehaviorBinding.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\CommandBehaviorCollection.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\EventHandlerGenerator.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\ExecutionStrategy.cs" />
-    <Compile Include="Helpers\AttachedCommandBehavior\SimpleCommand.cs" />
-    <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Data\Core.cs" />
     <Compile Include="Data\SecurePasswordHasher.cs" />
     <Compile Include="Models\BillServiceMove.cs" />

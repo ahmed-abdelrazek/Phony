@@ -14,6 +14,7 @@ namespace Phony.WPF
         public Bootstrapper()
         {
             Initialize();
+            ConventionManager.AddElementConvention<System.Windows.Controls.PasswordBox>(WPF.Helpers.PasswordBoxHelper.BoundPasswordProperty, "Password", "PasswordChanged");
         }
 
         protected override void Configure()

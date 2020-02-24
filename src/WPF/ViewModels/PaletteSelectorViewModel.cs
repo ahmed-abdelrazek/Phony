@@ -4,7 +4,6 @@ using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
@@ -78,9 +77,9 @@ namespace Phony.WPF.ViewModels
         {
             ModifyTheme(theme => theme.SetPrimaryColor(swatch.ExemplarHue.Color));
 
-            if (Properties.Settings.Default.PrimaryColor != swatch.ExemplarHue.Name)
+            if (Properties.Settings.Default.PrimaryColor != swatch.Name)
             {
-                Properties.Settings.Default.PrimaryColor = swatch.ExemplarHue.Name;
+                Properties.Settings.Default.PrimaryColor = swatch.Name;
                 Properties.Settings.Default.Save();
             }
         }
@@ -89,9 +88,9 @@ namespace Phony.WPF.ViewModels
         {
             ModifyTheme(theme => theme.SetSecondaryColor(swatch.AccentExemplarHue.Color));
 
-            if (Properties.Settings.Default.AccentColor != swatch.AccentExemplarHue.Name)
+            if (Properties.Settings.Default.AccentColor != swatch.Name)
             {
-                Properties.Settings.Default.AccentColor = swatch.AccentExemplarHue.Name;
+                Properties.Settings.Default.AccentColor = swatch.Name;
                 Properties.Settings.Default.Save();
             }
         }

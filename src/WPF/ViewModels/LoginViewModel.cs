@@ -3,14 +3,9 @@ using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Phony.WPF.ViewModels
 {

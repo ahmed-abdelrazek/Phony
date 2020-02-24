@@ -1,5 +1,4 @@
 ﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -122,7 +121,8 @@ namespace Phony.WPF
         }
 
         /// <summary>
-        /// Enumeration of the different ways of showing a window.</summary>
+        /// Enumeration of the different ways of showing a window.
+        /// </summary>
         internal enum WindowShowStyle : uint
         {
             /// <summary>Hides the window and activates another window.</summary>
@@ -184,31 +184,25 @@ namespace Phony.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(WPF.Properties.Settings.Default.PrimaryColor))
+            // if the app lost this data for some reason
+            // or the app runs for the first time
+            // it will load the default theme in App.xaml file
+            if (!string.IsNullOrEmpty(WPF.Properties.Settings.Default.PrimaryColor) && !string.IsNullOrEmpty(WPF.Properties.Settings.Default.AccentColor))
             {
-                WPF.Properties.Settings.Default.PrimaryColor = "Teal";
-                WPF.Properties.Settings.Default.Save();
-            }
-            if (string.IsNullOrWhiteSpace(WPF.Properties.Settings.Default.AccentColor))
-            {
-                WPF.Properties.Settings.Default.AccentColor = "Yellow";
-                WPF.Properties.Settings.Default.Save();
-            }
+                try
+                {
+                    IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
 
-            try
-            {
-                IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
+                    ViewModels.PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.PrimaryColor));
+                    ViewModels.PaletteSelectorViewModel.ApplyAccent(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.AccentColor));
 
-                ViewModels.PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.ExemplarHue.Name == WPF.Properties.Settings.Default.PrimaryColor));
-                ViewModels.PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.AccentExemplarHue.Name == WPF.Properties.Settings.Default.AccentColor));
-
-                ViewModels.PaletteSelectorViewModel.ApplyBase(WPF.Properties.Settings.Default.IsDarkTheme);
+                    ViewModels.PaletteSelectorViewModel.ApplyBase(WPF.Properties.Settings.Default.IsDarkTheme);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
             base.OnStartup(e);
         }
     }

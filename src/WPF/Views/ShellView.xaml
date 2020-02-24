@@ -1,17 +1,16 @@
 ﻿<Controls:MetroWindow x:Class="Phony.WPF.Views.ShellView"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:cal="http://www.caliburnproject.org"
-        xmlns:local="clr-namespace:Phony.WPF.Views"
-        mc:Ignorable="d" 
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:cal="http://www.caliburnproject.org"
+                      mc:Ignorable="d" 
         Title="Phony Lite" Height="500" Width="700" MinWidth="700" MinHeight="500" 
         FlowDirection="RightToLeft" TitleCharacterCasing="Normal" BorderThickness="1" 
-        BorderBrush="{Binding WindowTitleBrush, ElementName=metroWindow}" WindowStartupLocation="CenterScreen" 
-        Icon="/PhonyLite;component/Resources/PhonyLogo.png" cal:Message.Attach="[Event ContentRendered] = [Action Loaded]">
+        BorderBrush="{Binding WindowTitleBrush, RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterScreen" 
+        Icon="/PhonyLite;component/Resources/PhonyLogo.png" IconBitmapScalingMode="Fant" cal:Message.Attach="[Event ContentRendered] = [Action Loaded]">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Command="{Binding OpenSettingsWindow}">

@@ -16,7 +16,7 @@ namespace Phony.WPF.Data
         {
             lock (e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e);
                 string appPath = UserLocalAppFolderPath();
                 DateTime now = DateTime.Now;
                 string str = string.Concat(new object[] { now.Year, "-", now.Month, "-", now.Day, "//" });
@@ -46,7 +46,7 @@ namespace Phony.WPF.Data
         /// <param name="e">exception string</param>
         public async static Task SaveExceptionAsync(Exception e)
         {
-            Console.WriteLine(e.ToString());
+            Console.WriteLine(e);
             string appPath = UserLocalAppFolderPath();
             DateTime now = DateTime.Now;
             string str = string.Concat(new object[] { now.Year, "-", now.Month, "-", now.Day, "//" });

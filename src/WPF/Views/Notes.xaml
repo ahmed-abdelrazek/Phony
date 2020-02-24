@@ -5,7 +5,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:attach="clr-namespace:Phony.WPF.Helpers.AttachedCommandBehavior"
+                      xmlns:cal="http://www.caliburnproject.org"
                       xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
                       xmlns:converts="clr-namespace:Phony.WPF.Converters"
                       xmlns:vm="clr-namespace:Phony.WPF.ViewModels"
@@ -14,9 +14,6 @@
     <Controls:MetroWindow.Resources>
         <converts:BinaryImageConverter x:Key="ImageToSource"/>
     </Controls:MetroWindow.Resources>
-    <Controls:MetroWindow.DataContext>
-        <vm:NotesViewModel/>
-    </Controls:MetroWindow.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300"/>
@@ -56,7 +53,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Controls:Flyout>
-        <DataGrid IsReadOnly="True" ItemsSource="{Binding Numbers, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Column="1" Margin="1,0,0,1" SelectedItem="{Binding DataGridSelectedNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" attach:CommandBehavior.Event="MouseDoubleClick" attach:CommandBehavior.Command="{Binding FillUI}">
+        <DataGrid IsReadOnly="True" ItemsSource="{Binding Numbers, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GridLinesVisibility="All" AutoGenerateColumns="False" SelectedValuePath="Id" Grid.Column="1" Margin="1,0,0,1" SelectedItem="{Binding DataGridSelectedNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" cal:Message.Attach="[Event MouseDoubleClick] = [Action FillUI($this)]">
             <DataGrid.Resources>
                 <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}" />
