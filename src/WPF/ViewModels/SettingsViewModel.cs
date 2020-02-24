@@ -34,15 +34,15 @@ namespace Phony.WPF.ViewModels
             {
                 DisplayName = "عن البرنامج"
             });
-            ActivateItem(Items.First());
+            //ActivateItemAsync();
+            ActiveItem = Items.First();
         }
 
         public async Task HandleAsync(SettingsEvents message, CancellationToken cancellationToken)
         {
-            await Task.Delay(5);
             if (message.CloseWindow)
             {
-                TryClose();
+                await TryCloseAsync();
             }
         }
     }

@@ -1,6 +1,9 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -194,23 +197,16 @@ namespace Phony.WPF
 
             try
             {
-                new PaletteHelper().ReplacePrimaryColor(WPF.Properties.Settings.Default.PrimaryColor);
-                new PaletteHelper().ReplaceAccentColor(WPF.Properties.Settings.Default.AccentColor);
-                //Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
-                if (WPF.Properties.Settings.Default.IsDarkTheme)
-                {
-                    new PaletteHelper().SetLightDark(true);
-                    //ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme("BaseDark"));
-                }
-                else
-                {
-                    new PaletteHelper().SetLightDark(false);
-                    //ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(appStyle.Item2.Name), ThemeManager.GetAppTheme("BaseLight"));
-                }
+                IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
+
+                ViewModels.PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.ExemplarHue.Name == WPF.Properties.Settings.Default.PrimaryColor));
+                ViewModels.PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.AccentExemplarHue.Name == WPF.Properties.Settings.Default.AccentColor));
+
+                ViewModels.PaletteSelectorViewModel.ApplyBase(WPF.Properties.Settings.Default.IsDarkTheme);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex);
             }
 
             base.OnStartup(e);

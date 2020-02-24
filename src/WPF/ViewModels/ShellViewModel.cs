@@ -22,7 +22,7 @@ namespace Phony.WPF.ViewModels
             _windowManager = windowManager;
             _events = events;
             _events.SubscribeOnUIThread(this);
-            ActivateItem(_container.GetInstance<LoginViewModel>());
+            ActiveItem = _container.GetInstance<LoginViewModel>();
         }
 
         public void Loaded()
@@ -30,13 +30,13 @@ namespace Phony.WPF.ViewModels
             connectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
             if (string.IsNullOrWhiteSpace(connectionStringBuilder.ConnectionString) || !File.Exists(connectionStringBuilder["Filename"].ToString()) || !Properties.Settings.Default.IsConfigured)
             {
-                _windowManager.ShowDialog(_container.GetInstance<SettingsViewModel>());
+                _windowManager.ShowDialogAsync(_container.GetInstance<SettingsViewModel>());
             }
         }
 
         public async Task HandleAsync(User message, CancellationToken cancellationToken)
         {
-            ActivateItem(_container.GetInstance<MainViewModel>());
+            await ActivateItemAsync(_container.GetInstance<MainViewModel>(), cancellationToken);
             await Task.Delay(20);
         }
     }

@@ -63,25 +63,47 @@ namespace Phony.WPF.ViewModels
             Properties.Settings.Default.Save();
         }
 
-        private static void ApplyBase(bool isDark)
+        public static void ApplyBase(bool isDark)
         {
-            new PaletteHelper().SetLightDark(isDark);
-            Properties.Settings.Default.IsDarkTheme = isDark;
-            Properties.Settings.Default.Save();
+            ModifyTheme(theme => theme.SetBaseTheme(isDark ? Theme.Dark : Theme.Light));
+
+            if (Properties.Settings.Default.IsDarkTheme != isDark)
+            {
+                Properties.Settings.Default.IsDarkTheme = isDark;
+                Properties.Settings.Default.Save();
+            }
         }
 
-        private static void ApplyPrimary(Swatch swatch)
+        public static void ApplyPrimary(Swatch swatch)
         {
-            new PaletteHelper().ReplacePrimaryColor(swatch);
-            Properties.Settings.Default.PrimaryColor = swatch.Name;
-            Properties.Settings.Default.Save();
+            ModifyTheme(theme => theme.SetPrimaryColor(swatch.ExemplarHue.Color));
+
+            if (Properties.Settings.Default.PrimaryColor != swatch.ExemplarHue.Name)
+            {
+                Properties.Settings.Default.PrimaryColor = swatch.ExemplarHue.Name;
+                Properties.Settings.Default.Save();
+            }
         }
 
-        private static void ApplyAccent(Swatch swatch)
+        public static void ApplyAccent(Swatch swatch)
         {
-            new PaletteHelper().ReplaceAccentColor(swatch);
-            Properties.Settings.Default.AccentColor = swatch.Name;
-            Properties.Settings.Default.Save();
+            ModifyTheme(theme => theme.SetSecondaryColor(swatch.AccentExemplarHue.Color));
+
+            if (Properties.Settings.Default.AccentColor != swatch.AccentExemplarHue.Name)
+            {
+                Properties.Settings.Default.AccentColor = swatch.AccentExemplarHue.Name;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private static void ModifyTheme(Action<ITheme> modificationAction)
+        {
+            PaletteHelper paletteHelper = new PaletteHelper();
+            ITheme theme = paletteHelper.GetTheme();
+
+            modificationAction?.Invoke(theme);
+
+            paletteHelper.SetTheme(theme);
         }
     }
 }
