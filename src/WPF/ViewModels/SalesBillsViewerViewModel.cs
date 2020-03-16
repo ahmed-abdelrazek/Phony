@@ -1,18 +1,13 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class SalesBillsViewerViewModel : Screen
+    public class SalesBillsViewerViewModel : BaseViewModelWithAnnotationValidation
     {
         long _clientSelectedValue;
         long _billSelectedValue;
@@ -176,13 +171,12 @@ namespace Phony.WPF.ViewModels
 
         public SalesBillsViewerViewModel()
         {
+            Title = "طباعة الفواتير";
             ByBillNo = true;
             IsReturnedVisible = Visibility.Collapsed;
             FirstDate = SecondDate = DateTime.Now;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).FindAll());
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).FindAll());
         }
 
         public SalesBillsViewerViewModel(long id) : this()
@@ -190,9 +184,6 @@ namespace Phony.WPF.ViewModels
             BillSelectedValue = id;
             //LoadReport(id);
         }
-
-
-        SalesBillsViewer Message = Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault();
 
 
         void BillReturnedStatues(long id)
@@ -390,33 +381,31 @@ namespace Phony.WPF.ViewModels
             return false;
         }
 
-        private async void DoSaveReturned()
+        private void DoSaveReturned()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var b = db.GetCollection<Bill>(DBCollections.Bills).FindById(BillSelectedValue);
+            if (!b.IsReturned)
             {
-                var b = db.GetCollection<Bill>(DBCollections.Bills).FindById(BillSelectedValue);
-                if (!b.IsReturned)
+                b.IsReturned = IsReturned;
+                //b.Editor = Core.ReadUserSession();
+                b.EditDate = DateTime.Now;
+                if (b.TotalPayed < b.TotalAfterDiscounts)
                 {
-                    b.IsReturned = IsReturned;
-                    //b.Editor = Core.ReadUserSession();
-                    b.EditDate = DateTime.Now;
-                    if (b.TotalPayed < b.TotalAfterDiscounts)
+                    if (IsReturned)
                     {
-                        if (IsReturned)
-                        {
-                            var c = db.GetCollection<Client>(DBCollections.Clients).FindById(b.Client.Id);
-                            c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
-                            db.GetCollection<Client>(DBCollections.Clients).Update(c);
-                        }
+                        var c = db.GetCollection<Client>(DBCollections.Clients).FindById(b.Client.Id);
+                        c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
+                        db.GetCollection<Client>(DBCollections.Clients).Update(c);
                     }
-                    db.GetCollection<Bill>(DBCollections.Bills).Update(b);
-                    await Message.ShowMessageAsync("نجاح العملية", "تم ارجاع الفاتورة بنجاح");
                 }
-                else
-                {
-                    IsReturned = true;
-                    await Message.ShowMessageAsync("خطأ", "لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
-                }
+                db.GetCollection<Bill>(DBCollections.Bills).Update(b);
+                MessageBox.MaterialMessageBox.Show("تم ارجاع الفاتورة بنجاح", "نجاح العملية", true);
+            }
+            else
+            {
+                IsReturned = true;
+                MessageBox.MaterialMessageBox.ShowError("لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة", "خطأ", true);
             }
         }
 
@@ -431,38 +420,30 @@ namespace Phony.WPF.ViewModels
             {
                 if (ClientSelectedValue > 0 && FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-                    {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
-                    }
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                 }
             }
             else if (ByClientName)
             {
                 if (ClientSelectedValue > 0)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-                    {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue));
-                    }
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue));
                 }
             }
             else if (By2Dates)
             {
                 if (FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-                    {
-                        Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
-                    }
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                 }
             }
             else
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-                {
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).FindAll());
-                }
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).FindAll());
             }
         }
     }

@@ -1,23 +1,31 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using Microsoft.Extensions.DependencyInjection;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
+using Phony.WPF.Views;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class LoginViewModel : Screen
+    public class LoginViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
+        private IServiceProvider serviceProvider;
+        private IWindowManager windowManager;
+
         string _userName;
         string _password;
         bool _isLogging;
-        SimpleContainer _container;
 
-        IEventAggregator _events;
-
+        [Required(ErrorMessage = "حقل مطلوب")]
         public string UserName
         {
             get => _userName;
@@ -25,10 +33,10 @@ namespace Phony.WPF.ViewModels
             {
                 _userName = value;
                 NotifyOfPropertyChange(() => UserName);
-                NotifyOfPropertyChange(() => CanLogin);
             }
         }
 
+        [Required(ErrorMessage = "حقل مطلوب")]
         public string Password
         {
             get => _password;
@@ -36,7 +44,6 @@ namespace Phony.WPF.ViewModels
             {
                 _password = value;
                 NotifyOfPropertyChange(() => Password);
-                NotifyOfPropertyChange(() => CanLogin);
             }
         }
 
@@ -50,49 +57,75 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public LoginViewModel(IEventAggregator events, SimpleContainer container)
+        public ICommand Login { get; }
+        public ICommand OpenSettingsWindow { get; }
+
+        DbConnectionStringBuilder connectionStringBuilder = new DbConnectionStringBuilder();
+
+        public LoginViewModel(IServiceProvider serviceProvider, IWindowManager windowManager)
         {
-            _events = events;
-            _container = container;
+            this.serviceProvider = serviceProvider;
+            this.windowManager = windowManager;
+
+            Login = new AsyncRelayCommand<PasswordBox>(DoLogin, CanLogin);
+            OpenSettingsWindow = new RelayCommand(DoOpenSettingsWindow);
         }
 
-        public bool CanLogin
+        public Task OnLoadedAsync()
         {
-            get
+            connectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
+            if (string.IsNullOrWhiteSpace(connectionStringBuilder.ConnectionString) || !File.Exists(connectionStringBuilder["Filename"].ToString()) || !Properties.Settings.Default.IsConfigured)
             {
-                return !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password);
+                windowManager.ShowDialog<SettingsViewModel>();
             }
+            return Task.CompletedTask;
         }
 
-        public async Task Login()
+        public bool CanLogin(PasswordBox pass)
         {
+            var password = pass.Password;
+            return !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(password);
+        }
+
+        public async Task DoLogin(PasswordBox pass)
+        {
+            var password = pass.Password;
+
             if (!IsLogging)
             {
                 IsLogging = true;
                 try
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    User u = null;
+                    await Task.Run(() =>
                     {
-                        User u = null;
-                        await Task.Run(() =>
+                        u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Name == UserName).FirstOrDefault();
+                    });
+                    if (u == null)
+                    {
+                        MessageBox.MaterialMessageBox.ShowWarning("تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط", "خطا", true);
+                    }
+                    else
+                    {
+                        if (SecurePasswordHasher.Verify(password, u.Pass))
                         {
-                            u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Name == UserName).FirstOrDefault();
-                        });
-                        if (u == null)
-                        {
-                            await DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                            var m = serviceProvider.GetRequiredService<MainViewModel>();
+                            m.CurrentUser = new User
+                            {
+                                Id = u.Id,
+                                Name = u.Name,
+                                Group = u.Group,
+                                Phone = u.Phone,
+                                Notes = u.Notes,
+                                IsActive = u.IsActive
+                            };
+                            windowManager.ShowWindow(m);
+                            Application.Current.Windows.OfType<LoginView>().FirstOrDefault().Close();
                         }
                         else
                         {
-                            if (SecurePasswordHasher.Verify(Password, u.Pass))
-                            {
-                                u.Pass = null;
-                                await _events.PublishOnUIThreadAsync(u);
-                            }
-                            else
-                            {
-                                await DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
-                            }
+                            MessageBox.MaterialMessageBox.ShowWarning("تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط", "خطا", true);
                         }
                     }
                 }
@@ -106,5 +139,9 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        public void DoOpenSettingsWindow()
+        {
+            windowManager.ShowWindow(serviceProvider.GetRequiredService<SettingsViewModel>());
+        }
     }
 }

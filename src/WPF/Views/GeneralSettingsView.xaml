@@ -4,11 +4,13 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-             dialogs:DialogParticipation.Register="{Binding}"
              xmlns:c="clr-namespace:Phony.WPF.Converters"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" FlowDirection="RightToLeft">
+             xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:GeneralSettingsViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
+    <UserControl.DataContext>
+        <ViewModels:GeneralSettingsViewModel/>
+    </UserControl.DataContext>
     <UserControl.Resources>
         <ResourceDictionary>
             <c:BooleanToVisibilityCollapsedConvertor x:Key="TrueToCollapsed"/>
@@ -53,7 +55,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="LiteDbFullPath" materialDesign:HintAssist.Hint="المسار الكامل" Height="45" MinWidth="250" FlowDirection="LeftToRight" HorizontalScrollBarVisibility="Auto"/>
+                    <TextBox Text="{Binding LiteDbFullPath}" materialDesign:HintAssist.Hint="المسار الكامل" Height="45" MinWidth="250" FlowDirection="LeftToRight" HorizontalScrollBarVisibility="Auto"/>
                     <Button x:Name="SelectLiteDbFolder" Grid.Column="1" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
                         <materialDesign:PackIcon Kind="Folder"/>
                     </Button>
@@ -62,7 +64,7 @@
                 <TextBox Text="{Binding LiteDbPassword}" MinWidth="250" materialDesign:HintAssist.Hint="Password" FlowDirection="LeftToRight"/>
             </StackPanel>
         </StackPanel>
-        <Button x:Name="SaveDbConfig" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="10" Height="48">
+        <Button Command="{Binding SaveDbConfig}" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True" Margin="10" Height="48">
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="حفظ " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
                 <materialDesign:PackIcon VerticalAlignment="Center" Height="32" Width="32" Kind="ContentSave" />

@@ -1,14 +1,10 @@
-﻿using Caliburn.Micro;
-using MahApps.Metro.Controls.Dialogs;
-using Phony.WPF.Data;
-using Phony.WPF.EventModels;
+﻿using Phony.WPF.Data;
 using System;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace Phony.WPF.ViewModels
 {
-    public class MSSQLMovementViewModel : Screen
+    public class MSSQLMovementViewModel : BaseViewModelWithAnnotationValidation
     {
         string _sqlServerName;
         string _sqlUserName;
@@ -18,9 +14,6 @@ namespace Phony.WPF.ViewModels
         bool _sqlIsWinAuth;
         bool _sqlIsSQLAuth;
         bool _sqlIsImporting;
-
-        IEventAggregator _events;
-        SettingsEvents settingsEvents;
 
         public string SQLServerName
         {
@@ -112,9 +105,8 @@ namespace Phony.WPF.ViewModels
 
         SqlConnectionStringBuilder SQLConnectionStringBuilder = new SqlConnectionStringBuilder();
 
-        public MSSQLMovementViewModel(IEventAggregator events)
+        public MSSQLMovementViewModel()
         {
-            _events = events;
             SQLUseDefault = true;
             SQLIsWinAuth = true;
             SQLServerName = ".\\SQLExpress";
@@ -137,18 +129,14 @@ namespace Phony.WPF.ViewModels
                 {
                     if (!string.IsNullOrWhiteSpace(SQLServerName) && !string.IsNullOrWhiteSpace(SQLDataBase))
                     {
-                        if (SQLIsSQLAuth && (string.IsNullOrWhiteSpace(SQLUserName) || string.IsNullOrWhiteSpace(SQLPassword)))
-                        {
-                            return false;
-                        }
-                        return true;
+                        return !SQLIsSQLAuth || !string.IsNullOrWhiteSpace(SQLUserName) && !string.IsNullOrWhiteSpace(SQLPassword);
                     }
                 }
                 return false;
             }
         }
 
-        public async Task MoveData()
+        public void MoveData()
         {
             SQLIsImporting = true;
             if (SQLUseDefault)
@@ -177,18 +165,13 @@ namespace Phony.WPF.ViewModels
             {
                 new SQL(SQLConnectionStringBuilder.ConnectionString).ImportFromMSSQL();
 
-                if (!Properties.Settings.Default.IsConfigured)
-                {
-                    settingsEvents.CloseWindow = true;
-                }
-
                 Properties.Settings.Default.IsConfigured = true;
             }
             catch (Exception ex)
             {
                 Properties.Settings.Default.IsConfigured = false;
                 Core.SaveException(ex);
-                await DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "حدثت مشكلة اثناء عمليه النقل من فضلك تاكد من صحه البيانات");
+                MessageBox.MaterialMessageBox.ShowError("حدثت مشكلة اثناء عمليه النقل من فضلك تاكد من صحه البيانات", "خطأ", true);
             }
             finally
             {
@@ -196,9 +179,8 @@ namespace Phony.WPF.ViewModels
                 SQLIsImporting = false;
                 if (Properties.Settings.Default.IsConfigured)
                 {
-                    await DialogCoordinator.Instance.ShowMessageAsync(this, "تمت العملية", "تم نقل بياناتك بنجاح");
+                    MessageBox.MaterialMessageBox.Show("تم نقل بياناتك بنجاح", "تمت العملية", true);
                 }
-                await _events.PublishOnBackgroundThreadAsync(settingsEvents);
             }
         }
 

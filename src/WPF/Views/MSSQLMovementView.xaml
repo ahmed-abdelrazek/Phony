@@ -5,10 +5,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="clr-namespace:Phony.WPF.Converters"
-             xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-             dialogs:DialogParticipation.Register="{Binding}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="400" FlowDirection="RightToLeft">
+             xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:MSSQLMovementViewModel}"
+             d:DesignHeight="450" d:DesignWidth="400" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
     <UserControl.Resources>
         <ResourceDictionary>
             <c:BooleanToVisibilityCollapsedConvertor x:Key="TrueToCollapsed"/>

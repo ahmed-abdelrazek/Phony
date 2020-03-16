@@ -1,5 +1,4 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
 using Phony.WPF.Extensions;
@@ -8,12 +7,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class UsersViewModel : Screen
+    public class UsersViewModel : BaseViewModelWithAnnotationValidation
     {
         int _userId;
         string _name;
@@ -151,10 +148,9 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        Views.Users Message = Application.Current.Windows.OfType<Views.Users>().FirstOrDefault();
-
         public UsersViewModel()
         {
+            Title = "المستخدمين";
             IsUserActive = true;
             Groups = new ObservableCollection<Enumeration<byte>>();
             foreach (var group in Enum.GetValues(typeof(UserGroup)))
@@ -165,10 +161,8 @@ namespace Phony.WPF.ViewModels
                     Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
                 });
             }
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
         }
 
         private bool CanAddUser()
@@ -193,21 +187,21 @@ namespace Phony.WPF.ViewModels
                             Group = (UserGroup)SelectedGroup,
                             Phone = Phone,
                             Notes = Notes,
-                            IsActive = IsActive
+                            IsActive = IsUserActive
                         };
                         userCol.Insert(u);
                         Users.Add(u);
-                        Message.ShowMessageAsync("تمت العملية", "تم اضافة المستخدم بنجاح");
+                        MessageBox.MaterialMessageBox.Show("تم اضافة المستخدم بنجاح", "تمت العملية", true);
                     }
                     else
                     {
-                        Message.ShowMessageAsync("تكرار مستخدمين", "هناك مستخدم بنفس الاسم بالفعل");
+                        MessageBox.MaterialMessageBox.ShowWarning("هناك مستخدم بنفس الاسم بالفعل", "تكرار مستخدمين", true);
                     }
                 }
             }
             else
             {
-                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+                MessageBox.MaterialMessageBox.ShowWarning("كلمتى المرور غير متطابقتين", "تاكد من الباسورد", true);
             }
         }
 
@@ -231,17 +225,17 @@ namespace Phony.WPF.ViewModels
                     u.Group = (UserGroup)SelectedGroup;
                     u.Phone = Phone;
                     u.Notes = Notes;
-                    u.IsActive = IsActive;
+                    u.IsActive = IsUserActive;
                     userCol.Update(u);
                     Users[Users.IndexOf(DataGridSelectedUser)] = u;
                     UserId = 0;
                     DataGridSelectedUser = null;
-                    Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
+                    MessageBox.MaterialMessageBox.Show("تم تعديل المستخدم بنجاح", "تمت العملية", true);
                 }
             }
             else
             {
-                Message.ShowMessageAsync("تاكد من الباسورد", "كلمتى المرور غير متطابقتين");
+                MessageBox.MaterialMessageBox.ShowWarning("كلمتى المرور غير متطابقتين", "تاكد من الباسورد", true);
             }
         }
 
@@ -250,10 +244,10 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedUser == null || DataGridSelectedUser.Id == 1 ? false : true;
         }
 
-        private async void DoDeleteUser()
+        private void DoDeleteUser()
         {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", "حذف الرقم", true);
+            if (result == System.Windows.MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
@@ -261,7 +255,7 @@ namespace Phony.WPF.ViewModels
                     Users.Remove(DataGridSelectedUser);
                 }
                 DataGridSelectedUser = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                MessageBox.MaterialMessageBox.Show("تمت العملية", "تم حذف المستخدم بنجاح");
             }
         }
 
@@ -270,23 +264,21 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
+                if (Users.Count < 1)
                 {
-                    Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
-                    if (Users.Count < 1)
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 
@@ -297,19 +289,13 @@ namespace Phony.WPF.ViewModels
 
         private void DoReloadAllUsers()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
         }
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedUser == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedUser != null;
         }
 
         private void DoFillUI()
@@ -330,14 +316,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddUserFlyout()
         {
-            if (IsAddUserFlyoutOpen)
-            {
-                IsAddUserFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddUserFlyoutOpen = true;
-            }
+            IsAddUserFlyoutOpen = !IsAddUserFlyoutOpen;
         }
     }
 }

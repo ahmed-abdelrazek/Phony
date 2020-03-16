@@ -1,9 +1,6 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -11,11 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ItemVM : Screen
+    public class ItemsViewModel : BaseViewModelWithAnnotationValidation
     {
         long _itemId;
         long _selectedCompanyValue;
@@ -384,10 +380,9 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        Items Message = Application.Current.Windows.OfType<Items>().FirstOrDefault();
-
-        public ItemVM()
+        public ItemsViewModel()
         {
+            Title = "الاصناف";
             ByName = true;
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -410,34 +405,32 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 ? false : true;
         }
 
-        private async void DoAddItem()
+        private void DoAddItem()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var i = new Item
             {
-                var i = new Item
-                {
-                    Name = Name,
-                    Barcode = Barcode,
-                    Shopcode = Shopcode,
-                    Image = Image,
-                    Group = ItemGroup.Other,
-                    PurchasePrice = PurchasePrice,
-                    WholeSalePrice = WholeSalePrice,
-                    HalfWholeSalePrice = HalfWholeSalePrice,
-                    RetailPrice = RetailPrice,
-                    QTY = QTY,
-                    Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
-                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
-                    Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
-                };
-                db.GetCollection<Item>(DBCollections.Items).Insert(i);
-                Items.Add(i);
-                await Message.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
-            }
+                Name = Name,
+                Barcode = Barcode,
+                Shopcode = Shopcode,
+                Image = Image,
+                Group = ItemGroup.Other,
+                PurchasePrice = PurchasePrice,
+                WholeSalePrice = WholeSalePrice,
+                HalfWholeSalePrice = HalfWholeSalePrice,
+                RetailPrice = RetailPrice,
+                QTY = QTY,
+                Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
+                Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
+                Notes = Notes,
+                CreateDate = DateTime.Now,
+                //Creator = Core.ReadUserSession(),
+                EditDate = null,
+                Editor = null
+            };
+            db.GetCollection<Item>(DBCollections.Items).Insert(i);
+            Items.Add(i);
+            MessageBox.MaterialMessageBox.Show("تم اضافة الصنف بنجاح", "تمت العملية", true);
         }
 
         private bool CanEditItem()
@@ -447,31 +440,29 @@ namespace Phony.WPF.ViewModels
                 : true;
         }
 
-        private async void DoEditItem()
+        private void DoEditItem()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                var i = db.GetCollection<Item>(DBCollections.Items).FindById(DataGridSelectedItem.Id);
-                i.Name = Name;
-                i.Barcode = Barcode;
-                i.Shopcode = Shopcode;
-                i.Image = Image;
-                i.PurchasePrice = PurchasePrice;
-                i.WholeSalePrice = WholeSalePrice;
-                i.HalfWholeSalePrice = HalfWholeSalePrice;
-                i.RetailPrice = RetailPrice;
-                i.QTY = QTY;
-                i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
-                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
-                i.Notes = Notes;
-                //i.Editor = Core.ReadUserSession();
-                i.EditDate = DateTime.Now;
-                db.GetCollection<Item>(DBCollections.Items).Update(i);
-                Items[Items.IndexOf(DataGridSelectedItem)] = i;
-                ItemId = 0;
-                DataGridSelectedItem = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var i = db.GetCollection<Item>(DBCollections.Items).FindById(DataGridSelectedItem.Id);
+            i.Name = Name;
+            i.Barcode = Barcode;
+            i.Shopcode = Shopcode;
+            i.Image = Image;
+            i.PurchasePrice = PurchasePrice;
+            i.WholeSalePrice = WholeSalePrice;
+            i.HalfWholeSalePrice = HalfWholeSalePrice;
+            i.RetailPrice = RetailPrice;
+            i.QTY = QTY;
+            i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
+            i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
+            i.Notes = Notes;
+            //i.Editor = Core.ReadUserSession();
+            i.EditDate = DateTime.Now;
+            db.GetCollection<Item>(DBCollections.Items).Update(i);
+            Items[Items.IndexOf(DataGridSelectedItem)] = i;
+            ItemId = 0;
+            DataGridSelectedItem = null;
+            MessageBox.MaterialMessageBox.Show("تم تعديل الصنف بنجاح", "تمت العملية", true);
         }
 
         private bool CanDeleteItem()
@@ -479,10 +470,10 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedItem == null ? false : true;
         }
 
-        private async void DoDeleteItem()
+        private void DoDeleteItem()
         {
-            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", "حذف الصنف", true);
+            if (result == MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
@@ -490,7 +481,7 @@ namespace Phony.WPF.ViewModels
                     Items.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
+                MessageBox.MaterialMessageBox.Show("تم حذف الصنف بنجاح", "تمت العملية", true);
             }
         }
 
@@ -499,45 +490,36 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Items = ByName
+                    ? new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other))
+                    : ByBarCode
+                        ? new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Other))
+                        : new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
+                if (Items.Count > 0)
                 {
-                    if (ByName)
+                    if (FastResult)
                     {
-                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                        ChildName = Items.FirstOrDefault().Name;
+                        ChildPrice = Items.FirstOrDefault().RetailPrice.ToString();
+                        ChildQTY = Items.FirstOrDefault().QTY.ToString();
+                        ChildImage = Items.FirstOrDefault().Image;
+                        OpenFastResult = true;
                     }
-                    else if (ByBarCode)
-                    {
-                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
-                    }
-                    else
-                    {
-                        Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
-                    }
-                    if (Items.Count > 0)
-                    {
-                        if (FastResult)
-                        {
-                            ChildName = Items.FirstOrDefault().Name;
-                            ChildPrice = Items.FirstOrDefault().RetailPrice.ToString();
-                            ChildQTY = Items.FirstOrDefault().QTY.ToString();
-                            ChildImage = Items.FirstOrDefault().Image;
-                            OpenFastResult = true;
-                        }
-                    }
-                    else
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                }
+                else
+                {
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 
@@ -548,19 +530,13 @@ namespace Phony.WPF.ViewModels
 
         private void DoReloadAllItems()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
         }
 
         private bool CanFillUI()
         {
-            if (DataGridSelectedItem == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedItem != null;
         }
 
         private void DoFillUI()
@@ -609,14 +585,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddItemFlyout()
         {
-            if (IsAddItemFlyoutOpen)
-            {
-                IsAddItemFlyoutOpen = false;
-            }
-            else
-            {
-                IsAddItemFlyoutOpen = true;
-            }
+            IsAddItemFlyoutOpen = !IsAddItemFlyoutOpen;
         }
     }
 }

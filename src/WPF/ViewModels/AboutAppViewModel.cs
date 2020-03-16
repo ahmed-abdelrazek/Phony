@@ -1,9 +1,8 @@
-﻿using Caliburn.Micro;
-using Phony.WPF.Data;
+﻿using Phony.WPF.Data;
 
 namespace Phony.WPF.ViewModels
 {
-    public class AboutAppViewModel : Screen
+    public class AboutAppViewModel : BaseViewModelWithAnnotationValidation
     {
         string _appVersion;
 

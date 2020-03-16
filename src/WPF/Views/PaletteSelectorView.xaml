@@ -2,13 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:cal="http://www.caliburnproject.org"
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" FlowDirection="RightToLeft">
+             xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:PaletteSelectorViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
+    <UserControl.DataContext>
+        <ViewModels:PaletteSelectorViewModel/>
+    </UserControl.DataContext>
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
@@ -47,13 +49,6 @@
                             <SolidColorBrush Color="{Binding ExemplarHue.Color, Mode=OneTime}" />
                         </Border.Background>
                         <Button>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:ActionMessage MethodName="ApplyPrimary">
-                                        <cal:Parameter Value="{Binding }" />
-                                    </cal:ActionMessage>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Primary" />
                                 <Viewbox Width="16" Height="16">
@@ -71,13 +66,6 @@
                             <SolidColorBrush Color="{Binding AccentExemplarHue.Color, Mode=OneTime}" />
                         </Border.Background>
                         <Button>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:ActionMessage MethodName="ApplyAccent">
-                                        <cal:Parameter Value="{Binding }" />
-                                    </cal:ActionMessage>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Accent" />
                                 <Viewbox Width="16" Height="16">
@@ -107,9 +95,6 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock VerticalAlignment="Center">الشكل الاعتيادى</TextBlock>
-            <ToggleButton x:Name="Alternate" Grid.Column="1" Margin="8 4 16 4" />
-            <TextBlock Grid.Column="2" VerticalAlignment="Center">الشكل البديل</TextBlock>
             <TextBlock Grid.Row="1" VerticalAlignment="Center">ابيض</TextBlock>
             <ToggleButton IsChecked="{Binding IsDark}" Grid.Row="1" Grid.Column="1" Margin="8 4 16 4"/>
             <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">اسود</TextBlock>

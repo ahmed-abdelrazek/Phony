@@ -1,5 +1,4 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
@@ -10,11 +9,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class StoresViewModel : Screen
+    public class StoresViewModel : BaseViewModelWithAnnotationValidation
     {
         int _storeId;
         string _name;
@@ -175,28 +173,25 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
-
         public StoresViewModel()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-                store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
-                Name = store.Name;
-                Motto = store.Motto;
-                Image = store.Image;
-                Address1 = store.Address1;
-                Address2 = store.Address2;
-                Tel1 = store.Tel1;
-                Tel2 = store.Tel2;
-                Phone1 = store.Phone1;
-                Phone2 = store.Phone2;
-                Email1 = store.Email1;
-                Email2 = store.Email2;
-                Site = store.Site;
-                Notes = store.Notes;
-            }
+            Title = "بيانات المحل";
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
+            store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
+            Name = store.Name;
+            Motto = store.Motto;
+            Image = store.Image;
+            Address1 = store.Address1;
+            Address2 = store.Address2;
+            Tel1 = store.Tel1;
+            Tel2 = store.Tel2;
+            Phone1 = store.Phone1;
+            Phone2 = store.Phone2;
+            Email1 = store.Email1;
+            Email2 = store.Email2;
+            Site = store.Site;
+            Notes = store.Notes;
         }
 
         private bool CanEdit()
@@ -210,27 +205,25 @@ namespace Phony.WPF.ViewModels
 
         private void DoEdit()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
-                store.Name = Name;
-                store.Motto = Motto;
-                store.Image = Image;
-                store.Address1 = Address1;
-                store.Address2 = Address2;
-                store.Tel1 = Tel1;
-                store.Tel2 = Tel2;
-                store.Phone1 = Phone1;
-                store.Phone2 = Phone2;
-                store.Email1 = Email1;
-                store.Email2 = Email2;
-                store.Site = Site;
-                store.Notes = Notes;
-                //store.Editor = Core.ReadUserSession();
-                store.EditDate = DateTime.Now;
-                db.GetCollection<Store>(DBCollections.Stores).Update(store);
-                Message.ShowMessageAsync("تمت العملية", "تم حفظ بيانات المحل بنجاح");
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
+            store.Name = Name;
+            store.Motto = Motto;
+            store.Image = Image;
+            store.Address1 = Address1;
+            store.Address2 = Address2;
+            store.Tel1 = Tel1;
+            store.Tel2 = Tel2;
+            store.Phone1 = Phone1;
+            store.Phone2 = Phone2;
+            store.Email1 = Email1;
+            store.Email2 = Email2;
+            store.Site = Site;
+            store.Notes = Notes;
+            //store.Editor = Core.ReadUserSession();
+            store.EditDate = DateTime.Now;
+            db.GetCollection<Store>(DBCollections.Stores).Update(store);
+            MessageBox.MaterialMessageBox.Show("تم حفظ بيانات المحل بنجاح", "تمت العملية", true);
         }
 
         private bool CanSelectImage()

@@ -1,27 +1,13 @@
-﻿using Caliburn.Micro;
-using MaterialDesignColors;
+﻿using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace Phony.WPF.ViewModels
 {
-    public class PaletteSelectorViewModel : Screen
+    public class PaletteSelectorViewModel : BaseViewModelWithAnnotationValidation
     {
-        bool _alternate;
         bool _isDark;
-
-        public bool Alternate
-        {
-            get => _alternate;
-            set
-            {
-                _alternate = value;
-                ApplyStyle(_alternate);
-                NotifyOfPropertyChange(() => Alternate);
-            }
-        }
 
         public bool IsDark
         {
@@ -37,30 +23,10 @@ namespace Phony.WPF.ViewModels
         public PaletteSelectorViewModel()
         {
             Swatches = new SwatchesProvider().Swatches;
-            Alternate = Properties.Settings.Default.IsAlternateStyle;
             IsDark = Properties.Settings.Default.IsDarkTheme;
-            ApplyStyle(Alternate);
         }
 
         public IEnumerable<Swatch> Swatches { get; }
-
-        private static void ApplyStyle(bool alternate)
-        {
-            var resourceDictionary = new ResourceDictionary
-            {
-                Source = new Uri(@"pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml")
-            };
-
-            var styleKey = alternate ? "MaterialDesignAlternateTabablzControlStyle" : "MaterialDesignTabablzControlStyle";
-            var style = (Style)resourceDictionary[styleKey];
-
-            foreach (var tabablzControl in Dragablz.TabablzControl.GetLoadedInstances())
-            {
-                tabablzControl.Style = style;
-            }
-            Properties.Settings.Default.IsAlternateStyle = alternate;
-            Properties.Settings.Default.Save();
-        }
 
         public static void ApplyBase(bool isDark)
         {

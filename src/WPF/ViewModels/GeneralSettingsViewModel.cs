@@ -1,27 +1,22 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
-using Phony.WPF.EventModels;
 using Phony.WPF.Models;
 using System;
 using System.Data.Common;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Input;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class GeneralSettingsViewModel : Screen
+    public class GeneralSettingsViewModel : BaseViewModelWithAnnotationValidation
     {
         int _reportsSizeIndex;
         string _reportsSize;
         string _dbFullPath;
         string _dbPassword;
         bool _liteUseDefault;
-
-        IEventAggregator _events;
-        SettingsEvents settingsEvents;
 
         public int ReportsSizeIndex
         {
@@ -50,7 +45,6 @@ namespace Phony.WPF.ViewModels
             {
                 _dbFullPath = value;
                 NotifyOfPropertyChange(() => LiteDbFullPath);
-                NotifyOfPropertyChange(() => CanSaveDbConfig);
             }
         }
 
@@ -71,15 +65,17 @@ namespace Phony.WPF.ViewModels
             {
                 _liteUseDefault = value;
                 NotifyOfPropertyChange(() => LiteUseDefault);
-                NotifyOfPropertyChange(() => CanSaveDbConfig);
             }
         }
 
+        public ICommand SaveDbConfig { get; }
+
         DbConnectionStringBuilder LiteConnectionStringBuilder = new DbConnectionStringBuilder();
 
-        public GeneralSettingsViewModel(IEventAggregator events)
+        public GeneralSettingsViewModel()
         {
-            _events = events;
+            SaveDbConfig = new RelayCommand(DoSaveDbConfig, CanSaveDbConfig);
+
             if (Properties.Settings.Default.IsConfigured)
             {
                 LiteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
@@ -99,14 +95,7 @@ namespace Phony.WPF.ViewModels
                 {
                     DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
                 }
-                if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
-                {
-                    ReportsSizeIndex = 0;
-                }
-                else
-                {
-                    ReportsSizeIndex = 1;
-                }
+                ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
             }
             else
             {
@@ -115,23 +104,22 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        private bool CanSaveDbConfig
+        private bool CanSaveDbConfig()
         {
-            get
-            {
-                return !string.IsNullOrEmpty(LiteDbFullPath) || LiteUseDefault;
-            }
+            return !string.IsNullOrEmpty(LiteDbFullPath) || LiteUseDefault;
         }
 
-        public async Task SaveDbConfig()
+        public void DoSaveDbConfig()
         {
-            settingsEvents = new SettingsEvents();
-
+            if (!CanSaveDbConfig())
+            {
+                return;
+            }
             if (Properties.Settings.Default.IsConfigured)
             {
                 if (string.IsNullOrWhiteSpace(LiteDbFullPath))
                 {
-                    await DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "من فضلك اختار مكان لحفظ قاعده البيانات");
+                    MessageBox.MaterialMessageBox.Show("من فضلك اختار مكان لحفظ قاعده البيانات", "خطا", true);
                     return;
                 }
                 else
@@ -146,7 +134,7 @@ namespace Phony.WPF.ViewModels
                         {
                             if (!LiteDbFullPath.EndsWith("\\"))
                             {
-                                LiteDbFullPath = LiteDbFullPath + "\\";
+                                LiteDbFullPath += "\\";
                             }
                             LiteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
                         }
@@ -159,7 +147,7 @@ namespace Phony.WPF.ViewModels
                 Properties.Settings.Default.SalesBillsPaperSize = ReportsSize;
                 Properties.Settings.Default.LiteDbConnectionString = LiteConnectionStringBuilder.ConnectionString;
                 Properties.Settings.Default.Save();
-                await DialogCoordinator.Instance.ShowMessageAsync(this, "تم الحفظ", "لقد تم تغيير اعدادات البرنامج و حفظها بنجاح");
+                MessageBox.MaterialMessageBox.Show("لقد تم تغيير اعدادات البرنامج و حفظها بنجاح", "تم الحفظ", true);
             }
             else
             {
@@ -177,7 +165,7 @@ namespace Phony.WPF.ViewModels
                     {
                         if (!LiteDbFullPath.EndsWith("\\"))
                         {
-                            LiteDbFullPath = LiteDbFullPath + "\\";
+                            LiteDbFullPath += "\\";
                         }
                         LiteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
                     }
@@ -299,43 +287,42 @@ namespace Phony.WPF.ViewModels
                         }
                     }
                     Properties.Settings.Default.IsConfigured = true;
-                    settingsEvents.CloseWindow = true;
                 }
                 catch (Exception ex)
                 {
                     Properties.Settings.Default.IsConfigured = false;
                     Core.SaveException(ex);
-                    await DialogCoordinator.Instance.ShowMessageAsync(this, "مشكلة", "هناك مشكله فى اعداد البرانامج تاكد من البيانات التى ادخلتها");
+                    MessageBox.MaterialMessageBox.ShowError("هناك مشكله فى اعداد البرانامج تاكد من البيانات التى ادخلتها", "مشكلة", true);
                 }
                 finally
                 {
                     Properties.Settings.Default.Save();
-                    await DialogCoordinator.Instance.ShowMessageAsync(this, "تمت العملية", "تم اعداد البرنامج بنجاح");
-                    await _events.PublishOnBackgroundThreadAsync(settingsEvents);
+                    MessageBox.MaterialMessageBox.Show("تم اعداد البرنامج بنجاح", "تمت العملية", true);
                 }
             }
         }
 
         public void SelectLiteDbFolder()
         {
-            var dlg = new System.Windows.Forms.FolderBrowserDialog
-            {
-                RootFolder = Environment.SpecialFolder.MyDocuments
-            };
+            //todo FolderBrowserDialog
+            //var dlg = new System.Windows.Forms.FolderBrowserDialog
+            //{
+            //    RootFolder = Environment.SpecialFolder.MyDocuments
+            //};
 
-            dlg.ShowDialog();
-            if (string.IsNullOrWhiteSpace(dlg.SelectedPath))
-            {
-                LiteDbFullPath = dlg.SelectedPath;
-                if (!LiteDbFullPath.EndsWith("Phony.db"))
-                {
-                    if (!LiteDbFullPath.EndsWith("\\"))
-                    {
-                        LiteDbFullPath = LiteDbFullPath + "\\";
-                    }
-                    LiteDbFullPath += "Phony.db";
-                }
-            }
+            //dlg.ShowDialog();
+            //if (string.IsNullOrWhiteSpace(dlg.SelectedPath))
+            //{
+            //    LiteDbFullPath = dlg.SelectedPath;
+            //    if (!LiteDbFullPath.EndsWith("Phony.db"))
+            //    {
+            //        if (!LiteDbFullPath.EndsWith("\\"))
+            //        {
+            //            LiteDbFullPath = LiteDbFullPath + "\\";
+            //        }
+            //        LiteDbFullPath += "Phony.db";
+            //    }
+            //}
         }
     }
 }

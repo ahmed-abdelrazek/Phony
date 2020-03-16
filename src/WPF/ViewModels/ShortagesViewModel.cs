@@ -1,5 +1,4 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using Phony.WPF.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Threading;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ShortagesViewModel : Screen
+    public class ShortagesViewModel : BaseViewModelWithAnnotationValidation
     {
         static string _itemsCount;
 
@@ -35,6 +34,7 @@ namespace Phony.WPF.ViewModels
 
         public ShortagesViewModel()
         {
+            Title = "النواقص";
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items).Find(i => i.QTY <= 0));

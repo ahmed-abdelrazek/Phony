@@ -1,5 +1,4 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
@@ -10,12 +9,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
 
-    public class BillsViewModel : Screen
+    public class BillsViewModel : BaseViewModelWithAnnotationValidation
     {
         long _searchSelectedValue;
         decimal _itemChildItemPrice;
@@ -161,14 +159,9 @@ namespace Phony.WPF.ViewModels
                 if (value != _billDiscount)
                 {
                     _billDiscount = value;
-                    if (_billDiscount > 0)
-                    {
-                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2);
-                    }
-                    else
-                    {
-                        BillTotalAfterDiscount = Math.Round(BillTotalAfterEachDiscount, 2);
-                    }
+                    BillTotalAfterDiscount = _billDiscount > 0
+                        ? Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2)
+                        : Math.Round(BillTotalAfterEachDiscount, 2);
                     NotifyOfPropertyChange(() => BillDiscount);
                 }
             }
@@ -507,10 +500,9 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        Bills Message = Application.Current.Windows.OfType<Bills>().FirstOrDefault();
-
         public BillsViewModel()
         {
+            Title = "فواتير";
             ByName = true;
             ByItem = true;
             BillClientPaymentChangeVisible = Visibility.Collapsed;
@@ -532,11 +524,11 @@ namespace Phony.WPF.ViewModels
             {
                 if (SelectedClient.Id == 1)
                 {
-                    await Message.ShowMessageAsync("خطأ", "لا يمكن عمل فاتورة اجل لهذا العميل اختار عميل اخر او اضف عميل جديد");
+                    MessageBox.MaterialMessageBox.ShowError("لا يمكن عمل فاتورة اجل لهذا العميل اختار عميل اخر او اضف عميل جديد", "خطأ", true);
                     return 0;
                 }
-                var result = await Message.ShowMessageAsync("اجل", $"هل انت متاكد من تسجيل الفاتورة كاجل؟", MessageDialogStyle.AffirmativeAndNegative);
-                if (result != MessageDialogResult.Affirmative)
+                var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من تسجيل الفاتورة كاجل؟", "اجل", true);
+                if (result != MessageBoxResult.OK)
                 {
                     return 0;
                 }
@@ -544,68 +536,66 @@ namespace Phony.WPF.ViewModels
             string billNote = null;
             if (IsAddBillNote)
             {
-                billNote = await Message.ShowInputAsync("ملاحظة", $"اكتب اى شئ ليتم طباعته مع الفاتورة");
+                billNote = MessageBox.MaterialInputBox.Show($"اكتب اى شئ ليتم طباعته مع الفاتورة", "ملاحظة", true);
             }
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            try
             {
-                try
+                var bi = new Bill
                 {
-                    var bi = new Bill
-                    {
-                        Client = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id),
-                        Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
-                        Discount = BillDiscount,
-                        TotalAfterDiscounts = BillTotalAfterDiscount,
-                        TotalPayed = BillClientPayment,
-                        Notes = billNote,
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        Editor = null,
-                        EditDate = null
-                    };
-                    db.GetCollection<Bill>(DBCollections.Bills).Insert(bi);
-                    foreach (var item in BillItemsMoves)
-                    {
-                        item.Bill = bi;
-                        db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Insert(item);
-                        var i = db.GetCollection<Item>(DBCollections.Items).FindById(item.Item.Id);
-                        i.QTY -= item.QTY;
-                        db.GetCollection<Item>(DBCollections.Items).Update(i);
-                    }
-                    foreach (var service in BillServicesMoves)
-                    {
-                        service.Bill = bi;
-                        db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Insert(service);
-                        var s = db.GetCollection<Service>(DBCollections.Services).FindById(service.Service.Id);
-                        s.Balance -= service.Balance;
-                        db.GetCollection<Service>(DBCollections.Services).Update(s);
-                    }
-                    if (BillClientPayment < BillTotalAfterDiscount)
-                    {
-                        var c = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id);
-                        c.Balance += BillTotalAfterDiscount - BillClientPayment;
-                        db.GetCollection<Client>(DBCollections.Clients).Update(c);
-                    }
-                    db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
-                    {
-                        Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
-                        Debit = BillClientPayment,
-                        Credit = BillClientPaymentChange,
-                        Notes = $"فاتورة رقم {bi.Id}",
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        EditDate = null,
-                        Editor = null
-                    });
-                    Clear();
-                    CurrentBillNo = bi.Id + 1;
-                    return bi.Id;
-                }
-                catch (Exception ex)
+                    Client = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id),
+                    Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
+                    Discount = BillDiscount,
+                    TotalAfterDiscounts = BillTotalAfterDiscount,
+                    TotalPayed = BillClientPayment,
+                    Notes = billNote,
+                    CreateDate = DateTime.Now,
+                    //Creator = Core.ReadUserSession(),
+                    Editor = null,
+                    EditDate = null
+                };
+                db.GetCollection<Bill>(DBCollections.Bills).Insert(bi);
+                foreach (var item in BillItemsMoves)
                 {
-                    await Core.SaveExceptionAsync(ex);
-                    return -1;
+                    item.Bill = bi;
+                    db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Insert(item);
+                    var i = db.GetCollection<Item>(DBCollections.Items).FindById(item.Item.Id);
+                    i.QTY -= item.QTY;
+                    db.GetCollection<Item>(DBCollections.Items).Update(i);
                 }
+                foreach (var service in BillServicesMoves)
+                {
+                    service.Bill = bi;
+                    db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Insert(service);
+                    var s = db.GetCollection<Service>(DBCollections.Services).FindById(service.Service.Id);
+                    s.Balance -= service.Balance;
+                    db.GetCollection<Service>(DBCollections.Services).Update(s);
+                }
+                if (BillClientPayment < BillTotalAfterDiscount)
+                {
+                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id);
+                    c.Balance += BillTotalAfterDiscount - BillClientPayment;
+                    db.GetCollection<Client>(DBCollections.Clients).Update(c);
+                }
+                db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
+                {
+                    Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
+                    Debit = BillClientPayment,
+                    Credit = BillClientPaymentChange,
+                    Notes = $"فاتورة رقم {bi.Id}",
+                    CreateDate = DateTime.Now,
+                    //Creator = Core.ReadUserSession(),
+                    EditDate = null,
+                    Editor = null
+                });
+                Clear();
+                CurrentBillNo = bi.Id + 1;
+                return bi.Id;
+            }
+            catch (Exception ex)
+            {
+                await Core.SaveExceptionAsync(ex);
+                return -1;
             }
         }
 
@@ -619,26 +609,18 @@ namespace Phony.WPF.ViewModels
             var i = await SaveBillNoAsync();
             if (i > 0)
             {
-                await Message.ShowMessageAsync("تم الحفظ", $"تم حفظ الفاتورة بالرقم {i} بنجاح و سيتم عرضها للطباعه الان");
-                new SalesBillsViewer(i).Show();
+                MessageBox.MaterialMessageBox.Show($"تم حفظ الفاتورة بالرقم {i} بنجاح و سيتم عرضها للطباعه الان", "تم الحفظ", true);
+                new SalesBillsViewerView(i).Show();
             }
             else if (i < 0)
             {
-                await Message.ShowMessageAsync("خطا", "حدث خطا اثناء حفظ الفاتورة");
+                MessageBox.MaterialMessageBox.ShowError("حدث خطا اثناء حفظ الفاتورة", "خطأ", true);
             }
         }
 
         private bool CanSaveBill()
         {
-            if (SelectedClient == null)
-            {
-                return false;
-            }
-            if ((BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0)
-            {
-                return true;
-            }
-            return false;
+            return SelectedClient == null ? false : (BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0;
         }
 
         private async void DoSaveBill()
@@ -646,11 +628,11 @@ namespace Phony.WPF.ViewModels
             var i = await SaveBillNoAsync();
             if (i > 0)
             {
-                await Message.ShowMessageAsync("تم الحفظ", $"تم حفظ الفاتورة بالرقم {i}");
+                MessageBox.MaterialMessageBox.Show($"تم حفظ الفاتورة بالرقم {i}", "تم الحفظ", true);
             }
             else if (i < 0)
             {
-                await Message.ShowMessageAsync("خطا", "حدث خطا اثناء حفظ الفاتورة");
+                MessageBox.MaterialMessageBox.ShowError("حدث خطا اثناء حفظ الفاتورة", "خطأ", true);
             }
         }
 
@@ -666,11 +648,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanDeleteBillMove()
         {
-            if ((DataGridSelectedBillItemMove == null && ByItem) || (DataGridSelectedBillServiceMove == null && ByService))
-            {
-                return false;
-            }
-            return true;
+            return (DataGridSelectedBillItemMove != null || !ByItem) && (DataGridSelectedBillServiceMove != null || !ByService);
         }
 
         private void DoDeleteBillMove()
@@ -705,13 +683,11 @@ namespace Phony.WPF.ViewModels
             BillTotalAfterDiscount = 0;
             BillClientPayment = 0;
             SearchSelectedValue = 0;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
-                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
-                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
-                SearchSelectedValue = 0;
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
+            Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
+            Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
+            SearchSelectedValue = 0;
         }
 
         void ClearChild()
@@ -740,11 +716,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanAddServiceToBill()
         {
-            if (ServiceChildServiceCost > 0)
-            {
-                return true;
-            }
-            return false;
+            return ServiceChildServiceCost > 0;
         }
 
         private void DoAddServiceToBill()
@@ -778,29 +750,20 @@ namespace Phony.WPF.ViewModels
                 }
                 BillTotal += ServiceChildServiceCost;
                 BillTotalAfterEachDiscount += ServiceChildServiceCost - (ServiceChildServiceCost * (ChildDiscount / 100));
-                if (BillDiscount > 0)
-                {
-                    BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100));
-                }
-                else
-                {
-                    BillTotalAfterDiscount = BillTotalAfterEachDiscount;
-                }
+                BillTotalAfterDiscount = BillDiscount > 0
+                    ? BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100))
+                    : BillTotalAfterEachDiscount;
                 ClearChild();
             }
             else
             {
-                Message.ShowMessageAsync("رصيد غير كافى", "الرصيد فى الخدمه لا يكفى لتسجيل العمليه");
+                MessageBox.MaterialMessageBox.ShowWarning("الرصيد فى الخدمه لا يكفى لتسجيل العمليه", "رصيد غير كافى", true);
             }
         }
 
         private bool CanAddItemToBill()
         {
-            if (ItemChildItemQTYSell > 0)
-            {
-                return true;
-            }
-            return false;
+            return ItemChildItemQTYSell > 0;
         }
 
         private void DoAddItemToBill()
@@ -835,29 +798,20 @@ namespace Phony.WPF.ViewModels
                 }
                 BillTotal += ItemToQtyPrice;
                 BillTotalAfterEachDiscount += ItemToQtyPrice - (ItemToQtyPrice * (ChildDiscount / 100));
-                if (BillDiscount > 0)
-                {
-                    BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100));
-                }
-                else
-                {
-                    BillTotalAfterDiscount = BillTotalAfterEachDiscount;
-                }
+                BillTotalAfterDiscount = BillDiscount > 0
+                    ? BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100))
+                    : BillTotalAfterEachDiscount;
                 ClearChild();
             }
             else
             {
-                Message.ShowMessageAsync("الكمية لا تكفى", "الكمية الخاصه بالصنف اقل من المراد بيعه");
+                MessageBox.MaterialMessageBox.ShowWarning("الكمية الخاصه بالصنف اقل من المراد بيعه", "الكمية لا تكفى", true);
             }
         }
 
         private bool CanAddBillMove()
         {
-            if (SearchSelectedValue > 0)
-            {
-                return true;
-            }
-            return false;
+            return SearchSelectedValue > 0;
         }
 
         private void DoAddBillMove()
@@ -880,14 +834,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSearch()
         {
-            if (!string.IsNullOrWhiteSpace(SearchText))
-            {
-                return true;
-            }
-            return false;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
@@ -903,7 +853,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بهذا الاسم");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد صنف بهذا الاسم", "غير موجود", true);
                         }
                     }
                     else if (ByBarCode)
@@ -917,7 +867,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بهذا الباركود");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد صنف بهذا الباركود", "غير موجود", true);
                         }
                     }
                     else
@@ -931,7 +881,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد صنف بكود المحل هذا");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد صنف بكود المحل هذا", "غير موجود", true);
                         }
                     }
                 }
@@ -947,7 +897,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بهذا الاسم");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد كارت شحن بهذا الاسم", "غير موجود", true);
                         }
                     }
                     else if (ByBarCode)
@@ -961,7 +911,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بهذا الباركود");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد كارت شحن بهذا الباركود", "غير موجود", true);
                         }
                     }
                     else
@@ -975,7 +925,7 @@ namespace Phony.WPF.ViewModels
                         else
                         {
                             SearchSelectedValue = 0;
-                            await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد كارت شحن بكود المحل هذا");
+                            MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد كارت شحن بكود المحل هذا", "غير موجود", true);
                         }
                     }
                 }
@@ -989,7 +939,7 @@ namespace Phony.WPF.ViewModels
                     else
                     {
                         SearchSelectedValue = 0;
-                        await Message.ShowMessageAsync("غير موجود", "لم يستطع ايجاد خدمه بهذا الاسم");
+                        MessageBox.MaterialMessageBox.ShowWarning("لم يستطع ايجاد خدمه بهذا الاسم", "غير موجود", true);
                     }
                 }
             }
@@ -1004,15 +954,13 @@ namespace Phony.WPF.ViewModels
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
+                if (x == 1)
                 {
-                    var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
-                    if (x == 1)
-                    {
-                        x = 0;
-                    }
-                    CurrentBillNo = ++x;
+                    x = 0;
                 }
+                CurrentBillNo = ++x;
             }
             catch (Exception ex)
             {

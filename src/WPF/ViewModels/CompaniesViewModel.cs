@@ -1,21 +1,17 @@
-﻿using Caliburn.Micro;
-using LiteDB;
+﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class CompaniesViewModel : Screen
+    public class CompaniesViewModel : BaseViewModelWithAnnotationValidation
     {
         long _companyId;
         string _name;
@@ -196,10 +192,9 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        Companies Message = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
-
         public CompaniesViewModel()
         {
+            Title = "شركات";
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll());
@@ -235,42 +230,40 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedCompany == null ? false : true;
         }
 
-        private async void DoCompanyPayAsync()
+        private void DoCompanyPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}");
+            var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
             {
-                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                MessageBox.MaterialMessageBox.ShowWarning("لم تقم بادخال اى مبلغ لاضافته للرصيد", "ادخل مبلغ", true);
             }
             else
             {
                 bool isvalidmoney = decimal.TryParse(result, out decimal compantpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+                    s.Balance += compantpaymentamount;
+                    //the company will give us money in form of balance or something
+                    db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                     {
-                        var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
-                        s.Balance += compantpaymentamount;
-                        //the company will give us money in form of balance or something
-                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
-                        {
-                            Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
-                            Credit = compantpaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        await Message.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                        Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
-                        DebitCredit();
-                        DataGridSelectedCompany = null;
-                        CompanyId = 0;
-                    }
+                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
+                        Credit = compantpaymentamount,
+                        CreateDate = DateTime.Now,
+                        //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    MessageBox.MaterialMessageBox.Show($"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح", "تمت العملية", true);
+                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
+                    DebitCredit();
+                    DataGridSelectedCompany = null;
+                    CompanyId = 0;
                 }
                 else
                 {
-                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    MessageBox.MaterialMessageBox.ShowWarning("ادخل مبلغ صحيح بعلامه عشرية واحدة", "خطأ فى المبلغ", true);
                 }
             }
         }
@@ -280,53 +273,51 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedCompany == null ? false : true;
         }
 
-        private async void DoPayCompanyAsync()
+        private void DoPayCompanyAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}");
+            var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
             {
-                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
+                MessageBox.MaterialMessageBox.ShowWarning("لم تقم بادخال اى مبلغ لاضافته للرصيد", "ادخل مبلغ", true);
             }
             else
             {
                 bool isvalidmoney = decimal.TryParse(result, out decimal compantpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+                    s.Balance -= compantpaymentamount;
+                    //Company gets money from us
+                    db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                     {
-                        var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
-                        s.Balance -= compantpaymentamount;
-                        //Company gets money from us
-                        db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
-                        {
-                            Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
-                            Debit = compantpaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        //the money is taken from our Treasury
-                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
-                        {
-                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
-                            Credit = compantpaymentamount,
-                            Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
-                            CreateDate = DateTime.Now,
-                            //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        await Message.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                        Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
-                        DebitCredit();
-                        DataGridSelectedCompany = null;
-                        CompanyId = 0;
-                    }
+                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
+                        Debit = compantpaymentamount,
+                        CreateDate = DateTime.Now,
+                        //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    //the money is taken from our Treasury
+                    db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
+                    {
+                        Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
+                        Credit = compantpaymentamount,
+                        Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
+                        CreateDate = DateTime.Now,
+                        //Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    MessageBox.MaterialMessageBox.Show($"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح", "تمت العملية", true);
+                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = s;
+                    DebitCredit();
+                    DataGridSelectedCompany = null;
+                    CompanyId = 0;
                 }
                 else
                 {
-                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    MessageBox.MaterialMessageBox.ShowWarning("ادخل مبلغ صحيح بعلامه عشرية واحدة", "خطأ فى المبلغ", true);
                 }
             }
         }
@@ -336,36 +327,34 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(Name) ? false : true;
         }
 
-        private async void DoAddCompany()
+        private void DoAddCompany()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var exist = db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name == Name).FirstOrDefault();
+            if (exist == null)
             {
-                var exist = db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name == Name).FirstOrDefault();
-                if (exist == null)
+                var s = new Company
                 {
-                    var s = new Company
-                    {
-                        Name = Name,
-                        Balance = Balance,
-                        Site = Site,
-                        Email = Email,
-                        Phone = Phone,
-                        Image = Image,
-                        Notes = Notes,
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        EditDate = null,
-                        Editor = null
-                    };
-                    db.GetCollection<Company>(DBCollections.Companies).Insert(s);
-                    Companies.Add(s);
-                    await Message.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
-                    DebitCredit();
-                }
-                else
-                {
-                    await Message.ShowMessageAsync("موجود", "الشركة موجودة من قبل بالفعل");
-                }
+                    Name = Name,
+                    Balance = Balance,
+                    Site = Site,
+                    Email = Email,
+                    Phone = Phone,
+                    Image = Image,
+                    Notes = Notes,
+                    CreateDate = DateTime.Now,
+                    //Creator = Core.ReadUserSession(),
+                    EditDate = null,
+                    Editor = null
+                };
+                db.GetCollection<Company>(DBCollections.Companies).Insert(s);
+                Companies.Add(s);
+                MessageBox.MaterialMessageBox.Show("تم اضافة الشركة بنجاح", "تمت العملية", true);
+                DebitCredit();
+            }
+            else
+            {
+                MessageBox.MaterialMessageBox.ShowWarning("الشركة موجودة من قبل بالفعل", "موجود", true);
             }
         }
 
@@ -374,27 +363,25 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(Name) || CompanyId == 0 || DataGridSelectedCompany == null ? false : true;
         }
 
-        private async void DoEditCompany()
+        private void DoEditCompany()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                var c = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
-                c.Name = Name;
-                c.Balance = Balance;
-                c.Site = Site;
-                c.Email = Email;
-                c.Phone = Phone;
-                c.Image = Image;
-                c.Notes = Notes;
-                //c.Editor = Core.ReadUserSession();
-                c.EditDate = DateTime.Now;
-                db.GetCollection<Company>(DBCollections.Companies).Update(c);
-                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
-                Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
-                DebitCredit();
-                DataGridSelectedCompany = null;
-                CompanyId = 0;
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var c = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+            c.Name = Name;
+            c.Balance = Balance;
+            c.Site = Site;
+            c.Email = Email;
+            c.Phone = Phone;
+            c.Image = Image;
+            c.Notes = Notes;
+            //c.Editor = Core.ReadUserSession();
+            c.EditDate = DateTime.Now;
+            db.GetCollection<Company>(DBCollections.Companies).Update(c);
+            MessageBox.MaterialMessageBox.Show("تم تعديل الشركة بنجاح", "تمت العملية", true);
+            Companies[Companies.IndexOf(DataGridSelectedCompany)] = c;
+            DebitCredit();
+            DataGridSelectedCompany = null;
+            CompanyId = 0;
         }
 
         private bool CanDeleteCompany()
@@ -402,17 +389,17 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedCompany == null || DataGridSelectedCompany.Id == 1 ? false : true;
         }
 
-        private async void DoDeleteCompany()
+        private void DoDeleteCompany()
         {
-            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", "حذف الخدمة", true);
+            if (result == System.Windows.MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<Company>(DBCollections.Companies).Delete(DataGridSelectedCompany.Id);
                     Companies.Remove(DataGridSelectedCompany);
                 }
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
+                MessageBox.MaterialMessageBox.Show("تم حذف الشركة بنجاح", "تمت العملية", true);
                 DebitCredit();
                 DataGridSelectedCompany = null;
             }
@@ -423,23 +410,21 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name.Contains(SearchText)));
+                if (Companies.Count < 1)
                 {
-                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).Find(x => x.Name.Contains(SearchText)));
-                    if (Companies.Count < 1)
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 

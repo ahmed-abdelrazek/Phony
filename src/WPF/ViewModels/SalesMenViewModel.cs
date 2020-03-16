@@ -1,19 +1,15 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class SalesMenViewModel : Screen
+    public class SalesMenViewModel : BaseViewModelWithAnnotationValidation
     {
         long _salesManId;
         string _name;
@@ -228,10 +224,9 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        SalesMen Message = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
-
         public SalesMenViewModel()
         {
+            Title = "المندوبين";
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
@@ -267,42 +262,40 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedSalesMan == null ? false : true;
         }
 
-        private async void DoSalesManPayAsync()
+        private void DoSalesManPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلامته من المندوب {DataGridSelectedSalesMan.Name}");
+            var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى استلامته من المندوب {DataGridSelectedSalesMan.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
             {
-                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                MessageBox.MaterialMessageBox.ShowWarning("لم تقم بادخال اى مبلغ لتدفيعه", "ادخل مبلغ", true);
             }
             else
             {
                 bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+                    s.Balance += SalesManpaymentamount;
+                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+                    db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                     {
-                        var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
-                        s.Balance += SalesManpaymentamount;
-                        db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
-                        db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
-                        {
-                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
-                            Credit = SalesManpaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        await Message.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
-                        SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
-                        DebitCredit();
-                        DataGridSelectedSalesMan = null;
-                        SalesManId = 0;
-                    }
+                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
+                        Credit = SalesManpaymentamount,
+                        CreateDate = DateTime.Now,
+                        //Creator = Core.ReadUserSession(),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    MessageBox.MaterialMessageBox.Show($"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح", "تمت العملية", true);
+                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
+                    DebitCredit();
+                    DataGridSelectedSalesMan = null;
+                    SalesManId = 0;
                 }
                 else
                 {
-                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    MessageBox.MaterialMessageBox.ShowError("ادخل مبلغ صحيح بعلامه عشرية واحدة", "خطأ فى المبلغ", true);
                 }
             }
         }
@@ -312,52 +305,50 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedSalesMan == null ? false : true;
         }
 
-        private async void DoPaySalesManAsync()
+        private void DoPaySalesManAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
+            var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
             {
-                await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
+                MessageBox.MaterialMessageBox.ShowWarning("لم تقم بادخال اى مبلغ لتدفيعه", "ادخل مبلغ", true);
             }
             else
             {
                 bool isvalidmoney = decimal.TryParse(result, out decimal SalesManpaymentamount);
                 if (isvalidmoney)
                 {
-                    using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                    using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                    var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+                    s.Balance -= SalesManpaymentamount;
+                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+                    db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                     {
-                        var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
-                        s.Balance -= SalesManpaymentamount;
-                        db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
-                        db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
-                        {
-                            SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
-                            Debit = SalesManpaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
-                        {
-                            Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
-                            Credit = SalesManpaymentamount,
-                            Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
-                        });
-                        await Message.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
-                        SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
-                        DebitCredit();
-                        DataGridSelectedSalesMan = null;
-                        SalesManId = 0;
-                    }
+                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
+                        Debit = SalesManpaymentamount,
+                        CreateDate = DateTime.Now,
+                        //Creator = Core.ReadUserSession(),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
+                    {
+                        Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
+                        Credit = SalesManpaymentamount,
+                        Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
+                        CreateDate = DateTime.Now,
+                        //Creator = Core.ReadUserSession(),
+                        EditDate = null,
+                        Editor = null
+                    });
+                    MessageBox.MaterialMessageBox.Show($"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح", "تمت العملية", true);
+                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
+                    DebitCredit();
+                    DataGridSelectedSalesMan = null;
+                    SalesManId = 0;
                 }
                 else
                 {
-                    await Message.ShowMessageAsync("خطاء فى المبلغ", "ادخل مبلغ صحيح بعلامه عشرية واحدة");
+                    MessageBox.MaterialMessageBox.ShowWarning("ادخل مبلغ صحيح بعلامه عشرية واحدة", "خطأ فى المبلغ", true);
                 }
             }
         }
@@ -367,35 +358,33 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(Name) ? false : true;
         }
 
-        private async void DoAddSalesMan()
+        private void DoAddSalesMan()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var exist = db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name == Name).FirstOrDefault();
+            if (exist == null)
             {
-                var exist = db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name == Name).FirstOrDefault();
-                if (exist == null)
+                var c = new SalesMan
                 {
-                    var c = new SalesMan
-                    {
-                        Name = Name,
-                        Balance = Balance,
-                        Site = Site,
-                        Email = Email,
-                        Phone = Phone,
-                        Notes = Notes,
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        EditDate = null,
-                        Editor = null
-                    };
-                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(c);
-                    SalesMen.Add(c);
-                    await Message.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
-                    DebitCredit();
-                }
-                else
-                {
-                    await Message.ShowMessageAsync("موجود", "المندوب موجود من قبل بالفعل");
-                }
+                    Name = Name,
+                    Balance = Balance,
+                    Site = Site,
+                    Email = Email,
+                    Phone = Phone,
+                    Notes = Notes,
+                    CreateDate = DateTime.Now,
+                    //Creator = Core.ReadUserSession(),
+                    EditDate = null,
+                    Editor = null
+                };
+                db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(c);
+                SalesMen.Add(c);
+                MessageBox.MaterialMessageBox.Show("تم اضافة المندوب بنجاح", "تمت العملية", true);
+                DebitCredit();
+            }
+            else
+            {
+                MessageBox.MaterialMessageBox.ShowWarning("المندوب موجود من قبل بالفعل", "موجود", true);
             }
         }
 
@@ -404,26 +393,24 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(Name) || SalesManId == 0 || DataGridSelectedSalesMan == null ? false : true;
         }
 
-        private async void DoEditSalesMan()
+        private void DoEditSalesMan()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
-                s.Name = Name;
-                s.Balance = Balance;
-                s.Site = Site;
-                s.Email = Email;
-                s.Phone = Phone;
-                s.Notes = Notes;
-                //s.Editor = Core.ReadUserSession();
-                s.EditDate = DateTime.Now;
-                db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
-                await Message.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
-                SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
-                DebitCredit();
-                DataGridSelectedSalesMan = null;
-                SalesManId = 0;
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+            s.Name = Name;
+            s.Balance = Balance;
+            s.Site = Site;
+            s.Email = Email;
+            s.Phone = Phone;
+            s.Notes = Notes;
+            //s.Editor = Core.ReadUserSession();
+            s.EditDate = DateTime.Now;
+            db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+            MessageBox.MaterialMessageBox.Show("تم تعديل المندوب بنجاح", "تمت العملية", true);
+            SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
+            DebitCredit();
+            DataGridSelectedSalesMan = null;
+            SalesManId = 0;
         }
 
         private bool CanDeleteSalesMan()
@@ -431,17 +418,17 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedSalesMan == null || DataGridSelectedSalesMan.Id == 1 ? false : true;
         }
 
-        private async void DoDeleteSalesMan()
+        private void DoDeleteSalesMan()
         {
-            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", "حذف الصنف", true);
+            if (result == MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
                     SalesMen.Remove(DataGridSelectedSalesMan);
                 }
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
+                MessageBox.MaterialMessageBox.Show("تم حذف المندوب بنجاح", "تمت العملية", true);
                 DebitCredit();
                 DataGridSelectedSalesMan = null;
             }
@@ -452,32 +439,30 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name.Contains(SearchText)));
+                if (SalesMen.Count > 0)
                 {
-                    SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Find(x => x.Name.Contains(SearchText)));
-                    if (SalesMen.Count > 0)
+                    if (FastResult)
                     {
-                        if (FastResult)
-                        {
-                            ChildName = SalesMen.FirstOrDefault().Name;
-                            ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
-                            OpenFastResult = true;
-                        }
+                        ChildName = SalesMen.FirstOrDefault().Name;
+                        ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
+                        OpenFastResult = true;
                     }
-                    else
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                }
+                else
+                {
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 

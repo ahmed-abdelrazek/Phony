@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Phony.WPF.Views"
-             mc:Ignorable="d" 
+             xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:AboutAppViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <RichTextBox IsReadOnly="True" FlowDirection="RightToLeft">
+    <RichTextBox IsReadOnly="True" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
         <FlowDocument>
             <Paragraph TextAlignment="Justify" FontSize="36">تلفونى</Paragraph>
             <Paragraph TextAlignment="Justify" FontSize="24">هو برنامج حر و مفتوح المصدر تحت رخصة MIT مواجهه لادارة محلات الهواتف الصغيرة.</Paragraph>

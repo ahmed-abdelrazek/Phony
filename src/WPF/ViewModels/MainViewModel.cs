@@ -1,35 +1,22 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using Phony.WPF.Data;
 using Phony.WPF.Extensions;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class MainViewModel : Screen, IHandle<User>
+    public class MainViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
-        int _itemsCount;
-        int _clientsCount;
-        int _shortagesCount;
-        int _servicesCount;
-        int _suppliersCount;
-        int _cardsCount;
-        int _companiesCount;
-        int _salesMenCount;
-        int _numbersCount;
-        int _usersCount;
         string _userName;
         string _password;
         string _newPassword;
@@ -38,108 +25,8 @@ namespace Phony.WPF.ViewModels
 
         bool isBacking;
 
-        SimpleContainer _container;
-        IEventAggregator _events;
-
-        public int ItemsCount
-        {
-            get => _itemsCount;
-            set
-            {
-                _itemsCount = value;
-                NotifyOfPropertyChange(() => ItemsCount);
-            }
-        }
-
-        public int ClientsCount
-        {
-            get => _clientsCount;
-            set
-            {
-                _clientsCount = value;
-                NotifyOfPropertyChange(() => ClientsCount);
-            }
-        }
-
-        public int ShortagesCount
-        {
-            get => _shortagesCount;
-            set
-            {
-                _shortagesCount = value;
-                NotifyOfPropertyChange(() => ShortagesCount);
-            }
-        }
-
-        public int ServicesCount
-        {
-            get => _servicesCount;
-            set
-            {
-                _servicesCount = value;
-                NotifyOfPropertyChange(() => ServicesCount);
-            }
-        }
-
-        public int SuppliersCount
-        {
-            get => _suppliersCount;
-            set
-            {
-                _suppliersCount = value;
-                NotifyOfPropertyChange(() => SuppliersCount);
-            }
-        }
-
-        public int CardsCount
-        {
-            get => _cardsCount;
-            set
-            {
-                _cardsCount = value;
-                NotifyOfPropertyChange(() => CardsCount);
-            }
-        }
-
-        public int CompaniesCount
-        {
-            get => _companiesCount;
-            set
-            {
-                _companiesCount = value;
-                NotifyOfPropertyChange(() => CompaniesCount);
-            }
-        }
-
-        public int SalesMenCount
-        {
-            get => _salesMenCount;
-            set
-            {
-                _salesMenCount = value;
-                NotifyOfPropertyChange(() => SalesMenCount);
-            }
-        }
-
-        public int NumbersCount
-        {
-            get => _numbersCount;
-            set
-            {
-                _numbersCount = value;
-                NotifyOfPropertyChange(() => NumbersCount);
-            }
-        }
-
-        public int UsersCount
-        {
-            get => _usersCount;
-            set
-            {
-                _usersCount = value;
-                NotifyOfPropertyChange(() => UsersCount);
-            }
-        }
+        private IServiceProvider serviceProvider;
+        private IWindowManager windowManager;
 
         public int UserId { get; set; }
 
@@ -195,147 +82,86 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        ShellView Message = Application.Current.Windows.OfType<ShellView>().FirstOrDefault();
+        public ICommand SignOut { get; }
+        public ICommand SaveUser { get; }
+        public ICommand OpenItemsWindow { get; }
+        public ICommand OpenClientsWindow { get; }
+        public ICommand OpenBillsWindow { get; }
+        public ICommand OpenSalesBillsWindow { get; }
+        public ICommand OpenShortagesWindow { get; }
+        public ICommand OpenServicesWindow { get; }
+        public ICommand OpenSuppliersWindow { get; }
+        public ICommand OpenCardsWindow { get; }
+        public ICommand OpenCompaniesWindow { get; }
+        public ICommand OpenSalesMenWindow { get; }
+        public ICommand OpenNumbersWindow { get; }
+        public ICommand OpenUsersWindow { get; }
+        public ICommand TakeBackup { get; }
+        public ICommand RestoreBackup { get; }
+        public ICommand OpenStoreInfoWindow { get; }
+        public ICommand OpenBarcodesWindow { get; }
+
         DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
 
-        DispatcherTimer Timer = new DispatcherTimer();
-
-        public MainViewModel(IEventAggregator events, SimpleContainer container)
+        public MainViewModel(IServiceProvider serviceProvider, IWindowManager windowManager)
         {
-            _container = container;
-            _events = events;
-            _events.SubscribeOnPublishedThread(this);
-            Timer.Tick += Timer_Tick;
-            Timer.Interval = TimeSpan.FromMilliseconds(500);
-            Timer.Start();
+            this.serviceProvider = serviceProvider;
+            this.windowManager = windowManager;
+
+            SignOut = new RelayCommand(DoSignOut);
+            SaveUser = new AsyncRelayCommand(DoSaveUser, CanSaveUser);
+            OpenItemsWindow = new AsyncRelayCommand(DoOpenItemsWindow);
+            OpenClientsWindow = new AsyncRelayCommand(DoOpenClientsWindow);
+            OpenBillsWindow = new AsyncRelayCommand(DoOpenBillsWindow);
+            OpenSalesBillsWindow = new AsyncRelayCommand(DoOpenSalesBillsWindow);
+            OpenShortagesWindow = new AsyncRelayCommand(DoOpenShortagesWindow);
+            OpenServicesWindow = new AsyncRelayCommand(DoOpenServicesWindow, CanOpenServicesWindow);
+            OpenSuppliersWindow = new AsyncRelayCommand(DoOpenSuppliersWindow, CanOpenSuppliersWindow);
+            OpenCardsWindow = new AsyncRelayCommand(DoOpenCardsWindow, CanOpenCardsWindow);
+            OpenCompaniesWindow = new AsyncRelayCommand(DoOpenCompaniesWindow, CanOpenCompaniesWindow);
+            OpenSalesMenWindow = new AsyncRelayCommand(DoOpenSalesMenWindow);
+            OpenNumbersWindow = new AsyncRelayCommand(DoOpenNumbersWindow);
+            OpenUsersWindow = new AsyncRelayCommand(DoOpenUsersWindow);
+            TakeBackup = new AsyncRelayCommand(DoTakeBackup);
+            RestoreBackup = new RelayCommand(DoRestoreBackup, CanRestoreBackup);
+            OpenStoreInfoWindow = new AsyncRelayCommand(DoOpenStoreInfoWindow, CanOpenStoreInfoWindow);
+            OpenBarcodesWindow = new AsyncRelayCommand(DoOpenBarcodesWindow, CanOpenBarcodesWindow);
         }
 
-        async Task CountEveryThing()
+        public Task OnLoadedAsync()
         {
-            if (isBacking)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                try
-                {
-                    await Task.Run(() =>
-                    {
-                        ItemsCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Other);
-                    });
-                    await Task.Run(() =>
-                    {
-                        ClientsCount = db.GetCollection<Client>(DBCollections.Clients.ToString()).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        ShortagesCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.QTY == 0);
-                    });
-                    await Task.Run(() =>
-                    {
-                        ServicesCount = db.GetCollection<Service>(DBCollections.Services).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        SuppliersCount = db.GetCollection<Supplier>(DBCollections.Suppliers).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        CardsCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Card);
-                    });
-                    await Task.Run(() =>
-                    {
-                        CompaniesCount = db.GetCollection<Company>(DBCollections.Companies).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        SalesMenCount = db.GetCollection<SalesMan>(DBCollections.SalesMen).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        NumbersCount = db.GetCollection<Note>(DBCollections.Notes).Count();
-                    });
-                    await Task.Run(() =>
-                    {
-                        UsersCount = db.GetCollection<User>(DBCollections.Users).Count();
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
+            UserId = CurrentUser.Id;
+            UserName = CurrentUser.Name;
+            UserGroup = CurrentUser.Group;
+            Group = Enumerations.GetEnumDescription(UserGroup);
+            Phone = CurrentUser.Phone;
+
+            return Task.CompletedTask;
         }
 
-        private async void Timer_Tick(object sender, EventArgs e)
+        public async Task DoOpenItemsWindow()
         {
-            //await CountEveryThing();
+            await OpenWindowAsync<ItemsViewModel>("الاصناف");
         }
 
-        public void OpenItemsWindow()
+        public async Task DoOpenClientsWindow()
         {
-            var opened = Application.Current.Windows.OfType<Items>().Count();
-            if (opened == 0)
-            {
-                new Items().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Items>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<ClientsViewModel>("العملاء");
         }
 
-        public void OpenClientsWindow()
+        public async Task DoOpenBillsWindow()
         {
-            var opened = Application.Current.Windows.OfType<Clients>().Count();
-            if (opened == 0)
-            {
-                new Clients().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Clients>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<BillsViewModel>("فواتير");
         }
 
-        public void OpenBillsWindow()
+        public async Task DoOpenSalesBillsWindow()
         {
-            var opened = Application.Current.Windows.OfType<Bills>().Count();
-            if (opened == 0)
-            {
-                new Bills().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Bills>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<SalesBillsViewerViewModel>("طباعة الفواتير");
         }
 
-        public void OpenSalesBillsWindow()
+        public async Task DoOpenShortagesWindow()
         {
-            var opened = Application.Current.Windows.OfType<SalesBillsViewer>().Count();
-            if (opened == 0)
-            {
-                new SalesBillsViewer().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault().Activate();
-            }
-        }
-
-        public void OpenShortagesWindow()
-        {
-            var opened = Application.Current.Windows.OfType<Shortages>().Count();
-            if (opened == 0)
-            {
-                new Shortages().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Shortages>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<ShortagesViewModel>("النواقص");
         }
 
         public bool CanOpenServicesWindow()
@@ -343,17 +169,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenServicesWindow()
+        public async Task DoOpenServicesWindow()
         {
-            var opened = Application.Current.Windows.OfType<Services>().Count();
-            if (opened == 0)
-            {
-                new Services().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Services>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<ServicesViewModel>("خدمات شركات");
         }
 
         public bool CanOpenSuppliersWindow()
@@ -361,17 +179,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenSuppliersWindow()
+        public async Task DoOpenSuppliersWindow()
         {
-            var opened = Application.Current.Windows.OfType<Suppliers>().Count();
-            if (opened == 0)
-            {
-                new Suppliers().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Suppliers>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<SuppliersViewModel>("الموردين");
         }
 
         public bool CanOpenCardsWindow()
@@ -379,17 +189,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenCardsWindow()
+        public async Task DoOpenCardsWindow()
         {
-            var opened = Application.Current.Windows.OfType<Cards>().Count();
-            if (opened == 0)
-            {
-                new Cards().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Cards>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<CardsViewModel>("كروت الشحن");
         }
 
         public bool CanOpenCompaniesWindow()
@@ -397,17 +199,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenCompaniesWindow()
+        public async Task DoOpenCompaniesWindow()
         {
-            var opened = Application.Current.Windows.OfType<Companies>().Count();
-            if (opened == 0)
-            {
-                new Companies().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Companies>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<CompaniesViewModel>("شركات");
         }
 
         public bool CanOpenSalesMenWindow()
@@ -415,30 +209,14 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenSalesMenWindow()
+        public async Task DoOpenSalesMenWindow()
         {
-            var opened = Application.Current.Windows.OfType<SalesMen>().Count();
-            if (opened == 0)
-            {
-                new SalesMen().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<SalesMen>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<SalesMenViewModel>("المندوبين");
         }
 
-        public void OpenNumbersWindow()
+        public async Task DoOpenNumbersWindow()
         {
-            var opened = Application.Current.Windows.OfType<Notes>().Count();
-            if (opened == 0)
-            {
-                new Notes().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Notes>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<NotesViewModel>("ارقام");
         }
 
         public bool CanOpenUsersWindow()
@@ -446,57 +224,42 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenUsersWindow()
+        public async Task DoOpenUsersWindow()
         {
-            var opened = Application.Current.Windows.OfType<Users>().Count();
-            if (opened == 0)
-            {
-                new Users().Show();
-                _container.GetInstance<Users>().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Users>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<UsersViewModel>("المستخدمين");
         }
 
-        public async void TakeBackup()
+        public async Task DoTakeBackup()
         {
             isBacking = true;
-            var progressbar = await Message.ShowProgressAsync("اخذ نسخه احتياطية", "جارى اخذ نسخه احتياطية الان");
-            progressbar.SetIndeterminate();
             try
             {
-                var dlg = new System.Windows.Forms.FolderBrowserDialog
-                {
-                    SelectedPath = Properties.Settings.Default.BackUpsFolder
-                };
-                dlg.ShowDialog();
-                if (string.IsNullOrWhiteSpace(dlg.SelectedPath))
-                {
-                    Properties.Settings.Default.BackUpsFolder = dlg.SelectedPath;
-                    if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))
-                    {
-                        Properties.Settings.Default.BackUpsFolder += "\\";
-                    }
-                    Properties.Settings.Default.Save();
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
-                    File.Copy(ConnectionStringBuilder["Filename"].ToString(), $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
-                    await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
-                }
+                //todo
+                //var dlg = new System.Windows.Forms.FolderBrowserDialog
+                //{
+                //    SelectedPath = Properties.Settings.Default.BackUpsFolder
+                //};
+                //dlg.ShowDialog();
+                //if (string.IsNullOrWhiteSpace(dlg.SelectedPath))
+                //{
+                //    Properties.Settings.Default.BackUpsFolder = dlg.SelectedPath;
+                //    if (!Properties.Settings.Default.BackUpsFolder.EndsWith("\\"))
+                //    {
+                //        Properties.Settings.Default.BackUpsFolder += "\\";
+                //    }
+                //    Properties.Settings.Default.Save();
+                //    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
+                //    File.Copy(ConnectionStringBuilder["Filename"].ToString(), $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
+                //    await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
+                //}
             }
             catch (Exception ex)
             {
-                await progressbar.CloseAsync();
                 await Core.SaveExceptionAsync(ex);
-                await Message.ShowMessageAsync("مشكله", "هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر");
+                MessageBox.MaterialMessageBox.ShowError("هناك مشكله فى حفظ النسخه الاحتياطية جرب مكان اخر", "مشكله", true);
             }
             finally
             {
-                if (progressbar.IsOpen)
-                {
-                    await progressbar.CloseAsync();
-                }
                 isBacking = false;
             }
         }
@@ -506,11 +269,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public async void RestoreBackup()
+        public void DoRestoreBackup()
         {
             isBacking = true;
-            var progressbar = await Message.ShowProgressAsync("استرجع نسخه احتياطية", "جارى استعادة نسخه احتياطية الان");
-            progressbar.SetIndeterminate();
             try
             {
                 var dlg = new OpenFileDialog
@@ -524,20 +285,15 @@ namespace Phony.WPF.ViewModels
                 {
                     ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
                     File.Copy(dlg.FileName, ConnectionStringBuilder["Filename"].ToString(), true);
-                    await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
+                    MessageBox.MaterialMessageBox.Show("تم استرجاع النسخه الاحتياطية بنجاح", "تمت العملية", true);
                 }
             }
             catch (Exception ex)
             {
-                await progressbar.CloseAsync();
                 Core.SaveException(ex);
             }
             finally
             {
-                if (progressbar.IsOpen)
-                {
-                    await progressbar.CloseAsync();
-                }
                 isBacking = false;
             }
         }
@@ -547,17 +303,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void OpenStoreInfoWindow()
+        public async Task DoOpenStoreInfoWindow()
         {
-            var opened = Application.Current.Windows.OfType<Stores>().Count();
-            if (opened == 0)
-            {
-                new Stores().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<Stores>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<StoresViewModel>("بيانات المحل");
         }
 
         public bool CanOpenBarcodesWindow()
@@ -565,17 +313,9 @@ namespace Phony.WPF.ViewModels
             return UserGroup == UserGroup.Manager;
         }
 
-        public void DoOpenBarcodesWindow()
+        public async Task DoOpenBarcodesWindow()
         {
-            var opened = Application.Current.Windows.OfType<BarCodes>().Count();
-            if (opened == 0)
-            {
-                new BarCodes().Show();
-            }
-            else
-            {
-                Application.Current.Windows.OfType<BarCodes>().FirstOrDefault().Activate();
-            }
+            await OpenWindowAsync<BarcodesViewModel>("باركود");
         }
 
         public bool CanSaveUser()
@@ -583,28 +323,83 @@ namespace Phony.WPF.ViewModels
             return !string.IsNullOrWhiteSpace(Password);
         }
 
-        public void SignOut()
+        private async Task DoSaveUser()
+        {
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var userCol = db.GetCollection<User>(DBCollections.Users);
+            User u = null;
+            await Task.Run(() =>
+            {
+                u = userCol.Find(x => x.Name == UserName).FirstOrDefault();
+            });
+            if (u == null)
+            {
+                MessageBox.MaterialMessageBox.ShowWarning("تاكد من اسم المستخدم و ان كلمه المرور الحاليه صحيحة", "خطا", true);
+            }
+            else if (string.IsNullOrWhiteSpace(NewPassword))
+            {
+                u.Name = UserName;
+                u.Phone = Phone;
+            }
+            else
+            {
+                if (SecurePasswordHasher.Verify(Password, u.Pass))
+                {
+                    u.Name = UserName;
+                    u.Pass = SecurePasswordHasher.Hash(NewPassword);
+                    u.Phone = Phone;
+                }
+            }
+            userCol.Update(u);
+            Password = null;
+            NewPassword = null;
+            MessageBox.MaterialMessageBox.Show("تم تعديل بيانات المستخدم بنجاح", "تمت", true);
+        }
+
+        public void DoSignOut()
         {
             try
             {
-                File.Delete(Core.UserLocalAppFolderPath() + "..\\..\\session");
-                _container.GetInstance<LoginViewModel>();
+                CurrentUser = new User();
+                windowManager.ShowDialog<LoginViewModel>();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Core.SaveException(ex);
                 Environment.Exit(0);
             }
         }
 
-        public async Task HandleAsync(User message, CancellationToken cancellationToken)
+        private async Task OpenWindowAsync<T>(string title) where T : BaseViewModelWithAnnotationValidation
         {
-            UserId = message.Id;
-            UserName = message.Name;
-            UserGroup = message.Group;
-            Group = Enumerations.GetEnumDescription(UserGroup);
-            Phone = message.Phone;
-            await Task.Delay(20);
+            if (isBacking)
+            {
+                return;
+            }
+
+            await Task.Delay(5);
+
+            bool windowAlreadyOpenned = false;
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.Title == title)
+                {
+                    windowAlreadyOpenned = true;
+                    if (window.WindowState == WindowState.Minimized)
+                    {
+                        window.WindowState = WindowState.Normal;
+                    }
+                    window.Activate();
+                    break;
+                }
+            }
+
+            if (!windowAlreadyOpenned)
+            {
+                T w = serviceProvider.GetRequiredService<T>();
+
+                windowManager.ShowWindow(w);
+            }
         }
     }
 }

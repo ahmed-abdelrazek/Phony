@@ -1,18 +1,14 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Phony.WPF.ViewModels
 {
-    public class NotesViewModel : Screen
+    public class NotesViewModel : BaseViewModelWithAnnotationValidation
     {
         long _noId;
         string _name;
@@ -161,17 +157,13 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-
-        Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
-
         public NotesViewModel()
         {
+            Title = "ارقام";
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
+            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
         }
 
         private bool CanAddNo()
@@ -181,23 +173,21 @@ namespace Phony.WPF.ViewModels
 
         private void DoAddNo()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var n = new Note
             {
-                var n = new Note
-                {
-                    Name = Name,
-                    Phone = Phone,
-                    Group = NoteGroup.Numbers,
-                    Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
-                };
-                db.GetCollection<Note>(DBCollections.Notes).Insert(n);
-                Numbers.Add(n);
-                Message.ShowMessageAsync("تمت العملية", "تم اضافة الرقم بنجاح");
-            }
+                Name = Name,
+                Phone = Phone,
+                Group = NoteGroup.Numbers,
+                Notes = Notes,
+                CreateDate = DateTime.Now,
+                //Creator = Core.ReadUserSession(),
+                EditDate = null,
+                Editor = null
+            };
+            db.GetCollection<Note>(DBCollections.Notes).Insert(n);
+            Numbers.Add(n);
+            MessageBox.MaterialMessageBox.Show("تم اضافة الرقم بنجاح", "تمت العملية", true);
         }
 
         private bool CanEditNo()
@@ -207,20 +197,18 @@ namespace Phony.WPF.ViewModels
 
         private void DoEditNo()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                var n = db.GetCollection<Note>(DBCollections.Notes).FindById(DataGridSelectedNo.Id);
-                n.Name = Name;
-                n.Phone = Phone;
-                n.Notes = Notes;
-                //n.Editor = Core.ReadUserSession();
-                n.EditDate = DateTime.Now;
-                db.GetCollection<Note>(DBCollections.Notes).Update(n);
-                Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
-                NoId = 0;
-                DataGridSelectedNo = null;
-                Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var n = db.GetCollection<Note>(DBCollections.Notes).FindById(DataGridSelectedNo.Id);
+            n.Name = Name;
+            n.Phone = Phone;
+            n.Notes = Notes;
+            //n.Editor = Core.ReadUserSession();
+            n.EditDate = DateTime.Now;
+            db.GetCollection<Note>(DBCollections.Notes).Update(n);
+            Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
+            NoId = 0;
+            DataGridSelectedNo = null;
+            MessageBox.MaterialMessageBox.Show("تم تعديل الرقم بنجاح", "تمت العملية", true);
         }
 
         private bool CanDeleteNo()
@@ -228,10 +216,10 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedNo == null ? false : true;
         }
 
-        private async void DoDeleteNo()
+        private void DoDeleteNo()
         {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", "حذف الرقم", true);
+            if (result == MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
@@ -239,7 +227,7 @@ namespace Phony.WPF.ViewModels
                     Numbers.Remove(DataGridSelectedNo);
                 }
                 DataGridSelectedNo = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الرقم بنجاح");
+                MessageBox.MaterialMessageBox.Show("تم حذف الرقم بنجاح", "تمت العملية", true);
             }
         }
 
@@ -248,32 +236,30 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name.Contains(SearchText)));
+                if (Numbers.Count > 0)
                 {
-                    Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name.Contains(SearchText)));
-                    if (Numbers.Count > 0)
+                    if (FastResult)
                     {
-                        if (FastResult)
-                        {
-                            ChildName = Numbers.FirstOrDefault().Name;
-                            ChildNo = Numbers.FirstOrDefault().Phone;
-                            OpenFastResult = true;
-                        }
+                        ChildName = Numbers.FirstOrDefault().Name;
+                        ChildNo = Numbers.FirstOrDefault().Phone;
+                        OpenFastResult = true;
                     }
-                    else
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                }
+                else
+                {
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 
@@ -284,10 +270,8 @@ namespace Phony.WPF.ViewModels
 
         private void DoReloadAllNos()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
         }
 
         private bool CanFillUI()

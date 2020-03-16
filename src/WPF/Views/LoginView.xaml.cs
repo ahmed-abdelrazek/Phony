@@ -1,11 +1,11 @@
-﻿using System.Windows.Controls;
+﻿using MaterialDesignExtensions.Controls;
 
 namespace Phony.WPF.Views
 {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class LoginView : UserControl
+    public partial class LoginView : MaterialWindow
     {
         public LoginView()
         {

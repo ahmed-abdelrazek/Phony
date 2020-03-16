@@ -32,8 +32,8 @@
     <Content Include="Installer.wax" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Phony.csproj">
-      <Name>Phony</Name>
+    <ProjectReference Include="..\src\WPF\Phony.WPF.csproj">
+      <Name>Phony.WPF</Name>
       <Project>{2eadced1-524e-4fdf-b25d-7c0f60bbfdcc}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>

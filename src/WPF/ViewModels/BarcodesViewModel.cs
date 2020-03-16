@@ -1,4 +1,3 @@
-using Caliburn.Micro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Phony.WPF.Data;
@@ -10,12 +9,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Phony.WPF.ViewModels
 {
-    public class BarcodesViewModel : Screen
+    public class BarcodesViewModel : BaseViewModelWithAnnotationValidation
     {
         int _height;
         int _width;
@@ -210,10 +208,9 @@ namespace Phony.WPF.ViewModels
 
         BarcodeLib.Barcode barCode = new BarcodeLib.Barcode();
 
-        readonly BarCodes Message = Application.Current.Windows.OfType<BarCodes>().FirstOrDefault();
-
         public BarcodesViewModel()
         {
+            Title = "باركود";
             Foreground = barCode.ForeColor.ToHexString();
             Background = barCode.BackColor.ToHexString();
             RotateTypes = new List<string>();
@@ -272,7 +269,7 @@ namespace Phony.WPF.ViewModels
             return !string.IsNullOrWhiteSpace(EncodeValue) && !string.IsNullOrWhiteSpace(Alignment) && !string.IsNullOrWhiteSpace(SelectedEncoder);
         }
 
-        private async void Encode()
+        private void Encode()
         {
             int W = 202;
             int H = 101;
@@ -332,7 +329,7 @@ namespace Phony.WPF.ViewModels
                     catch (Exception ex)
                     {
                         Core.SaveException(ex);
-                        await Message.ShowMessageAsync("مشكلة", "هناك مشكله تخص عرض الكود");
+                        MessageBox.MaterialMessageBox.ShowError("هناك مشكله تخص عرض الكود", "مشكلة", true);
                     }
                     try
                     {
@@ -341,7 +338,7 @@ namespace Phony.WPF.ViewModels
                     catch (Exception ex)
                     {
                         Core.SaveException(ex);
-                        await Message.ShowMessageAsync("مشكلة ", "هناك مشكله تخص النسبة");
+                        MessageBox.MaterialMessageBox.ShowError("هناك مشكله تخص النسبة", "مشكلة ", true);
                     }
                     barCode.IncludeLabel = GenerateLabel;
                     barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);

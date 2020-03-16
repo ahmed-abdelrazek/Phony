@@ -1,21 +1,18 @@
-﻿using Caliburn.Micro;
-using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LiteDB;
 using Phony.WPF.Data;
 using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class CardsViewModel : Screen
+    public class CardsViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _cardId;
         long _selectedCompanyValue;
@@ -373,65 +370,62 @@ namespace Phony.WPF.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        Cards Message = Application.Current.Windows.OfType<Cards>().FirstOrDefault();
-
         public CardsViewModel()
         {
+            Title = "كروت الشحن";
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll().ToList());
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll().ToList());
-                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
-            }
-            new Thread(() =>
-            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll().ToList());
+                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll().ToList());
+                    Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
+                    Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
+                }
                 CardsCount = $"إجمالى الكروت: {Cards.Count().ToString()}";
                 CardsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Cards.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
                 CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.RetailPrice * i.QTY), 2).ToString()}";
                 CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.RetailPrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
-            }).Start();
+            });
         }
 
         private bool CanAddCard()
         {
-            if (string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue == 0 || SelectedSupplierValue == 0)
-            {
-                return false;
-            }
-            return true;
+            return !string.IsNullOrWhiteSpace(Name) && SelectedCompanyValue != 0 && SelectedSupplierValue != 0;
         }
 
-        private async void DoAddCard()
+        private void DoAddCard()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var itemCol = db.GetCollection<Item>(DBCollections.Items);
+            var i = new Item
             {
-                var itemCol = db.GetCollection<Item>(DBCollections.Items);
-                var i = new Item
-                {
-                    Name = Name,
-                    Barcode = Barcode,
-                    Shopcode = Shopcode,
-                    Image = Image,
-                    Group = ItemGroup.Card,
-                    PurchasePrice = PurchasePrice,
-                    WholeSalePrice = WholeSalePrice,
-                    RetailPrice = RetailPrice,
-                    QTY = QTY,
-                    Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
-                    Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
-                    Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
+                Name = Name,
+                Barcode = Barcode,
+                Shopcode = Shopcode,
+                Image = Image,
+                Group = ItemGroup.Card,
+                PurchasePrice = PurchasePrice,
+                WholeSalePrice = WholeSalePrice,
+                RetailPrice = RetailPrice,
+                QTY = QTY,
+                Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
+                Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
+                Notes = Notes,
+                CreateDate = DateTime.Now,
+                //Creator = Core.ReadUserSession(),
+                EditDate = null,
+                Editor = null
 
-                };
-                itemCol.Insert(i);
-                Cards.Add(i);
-                await Message.ShowMessageAsync("تمت العملية", "تم اضافة الكارت بنجاح");
-            }
+            };
+            itemCol.Insert(i);
+            Cards.Add(i);
+            MessageBox.MaterialMessageBox.Show("تم اضافة الكارت بنجاح", "تمت العملية", true);
         }
 
         private bool CanEditCard()
@@ -441,31 +435,29 @@ namespace Phony.WPF.ViewModels
                 : true;
         }
 
-        private async void DoEditCard()
+        private void DoEditCard()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                var itemCol = db.GetCollection<Item>(DBCollections.Items);
-                var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
-                i.Name = Name;
-                i.Barcode = Barcode;
-                i.Shopcode = Shopcode;
-                i.Image = Image;
-                i.PurchasePrice = PurchasePrice;
-                i.WholeSalePrice = WholeSalePrice;
-                i.RetailPrice = RetailPrice;
-                i.QTY = QTY;
-                i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
-                i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
-                i.Notes = Notes;
-                //i.Editor = Core.ReadUserSession();
-                i.EditDate = DateTime.Now;
-                itemCol.Update(i);
-                Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
-                CardId = 0;
-                DataGridSelectedItem = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم تعديل الكارت بنجاح");
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            var itemCol = db.GetCollection<Item>(DBCollections.Items);
+            var i = itemCol.Find(x => x.Id == DataGridSelectedItem.Id).FirstOrDefault();
+            i.Name = Name;
+            i.Barcode = Barcode;
+            i.Shopcode = Shopcode;
+            i.Image = Image;
+            i.PurchasePrice = PurchasePrice;
+            i.WholeSalePrice = WholeSalePrice;
+            i.RetailPrice = RetailPrice;
+            i.QTY = QTY;
+            i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
+            i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
+            i.Notes = Notes;
+            //i.Editor = Core.ReadUserSession();
+            i.EditDate = DateTime.Now;
+            itemCol.Update(i);
+            Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
+            CardId = 0;
+            DataGridSelectedItem = null;
+            MessageBox.MaterialMessageBox.Show("تم تعديل الكارت بنجاح", "تمت العملية", true);
         }
 
         private bool CanDeleteCard()
@@ -473,10 +465,10 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedItem == null ? false : true;
         }
 
-        private async void DoDeleteCard()
+        private void DoDeleteCard()
         {
-            var result = await Message.ShowMessageAsync("حذف الكارت", $"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative)
+            var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الكارت {DataGridSelectedItem.Name}", "حذف الكارت", true);
+            if (result == MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
@@ -484,7 +476,7 @@ namespace Phony.WPF.ViewModels
                     Cards.Remove(DataGridSelectedItem);
                 }
                 DataGridSelectedItem = null;
-                await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
+                MessageBox.MaterialMessageBox.Show("تم حذف الكارت بنجاح", "تمت العملية", true);
             }
         }
 
@@ -493,44 +485,35 @@ namespace Phony.WPF.ViewModels
             return string.IsNullOrWhiteSpace(SearchText) ? false : true;
         }
 
-        private async void DoSearch()
+        private void DoSearch()
         {
             try
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Cards = ByName
+                    ? new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList())
+                    : ByBarCode
+                        ? new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card))
+                        : new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
+                if (Cards.Count > 0)
                 {
-                    if (ByName)
+                    if (FastResult)
                     {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Card).ToList());
+                        ChildName = Cards.FirstOrDefault().Name;
+                        ChildPrice = Cards.FirstOrDefault().RetailPrice.ToString();
+                        ChildImage = Cards.FirstOrDefault().Image;
+                        OpenFastResult = true;
                     }
-                    else if (ByBarCode)
-                    {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Card));
-                    }
-                    else
-                    {
-                        Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Card));
-                    }
-                    if (Cards.Count > 0)
-                    {
-                        if (FastResult)
-                        {
-                            ChildName = Cards.FirstOrDefault().Name;
-                            ChildPrice = Cards.FirstOrDefault().RetailPrice.ToString();
-                            ChildImage = Cards.FirstOrDefault().Image;
-                            OpenFastResult = true;
-                        }
-                    }
-                    else
-                    {
-                        await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
-                    }
+                }
+                else
+                {
+                    MessageBox.MaterialMessageBox.ShowWarning("لم يتم العثور على شئ", "غير موجود", true);
                 }
             }
             catch (Exception ex)
             {
                 Core.SaveException(ex);
-                await Message.ShowMessageAsync("خطأ", "لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله");
+                MessageBox.MaterialMessageBox.ShowError("لم يستطع ايجاد ما تبحث عنه تاكد من صحه البيانات المدخله", "خطأ", true);
             }
         }
 
@@ -541,10 +524,8 @@ namespace Phony.WPF.ViewModels
 
         private void DoReloadAllCards()
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Card));
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Card));
         }
 
         private bool CanFillUI()
