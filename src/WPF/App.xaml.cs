@@ -54,8 +54,8 @@ namespace Phony.WPF
                 {
                     IEnumerable<Swatch> Swatches = new SwatchesProvider().Swatches;
 
-                    PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.PrimaryColor));
-                    PaletteSelectorViewModel.ApplyAccent(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.AccentColor));
+                    PaletteSelectorViewModel.ApplyPrimary(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.PrimaryColor.ToLower()));
+                    PaletteSelectorViewModel.ApplyAccent(Swatches.FirstOrDefault(x => x.Name == WPF.Properties.Settings.Default.AccentColor.ToLower()));
 
                     PaletteSelectorViewModel.ApplyBase(WPF.Properties.Settings.Default.IsDarkTheme);
                 }
