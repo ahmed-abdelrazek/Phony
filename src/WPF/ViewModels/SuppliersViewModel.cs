@@ -1,8 +1,6 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -10,10 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class SuppliersViewModel : BaseViewModelWithAnnotationValidation
+    public class SuppliersViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _supplierId;
         string _name;
@@ -214,52 +213,47 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public SuppliersViewModel()
         {
             Title = "الموردين";
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll());
-                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(Data.DBCollections.SalesMen).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll());
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
             }
-            DebitCredit();
         }
 
-        async void DebitCredit()
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
+                SalesMen = new ObservableCollection<SalesMan>(db.GetCollection<SalesMan>(DBCollections.SalesMen).FindAll());
+            });
+
+            await DebitCredit();
+        }
+
+        async Task DebitCredit()
         {
             decimal Debit = decimal.Round(Suppliers.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
             decimal Credit = decimal.Round(Suppliers.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
             await Task.Run(() =>
             {
-                SuppliersCount = $"مجموع العملاء: {Suppliers.Count().ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                SuppliersDebits = $"اجمالى لينا: {Math.Abs(Debit).ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                SuppliersCredits = $"اجمالى علينا: {Math.Abs(Credit).ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                SuppliersProfit = $"تقدير لصافى لينا: {(Math.Abs(Debit) - Math.Abs(Credit)).ToString()}";
+                SuppliersCount = $"مجموع العملاء: {Suppliers.Count()}";
+                SuppliersDebits = $"اجمالى لينا: {Math.Abs(Debit)}";
+                SuppliersCredits = $"اجمالى علينا: {Math.Abs(Credit)}";
+                SuppliersProfit = $"تقدير لصافى لينا: {Math.Abs(Debit) - Math.Abs(Credit)}";
             });
         }
 
         private bool CanSupplierPay()
         {
-            if (DataGridSelectedSupplier == null)
-            {
-                return false;
-            }
-            return true;
+            return DataGridSelectedSupplier != null;
         }
 
-        private void DoSupplierPayAsync()
+        private async Task DoSupplierPayAsync()
         {
             var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى استلمته من المورد {DataGridSelectedSupplier.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
@@ -278,14 +272,13 @@ namespace Phony.WPF.ViewModels
                     {
                         Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id),
                         Credit = supplierpaymentamount,
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        EditDate = null,
-                        Editor = null
+                        CreatedAt = DateTime.Now,
+                        Creator = CurrentUser,
+                        Editor = CurrentUser
                     });
                     MessageBox.MaterialMessageBox.Show($"تم استلام للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح", "تمت العملية", true);
                     Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
-                    DebitCredit();
+                    await DebitCredit();
                     DataGridSelectedSupplier = null;
                     SupplierId = 0;
                 }
@@ -298,10 +291,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanPaySupplier()
         {
-            return DataGridSelectedSupplier == null ? false : true;
+            return DataGridSelectedSupplier != null;
         }
 
-        private void DoPaySupplierAsync()
+        private async Task DoPaySupplierAsync()
         {
             var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد تدفيعه للمورد {DataGridSelectedSupplier.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
@@ -321,24 +314,22 @@ namespace Phony.WPF.ViewModels
                         {
                             Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id),
                             Debit = supplierpaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
+                            CreatedAt = DateTime.Now,
+                            Creator = CurrentUser,
+                            Editor = CurrentUser
                         });
                         db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                         {
                             Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Credit = supplierpaymentamount,
                             Notes = $"دفع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
+                            CreatedAt = DateTime.Now,
+                            Creator = CurrentUser,
+                            Editor = CurrentUser
                         });
                         MessageBox.MaterialMessageBox.Show($"تم دفع للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح", "تمت العملية", true);
                         Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
-                        DebitCredit();
+                        await DebitCredit();
                         DataGridSelectedSupplier = null;
                         SupplierId = 0;
                     }
@@ -352,10 +343,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanAddSupplier()
         {
-            return string.IsNullOrWhiteSpace(Name) || SelectedSalesMan < 1 ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && SelectedSalesMan >= 1;
         }
 
-        private void DoAddSupplier()
+        private async Task DoAddSupplier()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
@@ -372,15 +363,14 @@ namespace Phony.WPF.ViewModels
                         Image = Image,
                         SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(SelectedSalesMan),
                         Notes = Notes,
-                        CreateDate = DateTime.Now,
-                        //Creator = Core.ReadUserSession(),
-                        EditDate = null,
-                        Editor = null
+                        CreatedAt = DateTime.Now,
+                        Creator = CurrentUser,
+                        Editor = CurrentUser
                     };
                     db.GetCollection<Supplier>(DBCollections.Suppliers).Insert(s);
                     Suppliers.Add(s);
                     MessageBox.MaterialMessageBox.Show("تم اضافة المورد بنجاح", "تمت العملية", true);
-                    DebitCredit();
+                    await DebitCredit();
                 }
                 else
                 {
@@ -391,10 +381,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditSupplier()
         {
-            return string.IsNullOrWhiteSpace(Name) || SupplierId < 1 || SelectedSalesMan < 1 || DataGridSelectedSupplier == null ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && SupplierId >= 1 && SelectedSalesMan >= 1 && DataGridSelectedSupplier != null;
         }
 
-        private void DoEditSupplier()
+        private async Task DoEditSupplier()
         {
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
             var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
@@ -406,22 +396,22 @@ namespace Phony.WPF.ViewModels
             s.Image = Image;
             s.SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(SelectedSalesMan);
             s.Notes = Notes;
-            //s.Editor = Core.ReadUserSession();
-            s.EditDate = DateTime.Now;
+            s.Editor = CurrentUser;
+            s.EditedAt = DateTime.Now;
             db.GetCollection<Supplier>(DBCollections.Suppliers).Update(s);
             MessageBox.MaterialMessageBox.Show("تم تعديل المورد بنجاح", "تمت العملية", true);
             Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
-            DebitCredit();
+            await DebitCredit();
             DataGridSelectedSupplier = null;
             SupplierId = 0;
         }
 
         private bool CanDeleteSupplier()
         {
-            return DataGridSelectedSupplier == null || DataGridSelectedSupplier.Id == 1 ? false : true;
+            return DataGridSelectedSupplier != null && DataGridSelectedSupplier.Id != 1;
         }
 
-        private void DoDeleteSupplier()
+        private async Task DoDeleteSupplier()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", "حذف المورد", true);
             if (result == MessageBoxResult.OK)
@@ -432,14 +422,14 @@ namespace Phony.WPF.ViewModels
                     Suppliers.Remove(DataGridSelectedSupplier);
                 }
                 MessageBox.MaterialMessageBox.Show("تم حذف المورد بنجاح", "تمت العملية", true);
-                DebitCredit();
+                await DebitCredit();
                 DataGridSelectedSupplier = null;
             }
         }
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()
@@ -465,18 +455,18 @@ namespace Phony.WPF.ViewModels
             return true;
         }
 
-        private void DoReloadAllSuppliers()
+        private async Task DoReloadAllSuppliers()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
             }
-            DebitCredit();
+            await DebitCredit();
         }
 
         private bool CanFillUI()
         {
-            return DataGridSelectedSupplier == null ? false : true;
+            return DataGridSelectedSupplier != null;
         }
 
         private void DoFillUI()
@@ -521,7 +511,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddSupplierFlyout()
         {
-            IsAddSupplierFlyoutOpen = IsAddSupplierFlyoutOpen ? false : true;
+            IsAddSupplierFlyoutOpen = !IsAddSupplierFlyoutOpen;
         }
     }
 }

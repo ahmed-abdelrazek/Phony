@@ -23,7 +23,12 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstallerBootstrapperX64", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony.Data", "src\DataCore\Phony.Data.csproj", "{514652A4-D240-49ED-8258-F87000000257}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phony.MessageBox", "src\MessageBox\Phony.MessageBox.csproj", "{4628FD27-E488-4A51-A574-3BB7EB3014E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony.MessageBox", "src\MessageBox\Phony.MessageBox.csproj", "{4628FD27-E488-4A51-A574-3BB7EB3014E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77AA9645-8977-4432-B6A8-AC9C2E2AC622}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

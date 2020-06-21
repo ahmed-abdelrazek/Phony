@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Phony.Data.Models.Lite;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,13 +19,13 @@ namespace Phony.WPF.ViewModels
         private string _title;
         private FlowDirection _flowDirection;
         private static FlowDirection _flowDirectionStatic;
-        private Models.User _currentUser;
+        private User _currentUser;
 
         protected BaseViewModelWithAnnotationValidation()
         {
             _Properties = GetType().GetProperties().ToDictionary(x => x.Name);
             ValidateModel();
-            CurrentUser = new Models.User();
+            CurrentUser = new User();
             FlowDirection = FlowDirectionStatic;
         }
 
@@ -123,7 +124,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public Models.User CurrentUser
+        public User CurrentUser
         {
             get => _currentUser;
             set

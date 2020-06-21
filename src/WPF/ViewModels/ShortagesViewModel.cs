@@ -1,12 +1,13 @@
 ﻿using LiteDB;
-using Phony.WPF.Models;
+using Phony.Data.Models.Lite;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ShortagesViewModel : BaseViewModelWithAnnotationValidation
+    public class ShortagesViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         static string _itemsCount;
 
@@ -35,14 +36,18 @@ namespace Phony.WPF.ViewModels
         public ShortagesViewModel()
         {
             Title = "النواقص";
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                Items = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items).Find(i => i.QTY <= 0));
-            }
-            new Thread(() =>
-            {
-                ItemsCount = $"إجمالى النواقص: {Items.Count().ToString()}";
-            }).Start();
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.QTY <= 0));
+                    ItemsCount = $"إجمالى النواقص: {Items.Count()}";
+                }
+            });
         }
     }
 }

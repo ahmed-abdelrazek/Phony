@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace Phony.DataCore
+namespace Phony.Data
 {
     public class BloggingContext : DbContext
     {

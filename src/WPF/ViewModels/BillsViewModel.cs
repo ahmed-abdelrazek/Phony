@@ -1,19 +1,19 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using Phony.WPF.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
 
-    public class BillsViewModel : BaseViewModelWithAnnotationValidation
+    public class BillsViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _searchSelectedValue;
         decimal _itemChildItemPrice;
@@ -52,10 +52,9 @@ namespace Phony.WPF.ViewModels
 
         Visibility _billClientPaymentChangeVisible;
 
-        List<Client> _clients;
-        List<Item> _items;
-        List<Service> _services;
-        List<User> _users;
+        ObservableCollection<Client> _clients;
+        ObservableCollection<Item> _items;
+        ObservableCollection<Service> _services;
 
         ObservableCollection<object> _searchItems;
         ObservableCollection<BillItemMove> _billItemsMoves;
@@ -460,7 +459,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public List<Client> Clients
+        public ObservableCollection<Client> Clients
         {
             get => _clients;
             set
@@ -470,7 +469,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public List<Item> Items
+        public ObservableCollection<Item> Items
         {
             get => _items;
             set
@@ -480,7 +479,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public List<Service> Services
+        public ObservableCollection<Service> Services
         {
             get => _services;
             set
@@ -490,32 +489,28 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public List<User> Users
-        {
-            get => _users;
-            set
-            {
-                _users = value;
-                NotifyOfPropertyChange(() => Users);
-            }
-        }
-
         public BillsViewModel()
         {
             Title = "فواتير";
             ByName = true;
             ByItem = true;
             BillClientPaymentChangeVisible = Visibility.Collapsed;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
-                Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
-                Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
-                Users = new List<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            }
             BillItemsMoves = new ObservableCollection<BillItemMove>();
             BillServicesMoves = new ObservableCollection<BillServiceMove>();
-            NewBillNo();
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
+                    Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
+                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
+                }
+                NewBillNo();
+            });
         }
 
         async Task<long> SaveBillNoAsync()
@@ -539,6 +534,7 @@ namespace Phony.WPF.ViewModels
                 billNote = MessageBox.MaterialInputBox.Show($"اكتب اى شئ ليتم طباعته مع الفاتورة", "ملاحظة", true);
             }
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+
             try
             {
                 var bi = new Bill
@@ -549,10 +545,9 @@ namespace Phony.WPF.ViewModels
                     TotalAfterDiscounts = BillTotalAfterDiscount,
                     TotalPayed = BillClientPayment,
                     Notes = billNote,
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    Editor = null,
-                    EditDate = null
+                    CreatedAt = DateTime.Now,
+                    Creator = CurrentUser,
+                    Editor = CurrentUser
                 };
                 db.GetCollection<Bill>(DBCollections.Bills).Insert(bi);
                 foreach (var item in BillItemsMoves)
@@ -583,10 +578,9 @@ namespace Phony.WPF.ViewModels
                     Debit = BillClientPayment,
                     Credit = BillClientPaymentChange,
                     Notes = $"فاتورة رقم {bi.Id}",
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
+                    CreatedAt = DateTime.Now,
+                    Creator = CurrentUser,
+                    Editor = CurrentUser
                 });
                 Clear();
                 CurrentBillNo = bi.Id + 1;
@@ -620,7 +614,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSaveBill()
         {
-            return SelectedClient == null ? false : (BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0;
+            return SelectedClient != null && (BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0;
         }
 
         private async void DoSaveBill()
@@ -684,9 +678,9 @@ namespace Phony.WPF.ViewModels
             BillClientPayment = 0;
             SearchSelectedValue = 0;
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-            Clients = new List<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
-            Items = new List<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
-            Services = new List<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
+            Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
+            Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).FindAll());
+            Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
             SearchSelectedValue = 0;
         }
 
@@ -742,10 +736,9 @@ namespace Phony.WPF.ViewModels
                         Cost = ServiceChildServiceCost,
                         Discount = ChildDiscount,
                         Notes = ServiceChildNotes,
-                        //Creator = Core.ReadUserSession(),
-                        CreateDate = DateTime.Now,
-                        Editor = null,
-                        EditDate = null
+                        CreatedAt = DateTime.Now,
+                        Creator = CurrentUser,
+                        Editor = CurrentUser
                     });
                 }
                 BillTotal += ServiceChildServiceCost;
@@ -790,10 +783,9 @@ namespace Phony.WPF.ViewModels
                         ItemPrice = SelectedItem.RetailPrice,
                         Discount = ChildDiscount,
                         Notes = ItemChildNotes,
-                        //Creator = Core.ReadUserSession(),
-                        CreateDate = DateTime.Now,
-                        Editor = null,
-                        EditDate = null
+                        CreatedAt = DateTime.Now,
+                        Creator = CurrentUser,
+                        Editor = CurrentUser
                     });
                 }
                 BillTotal += ItemToQtyPrice;

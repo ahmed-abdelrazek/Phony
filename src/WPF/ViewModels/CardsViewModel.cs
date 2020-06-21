@@ -1,6 +1,7 @@
 ﻿using LiteDB;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -368,8 +369,6 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public CardsViewModel()
         {
             Title = "كروت الشحن";
@@ -382,15 +381,15 @@ namespace Phony.WPF.ViewModels
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
-                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(Data.DBCollections.Companies).FindAll().ToList());
-                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(Data.DBCollections.Suppliers).FindAll().ToList());
-                    Cards = new ObservableCollection<Item>(db.GetCollection<Item>(Data.DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
-                    Users = new ObservableCollection<User>(db.GetCollection<User>(Data.DBCollections.Users).FindAll().ToList());
+                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll().ToList());
+                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll().ToList());
+                    Cards = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items.ToString()).Find(i => i.Group == ItemGroup.Card).ToList());
                 }
-                CardsCount = $"إجمالى الكروت: {Cards.Count().ToString()}";
-                CardsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Cards.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
-                CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.RetailPrice * i.QTY), 2).ToString()}";
-                CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.RetailPrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
+
+                CardsCount = $"إجمالى الكروت: {Cards.Count()}";
+                CardsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Cards.Sum(i => i.PurchasePrice * i.QTY), 2)}";
+                CardsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Cards.Sum(i => i.RetailPrice * i.QTY), 2)}";
+                CardsProfit = $"تقدير صافى الربح: {decimal.Round((Cards.Sum(i => i.RetailPrice * i.QTY) - Cards.Sum(i => i.PurchasePrice * i.QTY)), 2)}";
             });
         }
 
@@ -417,10 +416,9 @@ namespace Phony.WPF.ViewModels
                 Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
                 Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
                 Notes = Notes,
-                CreateDate = DateTime.Now,
-                //Creator = Core.ReadUserSession(),
-                EditDate = null,
-                Editor = null
+                CreatedAt = DateTime.Now,
+                Creator = CurrentUser,
+                Editor = CurrentUser
 
             };
             itemCol.Insert(i);
@@ -430,9 +428,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditCard()
         {
-            return string.IsNullOrWhiteSpace(Name) || CardId == 0 || SelectedCompanyValue == 0 || SelectedSupplierValue == 0 || DataGridSelectedItem == null
-                ? false
-                : true;
+            return !string.IsNullOrWhiteSpace(Name) && CardId != 0 && SelectedCompanyValue != 0 && SelectedSupplierValue != 0 && DataGridSelectedItem != null;
         }
 
         private void DoEditCard()
@@ -451,8 +447,7 @@ namespace Phony.WPF.ViewModels
             i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
             i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
             i.Notes = Notes;
-            //i.Editor = Core.ReadUserSession();
-            i.EditDate = DateTime.Now;
+            i.Editor = CurrentUser;
             itemCol.Update(i);
             Cards[Cards.IndexOf(DataGridSelectedItem)] = i;
             CardId = 0;
@@ -462,7 +457,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanDeleteCard()
         {
-            return DataGridSelectedItem == null ? false : true;
+            return DataGridSelectedItem != null;
         }
 
         private void DoDeleteCard()
@@ -482,7 +477,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()
@@ -530,7 +525,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanFillUI()
         {
-            return DataGridSelectedItem == null ? false : true;
+            return DataGridSelectedItem != null;
         }
 
         private void DoFillUI()
@@ -578,7 +573,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddCardFlyout()
         {
-            IsAddCardFlyoutOpen = IsAddCardFlyoutOpen ? false : true;
+            IsAddCardFlyoutOpen = !IsAddCardFlyoutOpen;
         }
     }
 }

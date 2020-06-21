@@ -29,16 +29,8 @@ namespace Phony.WPF.Data
         {
             get
             {
-                string result = string.Empty;
                 Version version = assembly.GetName().Version;
-                if (version != null)
-                {
-                    return version.ToString();
-                }
-                else
-                {
-                    return "1.0.0.0";
-                }
+                return version != null ? version.ToString() : "1.0.0.0";
             }
         }
 
@@ -77,14 +69,7 @@ namespace Phony.WPF.Data
         protected string GetAttributeValue<TAttr>(Func<TAttr, string> resolveFunc, string defaultResult = null) where TAttr : Attribute
         {
             object[] attributes = assembly.GetCustomAttributes(typeof(TAttr), false);
-            if (attributes.Length > 0)
-            {
-                return resolveFunc((TAttr)attributes[0]);
-            }
-            else
-            {
-                return defaultResult;
-            }
+            return attributes.Length > 0 ? resolveFunc((TAttr)attributes[0]) : defaultResult;
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
-using Phony.WPF.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
@@ -10,10 +8,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ServicesViewModel : BaseViewModelWithAnnotationValidation
+    public class ServicesViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _serviceId;
         string _name;
@@ -192,38 +191,39 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public ServicesViewModel()
         {
             Title = "خدمات شركات";
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            }
-            DebitCredit();
         }
 
-        async void DebitCredit()
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
+                }
+            });
+            await DebitCredit();
+        }
+
+        async Task DebitCredit()
         {
             decimal Debit = decimal.Round(Services.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
             await Task.Run(() =>
             {
-                ServicesCount = $"مجموع الخدمات: {Services.Count().ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                ServicesPurchasePrice = $"اجمالى لينا: {Math.Abs(Debit).ToString()}";
+                ServicesCount = $"مجموع الخدمات: {Services.Count()}";
+                ServicesPurchasePrice = $"اجمالى لينا: {Math.Abs(Debit)}";
             });
         }
 
         private bool CanAddBalance()
         {
-            return DataGridSelectedService == null ? false : true;
+            return DataGridSelectedService != null;
         }
 
-        private void DoAddBalance()
+        private async Task DoAddBalance()
         {
             var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد شحن الخدمه به {DataGridSelectedService.Name}", "شحن", true);
             if (string.IsNullOrWhiteSpace(result))
@@ -244,14 +244,13 @@ namespace Phony.WPF.ViewModels
                         {
                             Service = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id),
                             Debit = servicepaymentamount,
-                            CreateDate = DateTime.Now,
-                            //Creator = Core.ReadUserSession(),
-                            EditDate = null,
-                            Editor = null
+                            CreatedAt = DateTime.Now,
+                            Creator = CurrentUser,
+                            Editor = CurrentUser
                         });
                         MessageBox.MaterialMessageBox.Show($"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح", "تمت العملية", true);
                         Services[Services.IndexOf(DataGridSelectedService)] = s;
-                        DebitCredit();
+                        await DebitCredit();
                         DataGridSelectedService = null;
                         ServiceId = 0;
                     }
@@ -265,10 +264,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanAddService()
         {
-            return string.IsNullOrWhiteSpace(Name) ? false : true;
+            return !string.IsNullOrWhiteSpace(Name);
         }
 
-        private void DoAddService()
+        private async Task DoAddService()
         {
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
             var exist = db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name == Name).FirstOrDefault();
@@ -283,15 +282,14 @@ namespace Phony.WPF.ViewModels
                     Phone = Phone,
                     Image = Image,
                     Notes = Notes,
-                    CreateDate = DateTime.Now,
-                    //Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
+                    CreatedAt = DateTime.Now,
+                    Creator = CurrentUser,
+                    Editor = CurrentUser
                 };
                 db.GetCollection<Service>(DBCollections.Services).Insert(s);
                 Services.Add(s);
                 MessageBox.MaterialMessageBox.Show("تم اضافة الخدمة بنجاح", "تمت العملية", true);
-                DebitCredit();
+                await DebitCredit();
             }
             else
             {
@@ -301,10 +299,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditService()
         {
-            return string.IsNullOrWhiteSpace(Name) || ServiceId == 0 || DataGridSelectedService == null ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && ServiceId != 0 && DataGridSelectedService != null;
         }
 
-        private void DoEditService()
+        private async Task DoEditService()
         {
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
             var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
@@ -315,22 +313,22 @@ namespace Phony.WPF.ViewModels
             s.Phone = Phone;
             s.Image = Image;
             s.Notes = Notes;
-            //s.Editor = Core.ReadUserSession();
-            s.EditDate = DateTime.Now;
+            s.Editor = CurrentUser;
+            s.EditedAt = DateTime.Now;
             db.GetCollection<Service>(DBCollections.Services).Update(s);
             MessageBox.MaterialMessageBox.Show("تمت العملية", "تم تعديل الخدمة بنجاح");
             Services[Services.IndexOf(DataGridSelectedService)] = s;
-            DebitCredit();
+            await DebitCredit();
             DataGridSelectedService = null;
             ServiceId = 0;
         }
 
         private bool CanDeleteService()
         {
-            return DataGridSelectedService == null || DataGridSelectedService.Id == 1 ? false : true;
+            return DataGridSelectedService != null && DataGridSelectedService.Id != 1;
         }
 
-        private void DoDeleteService()
+        private async Task DoDeleteService()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", "حذف الخدمة", true);
             if (result == MessageBoxResult.OK)
@@ -341,7 +339,7 @@ namespace Phony.WPF.ViewModels
                     Services.Remove(DataGridSelectedService);
                 }
                 MessageBox.MaterialMessageBox.Show("تمت العملية", "تم حذف الخدمة بنجاح");
-                DebitCredit();
+                await DebitCredit();
                 DataGridSelectedService = null;
             }
         }
@@ -374,13 +372,13 @@ namespace Phony.WPF.ViewModels
             return true;
         }
 
-        private void DoReloadAllServices()
+        private async Task DoReloadAllServices()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
             {
                 Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).FindAll());
             }
-            DebitCredit();
+            await DebitCredit();
         }
 
         private bool CanFillUI()

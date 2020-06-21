@@ -1,9 +1,8 @@
-﻿using DataCore.Data;
-using System;
+﻿using Phony.Data.Core;
 
-namespace Phony.WPF.Models.Lite
+namespace Phony.Data.Models.Lite
 {
-    public class Item : IBaseModel
+    public class Item : BaseModel
     {
         public string Name { get; set; }
 
@@ -25,20 +24,8 @@ namespace Phony.WPF.Models.Lite
 
         public decimal QTY { get; set; }
 
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
 
         public virtual Supplier Supplier { get; set; }
-
-        public uint Id { get; set; }
-
-        public string Notes { get; set; }
-
-        public DateTime CreatedOn { get; set; }
-
-        public User Creator { get; set; }
-
-        public DateTime? EditedOn { get; set; }
-
-        public User Editor { get; set; }
     }
 }

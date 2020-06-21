@@ -1,6 +1,5 @@
 ﻿using LiteDB;
-using Phony.WPF.Data;
-using Phony.WPF.Models;
+using Phony.Data.Models.Lite;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -188,11 +187,10 @@ namespace Phony.WPF.ViewModels
 
         void BillReturnedStatues(long id)
         {
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                IsReturned = db.GetCollection<Bill>(DBCollections.Bills).FindById(id).IsReturned;
-            }
+            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+            IsReturned = db.GetCollection<Bill>(DBCollections.Bills).FindById(id).IsReturned;
         }
+
         /*
         async void LoadReport(long id)
         {
@@ -374,11 +372,7 @@ namespace Phony.WPF.ViewModels
         */
         private bool CanSaveReturned()
         {
-            if (BillSelectedValue > 0)
-            {
-                return true;
-            }
-            return false;
+            return BillSelectedValue > 0;
         }
 
         private void DoSaveReturned()
@@ -389,7 +383,7 @@ namespace Phony.WPF.ViewModels
             {
                 b.IsReturned = IsReturned;
                 //b.Editor = Core.ReadUserSession();
-                b.EditDate = DateTime.Now;
+                b.EditedAt = DateTime.Now;
                 if (b.TotalPayed < b.TotalAfterDiscounts)
                 {
                     if (IsReturned)
@@ -421,7 +415,7 @@ namespace Phony.WPF.ViewModels
                 if (ClientSelectedValue > 0 && FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
                     using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue && b.CreatedAt >= FirstDate && b.CreatedAt <= SecondDate));
                 }
             }
             else if (ByClientName)
@@ -437,7 +431,7 @@ namespace Phony.WPF.ViewModels
                 if (FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
                     using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.CreatedAt >= FirstDate && b.CreatedAt <= SecondDate));
                 }
             }
             else

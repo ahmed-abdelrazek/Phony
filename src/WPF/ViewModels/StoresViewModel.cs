@@ -1,18 +1,16 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
-using Phony.WPF.Data;
-using Phony.WPF.Models;
-using Phony.WPF.Views;
+using Phony.Data.Models.Lite;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class StoresViewModel : BaseViewModelWithAnnotationValidation
+    public class StoresViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         int _storeId;
         string _name;
@@ -171,14 +169,9 @@ namespace Phony.WPF.ViewModels
 
         Store store;
 
-        public ObservableCollection<User> Users { get; set; }
-
         public StoresViewModel()
         {
             Title = "بيانات المحل";
-            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
             Name = store.Name;
             Motto = store.Motto;
             Image = store.Image;
@@ -194,13 +187,18 @@ namespace Phony.WPF.ViewModels
             Notes = store.Notes;
         }
 
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
+            });
+        }
+
         private bool CanEdit()
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                return false;
-            }
-            return true;
+            return !string.IsNullOrWhiteSpace(Name);
         }
 
         private void DoEdit()
@@ -220,8 +218,8 @@ namespace Phony.WPF.ViewModels
             store.Email2 = Email2;
             store.Site = Site;
             store.Notes = Notes;
-            //store.Editor = Core.ReadUserSession();
-            store.EditDate = DateTime.Now;
+            store.Editor = CurrentUser;
+            store.EditedAt = DateTime.Now;
             db.GetCollection<Store>(DBCollections.Stores).Update(store);
             MessageBox.MaterialMessageBox.Show("تم حفظ بيانات المحل بنجاح", "تمت العملية", true);
         }

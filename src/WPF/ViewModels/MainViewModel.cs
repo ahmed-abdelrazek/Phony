@@ -1,9 +1,10 @@
 ﻿using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
 using Phony.WPF.Extensions;
-using Phony.WPF.Models;
 using System;
 using System.Data.Common;
 using System.IO;
@@ -25,8 +26,8 @@ namespace Phony.WPF.ViewModels
 
         bool isBacking;
 
-        private IServiceProvider serviceProvider;
-        private IWindowManager windowManager;
+        private readonly IServiceProvider serviceProvider;
+        private readonly IWindowManager windowManager;
 
         public int UserId { get; set; }
 
@@ -370,6 +371,12 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        /// <summary>
+        /// Checks if the window is already one to focus it or not to open it.
+        /// </summary>
+        /// <typeparam name="T">the ViewModel for the window.</typeparam>
+        /// <param name="title">The window title in the ViewModel.</param>
+        /// <returns>The viewmodel for the windowManager to show as window or dialog.</returns>
         private async Task OpenWindowAsync<T>(string title) where T : BaseViewModelWithAnnotationValidation
         {
             if (isBacking)
@@ -397,6 +404,14 @@ namespace Phony.WPF.ViewModels
             if (!windowAlreadyOpenned)
             {
                 T w = serviceProvider.GetRequiredService<T>();
+
+                //send the current logged user to the opened window
+                w.CurrentUser.Id = CurrentUser.Id;
+                w.CurrentUser.Name = CurrentUser.Name;
+                w.CurrentUser.Group = CurrentUser.Group;
+                w.CurrentUser.Phone = CurrentUser.Phone;
+                w.CurrentUser.Notes = CurrentUser.Notes;
+                w.CurrentUser.IsActive = CurrentUser.IsActive;
 
                 windowManager.ShowWindow(w);
             }

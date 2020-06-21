@@ -1,5 +1,6 @@
 ﻿using LiteDB;
-using Phony.WPF.Models;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using System;
 using System.Data.SqlClient;
 using System.Linq;
@@ -84,9 +85,9 @@ namespace Phony.WPF.Data
                                         c.Phone = reader["Phone"].ToString();
                                         c.Notes = reader["Notes"].ToString();
                                         c.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        c.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        c.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         c.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        c.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        c.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         clientCol.Update(c);
                                     }
                                     else
@@ -101,9 +102,9 @@ namespace Phony.WPF.Data
                                             Phone = reader["Phone"].ToString(),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -134,9 +135,9 @@ namespace Phony.WPF.Data
                                         c.Phone = reader["Phone"].ToString();
                                         c.Notes = reader["Notes"].ToString();
                                         c.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        c.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        c.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         c.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        c.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        c.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         companyCol.Update(c);
                                     }
                                     else
@@ -152,9 +153,9 @@ namespace Phony.WPF.Data
                                             Phone = reader["Phone"].ToString(),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -184,9 +185,9 @@ namespace Phony.WPF.Data
                                         s.Phone = reader["Phone"].ToString();
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        s.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        s.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         salesmanCol.Update(s);
                                     }
                                     else
@@ -201,9 +202,9 @@ namespace Phony.WPF.Data
                                             Phone = reader["Phone"].ToString(),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -235,9 +236,9 @@ namespace Phony.WPF.Data
                                         s.SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(Convert.ToInt64(reader["SalesManId"]));
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        s.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        s.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         supplierCol.Update(s);
                                     }
                                     else
@@ -254,9 +255,9 @@ namespace Phony.WPF.Data
                                             SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(Convert.ToInt64(reader["SalesManId"])),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -293,9 +294,9 @@ namespace Phony.WPF.Data
                                         s.Site = reader["Site"].ToString();
                                         s.Notes = reader["Notes"].ToString();
                                         s.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        s.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        s.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         s.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        s.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        s.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         storeCol.Update(s);
                                     }
                                     else
@@ -317,9 +318,9 @@ namespace Phony.WPF.Data
                                             Site = reader["Site"].ToString(),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -347,9 +348,9 @@ namespace Phony.WPF.Data
                                         t.Store = db.GetCollection<Store>(DBCollections.Stores).FindById(Convert.ToInt64(reader["StoreId"]));
                                         t.Notes = reader["Notes"].ToString();
                                         t.Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"]));
-                                        t.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
+                                        t.CreatedAt = Convert.ToDateTime(reader["CreateDate"]);
                                         t.Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"]));
-                                        t.EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
+                                        t.EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"]);
                                         treasuryCol.Update(t);
                                     }
                                     else
@@ -362,9 +363,9 @@ namespace Phony.WPF.Data
                                             Store = db.GetCollection<Store>(DBCollections.Stores).FindById(Convert.ToInt64(reader["StoreId"])),
                                             Notes = reader["Notes"].ToString(),
                                             Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                            CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                            CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                             Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                            EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                            EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                         });
                                     }
                                 }
@@ -391,9 +392,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -419,9 +420,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -447,9 +448,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -475,9 +476,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -503,9 +504,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -534,9 +535,9 @@ namespace Phony.WPF.Data
                                         Phone = reader["Phone"].ToString(),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -562,9 +563,9 @@ namespace Phony.WPF.Data
                                         Credit = Convert.ToDecimal(reader["Credit"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -599,9 +600,9 @@ namespace Phony.WPF.Data
                                         Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(Convert.ToInt64(reader["SupplierId"])),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -627,9 +628,9 @@ namespace Phony.WPF.Data
                                         Phone = reader["Phone"].ToString(),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -657,9 +658,9 @@ namespace Phony.WPF.Data
                                         IsReturned = Convert.ToBoolean(reader["IsReturned"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -686,9 +687,9 @@ namespace Phony.WPF.Data
                                         Discount = Convert.ToDecimal(reader["Discount"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }
@@ -714,9 +715,9 @@ namespace Phony.WPF.Data
                                         Discount = Convert.ToDecimal(reader["Discount"]),
                                         Notes = reader["Notes"].ToString(),
                                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["CreatedById"])),
-                                        CreateDate = Convert.ToDateTime(reader["CreateDate"]),
+                                        CreatedAt = Convert.ToDateTime(reader["CreateDate"]),
                                         Editor = reader["EditById"] == DBNull.Value ? null : db.GetCollection<User>(DBCollections.Users).FindById(Convert.ToInt32(reader["EditById"])),
-                                        EditDate = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
+                                        EditedAt = reader["EditDate"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(reader["EditDate"])
                                     });
                                 }
                             }

@@ -1,16 +1,18 @@
 ﻿using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using System;
 using System.Data.Common;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class GeneralSettingsViewModel : BaseViewModelWithAnnotationValidation
+    public class GeneralSettingsViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         int _reportsSizeIndex;
         string _reportsSize;
@@ -75,33 +77,42 @@ namespace Phony.WPF.ViewModels
         public GeneralSettingsViewModel()
         {
             SaveDbConfig = new RelayCommand(DoSaveDbConfig, CanSaveDbConfig);
+        }
 
-            if (Properties.Settings.Default.IsConfigured)
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                LiteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
-                if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LiteDbConnectionString))
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
-                    LiteDbFullPath = LiteConnectionStringBuilder["Filename"].ToString();
-                    if (LiteConnectionStringBuilder.ContainsKey("Password"))
+                    if (Properties.Settings.Default.IsConfigured)
                     {
-                        LiteDbPassword = LiteConnectionStringBuilder["Password"].ToString();
+                        LiteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
+                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LiteDbConnectionString))
+                        {
+                            LiteDbFullPath = LiteConnectionStringBuilder["Filename"].ToString();
+                            if (LiteConnectionStringBuilder.ContainsKey("Password"))
+                            {
+                                LiteDbPassword = LiteConnectionStringBuilder["Password"].ToString();
+                            }
+                            if (LiteDbFullPath == Core.UserLocalAppFolderPath() + "..\\Phony.db" && string.IsNullOrWhiteSpace(LiteDbPassword))
+                            {
+                                LiteUseDefault = true;
+                            }
+                        }
+                        else
+                        {
+                            DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
+                        }
+                        ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
                     }
-                    if (LiteDbFullPath == Core.UserLocalAppFolderPath() + "..\\Phony.db" && string.IsNullOrWhiteSpace(LiteDbPassword))
+                    else
                     {
                         LiteUseDefault = true;
+                        LiteDbFullPath = Core.UserLocalAppFolderPath() + "..\\Phony.db";
                     }
                 }
-                else
-                {
-                    DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
-                }
-                ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
-            }
-            else
-            {
-                LiteUseDefault = true;
-                LiteDbFullPath = Core.UserLocalAppFolderPath() + "..\\Phony.db";
-            }
+            });
         }
 
         private bool CanSaveDbConfig()
@@ -202,10 +213,9 @@ namespace Phony.WPF.ViewModels
                                 Id = 1,
                                 Name = "كاش",
                                 Balance = 0,
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                         var companyCol = db.GetCollection<Company>(DBCollections.Companies);
@@ -217,10 +227,9 @@ namespace Phony.WPF.ViewModels
                                 Id = 1,
                                 Name = "لا يوجد",
                                 Balance = 0,
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                         var salesMenCol = db.GetCollection<SalesMan>(DBCollections.SalesMen);
@@ -232,10 +241,9 @@ namespace Phony.WPF.ViewModels
                                 Id = 1,
                                 Name = "لا يوجد",
                                 Balance = 0,
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                         var suppliersCol = db.GetCollection<Supplier>(DBCollections.Suppliers);
@@ -248,10 +256,9 @@ namespace Phony.WPF.ViewModels
                                 Name = "لا يوجد",
                                 Balance = 0,
                                 SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(1),
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                         var storesCol = db.GetCollection<Store>(DBCollections.Stores);
@@ -263,10 +270,9 @@ namespace Phony.WPF.ViewModels
                                 Id = 1,
                                 Name = "التوكل",
                                 Motto = "لخدمات المحمول",
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                         var treasuriesCol = db.GetCollection<Treasury>(DBCollections.Treasuries);
@@ -279,10 +285,9 @@ namespace Phony.WPF.ViewModels
                                 Name = "الرئيسية",
                                 Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
                                 Balance = 0,
-                                Creator = db.GetCollection<User>(DBCollections.Users).FindById(1),
-                                CreateDate = DateTime.Now,
-                                Editor = null,
-                                EditDate = null
+                                CreatedAt = DateTime.Now,
+                                Creator = CurrentUser,
+                                Editor = CurrentUser
                             });
                         }
                     }

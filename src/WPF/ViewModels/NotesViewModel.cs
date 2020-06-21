@@ -1,14 +1,17 @@
 ﻿using LiteDB;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class NotesViewModel : BaseViewModelWithAnnotationValidation
+    public class NotesViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _noId;
         string _name;
@@ -155,20 +158,24 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public NotesViewModel()
         {
             Title = "ارقام";
             ByName = true;
-            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-            Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
-            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).FindAll());
+            });
         }
 
         private bool CanAddNo()
         {
-            return string.IsNullOrWhiteSpace(Name) ? false : true;
+            return !string.IsNullOrWhiteSpace(Name);
         }
 
         private void DoAddNo()
@@ -180,10 +187,9 @@ namespace Phony.WPF.ViewModels
                 Phone = Phone,
                 Group = NoteGroup.Numbers,
                 Notes = Notes,
-                CreateDate = DateTime.Now,
-                //Creator = Core.ReadUserSession(),
-                EditDate = null,
-                Editor = null
+                CreatedAt = DateTime.Now,
+                Creator = CurrentUser,
+                Editor = CurrentUser
             };
             db.GetCollection<Note>(DBCollections.Notes).Insert(n);
             Numbers.Add(n);
@@ -192,7 +198,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditNo()
         {
-            return string.IsNullOrWhiteSpace(Name) || NoId == 0 || DataGridSelectedNo == null ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && NoId != 0 && DataGridSelectedNo != null;
         }
 
         private void DoEditNo()
@@ -202,8 +208,8 @@ namespace Phony.WPF.ViewModels
             n.Name = Name;
             n.Phone = Phone;
             n.Notes = Notes;
-            //n.Editor = Core.ReadUserSession();
-            n.EditDate = DateTime.Now;
+            n.Editor = CurrentUser;
+            n.EditedAt = DateTime.Now;
             db.GetCollection<Note>(DBCollections.Notes).Update(n);
             Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
             NoId = 0;
@@ -213,7 +219,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanDeleteNo()
         {
-            return DataGridSelectedNo == null ? false : true;
+            return DataGridSelectedNo != null;
         }
 
         private void DoDeleteNo()
@@ -233,7 +239,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()
@@ -276,7 +282,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanFillUI()
         {
-            return DataGridSelectedNo == null ? false : true;
+            return DataGridSelectedNo != null;
         }
 
         private void DoFillUI()
@@ -295,7 +301,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddNoFlyout()
         {
-            IsAddNoFlyoutOpen = IsAddNoFlyoutOpen ? false : true;
+            IsAddNoFlyoutOpen = !IsAddNoFlyoutOpen;
         }
     }
 }

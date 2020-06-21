@@ -1,16 +1,19 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+using Phony.Data.Core;
+using Phony.Data.Models;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
 using Phony.WPF.Extensions;
-using Phony.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class UsersViewModel : BaseViewModelWithAnnotationValidation
+    public class UsersViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         int _userId;
         string _name;
@@ -153,21 +156,28 @@ namespace Phony.WPF.ViewModels
             Title = "المستخدمين";
             IsUserActive = true;
             Groups = new ObservableCollection<Enumeration<byte>>();
-            foreach (var group in Enum.GetValues(typeof(UserGroup)))
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                Groups.Add(new Enumeration<byte>
+                foreach (var group in Enum.GetValues(typeof(UserGroup)))
                 {
-                    Id = (byte)group,
-                    Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
-                });
-            }
-            using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
+                    Groups.Add(new Enumeration<byte>
+                    {
+                        Id = (byte)group,
+                        Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
+                    });
+                }
+                using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
+                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
+            });
         }
 
         private bool CanAddUser()
         {
-            return string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2) ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Password1) && !string.IsNullOrWhiteSpace(Password2);
         }
 
         private void DoAddUser()
@@ -207,9 +217,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditUser()
         {
-            return string.IsNullOrWhiteSpace(Name) || UserId == 0 || DataGridSelectedUser == null || string.IsNullOrWhiteSpace(Password1) || string.IsNullOrWhiteSpace(Password2)
-                ? false
-                : true;
+            return !string.IsNullOrWhiteSpace(Name) && UserId != 0 && DataGridSelectedUser != null && !string.IsNullOrWhiteSpace(Password1) && !string.IsNullOrWhiteSpace(Password2);
         }
 
         private void DoEditUser()
@@ -241,7 +249,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanDeleteUser()
         {
-            return DataGridSelectedUser == null || DataGridSelectedUser.Id == 1 ? false : true;
+            return DataGridSelectedUser != null && DataGridSelectedUser.Id != 1;
         }
 
         private void DoDeleteUser()
@@ -261,7 +269,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()

@@ -1,19 +1,19 @@
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Phony.Data.Core;
+using Phony.Data.Models;
 using Phony.WPF.Data;
 using Phony.WPF.Extensions;
-using Phony.WPF.Models;
 using Phony.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class BarcodesViewModel : BaseViewModelWithAnnotationValidation
+    public class BarcodesViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         int _height;
         int _width;
@@ -214,25 +214,32 @@ namespace Phony.WPF.ViewModels
             Foreground = barCode.ForeColor.ToHexString();
             Background = barCode.BackColor.ToHexString();
             RotateTypes = new List<string>();
-            foreach (var item in Enum.GetNames(typeof(RotateFlipType)))
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                if (item.ToString().Trim().ToLower() == "rotatenoneflipnone")
+                foreach (var item in Enum.GetNames(typeof(RotateFlipType)))
                 {
-                    continue;
+                    if (item.ToString().Trim().ToLower() == "rotatenoneflipnone")
+                    {
+                        continue;
+                    }
+                    RotateTypes.Add(item.ToString());
                 }
-                RotateTypes.Add(item.ToString());
-            }
-            SelectedRotate = "Rotate180FlipXY";
-            Encoders = new List<Enumeration<byte>>();
-            foreach (var type in Enum.GetValues(typeof(BarCodeEncoders)))
-            {
-                Encoders.Add(new Enumeration<byte>
+                SelectedRotate = "Rotate180FlipXY";
+                Encoders = new List<Enumeration<byte>>();
+                foreach (var type in Enum.GetValues(typeof(BarCodeEncoders)))
                 {
-                    Id = (byte)type,
-                    Name = Enumerations.GetEnumDescription((BarCodeEncoders)type).ToString()
-                });
-            }
-            SelectedEncoder = "Code 128";
+                    Encoders.Add(new Enumeration<byte>
+                    {
+                        Id = (byte)type,
+                        Name = Enumerations.GetEnumDescription((BarCodeEncoders)type).ToString()
+                    });
+                }
+                SelectedEncoder = "Code 128";
+            });
         }
 
         private bool CanSave()
@@ -281,12 +288,12 @@ namespace Phony.WPF.ViewModels
             {
                 H = Height;
             }
-            switch (Alignment)
+            barCode.Alignment = Alignment switch
             {
-                case "يمين": barCode.Alignment = BarcodeLib.AlignmentPositions.RIGHT; break;
-                case "يسار": barCode.Alignment = BarcodeLib.AlignmentPositions.LEFT; break;
-                default: barCode.Alignment = BarcodeLib.AlignmentPositions.CENTER; break;
-            }
+                "يمين" => BarcodeLib.AlignmentPositions.RIGHT,
+                "يسار" => BarcodeLib.AlignmentPositions.LEFT,
+                _ => BarcodeLib.AlignmentPositions.CENTER,
+            };
             BarcodeLib.TYPE type = BarcodeLib.TYPE.UNSPECIFIED;
             switch (SelectedEncoder)
             {
@@ -344,15 +351,15 @@ namespace Phony.WPF.ViewModels
                     barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);
 
                     barCode.AlternateLabel = !String.IsNullOrEmpty(AlternateLabelText) ? AlternateLabelText : EncodeValue;
-                    switch (LabelLocation)
+                    barCode.LabelPosition = LabelLocation switch
                     {
-                        case "اسفل - يمين": barCode.LabelPosition = BarcodeLib.LabelPositions.BOTTOMRIGHT; break;
-                        case "اسفل - يسار": barCode.LabelPosition = BarcodeLib.LabelPositions.BOTTOMLEFT; break;
-                        case "اعلى - وسط": barCode.LabelPosition = BarcodeLib.LabelPositions.TOPCENTER; break;
-                        case "اعلى - يمين": barCode.LabelPosition = BarcodeLib.LabelPositions.TOPLEFT; break;
-                        case "اعلى - يسار": barCode.LabelPosition = BarcodeLib.LabelPositions.TOPRIGHT; break;
-                        default: barCode.LabelPosition = BarcodeLib.LabelPositions.BOTTOMCENTER; break;
-                    }
+                        "اسفل - يمين" => BarcodeLib.LabelPositions.BOTTOMRIGHT,
+                        "اسفل - يسار" => BarcodeLib.LabelPositions.BOTTOMLEFT,
+                        "اعلى - وسط" => BarcodeLib.LabelPositions.TOPCENTER,
+                        "اعلى - يمين" => BarcodeLib.LabelPositions.TOPLEFT,
+                        "اعلى - يسار" => BarcodeLib.LabelPositions.TOPRIGHT,
+                        _ => BarcodeLib.LabelPositions.BOTTOMCENTER,
+                    };
                     //===== Encoding performed here =====
                     Image = barCode.Encode(type, EncodeValue, ColorTranslator.FromHtml(Foreground), ColorTranslator.FromHtml(Background), W, H).ImageToByteArray();
                     //===================================

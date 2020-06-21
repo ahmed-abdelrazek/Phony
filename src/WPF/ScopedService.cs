@@ -5,7 +5,7 @@ namespace Phony.WPF
 {
     public class ScopedService : IDisposable
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
         public ScopedService(ILogger<ScopedService> logger)
         {

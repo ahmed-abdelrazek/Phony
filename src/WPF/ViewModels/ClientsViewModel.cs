@@ -1,15 +1,15 @@
 ﻿using LiteDB;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ClientsViewModel : BaseViewModelWithAnnotationValidation
+    public class ClientsViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _clientsId;
         string _name;
@@ -222,38 +222,35 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public ClientsViewModel()
         {
             Title = "العملاء";
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
-            {
-                Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            }
-            DebitCredit();
+
         }
 
-        async void DebitCredit()
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
+            {
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Clients = new ObservableCollection<Client>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
+                }
+            });
+
+            await DebitCredit();
+        }
+
+        async Task DebitCredit()
         {
             decimal Debit = decimal.Round(Clients.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
             decimal Credit = decimal.Round(Clients.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
             await Task.Run(() =>
             {
-                ClientCount = $"مجموع العملاء: {Clients.Count().ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                ClientDebits = $"اجمالى لينا: {Math.Abs(Debit).ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                ClientCredits = $"اجمالى علينا: {Math.Abs(Credit).ToString()}";
-            });
-            await Task.Run(() =>
-            {
-                ClientProfit = $"تقدير لصافى لينا: {(Math.Abs(Debit) - Math.Abs(Credit)).ToString()}";
+                ClientCount = $"مجموع العملاء: {Clients.Count()}";
+                ClientDebits = $"اجمالى لينا: {Math.Abs(Debit)}";
+                ClientCredits = $"اجمالى علينا: {Math.Abs(Credit)}";
+                ClientProfit = $"تقدير لصافى لينا: {Math.Abs(Debit) - Math.Abs(Credit)}";
             });
         }
 
@@ -262,7 +259,7 @@ namespace Phony.WPF.ViewModels
             return DataGridSelectedClient != null;
         }
 
-        private void DoClientPayAsync()
+        private async Task DoClientPayAsync()
         {
             var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد خصمه من حساب العميل {DataGridSelectedClient.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
@@ -281,10 +278,9 @@ namespace Phony.WPF.ViewModels
                     {
                         Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
                         Credit = clientpaymentamount,
-                        CreateDate = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         Creator = CurrentUser,
-                        EditDate = null,
-                        Editor = null
+                        Editor = CurrentUser
                     });
                     if (clientpaymentamount > 0)
                     {
@@ -293,15 +289,14 @@ namespace Phony.WPF.ViewModels
                             Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Debit = clientpaymentamount,
                             Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
-                            CreateDate = DateTime.Now,
+                            CreatedAt = DateTime.Now,
                             Creator = CurrentUser,
-                            EditDate = null,
-                            Editor = null
+                            Editor = CurrentUser
                         });
                     }
                     MessageBox.MaterialMessageBox.Show($"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح", "تمت العملية", true);
                     Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
-                    DebitCredit();
+                    await DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
                 }
@@ -314,10 +309,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanPayClient()
         {
-            return DataGridSelectedClient == null ? false : true;
+            return DataGridSelectedClient != null;
         }
 
-        private void DoPayClientAsync()
+        private async Task DoPayClientAsync()
         {
             var result = MessageBox.MaterialInputBox.Show($"ادخل المبلغ الذى تريد اضافته لحساب للعميل {DataGridSelectedClient.Name}", "تدفيع", true);
             if (string.IsNullOrWhiteSpace(result))
@@ -336,24 +331,22 @@ namespace Phony.WPF.ViewModels
                     {
                         Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
                         Debit = clientpaymentamount,
-                        CreateDate = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         Creator = CurrentUser,
-                        EditDate = null,
-                        Editor = null
+                        Editor = CurrentUser
                     });
                     db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
                     {
                         Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                         Credit = clientpaymentamount,
                         Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
-                        CreateDate = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         Creator = CurrentUser,
-                        EditDate = null,
-                        Editor = null
+                        Editor = CurrentUser
                     });
                     MessageBox.MaterialMessageBox.Show($"تم دفع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح", "تمت العملية", true);
                     Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
-                    DebitCredit();
+                    await DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
                 }
@@ -366,10 +359,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanAddClient()
         {
-            return string.IsNullOrWhiteSpace(Name) ? false : true;
+            return !string.IsNullOrWhiteSpace(Name);
         }
 
-        private void DoAddClient()
+        private async Task DoAddClient()
         {
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
             var exist = db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name == Name).FirstOrDefault();
@@ -383,15 +376,14 @@ namespace Phony.WPF.ViewModels
                     Email = Email,
                     Phone = Phone,
                     Notes = Notes,
-                    CreateDate = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     Creator = CurrentUser,
-                    EditDate = null,
-                    Editor = null
+                    Editor = CurrentUser
                 };
                 db.GetCollection<Client>(DBCollections.Clients).Insert(c);
                 Clients.Add(c);
                 MessageBox.MaterialMessageBox.Show("تم اضافة العميل بنجاح", "تمت العملية", true);
-                DebitCredit();
+                await DebitCredit();
             }
             else
             {
@@ -401,10 +393,10 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditClient()
         {
-            return string.IsNullOrWhiteSpace(Name) || ClientId == 0 || DataGridSelectedClient == null ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && ClientId != 0 && DataGridSelectedClient != null;
         }
 
-        private void DoEditClient()
+        private async Task DoEditClient()
         {
             using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
             var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
@@ -415,21 +407,21 @@ namespace Phony.WPF.ViewModels
             c.Phone = Phone;
             c.Notes = Notes;
             c.Editor = CurrentUser;
-            c.EditDate = DateTime.Now;
+            c.EditedAt = DateTime.Now;
             db.GetCollection<Client>(DBCollections.Clients).Update(c);
             MessageBox.MaterialMessageBox.ShowWarning("تم تعديل العميل بنجاح", "تمت العملية", true);
             Clients[Clients.IndexOf(DataGridSelectedClient)] = c;
-            DebitCredit();
+            await DebitCredit();
             DataGridSelectedClient = null;
             ClientId = 0;
         }
 
         private bool CanDeleteClient()
         {
-            return DataGridSelectedClient == null || DataGridSelectedClient.Id == 1 ? false : true;
+            return DataGridSelectedClient != null && DataGridSelectedClient.Id != 1;
         }
 
-        private void DoDeleteClient()
+        private async Task DoDeleteClient()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", "حذف الصنف", true);
             if (result == System.Windows.MessageBoxResult.OK)
@@ -440,14 +432,14 @@ namespace Phony.WPF.ViewModels
                     Clients.Remove(DataGridSelectedClient);
                 }
                 MessageBox.MaterialMessageBox.Show("تم حذف العميل بنجاح", "تمت العملية", true);
-                DebitCredit();
+                await DebitCredit();
                 DataGridSelectedClient = null;
             }
         }
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()
@@ -490,7 +482,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanFillUI()
         {
-            return DataGridSelectedClient == null ? false : true;
+            return DataGridSelectedClient != null;
         }
 
         private void DoFillUI()
@@ -513,7 +505,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoOpenAddClientFlyout()
         {
-            IsAddClientFlyoutOpen = IsAddClientFlyoutOpen ? false : true;
+            IsAddClientFlyoutOpen = !IsAddClientFlyoutOpen;
         }
     }
 }

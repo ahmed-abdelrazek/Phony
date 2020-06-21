@@ -1,4 +1,4 @@
-﻿namespace Phony.WPF.Models.Lite
+﻿namespace Phony.Data.Models
 {
     public class Enumeration<T>
     {

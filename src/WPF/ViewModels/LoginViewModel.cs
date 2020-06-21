@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using Phony.WPF.Views;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -18,8 +18,8 @@ namespace Phony.WPF.ViewModels
 {
     public class LoginViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
-        private IServiceProvider serviceProvider;
-        private IWindowManager windowManager;
+        private readonly IServiceProvider serviceProvider;
+        private readonly IWindowManager windowManager;
 
         string _userName;
         string _password;

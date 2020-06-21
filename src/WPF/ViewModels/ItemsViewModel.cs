@@ -1,17 +1,20 @@
 ﻿using LiteDB;
+using Phony.Data.Core;
+using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
-using Phony.WPF.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
-    public class ItemsViewModel : BaseViewModelWithAnnotationValidation
+    public class ItemsViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         long _itemId;
         long _selectedCompanyValue;
@@ -378,31 +381,36 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users { get; set; }
-
         public ItemsViewModel()
         {
             Title = "الاصناف";
             ByName = true;
-            using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+        }
+
+        public async Task OnLoadedAsync()
+        {
+            await Task.Run(() =>
             {
-                Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll());
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
-                Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
-            }
-            new Thread(() =>
+                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                {
+                    Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll());
+                    Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
+                    Items = new ObservableCollection<Item>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
+                }
+            });
+
+            await Task.Run(() =>
             {
-                ItemsCount = $"إجمالى الاصناف: {Items.Count().ToString()}";
-                ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2).ToString()}";
-                ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY), 2).ToString()}";
-                ItemsProfit = $"تقدير صافى الربح: {decimal.Round((Items.Sum(i => i.RetailPrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY)), 2).ToString()}";
-            }).Start();
+                ItemsCount = $"إجمالى الاصناف: {Items.Count()}";
+                ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2)}";
+                ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY), 2)}";
+                ItemsProfit = $"تقدير صافى الربح: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY), 2)}";
+            });
         }
 
         private bool CanAddItem()
         {
-            return string.IsNullOrWhiteSpace(Name) || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 ? false : true;
+            return !string.IsNullOrWhiteSpace(Name) && SelectedCompanyValue >= 1 && SelectedSupplierValue >= 1;
         }
 
         private void DoAddItem()
@@ -423,10 +431,9 @@ namespace Phony.WPF.ViewModels
                 Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue),
                 Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue),
                 Notes = Notes,
-                CreateDate = DateTime.Now,
-                //Creator = Core.ReadUserSession(),
-                EditDate = null,
-                Editor = null
+                CreatedAt = DateTime.Now,
+                Creator = CurrentUser,
+                Editor = CurrentUser
             };
             db.GetCollection<Item>(DBCollections.Items).Insert(i);
             Items.Add(i);
@@ -435,9 +442,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanEditItem()
         {
-            return string.IsNullOrWhiteSpace(Name) || ItemId < 1 || SelectedCompanyValue < 1 || SelectedSupplierValue < 1 || DataGridSelectedItem == null
-                ? false
-                : true;
+            return !string.IsNullOrWhiteSpace(Name) && ItemId >= 1 && SelectedCompanyValue >= 1 && SelectedSupplierValue >= 1 && DataGridSelectedItem != null;
         }
 
         private void DoEditItem()
@@ -456,8 +461,8 @@ namespace Phony.WPF.ViewModels
             i.Company = db.GetCollection<Company>(DBCollections.Companies).FindById(SelectedCompanyValue);
             i.Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(SelectedSupplierValue);
             i.Notes = Notes;
-            //i.Editor = Core.ReadUserSession();
-            i.EditDate = DateTime.Now;
+            i.Editor = CurrentUser;
+            i.EditedAt = DateTime.Now;
             db.GetCollection<Item>(DBCollections.Items).Update(i);
             Items[Items.IndexOf(DataGridSelectedItem)] = i;
             ItemId = 0;
@@ -467,7 +472,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanDeleteItem()
         {
-            return DataGridSelectedItem == null ? false : true;
+            return DataGridSelectedItem != null;
         }
 
         private void DoDeleteItem()
@@ -487,7 +492,7 @@ namespace Phony.WPF.ViewModels
 
         private bool CanSearch()
         {
-            return string.IsNullOrWhiteSpace(SearchText) ? false : true;
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void DoSearch()
