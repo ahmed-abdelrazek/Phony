@@ -16,11 +16,11 @@ namespace Phony.Data.Models.Lite
 
         public string Notes { get; set; }
 
-        public DateTime CreatedAt { get => createdAt.ToLocalTime(); set => createdAt = value.ToUniversalTime(); }
+        public DateTime CreatedAt { get => TimeZoneInfo.ConvertTimeFromUtc(createdAt, TimeZoneInfo.Local); set => createdAt = value.ToUniversalTime(); }
 
         public virtual User Creator { get; set; }
 
-        public DateTime EditedAt { get => editedAt.ToLocalTime(); set => editedAt = value.ToUniversalTime(); }
+        public DateTime EditedAt { get => TimeZoneInfo.ConvertTimeFromUtc(editedAt, TimeZoneInfo.Local); set => editedAt = value.ToUniversalTime(); }
 
         public virtual User Editor { get; set; }
     }
