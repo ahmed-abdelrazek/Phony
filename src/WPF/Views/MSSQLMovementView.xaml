@@ -14,6 +14,9 @@
             <c:InverseBooleanConverter x:Key="InverseBool"/>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.DataContext>
+        <ViewModels:MSSQLMovementViewModel/>
+    </UserControl.DataContext>
     <StackPanel x:Name="ClientConnectionPanel" Margin="5">
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="بيانات الاتصال بقاعده البيانات القديمة لنقلها" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" VerticalAlignment="Center"/>
@@ -26,7 +29,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsEnabled="{Binding SQLUseDefault, Converter={StaticResource InverseBool}}">
             <RadioButton x:Name="SQLIsWinAuth" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
                 <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Windows" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
+                    <materialDesign:PackIcon Kind="MicrosoftWindows" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
                     <TextBlock Text="باستخدام وندز" Margin="0,2"/>
                 </StackPanel>
             </RadioButton>
