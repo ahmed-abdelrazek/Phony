@@ -15,17 +15,17 @@
             <c:InverseBooleanConverter x:Key="InverseBool"/>
         </ResourceDictionary>
     </mde:MaterialWindow.Resources>
-    <TabControl Background="{DynamicResource MaterialDesignCardBackground}">
-        <TabItem Header="عامة" Background="{DynamicResource PrimaryHueLightBrush}">
+    <TabControl Style="{StaticResource MaterialDesignAppBarAccentTabControl}">
+        <TabItem Header="عامة">
             <views:GeneralSettingsView/>
         </TabItem>
-        <TabItem Header="الواجهة" Background="{DynamicResource PrimaryHueLightBrush}">
+        <TabItem Header="الواجهة">
             <views:PaletteSelectorView/>
         </TabItem>
-        <TabItem Header="نقل" Background="{DynamicResource PrimaryHueLightBrush}">
+        <TabItem Header="نقل">
             <views:MSSQLMovementView/>
         </TabItem>
-        <TabItem Header="عن البرنامج" Background="{DynamicResource PrimaryHueLightBrush}">
+        <TabItem Header="عن البرنامج">
             <views:AboutAppView/>
         </TabItem>
     </TabControl>

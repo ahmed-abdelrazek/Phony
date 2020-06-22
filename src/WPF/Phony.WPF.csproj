@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <PackageReference Include="BarcodeLib" Version="2.2.5" />
-    <PackageReference Include="LiteDB" Version="5.0.8" />
     <PackageReference Include="MaterialDesignColors" Version="1.2.6" />
     <PackageReference Include="MaterialDesignExtensions" Version="3.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="3.1.3" />
