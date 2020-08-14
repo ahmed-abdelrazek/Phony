@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Phony.Data
 {
+    /// <summary>
+    /// The DbContext EF Core documentation from Microsft website -the class is old-
+    /// </summary>
     public class BloggingContext : DbContext
     {
         public DbSet<Blog> Blogs { get; set; }
