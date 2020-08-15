@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
 using Phony.WPF.Views;
@@ -20,7 +21,7 @@ namespace Phony.WPF.ViewModels
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IWindowManager windowManager;
-
+        private readonly ILogger logger;
         string _userName;
         string _password;
         bool _isLogging;
@@ -62,10 +63,11 @@ namespace Phony.WPF.ViewModels
 
         DbConnectionStringBuilder connectionStringBuilder = new DbConnectionStringBuilder();
 
-        public LoginViewModel(IServiceProvider serviceProvider, IWindowManager windowManager)
+        public LoginViewModel(IServiceProvider serviceProvider, IWindowManager windowManager, ILogger<LoginViewModel> logger)
         {
             this.serviceProvider = serviceProvider;
             this.windowManager = windowManager;
+            this.logger = logger;
 
             Login = new AsyncRelayCommand<PasswordBox>(DoLogin, CanLogin);
             OpenSettingsWindow = new RelayCommand(DoOpenSettingsWindow);
@@ -76,7 +78,13 @@ namespace Phony.WPF.ViewModels
             connectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
             if (string.IsNullOrWhiteSpace(connectionStringBuilder.ConnectionString) || !File.Exists(connectionStringBuilder["Filename"].ToString()) || !Properties.Settings.Default.IsConfigured)
             {
+                logger.LogInformation("Opening the setting to config the app");
                 windowManager.ShowDialog<SettingsViewModel>();
+                if (!Properties.Settings.Default.IsConfigured)
+                {
+                    logger.LogWarning("The app isn't configured and will now shutdown");
+                    Environment.Exit(0);
+                }
             }
             return Task.CompletedTask;
         }

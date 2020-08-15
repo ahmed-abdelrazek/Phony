@@ -23,17 +23,17 @@
             <materialDesign:PackIcon Kind="Database" Margin="5" Foreground="{DynamicResource AccentColorBrush}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <CheckBox x:Name="SQLUseDefault" Content="استخدم الاعدادات الافتراضية" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
+            <CheckBox x:Name="SQLUseDefault" IsChecked="{Binding SQLUseDefault}" Content="استخدم الاعدادات الافتراضية" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
             <materialDesign:PackIcon Kind="Information" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Foreground="{DynamicResource AccentBaseColorBrush}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsEnabled="{Binding SQLUseDefault, Converter={StaticResource InverseBool}}">
-            <RadioButton x:Name="SQLIsWinAuth" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
+            <RadioButton x:Name="SQLIsWinAuth" IsChecked="{Binding SQLIsWinAuth}" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="MicrosoftWindows" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
                     <TextBlock Text="باستخدام وندز" Margin="0,2"/>
                 </StackPanel>
             </RadioButton>
-            <RadioButton x:Name="SQLIsSQLAuth" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
+            <RadioButton x:Name="SQLIsSQLAuth" IsChecked="{Binding SQLIsSQLAuth}" Margin="{Binding Margin, ElementName=ClientConnectionPanel}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Database" Margin="5,2" Foreground="{DynamicResource AccentColorBrush}"/>
                     <TextBlock Text="باستخدام سكول" Margin="0,2"/>
@@ -42,15 +42,15 @@
         </StackPanel>
         <StackPanel IsEnabled="{Binding SQLUseDefault, Converter={StaticResource InverseBool}}">
             <TextBlock Text="السيرفر" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
-            <TextBox x:Name="SQLServerName" materialDesign:HintAssist.Hint="Server (Name - (IP, Port) - Etc ...)" FlowDirection="LeftToRight"/>
+            <TextBox x:Name="SQLServerName" Text="{Binding SQLServerName}" materialDesign:HintAssist.Hint="Server (Name - (IP, Port) - Etc ...)" FlowDirection="LeftToRight"/>
             <TextBlock Text="اسم المستخدم" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}"/>
-            <TextBox x:Name="SQLUserName" materialDesign:HintAssist.Hint="Username" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" FlowDirection="LeftToRight"/>
+            <TextBox x:Name="SQLUserName" Text="{Binding SQLUserName}" materialDesign:HintAssist.Hint="Username" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" FlowDirection="LeftToRight"/>
             <TextBlock Text="كلمة المرور" Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}"/>
-            <TextBox x:Name="SQLPassword" materialDesign:HintAssist.Hint="Password" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" FlowDirection="LeftToRight"/>
+            <TextBox x:Name="SQLPassword" Text="{Binding SQLPassword}" materialDesign:HintAssist.Hint="Password" Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" FlowDirection="LeftToRight"/>
             <TextBlock Text="قاعدة البيانات" Margin="{Binding Margin, ElementName=ClientConnectionPanel}"/>
             <TextBox x:Name="SQLDataBase" Text="{Binding SQLDataBase}" materialDesign:HintAssist.Hint="Database Name" FlowDirection="LeftToRight"/>
         </StackPanel>
-        <Button x:Name="MoveData" IsDefault="True" Margin="10" Height="48" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignRaisedAccentButton}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding SQLIsImporting}" materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+        <Button x:Name="MoveData" Command="{Binding MoveData}" IsDefault="True" Margin="10" Height="48" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignRaisedAccentButton}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding SQLIsImporting}" materialDesign:ButtonProgressAssist.IsIndeterminate="True">
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="نقل " Height="38" Width="60" FontSize="24" FontWeight="Bold" />
                 <materialDesign:PackIcon VerticalAlignment="Center" Height="32" Width="32" Kind="SyncAlert" />

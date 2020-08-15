@@ -2,6 +2,8 @@
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
@@ -20,13 +22,20 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        public IEnumerable<Swatch> Swatches { get; }
+
+        public ICommand ApplyPrimaryCommand { get; }
+
+        public ICommand ApplyAccentCommand { get; }
+
         public PaletteSelectorViewModel()
         {
             Swatches = new SwatchesProvider().Swatches;
             IsDark = Properties.Settings.Default.IsDarkTheme;
-        }
 
-        public IEnumerable<Swatch> Swatches { get; }
+            ApplyPrimaryCommand = new RelayCommand<Swatch>(ApplyPrimary);
+            ApplyAccentCommand = new RelayCommand<Swatch>(ApplyAccent);
+        }
 
         public static void ApplyBase(bool isDark)
         {

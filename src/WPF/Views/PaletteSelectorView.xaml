@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:Phony.WPF.Views"
              xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:PaletteSelectorViewModel}"
              d:DesignHeight="300" d:DesignWidth="300" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
@@ -48,7 +49,7 @@
                         <Border.Background>
                             <SolidColorBrush Color="{Binding ExemplarHue.Color, Mode=OneTime}" />
                         </Border.Background>
-                        <Button>
+                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PaletteSelectorView}}, Path=DataContext.ApplyPrimaryCommand, Mode=OneTime}" CommandParameter="{Binding}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Primary" />
                                 <Viewbox Width="16" Height="16">
@@ -65,7 +66,7 @@
                         <Border.Background>
                             <SolidColorBrush Color="{Binding AccentExemplarHue.Color, Mode=OneTime}" />
                         </Border.Background>
-                        <Button>
+                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PaletteSelectorView}}, Path=DataContext.ApplyAccentCommand, Mode=OneTime}" CommandParameter="{Binding}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Accent" />
                                 <Viewbox Width="16" Height="16">

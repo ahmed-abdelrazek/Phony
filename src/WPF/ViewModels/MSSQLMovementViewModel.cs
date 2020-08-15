@@ -1,6 +1,8 @@
 ﻿using Phony.WPF.Data;
 using System;
 using System.Data.SqlClient;
+using System.Windows.Input;
+using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
 {
@@ -22,7 +24,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlServerName = value;
                 NotifyOfPropertyChange(() => SQLServerName);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -33,7 +34,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlUserName = value;
                 NotifyOfPropertyChange(() => SQLUserName);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -44,7 +44,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlPassword = value;
                 NotifyOfPropertyChange(() => SQLPassword);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -55,7 +54,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlDataBase = value;
                 NotifyOfPropertyChange(() => SQLDataBase);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -66,7 +64,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlUseDefault = value;
                 NotifyOfPropertyChange(() => SQLUseDefault);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -77,7 +74,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlIsWinAuth = value;
                 NotifyOfPropertyChange(() => SQLIsWinAuth);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -88,7 +84,6 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlIsSQLAuth = value;
                 NotifyOfPropertyChange(() => SQLIsSQLAuth);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
@@ -99,11 +94,12 @@ namespace Phony.WPF.ViewModels
             {
                 _sqlIsImporting = value;
                 NotifyOfPropertyChange(() => SQLIsImporting);
-                NotifyOfPropertyChange(() => CanMoveData);
             }
         }
 
-        SqlConnectionStringBuilder SQLConnectionStringBuilder = new SqlConnectionStringBuilder();
+        public ICommand MoveData { get; }
+
+        SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder();
 
         public MSSQLMovementViewModel()
         {
@@ -111,61 +107,60 @@ namespace Phony.WPF.ViewModels
             SQLIsWinAuth = true;
             SQLServerName = ".\\SQLExpress";
             SQLDataBase = "PhonyDb";
+
+            MoveData = new RelayCommand(DoMoveData, CanMoveData);
         }
 
-        private bool CanMoveData
+        private bool CanMoveData()
         {
-            get
+            if (Properties.Settings.Default.IsConfigured)
             {
-                if (Properties.Settings.Default.IsConfigured)
-                {
-                    return false;
-                }
-                if (SQLUseDefault)
-                {
-                    return true;
-                }
-                else
-                {
-                    if (!string.IsNullOrWhiteSpace(SQLServerName) && !string.IsNullOrWhiteSpace(SQLDataBase))
-                    {
-                        return !SQLIsSQLAuth || !string.IsNullOrWhiteSpace(SQLUserName) && !string.IsNullOrWhiteSpace(SQLPassword);
-                    }
-                }
                 return false;
             }
+            if (SQLUseDefault)
+            {
+                return true;
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(SQLServerName) && !string.IsNullOrWhiteSpace(SQLDataBase))
+                {
+                    return !SQLIsSQLAuth || !string.IsNullOrWhiteSpace(SQLUserName) && !string.IsNullOrWhiteSpace(SQLPassword);
+                }
+            }
+            return false;
         }
 
-        public void MoveData()
+        public void DoMoveData()
         {
             SQLIsImporting = true;
             if (SQLUseDefault)
             {
-                SQLConnectionStringBuilder.DataSource = ".\\SQLExpress";
-                SQLConnectionStringBuilder.InitialCatalog = "PhonyDb";
-                SQLConnectionStringBuilder.IntegratedSecurity = true;
-                SQLConnectionStringBuilder.MultipleActiveResultSets = true;
+                sqlConnectionStringBuilder.DataSource = ".\\SQLExpress";
+                sqlConnectionStringBuilder.InitialCatalog = "PhonyDb";
+                sqlConnectionStringBuilder.IntegratedSecurity = true;
+                sqlConnectionStringBuilder.MultipleActiveResultSets = true;
             }
             else
             {
-                SQLConnectionStringBuilder.DataSource = SQLServerName;
-                SQLConnectionStringBuilder.InitialCatalog = SQLDataBase;
+                sqlConnectionStringBuilder.DataSource = SQLServerName;
+                sqlConnectionStringBuilder.InitialCatalog = SQLDataBase;
                 if (SQLIsWinAuth)
                 {
-                    SQLConnectionStringBuilder.IntegratedSecurity = true;
+                    sqlConnectionStringBuilder.IntegratedSecurity = true;
                 }
                 else
                 {
-                    SQLConnectionStringBuilder.UserID = SQLUserName;
-                    SQLConnectionStringBuilder.Password = SQLPassword;
+                    sqlConnectionStringBuilder.UserID = SQLUserName;
+                    sqlConnectionStringBuilder.Password = SQLPassword;
                 }
-                SQLConnectionStringBuilder.MultipleActiveResultSets = true;
+                sqlConnectionStringBuilder.MultipleActiveResultSets = true;
             }
             try
             {
-                new SQL(SQLConnectionStringBuilder.ConnectionString).ImportFromMSSQL();
-
+                new SQL(sqlConnectionStringBuilder.ConnectionString).ImportFromMSSQL();
                 Properties.Settings.Default.IsConfigured = true;
+
             }
             catch (Exception ex)
             {

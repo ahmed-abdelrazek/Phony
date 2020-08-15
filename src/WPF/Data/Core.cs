@@ -8,6 +8,8 @@ namespace Phony.WPF.Data
 {
     public class Core
     {
+        public static string UserLocalAppFolderPath { get; set; }
+
         /// <summary> 
         /// Save Exceptions to the program folder in LocalApplicationData folder
         /// </summary> 
@@ -17,18 +19,17 @@ namespace Phony.WPF.Data
             lock (e)
             {
                 Console.WriteLine(e);
-                string appPath = UserLocalAppFolderPath();
                 DateTime now = DateTime.Now;
                 string str = string.Concat(new object[] { now.Year, "-", now.Month, "-", now.Day, "//" });
-                if (!Directory.Exists($"{appPath}..\\Logs"))
+                if (!Directory.Exists($"{UserLocalAppFolderPath}..\\Logs"))
                 {
-                    Directory.CreateDirectory($"{appPath}..\\Logs");
+                    Directory.CreateDirectory($"{UserLocalAppFolderPath}..\\Logs");
                 }
-                if (!Directory.Exists($"{appPath}..\\Logs\\{str}"))
+                if (!Directory.Exists($"{UserLocalAppFolderPath}..\\Logs\\{str}"))
                 {
-                    Directory.CreateDirectory($"{appPath}..\\Logs\\{str}");
+                    Directory.CreateDirectory($"{UserLocalAppFolderPath}..\\Logs\\{str}");
                 }
-                File.WriteAllLines(($"{appPath}..\\Logs\\{str}\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Second, "-", now.Ticks & 10L }) + ".txt", new List<string>
+                File.WriteAllLines(($"{UserLocalAppFolderPath}..\\Logs\\{str}\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Second, "-", now.Ticks & 10L }) + ".txt", new List<string>
                 {
                     "----Exception message----",
                     e.Message,
@@ -47,20 +48,19 @@ namespace Phony.WPF.Data
         public async static Task SaveExceptionAsync(Exception e)
         {
             Console.WriteLine(e);
-            string appPath = UserLocalAppFolderPath();
             DateTime now = DateTime.Now;
             string str = string.Concat(new object[] { now.Year, "-", now.Month, "-", now.Day, "//" });
-            if (!Directory.Exists($"{appPath}..\\Logs"))
+            if (!Directory.Exists($"{UserLocalAppFolderPath}..\\Logs"))
             {
-                Directory.CreateDirectory($"{appPath}..\\Logs");
+                Directory.CreateDirectory($"{UserLocalAppFolderPath}..\\Logs");
             }
-            if (!Directory.Exists($"{appPath}..\\Logs\\{str}"))
+            if (!Directory.Exists($"{UserLocalAppFolderPath}..\\Logs\\{str}"))
             {
-                Directory.CreateDirectory($"{appPath}..\\Logs\\{str}");
+                Directory.CreateDirectory($"{UserLocalAppFolderPath}..\\Logs\\{str}");
             }
             await Task.Run(() =>
             {
-                File.WriteAllLines(($"{appPath}..\\Logs\\{str}\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Second, "-", now.Ticks & 10L }) + ".txt", new List<string>
+                File.WriteAllLines(($"{UserLocalAppFolderPath}..\\Logs\\{str}\\") + string.Concat(new object[] { now.Hour, "-", now.Minute, "-", now.Second, "-", now.Ticks & 10L }) + ".txt", new List<string>
                 {
                     "----Exception message----",
                     e.Message,
@@ -76,12 +76,12 @@ namespace Phony.WPF.Data
         /// Gets the full path to the app temp folder for settings and stuff in user AppData\Local
         /// </summary>
         /// <returns>Return a full path with \ at the end</returns>
-        public static string UserLocalAppFolderPath()
+        public static void GetUserLocalAppFolderPath()
         {
             var level = ConfigurationUserLevel.PerUserRoamingAndLocal;
             var configuration = ConfigurationManager.OpenExeConfiguration(level);
             var configurationFilePath = configuration.FilePath.Replace("user.config", "");
-            return configurationFilePath;
+            UserLocalAppFolderPath = configurationFilePath;
         }
     }
 }

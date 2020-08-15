@@ -71,46 +71,46 @@ namespace Phony.WPF.ViewModels
         }
 
         public ICommand SaveDbConfig { get; }
+        public ICommand SelectLiteDbFolder { get; }
 
-        DbConnectionStringBuilder LiteConnectionStringBuilder = new DbConnectionStringBuilder();
+        DbConnectionStringBuilder liteConnectionStringBuilder = new DbConnectionStringBuilder();
 
         public GeneralSettingsViewModel()
         {
             SaveDbConfig = new RelayCommand(DoSaveDbConfig, CanSaveDbConfig);
+            SelectLiteDbFolder = new RelayCommand(DoSelectLiteDbFolder);
+            OnLoadedAsync().ConfigureAwait(false);
         }
 
         public async Task OnLoadedAsync()
         {
             await Task.Run(() =>
             {
-                using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
+                if (Properties.Settings.Default.IsConfigured)
                 {
-                    if (Properties.Settings.Default.IsConfigured)
+                    liteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
+                    if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LiteDbConnectionString))
                     {
-                        LiteConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
-                        if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.LiteDbConnectionString))
+                        LiteDbFullPath = liteConnectionStringBuilder["Filename"].ToString();
+                        if (liteConnectionStringBuilder.ContainsKey("Password"))
                         {
-                            LiteDbFullPath = LiteConnectionStringBuilder["Filename"].ToString();
-                            if (LiteConnectionStringBuilder.ContainsKey("Password"))
-                            {
-                                LiteDbPassword = LiteConnectionStringBuilder["Password"].ToString();
-                            }
-                            if (LiteDbFullPath == Core.UserLocalAppFolderPath() + "..\\Phony.db" && string.IsNullOrWhiteSpace(LiteDbPassword))
-                            {
-                                LiteUseDefault = true;
-                            }
+                            LiteDbPassword = liteConnectionStringBuilder["Password"].ToString();
                         }
-                        else
+                        if (LiteDbFullPath == Core.UserLocalAppFolderPath + "..\\Phony.db" && string.IsNullOrWhiteSpace(LiteDbPassword))
                         {
-                            DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
+                            LiteUseDefault = true;
                         }
-                        ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
                     }
                     else
                     {
-                        LiteUseDefault = true;
-                        LiteDbFullPath = Core.UserLocalAppFolderPath() + "..\\Phony.db";
+                        DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
                     }
+                    ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
+                }
+                else
+                {
+                    LiteUseDefault = true;
+                    LiteDbFullPath = Core.UserLocalAppFolderPath + "..\\Phony.db";
                 }
             });
         }
@@ -139,7 +139,7 @@ namespace Phony.WPF.ViewModels
                     {
                         if (LiteDbFullPath.EndsWith("Phony.db"))
                         {
-                            LiteConnectionStringBuilder["Filename"] = LiteDbFullPath;
+                            liteConnectionStringBuilder["Filename"] = LiteDbFullPath;
                         }
                         else
                         {
@@ -147,16 +147,16 @@ namespace Phony.WPF.ViewModels
                             {
                                 LiteDbFullPath += "\\";
                             }
-                            LiteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
+                            liteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
                         }
                     }
                 }
                 if (!string.IsNullOrWhiteSpace(LiteDbPassword))
                 {
-                    LiteConnectionStringBuilder["Password"] = LiteDbPassword;
+                    liteConnectionStringBuilder["Password"] = LiteDbPassword;
                 }
                 Properties.Settings.Default.SalesBillsPaperSize = ReportsSize;
-                Properties.Settings.Default.LiteDbConnectionString = LiteConnectionStringBuilder.ConnectionString;
+                Properties.Settings.Default.LiteDbConnectionString = liteConnectionStringBuilder.ConnectionString;
                 Properties.Settings.Default.Save();
                 MessageBox.MaterialMessageBox.Show("لقد تم تغيير اعدادات البرنامج و حفظها بنجاح", "تم الحفظ", true);
             }
@@ -164,13 +164,13 @@ namespace Phony.WPF.ViewModels
             {
                 if (LiteUseDefault)
                 {
-                    LiteConnectionStringBuilder["Filename"] = LiteDbFullPath;
+                    liteConnectionStringBuilder["Filename"] = LiteDbFullPath;
                 }
                 else
                 {
                     if (LiteDbFullPath.EndsWith("Phony.db"))
                     {
-                        LiteConnectionStringBuilder["Filename"] = LiteDbFullPath;
+                        liteConnectionStringBuilder["Filename"] = LiteDbFullPath;
                     }
                     else
                     {
@@ -178,14 +178,14 @@ namespace Phony.WPF.ViewModels
                         {
                             LiteDbFullPath += "\\";
                         }
-                        LiteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
+                        liteConnectionStringBuilder["Filename"] = LiteDbFullPath + "Phony.db";
                     }
                     if (!string.IsNullOrWhiteSpace(LiteDbPassword))
                     {
-                        LiteConnectionStringBuilder["Password"] = LiteDbPassword;
+                        liteConnectionStringBuilder["Password"] = LiteDbPassword;
                     }
                 }
-                Properties.Settings.Default.LiteDbConnectionString = LiteConnectionStringBuilder.ConnectionString;
+                Properties.Settings.Default.LiteDbConnectionString = liteConnectionStringBuilder.ConnectionString;
                 Properties.Settings.Default.Save();
                 try
                 {
@@ -307,27 +307,27 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        public void SelectLiteDbFolder()
+        public void DoSelectLiteDbFolder()
         {
             //todo FolderBrowserDialog
-            //var dlg = new System.Windows.Forms.FolderBrowserDialog
-            //{
-            //    RootFolder = Environment.SpecialFolder.MyDocuments
-            //};
+            var dlg = new System.Windows.Forms.FolderBrowserDialog
+            {
+                RootFolder = Environment.SpecialFolder.MyDocuments
+            };
 
-            //dlg.ShowDialog();
-            //if (string.IsNullOrWhiteSpace(dlg.SelectedPath))
-            //{
-            //    LiteDbFullPath = dlg.SelectedPath;
-            //    if (!LiteDbFullPath.EndsWith("Phony.db"))
-            //    {
-            //        if (!LiteDbFullPath.EndsWith("\\"))
-            //        {
-            //            LiteDbFullPath = LiteDbFullPath + "\\";
-            //        }
-            //        LiteDbFullPath += "Phony.db";
-            //    }
-            //}
+            dlg.ShowDialog();
+            if (!string.IsNullOrWhiteSpace(dlg.SelectedPath))
+            {
+                LiteDbFullPath = dlg.SelectedPath;
+                if (!LiteDbFullPath.EndsWith("Phony.db"))
+                {
+                    if (!LiteDbFullPath.EndsWith("\\"))
+                    {
+                        LiteDbFullPath += "\\";
+                    }
+                    LiteDbFullPath += "Phony.db";
+                }
+            }
         }
     }
 }

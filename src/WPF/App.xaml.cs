@@ -25,7 +25,7 @@ namespace Phony.WPF
                 .ConfigureAppConfiguration((context, configurationBuilder) =>
                 {
                     configurationBuilder.SetBasePath(context.HostingEnvironment.ContentRootPath);
-                    configurationBuilder.AddJsonFile("appsettings.json", optional: true);
+                    Data.Core.GetUserLocalAppFolderPath();
                 })
                 .ConfigureServices((context, services) =>
                 {
@@ -83,8 +83,6 @@ namespace Phony.WPF
                 .Where(type => (type.Name.EndsWith("ViewModel") || type.Name.EndsWith("View")))
                 .ToList()
                 .ForEach(viewModelType => services.AddTransient(viewModelType));
-
-            services.AddScoped<ScopedService>();
         }
     }
 }

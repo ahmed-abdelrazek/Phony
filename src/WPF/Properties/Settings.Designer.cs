@@ -8,113 +8,141 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Phony.WPF.Properties {
-    
-    
+namespace Phony.WPF.Properties
+{
+
+
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.0.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-        public static Settings Default {
-            get {
+
+        public static Settings Default
+        {
+            get
+            {
                 return defaultInstance;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsDarkTheme {
-            get {
+        public bool IsDarkTheme
+        {
+            get
+            {
                 return ((bool)(this["IsDarkTheme"]));
             }
-            set {
+            set
+            {
                 this["IsDarkTheme"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsAlternateStyle {
-            get {
+        public bool IsAlternateStyle
+        {
+            get
+            {
                 return ((bool)(this["IsAlternateStyle"]));
             }
-            set {
+            set
+            {
                 this["IsAlternateStyle"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Teal")]
-        public string PrimaryColor {
-            get {
+        public string PrimaryColor
+        {
+            get
+            {
                 return ((string)(this["PrimaryColor"]));
             }
-            set {
+            set
+            {
                 this["PrimaryColor"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Yellow")]
-        public string AccentColor {
-            get {
+        public string AccentColor
+        {
+            get
+            {
                 return ((string)(this["AccentColor"]));
             }
-            set {
+            set
+            {
                 this["AccentColor"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LiteDbConnectionString {
-            get {
+        public string LiteDbConnectionString
+        {
+            get
+            {
                 return ((string)(this["LiteDbConnectionString"]));
             }
-            set {
+            set
+            {
                 this["LiteDbConnectionString"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsConfigured {
-            get {
+        public bool IsConfigured
+        {
+            get
+            {
                 return ((bool)(this["IsConfigured"]));
             }
-            set {
+            set
+            {
                 this["IsConfigured"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string BackUpsFolder {
-            get {
+        public string BackUpsFolder
+        {
+            get
+            {
                 return ((string)(this["BackUpsFolder"]));
             }
-            set {
+            set
+            {
                 this["BackUpsFolder"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("A4")]
-        public string SalesBillsPaperSize {
-            get {
+        public string SalesBillsPaperSize
+        {
+            get
+            {
                 return ((string)(this["SalesBillsPaperSize"]));
             }
-            set {
+            set
+            {
                 this["SalesBillsPaperSize"] = value;
             }
         }

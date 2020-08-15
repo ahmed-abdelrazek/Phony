@@ -8,7 +8,7 @@
                     xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
                     mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:LoginViewModel}"
       d:DesignHeight="300" d:DesignWidth="300" Width="400" Height="400" WindowStartupLocation="CenterScreen"
-      FlowDirection="RightToLeft" Icon="../Resources/PhonyLogo.png" RenderOptions.BitmapScalingMode="Fant">
+      FlowDirection="RightToLeft" Icon="../Resources/PhonyLogo.png" ShowInTaskbar="True" RenderOptions.BitmapScalingMode="Fant">
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel x:Name="TextBoxFirstPanel" Orientation="Horizontal" Margin="5">

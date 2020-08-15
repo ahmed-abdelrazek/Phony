@@ -20,7 +20,7 @@ namespace Phony.WPF.ViewModels
 
         public AboutAppViewModel()
         {
-            AppVersion = "رقم الاصدار: 1.0.0.0";
+            OnLoadedAsync().ConfigureAwait(false);
         }
 
         public async Task OnLoadedAsync()

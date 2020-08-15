@@ -6,6 +6,9 @@
              xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:AboutAppViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <ViewModels:AboutAppViewModel/>
+    </UserControl.DataContext>
     <RichTextBox IsReadOnly="True" FlowDirection="RightToLeft" Background="{DynamicResource MaterialDesignCardBackground}">
         <FlowDocument>
             <Paragraph TextAlignment="Justify" FontSize="36">تلفونى</Paragraph>
