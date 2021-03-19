@@ -59,8 +59,10 @@ namespace Phony.WPF.Helpers
 
         private static void DependencyPropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is TextBox textBox))
+            if (d is not TextBox textBox)
+            {
                 throw new Exception("Attached property must be used with TextBox.");
+            }
 
             switch (e.Property.Name)
             {

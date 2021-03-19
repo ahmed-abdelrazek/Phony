@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 
 namespace Phony.WPF.Data
@@ -10,17 +9,14 @@ namespace Phony.WPF.Data
         /// Get the app info from the Assembly file
         /// </summary>
         /// <param name="assembly">Assembly.GetEntryAssembly()</param>
-        public AssemblyInfo(Assembly assembly)
-        {
-            this.assembly = assembly ?? throw new ArgumentNullException("assembly");
-        }
+        public AssemblyInfo(Assembly assembly) => this.assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
 
         private readonly Assembly assembly;
 
         /// <summary>
         /// Gets the title property
         /// </summary>
-        public string AppTitle => GetAttributeValue<AssemblyTitleAttribute>(a => a.Title, Path.GetFileNameWithoutExtension(assembly.CodeBase));
+        public string AppTitle => GetAttributeValue<AssemblyTitleAttribute>(a => a.Title, assembly.GetName().Name);
 
         /// <summary>
         /// Gets the application's version

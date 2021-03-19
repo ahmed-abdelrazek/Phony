@@ -13,8 +13,8 @@ namespace Phony.WPF.Converters
             if (value != null && value is byte[])
             {
                 byte[] bytes = value as byte[];
-                MemoryStream stream = new MemoryStream(bytes);
-                BitmapImage image = new BitmapImage();
+                MemoryStream stream = new(bytes);
+                BitmapImage image = new();
                 image.BeginInit();
                 image.StreamSource = stream;
                 image.EndInit();

@@ -20,9 +20,9 @@ namespace Phony.WPF.Data
             // Set your salt here, change it to meet your flavor:
             // The salt bytes must be at least 8 bytes.
             byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                using (RijndaelManaged AES = new RijndaelManaged())
+                using (RijndaelManaged AES = new())
                 {
                     AES.KeySize = 256;
                     AES.BlockSize = 128;
@@ -47,9 +47,9 @@ namespace Phony.WPF.Data
             // Set your salt here, change it to meet your flavor:
             // The salt bytes must be at least 8 bytes.
             byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
-                using (RijndaelManaged AES = new RijndaelManaged())
+                using (RijndaelManaged AES = new())
                 {
                     AES.KeySize = 256;
                     AES.BlockSize = 128;
