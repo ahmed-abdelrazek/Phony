@@ -26,8 +26,8 @@ namespace Phony.WPF.ViewModels
 
         bool isBacking;
 
-        private readonly IServiceProvider serviceProvider;
-        private readonly IWindowManager windowManager;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IWindowManager _windowManager;
 
         public int UserId { get; set; }
 
@@ -102,12 +102,12 @@ namespace Phony.WPF.ViewModels
         public ICommand OpenStoreInfoWindow { get; }
         public ICommand OpenBarcodesWindow { get; }
 
-        DbConnectionStringBuilder ConnectionStringBuilder = new DbConnectionStringBuilder();
+        private readonly DbConnectionStringBuilder ConnectionStringBuilder = new();
 
         public MainViewModel(IServiceProvider serviceProvider, IWindowManager windowManager)
         {
-            this.serviceProvider = serviceProvider;
-            this.windowManager = windowManager;
+            this._serviceProvider = serviceProvider;
+            this._windowManager = windowManager;
 
             SignOut = new RelayCommand(DoSignOut);
             SaveUser = new AsyncRelayCommand(DoSaveUser, CanSaveUser);
@@ -362,7 +362,7 @@ namespace Phony.WPF.ViewModels
             try
             {
                 CurrentUser = new User();
-                windowManager.ShowDialog<LoginViewModel>();
+                _windowManager.ShowDialog<LoginViewModel>();
             }
             catch (Exception ex)
             {
@@ -403,7 +403,7 @@ namespace Phony.WPF.ViewModels
 
             if (!windowAlreadyOpenned)
             {
-                T w = serviceProvider.GetRequiredService<T>();
+                T w = _serviceProvider.GetRequiredService<T>();
 
                 //send the current logged user to the opened window
                 w.CurrentUser.Id = CurrentUser.Id;
@@ -413,7 +413,7 @@ namespace Phony.WPF.ViewModels
                 w.CurrentUser.Notes = CurrentUser.Notes;
                 w.CurrentUser.IsActive = CurrentUser.IsActive;
 
-                windowManager.ShowWindow(w);
+                _windowManager.ShowWindow(w);
             }
         }
     }

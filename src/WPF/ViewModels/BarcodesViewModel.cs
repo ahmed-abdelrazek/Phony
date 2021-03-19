@@ -16,24 +16,6 @@ namespace Phony.WPF.ViewModels
     public class BarcodesViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
         int _height;
-        int _width;
-        int _barWidth;
-        double _aspectRatio;
-        string _encodeValue;
-        string _selectedRotate;
-        string _alignment;
-        string _foreground;
-        string _background;
-        string _alternateLabelText;
-        string _labelLocation;
-        string _encodedValue;
-        string _selectedEncoder;
-        byte[] _image;
-        bool _generateLabel;
-
-        List<string> _rotateTypes;
-        List<Enumeration<byte>> _encoders;
-
         public int Height
         {
             get => _height;
@@ -44,6 +26,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        int _width;
         public int Width
         {
             get => _width;
@@ -54,6 +37,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        int _barWidth;
         public int BarWidth
         {
             get => _barWidth;
@@ -64,6 +48,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        double _aspectRatio;
         public double AspectRatio
         {
             get => _aspectRatio;
@@ -74,6 +59,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _encodeValue;
         public string EncodeValue
         {
             get => _encodeValue;
@@ -84,6 +70,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _selectedRotate;
         public string SelectedRotate
         {
             get => _selectedRotate;
@@ -94,6 +81,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _alignment;
         public string Alignment
         {
             get => _alignment;
@@ -104,6 +92,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _foreground;
         public string Foreground
         {
             get => _foreground;
@@ -114,6 +103,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _background;
         public string Background
         {
             get => _background;
@@ -124,6 +114,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _alternateLabelText;
         public string AlternateLabelText
         {
             get => _alternateLabelText;
@@ -134,6 +125,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _labelLocation;
         public string LabelLocation
         {
             get => _labelLocation;
@@ -144,6 +136,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _encodedValue;
         public string EncodedValue
         {
             get => _encodedValue;
@@ -156,6 +149,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        string _selectedEncoder;
         public string SelectedEncoder
         {
             get => _selectedEncoder;
@@ -166,6 +160,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        bool _generateLabel;
         public bool GenerateLabel
         {
             get => _generateLabel;
@@ -176,6 +171,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        byte[] _image;
         public byte[] Image
         {
             get => _image;
@@ -186,6 +182,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        List<string> _rotateTypes;
         public List<string> RotateTypes
         {
             get => _rotateTypes;
@@ -196,6 +193,7 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        List<Enumeration<byte>> _encoders;
         public List<Enumeration<byte>> Encoders
         {
             get => _encoders;
@@ -206,13 +204,13 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        BarcodeLib.Barcode barCode = new BarcodeLib.Barcode();
+        private readonly BarcodeLib.Barcode _barCode = new();
 
         public BarcodesViewModel()
         {
             Title = "باركود";
-            Foreground = barCode.ForeColor.ToHexString();
-            Background = barCode.BackColor.ToHexString();
+            Foreground = _barCode.ForeColor.ToHexString();
+            Background = _barCode.BackColor.ToHexString();
             RotateTypes = new List<string>();
         }
 
@@ -249,7 +247,7 @@ namespace Phony.WPF.ViewModels
 
         private void Save()
         {
-            SaveFileDialog sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|TIFF (*.tif)|*.tif",
                 FilterIndex = 2,
@@ -267,7 +265,7 @@ namespace Phony.WPF.ViewModels
                     case 5: /* TIFF */ savetype = BarcodeLib.SaveTypes.TIFF; break;
                     default: break;
                 }
-                barCode.SaveImage(sfd.FileName, savetype);
+                _barCode.SaveImage(sfd.FileName, savetype);
             }
         }
 
@@ -288,7 +286,7 @@ namespace Phony.WPF.ViewModels
             {
                 H = Height;
             }
-            barCode.Alignment = Alignment switch
+            _barCode.Alignment = Alignment switch
             {
                 "يمين" => BarcodeLib.AlignmentPositions.RIGHT,
                 "يسار" => BarcodeLib.AlignmentPositions.LEFT,
@@ -331,7 +329,7 @@ namespace Phony.WPF.ViewModels
                 {
                     try
                     {
-                        barCode.BarWidth = BarWidth < 1 ? 2 : BarWidth;
+                        _barCode.BarWidth = BarWidth < 1 ? 2 : BarWidth;
                     }
                     catch (Exception ex)
                     {
@@ -340,18 +338,18 @@ namespace Phony.WPF.ViewModels
                     }
                     try
                     {
-                        barCode.AspectRatio = AspectRatio < 1 ? null : (double?)AspectRatio;
+                        _barCode.AspectRatio = AspectRatio < 1 ? null : (double?)AspectRatio;
                     }
                     catch (Exception ex)
                     {
                         Core.SaveException(ex);
                         MessageBox.MaterialMessageBox.ShowError("هناك مشكله تخص النسبة", "مشكلة ", true);
                     }
-                    barCode.IncludeLabel = GenerateLabel;
-                    barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);
+                    _barCode.IncludeLabel = GenerateLabel;
+                    _barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);
 
-                    barCode.AlternateLabel = !String.IsNullOrEmpty(AlternateLabelText) ? AlternateLabelText : EncodeValue;
-                    barCode.LabelPosition = LabelLocation switch
+                    _barCode.AlternateLabel = !String.IsNullOrEmpty(AlternateLabelText) ? AlternateLabelText : EncodeValue;
+                    _barCode.LabelPosition = LabelLocation switch
                     {
                         "اسفل - يمين" => BarcodeLib.LabelPositions.BOTTOMRIGHT,
                         "اسفل - يسار" => BarcodeLib.LabelPositions.BOTTOMLEFT,
@@ -361,19 +359,19 @@ namespace Phony.WPF.ViewModels
                         _ => BarcodeLib.LabelPositions.BOTTOMCENTER,
                     };
                     //===== Encoding performed here =====
-                    Image = barCode.Encode(type, EncodeValue, ColorTranslator.FromHtml(Foreground), ColorTranslator.FromHtml(Background), W, H).ImageToByteArray();
+                    Image = _barCode.Encode(type, EncodeValue, ColorTranslator.FromHtml(Foreground), ColorTranslator.FromHtml(Background), W, H).ImageToByteArray();
                     //===================================
-                    EncodedValue = barCode.EncodedValue;
+                    EncodedValue = _barCode.EncodedValue;
                     // Read dynamically calculated Width/Height because the user is interested.
-                    if (barCode.BarWidth.HasValue)
+                    if (_barCode.BarWidth.HasValue)
                     {
-                        Height = barCode.Height;
-                        Width = barCode.Width;
-                        BarWidth = (int)barCode.BarWidth;
+                        Height = _barCode.Height;
+                        Width = _barCode.Width;
+                        BarWidth = (int)_barCode.BarWidth;
                     }
-                    if (barCode.AspectRatio.HasValue)
+                    if (_barCode.AspectRatio.HasValue)
                     {
-                        AspectRatio = (double)barCode.AspectRatio;
+                        AspectRatio = (double)_barCode.AspectRatio;
                     }
                 }
             }
@@ -390,7 +388,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoSelectForeColor()
         {
-            ColorDialog colorDialog = new ColorDialog
+            ColorDialog colorDialog = new()
             {
                 SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Foreground))).Color
             };
@@ -407,7 +405,7 @@ namespace Phony.WPF.ViewModels
 
         private void DoBackColor()
         {
-            ColorDialog colorDialog = new ColorDialog
+            ColorDialog colorDialog = new()
             {
                 SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Background))).Color
             };

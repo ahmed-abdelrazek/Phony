@@ -215,7 +215,7 @@ namespace Phony.WPF.ViewModels
 
             await Task.Run(() =>
             {
-                CompaniesCount = $"مجموع العملاء: {Companies.Count()}";
+                CompaniesCount = $"مجموع العملاء: {Companies.Count}";
                 CompaniesDebits = $"اجمالى لينا: {Math.Abs(Debit)}";
                 CompaniesCredits = $"اجمالى علينا: {Math.Abs(Credit)}";
                 CompaniesProfit = $"تقدير لصافى لينا: {Math.Abs(Debit) - Math.Abs(Credit)}";
@@ -460,12 +460,9 @@ namespace Phony.WPF.ViewModels
 
         private void DoSelectImage()
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog dlg = new();
             var codecs = ImageCodecInfo.GetImageEncoders();
-            dlg.Filter = string.Format("All image files ({1})|{1}|All files|*",
-            string.Join("|", codecs.Select(codec =>
-            string.Format("({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-            string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray()));
+            dlg.Filter = $"All image files ({string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray())})|{string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray())}|All files|*";
             var result = dlg.ShowDialog();
             if (result == true)
             {

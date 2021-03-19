@@ -160,16 +160,17 @@ namespace Phony.WPF.ViewModels
 
         public async Task OnLoadedAsync()
         {
+            foreach (var group in Enum.GetValues(typeof(UserGroup)))
+            {
+                Groups.Add(new Enumeration<byte>
+                {
+                    Id = (byte)group,
+                    Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
+                });
+            }
+
             await Task.Run(() =>
             {
-                foreach (var group in Enum.GetValues(typeof(UserGroup)))
-                {
-                    Groups.Add(new Enumeration<byte>
-                    {
-                        Id = (byte)group,
-                        Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
-                    });
-                }
                 using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
             });

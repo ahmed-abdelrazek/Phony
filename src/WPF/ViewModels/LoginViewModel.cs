@@ -19,9 +19,9 @@ namespace Phony.WPF.ViewModels
 {
     public class LoginViewModel : BaseViewModelWithAnnotationValidation, IOnLoadedHandler
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly IWindowManager windowManager;
-        private readonly ILogger logger;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IWindowManager _windowManager;
+        private readonly ILogger _logger;
         string _userName;
         string _password;
         bool _isLogging;
@@ -61,13 +61,13 @@ namespace Phony.WPF.ViewModels
         public ICommand Login { get; }
         public ICommand OpenSettingsWindow { get; }
 
-        DbConnectionStringBuilder connectionStringBuilder = new DbConnectionStringBuilder();
+        private readonly DbConnectionStringBuilder connectionStringBuilder = new();
 
         public LoginViewModel(IServiceProvider serviceProvider, IWindowManager windowManager, ILogger<LoginViewModel> logger)
         {
-            this.serviceProvider = serviceProvider;
-            this.windowManager = windowManager;
-            this.logger = logger;
+            this._serviceProvider = serviceProvider;
+            this._windowManager = windowManager;
+            this._logger = logger;
 
             Login = new AsyncRelayCommand<PasswordBox>(DoLogin, CanLogin);
             OpenSettingsWindow = new RelayCommand(DoOpenSettingsWindow);
@@ -78,11 +78,11 @@ namespace Phony.WPF.ViewModels
             connectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
             if (string.IsNullOrWhiteSpace(connectionStringBuilder.ConnectionString) || !File.Exists(connectionStringBuilder["Filename"].ToString()) || !Properties.Settings.Default.IsConfigured)
             {
-                logger.LogInformation("Opening the setting to config the app");
-                windowManager.ShowDialog<SettingsViewModel>();
+                _logger.LogInformation("Opening the setting to config the app");
+                _windowManager.ShowDialog<SettingsViewModel>();
                 if (!Properties.Settings.Default.IsConfigured)
                 {
-                    logger.LogWarning("The app isn't configured and will now shutdown");
+                    _logger.LogWarning("The app isn't configured and will now shutdown");
                     Environment.Exit(0);
                 }
             }
@@ -118,7 +118,7 @@ namespace Phony.WPF.ViewModels
                     {
                         if (SecurePasswordHasher.Verify(password, u.Pass))
                         {
-                            var m = serviceProvider.GetRequiredService<MainViewModel>();
+                            var m = _serviceProvider.GetRequiredService<MainViewModel>();
                             m.CurrentUser = new User
                             {
                                 Id = u.Id,
@@ -128,7 +128,7 @@ namespace Phony.WPF.ViewModels
                                 Notes = u.Notes,
                                 IsActive = u.IsActive
                             };
-                            windowManager.ShowWindow(m);
+                            _windowManager.ShowWindow(m);
                             Application.Current.Windows.OfType<LoginView>().FirstOrDefault().Close();
                         }
                         else
@@ -149,7 +149,7 @@ namespace Phony.WPF.ViewModels
 
         public void DoOpenSettingsWindow()
         {
-            windowManager.ShowWindow(serviceProvider.GetRequiredService<SettingsViewModel>());
+            _windowManager.ShowWindow(_serviceProvider.GetRequiredService<SettingsViewModel>());
         }
     }
 }

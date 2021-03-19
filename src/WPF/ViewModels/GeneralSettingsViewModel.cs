@@ -1,5 +1,5 @@
 ﻿using LiteDB;
-using MahApps.Metro.Controls.Dialogs;
+using MaterialDesignExtensions.Controls;
 using Phony.Data.Core;
 using Phony.Data.Models.Lite;
 using Phony.WPF.Data;
@@ -7,6 +7,7 @@ using System;
 using System.Data.Common;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using TinyLittleMvvm;
 
@@ -73,7 +74,7 @@ namespace Phony.WPF.ViewModels
         public ICommand SaveDbConfig { get; }
         public ICommand SelectLiteDbFolder { get; }
 
-        DbConnectionStringBuilder liteConnectionStringBuilder = new DbConnectionStringBuilder();
+        private readonly DbConnectionStringBuilder liteConnectionStringBuilder = new();
 
         public GeneralSettingsViewModel()
         {
@@ -103,7 +104,7 @@ namespace Phony.WPF.ViewModels
                     }
                     else
                     {
-                        DialogCoordinator.Instance.ShowMessageAsync(this, "خطا", "لم يستطع البرنامج تحميل اعدادات قاعدة البيانات");
+                        MessageBox.MaterialMessageBox.ShowError("لم يستطع البرنامج تحميل اعدادات قاعدة البيانات", "خطا", true);
                     }
                     ReportsSizeIndex = Properties.Settings.Default.SalesBillsPaperSize == "A4" ? 0 : 1;
                 }
@@ -302,7 +303,27 @@ namespace Phony.WPF.ViewModels
                 finally
                 {
                     Properties.Settings.Default.Save();
-                    MessageBox.MaterialMessageBox.Show("تم اعداد البرنامج بنجاح", "تمت العملية", true);
+                    if (Properties.Settings.Default.IsConfigured)
+                    {
+                        MessageBox.MaterialMessageBox.Show("تم اعداد البرنامج بنجاح", "تمت العملية", true);
+                        foreach (var window in Application.Current.Windows)
+                        {
+                            if (window is MaterialWindow mWin)
+                            {
+                                if (mWin.Title == "إعدادت")
+                                {
+                                    mWin.Close();
+                                }
+                            }
+                            else if (window is Window win)
+                            {
+                                if (win.Title == "إعدادت")
+                                {
+                                    win.Close();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

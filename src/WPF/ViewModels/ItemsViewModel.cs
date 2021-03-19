@@ -401,7 +401,7 @@ namespace Phony.WPF.ViewModels
 
             await Task.Run(() =>
             {
-                ItemsCount = $"إجمالى الاصناف: {Items.Count()}";
+                ItemsCount = $"إجمالى الاصناف: {Items.Count}";
                 ItemsPurchasePrice = $"اجمالى سعر الشراء: {decimal.Round(Items.Sum(i => i.PurchasePrice * i.QTY), 2)}";
                 ItemsSalePrice = $"اجمالى سعر البيع: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY), 2)}";
                 ItemsProfit = $"تقدير صافى الربح: {decimal.Round(Items.Sum(i => i.RetailPrice * i.QTY) - Items.Sum(i => i.PurchasePrice * i.QTY), 2)}";
@@ -569,12 +569,9 @@ namespace Phony.WPF.ViewModels
 
         private void DoSelectImage()
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog dlg = new();
             var codecs = ImageCodecInfo.GetImageEncoders();
-            dlg.Filter = string.Format("All image files ({1})|{1}|All files|*",
-            string.Join("|", codecs.Select(codec =>
-            string.Format("({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-            string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray()));
+            dlg.Filter = $"All image files ({string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray())})|{string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray())}|All files|*";
             var result = dlg.ShowDialog();
             if (result == true)
             {

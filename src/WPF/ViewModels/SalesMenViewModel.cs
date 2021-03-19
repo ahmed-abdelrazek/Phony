@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using TinyLittleMvvm;
 
 namespace Phony.WPF.ViewModels
@@ -210,6 +211,9 @@ namespace Phony.WPF.ViewModels
             {
                 _dataGridSelectedSalesMan = value;
                 NotifyOfPropertyChange(() => DataGridSelectedSalesMan);
+
+                ((RelayCommand)OpenEditSalesManFlyoutCommand).RaiseCanExecuteChanged();
+                ((AsyncRelayCommand)DeleteSalesManCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -223,9 +227,31 @@ namespace Phony.WPF.ViewModels
             }
         }
 
+        public ICommand AddSalesManCommand { get; }
+        public ICommand EditSalesManCommand { get; }
+        public ICommand SearchCommand { get; }
+        public ICommand OpenAddSalesManFlyoutCommand { get; }
+        public ICommand OpenEditSalesManFlyoutCommand { get; }
+        public ICommand DeleteSalesManCommand { get; }
+        public ICommand ReloadAllSalesMenCommand { get; }
+        public ICommand SalesManPayCommand { get; }
+        public ICommand PaySalesManCommand { get; }
+        public ICommand CloseFlyoutCommand { get; }
+
         public SalesMenViewModel()
         {
             Title = "المندوبين";
+
+            AddSalesManCommand = new AsyncRelayCommand(DoAddSalesMan, CanAddSalesMan);
+            EditSalesManCommand = new AsyncRelayCommand(DoEditSalesMan, CanEditSalesMan);
+            SearchCommand = new RelayCommand(DoSearch, CanSearch);
+            OpenAddSalesManFlyoutCommand = new RelayCommand(DoOpenAddSalesManFlyout, () => true);
+            OpenEditSalesManFlyoutCommand = new RelayCommand(DoFillUI, CanFillUI);
+            DeleteSalesManCommand = new AsyncRelayCommand(DoDeleteSalesMan, CanDeleteSalesMan);
+            ReloadAllSalesMenCommand = new AsyncRelayCommand(DoReloadAllSalesMen, () => true);
+            SalesManPayCommand = new AsyncRelayCommand(DoSalesManPayAsync, CanSalesManPay);
+            PaySalesManCommand = new AsyncRelayCommand(DoPaySalesManAsync, CanPaySalesMan);
+            CloseFlyoutCommand = new RelayCommand(DoCloseFlyout, () => true);
         }
 
         public async Task OnLoadedAsync()
@@ -242,11 +268,12 @@ namespace Phony.WPF.ViewModels
 
         async Task DebitCredit()
         {
-            decimal Debit = decimal.Round(SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
-            decimal Credit = decimal.Round(SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
             await Task.Run(() =>
             {
-                SalesMenCount = $"مجموع العملاء: {SalesMen.Count()}";
+                decimal Debit = decimal.Round(SalesMen.Where(c => c.Balance < 0).Sum(i => i.Balance), 2);
+                decimal Credit = decimal.Round(SalesMen.Where(c => c.Balance > 0).Sum(i => i.Balance), 2);
+
+                SalesMenCount = $"مجموع العملاء: {SalesMen.Count}";
                 SalesMenDebits = $"اجمالى لينا: {Math.Abs(Debit)}";
                 SalesMenCredits = $"اجمالى علينا: {Math.Abs(Credit)}";
                 SalesMenProfit = $"تقدير لصافى لينا: {Math.Abs(Debit) - Math.Abs(Credit)}";
@@ -371,8 +398,11 @@ namespace Phony.WPF.ViewModels
                 };
                 db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(c);
                 SalesMen.Add(c);
-                MessageBox.MaterialMessageBox.Show("تم اضافة المندوب بنجاح", "تمت العملية", true);
+
                 await DebitCredit();
+                MessageBox.MaterialMessageBox.Show("تم اضافة المندوب بنجاح", "تمت العملية", true);
+
+                DoClearUI();
             }
             else
             {
@@ -398,11 +428,14 @@ namespace Phony.WPF.ViewModels
             s.Editor = CurrentUser;
             s.EditedAt = DateTime.Now;
             db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
+
+            await DebitCredit();
             MessageBox.MaterialMessageBox.Show("تم تعديل المندوب بنجاح", "تمت العملية", true);
             SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = s;
-            await DebitCredit();
+            
             DataGridSelectedSalesMan = null;
             SalesManId = 0;
+            DoClearUI();
         }
 
         private bool CanDeleteSalesMan()
@@ -420,8 +453,10 @@ namespace Phony.WPF.ViewModels
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
                     SalesMen.Remove(DataGridSelectedSalesMan);
                 }
-                MessageBox.MaterialMessageBox.Show("تم حذف المندوب بنجاح", "تمت العملية", true);
+
                 await DebitCredit();
+                MessageBox.MaterialMessageBox.Show("تم حذف المندوب بنجاح", "تمت العملية", true);
+                
                 DataGridSelectedSalesMan = null;
             }
         }
@@ -458,11 +493,6 @@ namespace Phony.WPF.ViewModels
             }
         }
 
-        private bool CanReloadAllSalesMen()
-        {
-            return true;
-        }
-
         private async Task DoReloadAllSalesMen()
         {
             using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
@@ -486,17 +516,30 @@ namespace Phony.WPF.ViewModels
             Email = DataGridSelectedSalesMan.Email;
             Phone = DataGridSelectedSalesMan.Phone;
             Notes = DataGridSelectedSalesMan.Notes;
-            IsAddSalesManFlyoutOpen = true;
+            DoOpenAddSalesManFlyout();
         }
 
-        private bool CanOpenAddSalesManFlyout()
+        private void DoClearUI()
         {
-            return true;
+            SalesManId = 0;
+            Name = "";
+            Balance = 0;
+            Site = "";
+            Email = "";
+            Phone = "";
+            Notes = "";
         }
 
         private void DoOpenAddSalesManFlyout()
         {
             IsAddSalesManFlyoutOpen = !IsAddSalesManFlyoutOpen;
+        }
+
+        private void DoCloseFlyout()
+        {
+            IsAddSalesManFlyoutOpen = false;
+            DataGridSelectedSalesMan = null;
+            DoClearUI();
         }
     }
 }
