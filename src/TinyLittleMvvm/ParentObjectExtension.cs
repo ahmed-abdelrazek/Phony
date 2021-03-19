@@ -16,7 +16,7 @@ namespace TinyLittleMvvm
         /// null.</returns>
         public static DependencyObject GetParentObject(this DependencyObject child)
         {
-            if (child == null)
+            if (child is null)
             {
                 return null;
             }
@@ -29,7 +29,7 @@ namespace TinyLittleMvvm
             }
 
             var childParent = VisualTreeHelper.GetParent(child);
-            if (childParent != null)
+            if (childParent is not null)
             {
                 return childParent;
             }
@@ -38,7 +38,7 @@ namespace TinyLittleMvvm
             if (child is FrameworkElement frameworkElement)
             {
                 DependencyObject parent = frameworkElement.Parent;
-                if (parent != null)
+                if (parent is not null)
                 {
                     return parent;
                 }

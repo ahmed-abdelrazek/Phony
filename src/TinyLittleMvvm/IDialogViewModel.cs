@@ -1,10 +1,12 @@
 ﻿using System;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// Interface for dialog view models.
     /// </summary>
-    public interface IDialogViewModel {
+    public interface IDialogViewModel
+    {
         /// <summary>
         /// This event is raised when the dialog was closed.
         /// </summary>

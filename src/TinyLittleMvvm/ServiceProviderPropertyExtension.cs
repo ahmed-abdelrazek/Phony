@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// Defines the attached property <see cref="ServiceProviderProperty"/>.
     /// </summary>
@@ -9,7 +10,8 @@ namespace TinyLittleMvvm {
     /// This property is used to attach a <see cref="IServiceProvider"/>
     /// to a <see cref="DependencyObject"/>.
     /// </remarks>
-    public static class ServiceProviderPropertyExtension {
+    public static class ServiceProviderPropertyExtension
+    {
         /// <summary>
         /// Defines a dependency property to attach a <see cref="IServiceProvider"/>
         /// to a <see cref="DependencyObject"/>
@@ -22,7 +24,8 @@ namespace TinyLittleMvvm {
         /// </summary>
         /// <param name="element">The dependency object.</param>
         /// <param name="value">The <see cref="IServiceProvider"/>to attach to <paramref name="element"/>.</param>
-        public static void SetServiceProvider(DependencyObject element, IServiceProvider value) {
+        public static void SetServiceProvider(DependencyObject element, IServiceProvider value)
+        {
             element.SetValue(ServiceProviderProperty, value);
         }
 
@@ -30,8 +33,9 @@ namespace TinyLittleMvvm {
         /// Gets the <see cref="IServiceProvider"/> attached to <paramref name="element"/>.
         /// </summary>
         /// <param name="element"></param>
-        public static IServiceProvider GetServiceProvider(DependencyObject element) {
-            return (IServiceProvider) element.GetValue(ServiceProviderProperty);
+        public static IServiceProvider GetServiceProvider(DependencyObject element)
+        {
+            return (IServiceProvider)element.GetValue(ServiceProviderProperty);
         }
     }
 }

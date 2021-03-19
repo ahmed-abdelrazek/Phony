@@ -2,18 +2,21 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// Extension methods for <see cref="Expression"/>s.
     /// </summary>
-    public static class ExpressionHelper {
+    public static class ExpressionHelper
+    {
         /// <summary>
         /// Gets the name of a class' property.
         /// </summary>
         /// <param name="property">The porperty.</param>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <returns>The name of the property.</returns>
-        public static string GetMemberName<TProperty>(Expression<Func<TProperty>> property) {
+        public static string GetMemberName<TProperty>(Expression<Func<TProperty>> property)
+        {
             return GetMemberInfo(property).Name;
         }
 
@@ -24,15 +27,17 @@ namespace TinyLittleMvvm {
         /// <typeparam name="TEntity">The type of the class owning the property.</typeparam>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <returns>The name of the property.</returns>
-        public static string GetMemberName<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> property) {
+        public static string GetMemberName<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> property)
+        {
             return GetMemberInfo(property).Name;
         }
 
-        private static MemberInfo GetMemberInfo(Expression expression) {
-            var lambdaExpression = (LambdaExpression) expression;
+        private static MemberInfo GetMemberInfo(Expression expression)
+        {
+            var lambdaExpression = (LambdaExpression)expression;
             return
-                (!(lambdaExpression.Body is UnaryExpression)
-                    ? (MemberExpression) lambdaExpression.Body : (MemberExpression) ((UnaryExpression) lambdaExpression.Body).Operand)
+                (lambdaExpression.Body is not UnaryExpression expression1
+                    ? (MemberExpression)lambdaExpression.Body : (MemberExpression)expression1.Operand)
                     .Member;
         }
     }

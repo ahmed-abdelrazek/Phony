@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// Provides methods to get a view instance for a given view model.
     /// </summary>
-    public class ViewLocator {
+    public class ViewLocator
+    {
         private readonly IServiceProvider _serviceProvider;
         private readonly ViewLocatorOptions _options;
         private readonly ILogger<ViewLocator> _logger;
@@ -20,7 +22,8 @@ namespace TinyLittleMvvm {
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="options">The options for ViewModel discovery.</param>
         /// <param name="logger">The logger.</param>
-        public ViewLocator(IServiceProvider serviceProvider, ViewLocatorOptions options, ILogger<ViewLocator> logger) {
+        public ViewLocator(IServiceProvider serviceProvider, ViewLocatorOptions options, ILogger<ViewLocator> logger)
+        {
             _serviceProvider = serviceProvider;
             _options = options;
             _logger = logger;
@@ -50,7 +53,8 @@ namespace TinyLittleMvvm {
         /// This allows the user of the library to remove the code-behind of her/his XAML files.
         /// </para>
         /// </remarks>
-        public object GetViewForViewModel<TViewModel>(IServiceProvider serviceProvider = null) {
+        public object GetViewForViewModel<TViewModel>(IServiceProvider serviceProvider = null)
+        {
             var viewModel = (serviceProvider ?? _serviceProvider).GetRequiredService<TViewModel>();
             return GetViewForViewModel(viewModel, serviceProvider);
         }
@@ -79,10 +83,12 @@ namespace TinyLittleMvvm {
         /// This allows the user of the library to remove the code-behind of her/his XAML files.
         /// </para>
         /// </remarks>
-        public object GetViewForViewModel(object viewModel, IServiceProvider serviceProvider = null) {
+        public object GetViewForViewModel(object viewModel, IServiceProvider serviceProvider = null)
+        {
             _logger.LogDebug($"View for view model {viewModel.GetType()} requested");
             var viewType = _options.GetViewTypeFromViewModelType(viewModel.GetType());
-            if (viewType == null) {
+            if (viewType is null)
+            {
                 _logger.LogError($"Could not find view for view model type {viewModel.GetType()}");
                 throw new InvalidOperationException("No View found for ViewModel of type " + viewModel.GetType());
             }
@@ -90,11 +96,13 @@ namespace TinyLittleMvvm {
             var view = _serviceProvider.GetRequiredService(viewType);
             _logger.LogDebug($"Resolved to instance of {view.GetType()}");
 
-            if (serviceProvider != null && view is DependencyObject dependencyObject) {
+            if (serviceProvider != null && view is DependencyObject dependencyObject)
+            {
                 ServiceProviderPropertyExtension.SetServiceProvider(dependencyObject, serviceProvider);
             }
 
-            if (view is FrameworkElement frameworkElement) {
+            if (view is FrameworkElement frameworkElement)
+            {
                 AttachHandler(frameworkElement, viewModel);
                 frameworkElement.DataContext = viewModel;
             }
@@ -104,27 +112,36 @@ namespace TinyLittleMvvm {
             return view;
         }
 
-        private static void AttachHandler(FrameworkElement view, object viewModel) {
-            if (viewModel is IOnLoadedHandler onLoadedHandler) {
+        private static void AttachHandler(FrameworkElement view, object viewModel)
+        {
+            if (viewModel is IOnLoadedHandler onLoadedHandler)
+            {
                 RoutedEventHandler handler = null;
-                handler = async (sender, args) => {
+                handler = async (sender, args) =>
+                {
                     view.Loaded -= handler;
                     await onLoadedHandler.OnLoadedAsync();
                 };
                 view.Loaded += handler;
             }
 
-            if (viewModel is IOnClosingHandler onClosingHandler) {
-                if (view is Window window) {
+            if (viewModel is IOnClosingHandler onClosingHandler)
+            {
+                if (view is Window window)
+                {
                     CancelEventHandler handler = null;
-                    handler = (sender, args) => {
+                    handler = (sender, args) =>
+                    {
                         window.Closing -= handler;
                         onClosingHandler.OnClosing();
                     };
                     window.Closing += handler;
-                } else {
+                }
+                else
+                {
                     RoutedEventHandler handler = null;
-                    handler = (sender, args) => {
+                    handler = (sender, args) =>
+                    {
                         view.Unloaded -= handler;
                         onClosingHandler.OnClosing();
                     };
@@ -132,17 +149,21 @@ namespace TinyLittleMvvm {
                 }
             }
 
-            if (viewModel is ICancelableOnClosingHandler cancelableOnClosingHandler) {
-                if (!(view is Window window)) {
+            if (viewModel is ICancelableOnClosingHandler cancelableOnClosingHandler)
+            {
+                if (view is not Window window)
+                {
                     throw new ArgumentException("If a view model implements ICancelableOnClosingHandler, the corresponding view must be a window.");
                 }
                 CancelEventHandler closingHandler = null;
-                closingHandler = (sender, args) => {
+                closingHandler = (sender, args) =>
+                {
                     args.Cancel = cancelableOnClosingHandler.OnClosing();
                 };
                 window.Closing += closingHandler;
                 EventHandler closedHandler = null;
-                closedHandler = (sender, args) => {
+                closedHandler = (sender, args) =>
+                {
                     window.Closing -= closingHandler;
                     window.Closed -= closedHandler;
                 };
@@ -150,7 +171,8 @@ namespace TinyLittleMvvm {
             }
         }
 
-        private static void InitializeComponent(object element) {
+        private static void InitializeComponent(object element)
+        {
             var method = element.GetType().GetMethod("InitializeComponent", BindingFlags.Instance | BindingFlags.Public);
             method?.Invoke(element, null);
         }

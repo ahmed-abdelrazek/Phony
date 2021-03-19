@@ -1,11 +1,13 @@
 using System.Windows;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// This interface can be implemented by view models, which want to be notified when
     /// the corresponding view is about to be closed.
     /// </summary>
-    public interface IOnClosingHandler {
+    public interface IOnClosingHandler
+    {
         /// <summary>
         /// This method is called when the corresponding view closes.
         /// </summary>
@@ -22,7 +24,8 @@ namespace TinyLittleMvvm {
     /// This interface can be implemented by view models, which want to be notified when
     /// the corresponding window is about to be closed.
     /// </summary>
-    public interface ICancelableOnClosingHandler {
+    public interface ICancelableOnClosingHandler
+    {
         /// <summary>
         /// This method is called when the corresponding view's <see cref="Window.Closing"/> event was raised.
         /// </summary>

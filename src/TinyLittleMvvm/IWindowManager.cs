@@ -1,11 +1,13 @@
-﻿using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
-namespace TinyLittleMvvm {
+namespace TinyLittleMvvm
+{
     /// <summary>
     /// Declares methods to show windows.
     /// </summary>
-    public interface IWindowManager {
+    public interface IWindowManager
+    {
         /// <summary>
         /// Shows a window for a given view model type.
         /// </summary>
