@@ -19,10 +19,10 @@ namespace Phony.WPF.Data
 
         public void ImportFromMSSQL()
         {
-            SqlConnection conn = new SqlConnection(_connectionString);
+            SqlConnection conn = new(_connectionString);
             {
                 conn.Open();
-                using (SqlCommand command = new SqlCommand("select * from [Users]", conn))
+                using (SqlCommand command = new("select * from [Users]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -63,7 +63,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Clients]", conn))
+                using (SqlCommand command = new("select * from [Clients]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -112,7 +112,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Companies]", conn))
+                using (SqlCommand command = new("select * from [Companies]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -163,7 +163,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [SalesMen]", conn))
+                using (SqlCommand command = new("select * from [SalesMen]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -212,7 +212,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Suppliers]", conn))
+                using (SqlCommand command = new("select * from [Suppliers]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -265,7 +265,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Stores]", conn))
+                using (SqlCommand command = new("select * from [Stores]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -328,7 +328,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Treasuries]", conn))
+                using (SqlCommand command = new("select * from [Treasuries]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -373,7 +373,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [ClientMoves]", conn))
+                using (SqlCommand command = new("select * from [ClientMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -401,7 +401,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [CompanyMoves]", conn))
+                using (SqlCommand command = new("select * from [CompanyMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -429,7 +429,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [SalesManMoves]", conn))
+                using (SqlCommand command = new("select * from [SalesManMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -457,7 +457,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [SupplierMoves]", conn))
+                using (SqlCommand command = new("select * from [SupplierMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -485,7 +485,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [TreasuryMoves]", conn))
+                using (SqlCommand command = new("select * from [TreasuryMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -513,7 +513,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Services]", conn))
+                using (SqlCommand command = new("select * from [Services]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -544,7 +544,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [ServiceMoves]", conn))
+                using (SqlCommand command = new("select * from [ServiceMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -572,7 +572,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Items]", conn))
+                using (SqlCommand command = new("select * from [Items]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -609,7 +609,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Notes]", conn))
+                using (SqlCommand command = new("select * from [Notes]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -637,7 +637,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [Bills]", conn))
+                using (SqlCommand command = new("select * from [Bills]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -667,7 +667,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [BillItemMoves]", conn))
+                using (SqlCommand command = new("select * from [BillItemMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -696,7 +696,7 @@ namespace Phony.WPF.Data
                         }
                     }
                 }
-                using (SqlCommand command = new SqlCommand("select * from [BillServiceMoves]", conn))
+                using (SqlCommand command = new("select * from [BillServiceMoves]", conn))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {

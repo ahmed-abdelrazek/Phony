@@ -590,9 +590,18 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <materialDesign:DataGridTextColumn Binding="{Binding Balance, StringFormat=N2}" FontFamily="Segoe UI" Header="الشحن" />
-                <materialDesign:DataGridTextColumn Binding="{Binding Cost, StringFormat=N2}" FontFamily="Segoe UI" Header="التكلفة" />
-                <materialDesign:DataGridTextColumn Binding="{Binding Discount, StringFormat=N2}" FontFamily="Segoe UI" Header="الخصم" />
+                <materialDesign:DataGridTextColumn
+                    Binding="{Binding Balance, StringFormat=N2}"
+                    FontFamily="Segoe UI"
+                    Header="الشحن" />
+                <materialDesign:DataGridTextColumn
+                    Binding="{Binding Cost, StringFormat=N2}"
+                    FontFamily="Segoe UI"
+                    Header="التكلفة" />
+                <materialDesign:DataGridTextColumn
+                    Binding="{Binding Discount, StringFormat=N2}"
+                    FontFamily="Segoe UI"
+                    Header="الخصم" />
                 <DataGridTemplateColumn Header="اضاف من قبل">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

@@ -14,8 +14,7 @@ namespace Phony.WPF.ViewModels
     public class BaseViewModelWithAnnotationValidation : PropertyChangedBase, INotifyDataErrorInfo
     {
         private readonly Dictionary<string, PropertyInfo> _Properties;
-        private readonly Dictionary<string, List<object>> _ValidationErrorsByProperty =
-            new Dictionary<string, List<object>>();
+        private readonly Dictionary<string, List<object>> _ValidationErrorsByProperty = new();
         private string _title;
         private FlowDirection _flowDirection;
         private static FlowDirection _flowDirectionStatic;
@@ -25,7 +24,6 @@ namespace Phony.WPF.ViewModels
         {
             _Properties = GetType().GetProperties().ToDictionary(x => x.Name);
             ValidateModel();
-            CurrentUser = new User();
             FlowDirection = FlowDirectionStatic;
         }
 

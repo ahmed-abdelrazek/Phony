@@ -6,6 +6,7 @@ using Phony.WPF.Data;
 using System;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -192,18 +193,37 @@ namespace Phony.WPF.ViewModels
                 {
                     using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                     {
+                        User userToUse = null;
                         var userCol = db.GetCollection<User>(DBCollections.Users);
-                        var user = userCol.FindById(1);
-                        if (user == null)
+                        if (CurrentUser is not null)
                         {
-                            userCol.Insert(new User
+                            var currentUser = userCol.FindById(CurrentUser.Id);
+                            if (currentUser is not null)
                             {
-                                Id = 1,
-                                Name = "admin",
-                                Pass = SecurePasswordHasher.Hash("admin"),
-                                Group = UserGroup.Manager,
-                                IsActive = true
-                            });
+                                userToUse = currentUser;
+                            }
+                        }
+                        else
+                        {
+                            var user = userCol.FindById(1);
+                            if (user is null)
+                            {
+                                userToUse = new()
+                                {
+                                    Id = 1,
+                                    Name = "admin",
+                                    Pass = SecurePasswordHasher.Hash("admin"),
+                                    Group = UserGroup.Manager,
+                                    IsActive = true,
+                                    CreatedAt = DateTime.Now
+                                };
+
+                                userCol.Insert(userToUse);
+                            }
+                            else
+                            {
+                                userToUse = user;
+                            }
                         }
                         var clientCol = db.GetCollection<Client>(DBCollections.Clients);
                         var client = clientCol.FindById(1);
@@ -215,8 +235,8 @@ namespace Phony.WPF.ViewModels
                                 Name = "كاش",
                                 Balance = 0,
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                         var companyCol = db.GetCollection<Company>(DBCollections.Companies);
@@ -229,8 +249,8 @@ namespace Phony.WPF.ViewModels
                                 Name = "لا يوجد",
                                 Balance = 0,
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                         var salesMenCol = db.GetCollection<SalesMan>(DBCollections.SalesMen);
@@ -243,8 +263,8 @@ namespace Phony.WPF.ViewModels
                                 Name = "لا يوجد",
                                 Balance = 0,
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                         var suppliersCol = db.GetCollection<Supplier>(DBCollections.Suppliers);
@@ -258,8 +278,8 @@ namespace Phony.WPF.ViewModels
                                 Balance = 0,
                                 SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(1),
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                         var storesCol = db.GetCollection<Store>(DBCollections.Stores);
@@ -272,8 +292,8 @@ namespace Phony.WPF.ViewModels
                                 Name = "التوكل",
                                 Motto = "لخدمات المحمول",
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                         var treasuriesCol = db.GetCollection<Treasury>(DBCollections.Treasuries);
@@ -287,8 +307,8 @@ namespace Phony.WPF.ViewModels
                                 Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
                                 Balance = 0,
                                 CreatedAt = DateTime.Now,
-                                Creator = CurrentUser,
-                                Editor = CurrentUser
+                                Creator = userToUse,
+                                Editor = userToUse
                             });
                         }
                     }
@@ -306,23 +326,7 @@ namespace Phony.WPF.ViewModels
                     if (Properties.Settings.Default.IsConfigured)
                     {
                         MessageBox.MaterialMessageBox.Show("تم اعداد البرنامج بنجاح", "تمت العملية", true);
-                        foreach (var window in Application.Current.Windows)
-                        {
-                            if (window is MaterialWindow mWin)
-                            {
-                                if (mWin.Title == "إعدادت")
-                                {
-                                    mWin.Close();
-                                }
-                            }
-                            else if (window is Window win)
-                            {
-                                if (win.Title == "إعدادت")
-                                {
-                                    win.Close();
-                                }
-                            }
-                        }
+                        Application.Current.Windows.OfType<Views.SettingsView>().FirstOrDefault().Close();
                     }
                 }
             }

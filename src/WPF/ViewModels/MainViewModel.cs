@@ -361,8 +361,9 @@ namespace Phony.WPF.ViewModels
         {
             try
             {
-                CurrentUser = new User();
-                _windowManager.ShowDialog<LoginViewModel>();
+                CurrentUser = null;
+                _windowManager.ShowWindow<LoginViewModel>();
+                Application.Current.Windows.OfType<Views.MainView>().FirstOrDefault().Close();
             }
             catch (Exception ex)
             {
@@ -406,12 +407,7 @@ namespace Phony.WPF.ViewModels
                 T w = _serviceProvider.GetRequiredService<T>();
 
                 //send the current logged user to the opened window
-                w.CurrentUser.Id = CurrentUser.Id;
-                w.CurrentUser.Name = CurrentUser.Name;
-                w.CurrentUser.Group = CurrentUser.Group;
-                w.CurrentUser.Phone = CurrentUser.Phone;
-                w.CurrentUser.Notes = CurrentUser.Notes;
-                w.CurrentUser.IsActive = CurrentUser.IsActive;
+                w.CurrentUser = CurrentUser;
 
                 _windowManager.ShowWindow(w);
             }

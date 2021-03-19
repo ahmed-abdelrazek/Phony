@@ -178,9 +178,9 @@
                     <DataGridTextColumn Binding="{Binding Email}" Header="الايميل" />
                     <DataGridTextColumn Binding="{Binding Phone}" Header="الهاتف" />
                     <DataGridTextColumn Binding="{Binding Creator.Name}" Header="اضاف من قبل" />
-                    <DataGridTextColumn Binding="{Binding CreateDate, StringFormat={}{0:dd/MM/yyyy HH:mm tt}}" Header="فى" />
+                    <DataGridTextColumn Binding="{Binding CreatedAt, StringFormat={}{0:dd/MM/yyyy HH:mm tt}}" Header="فى" />
                     <DataGridTextColumn Binding="{Binding Editor.Name}" Header="عدل من قبل" />
-                    <DataGridTextColumn Binding="{Binding EditDate, StringFormat={}{0:dd/MM/yyyy HH:mm tt}}" Header="فى" />
+                    <DataGridTextColumn Binding="{Binding EditedAt, StringFormat={}{0:dd/MM/yyyy HH:mm tt}}" Header="فى" />
                     <DataGridTextColumn Width="*" />
                 </DataGrid.Columns>
                 <DataGrid.RowDetailsTemplate>
