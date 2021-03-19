@@ -1,90 +1,184 @@
-﻿<mde:MaterialWindow x:Class="Phony.WPF.Views.BarCodesView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:converts="clr-namespace:Phony.WPF.Converters"
-        xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
-        xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
-        mc:Ignorable="d" d:DataContext="{d:DesignInstance ViewModels:BarcodesViewModel}" Title="{Binding Title}" 
-        FlowDirection="RightToLeft" Height="600" Width="800" Icon="{StaticResource barcodeDrawingImage}" RenderOptions.BitmapScalingMode="Fant" 
-        WindowState="Maximized" WindowStartupLocation="CenterScreen">
+﻿<mde:MaterialWindow
+    x:Class="Phony.WPF.Views.BarcodesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ViewModels="clr-namespace:Phony.WPF.ViewModels"
+    xmlns:converts="clr-namespace:Phony.WPF.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+    Title="{Binding Title}"
+    Width="800"
+    Height="600"
+    d:DataContext="{d:DesignInstance ViewModels:BarcodesViewModel}"
+    FlowDirection="RightToLeft"
+    Icon="{StaticResource barcodeDrawingImage}"
+    RenderOptions.BitmapScalingMode="Fant"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    mc:Ignorable="d">
     <mde:MaterialWindow.Resources>
-        <converts:BinaryImageConverter x:Key="ImageToSource"/>
+        <converts:BinaryImageConverter x:Key="ImageToSource" />
     </mde:MaterialWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="370"/>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="370" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="45" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="60*" />
         </Grid.ColumnDefinitions>
         <StackPanel Margin="5">
-            <TextBox materialDesign:HintAssist.Hint="الباركود" Text="{Binding EncodeValue}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
-            <ComboBox materialDesign:HintAssist.Hint="الترميز" ItemsSource="{Binding Encoders}" SelectedValuePath="Name" DisplayMemberPath="Name" SelectedValue="{Binding SelectedEncoder}" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" Margin="5"/>
-            <ComboBox materialDesign:HintAssist.Hint="دوران" ItemsSource="{Binding RotateTypes}" SelectedItem="{Binding SelectedRotate}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="5"/>
-            <ComboBox Text="{Binding Alignment}" SelectedIndex="2" IsEditable="False" materialDesign:HintAssist.Hint="المحاذاه" Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="5">
-                <ComboBoxItem Content="يمين"/>
-                <ComboBoxItem Content="يسار"/>
-                <ComboBoxItem Content="وسط"/>
+            <TextBox
+                Margin="5"
+                materialDesign:HintAssist.Hint="الباركود"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding EncodeValue}" />
+            <ComboBox
+                Margin="5"
+                materialDesign:HintAssist.Hint="الترميز"
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding Encoders}"
+                SelectedValue="{Binding SelectedEncoder}"
+                SelectedValuePath="Name"
+                Style="{DynamicResource MaterialDesignFloatingHintComboBox}" />
+            <ComboBox
+                Margin="5"
+                materialDesign:HintAssist.Hint="دوران"
+                ItemsSource="{Binding RotateTypes}"
+                SelectedItem="{Binding SelectedRotate}"
+                Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
+            <ComboBox
+                Margin="5"
+                materialDesign:HintAssist.Hint="المحاذاه"
+                IsEditable="False"
+                SelectedIndex="2"
+                Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                Text="{Binding Alignment}">
+                <ComboBoxItem Content="يمين" />
+                <ComboBoxItem Content="يسار" />
+                <ComboBoxItem Content="وسط" />
             </ComboBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="الامامى" Background="{Binding Foreground}" Width="90" Height="90" Margin="5" Command="{Binding SelectForeColor}"/>
-                <Button Content="الخلفى" Background="{Binding Background}" Width="90" Height="90" Margin="5" Command="{Binding SelectBackColor}"/>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button
+                    Width="90"
+                    Height="90"
+                    Margin="5"
+                    Background="{Binding Foreground}"
+                    Command="{Binding SelectForeColor}"
+                    Content="الامامى" />
+                <Button
+                    Width="90"
+                    Height="90"
+                    Margin="5"
+                    Background="{Binding Background}"
+                    Command="{Binding SelectBackColor}"
+                    Content="الخلفى" />
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Column="1">
-            <GroupBox Header="الابعاد" Margin="5">
+            <GroupBox Margin="5" Header="الابعاد">
                 <StackPanel>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <TextBox Text="{Binding Height}" Width="90" materialDesign:HintAssist.Hint="الطول" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
-                        <TextBlock Text="X" VerticalAlignment="Bottom" Margin="5,0,5,5"/>
-                        <TextBox Text="{Binding Width}" Width="90" materialDesign:HintAssist.Hint="العرض" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
+                        <TextBox
+                            Width="90"
+                            Margin="5"
+                            materialDesign:HintAssist.Hint="الطول"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding Height}" />
+                        <TextBlock
+                            Margin="5,0,5,5"
+                            VerticalAlignment="Bottom"
+                            Text="X" />
+                        <TextBox
+                            Width="90"
+                            Margin="5"
+                            materialDesign:HintAssist.Hint="العرض"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding Width}" />
                     </StackPanel>
-                    <TextBlock Text="عرض الكود" Margin="5,10,5,2"/>
+                    <TextBlock Margin="5,10,5,2" Text="عرض الكود" />
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <TextBox Text="{Binding BarWidth}" Width="90" materialDesign:HintAssist.Hint="عرض الباركود" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
-                        <TextBlock Text="-" VerticalAlignment="Bottom" Margin="5,0,5,5"/>
-                        <TextBox Text="{Binding AspectRatio}" Width="90" materialDesign:HintAssist.Hint="النسبة" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
+                        <TextBox
+                            Width="90"
+                            Margin="5"
+                            materialDesign:HintAssist.Hint="عرض الباركود"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding BarWidth}" />
+                        <TextBlock
+                            Margin="5,0,5,5"
+                            VerticalAlignment="Bottom"
+                            Text="-" />
+                        <TextBox
+                            Width="90"
+                            Margin="5"
+                            materialDesign:HintAssist.Hint="النسبة"
+                            Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding AspectRatio}" />
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="النص" Margin="5">
+            <GroupBox Margin="5" Header="النص">
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <TextBlock Text="اضافه نص" Margin="5,0"/>
-                        <ToggleButton IsChecked="{Binding GenerateLabel}" Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" Margin="5,0"/>
+                    <StackPanel Margin="5" Orientation="Horizontal">
+                        <TextBlock Margin="5,0" Text="اضافه نص" />
+                        <ToggleButton
+                            Margin="5,0"
+                            IsChecked="{Binding GenerateLabel}"
+                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
                     </StackPanel>
-                    <TextBox Text="{Binding AlternateLabelText}" materialDesign:HintAssist.Hint="نص بديل" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
-                    <ComboBox materialDesign:HintAssist.Hint="المكان" SelectedIndex="0" Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="5">
-                        <ComboBoxItem Content="اسفل - وسط"/>
-                        <ComboBoxItem Content="اسفل - يمين"/>
-                        <ComboBoxItem Content="اسفل - يسار"/>
-                        <ComboBoxItem Content="اعلى - وسط"/>
-                        <ComboBoxItem Content="اعلى - يمين"/>
-                        <ComboBoxItem Content="اعلى - يسار"/>
+                    <TextBox
+                        Margin="5"
+                        materialDesign:HintAssist.Hint="نص بديل"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding AlternateLabelText}" />
+                    <ComboBox
+                        Margin="5"
+                        materialDesign:HintAssist.Hint="المكان"
+                        SelectedIndex="0"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                        <ComboBoxItem Content="اسفل - وسط" />
+                        <ComboBoxItem Content="اسفل - يمين" />
+                        <ComboBoxItem Content="اسفل - يسار" />
+                        <ComboBoxItem Content="اعلى - وسط" />
+                        <ComboBoxItem Content="اعلى - يمين" />
+                        <ComboBoxItem Content="اعلى - يسار" />
                     </ComboBox>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <StackPanel Grid.ColumnSpan="2" Grid.Row="1">
-            <TextBox Text="{Binding EncodedValue}" materialDesign:HintAssist.Hint="قيمه الباركود" IsReadOnly="True" Height="100" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="WrapWithOverflow" Style="{DynamicResource MaterialDesignTextAreaTextBox}" Margin="5"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="ترميز" Margin="5" Command="{Binding Encode}"/>
-                <Button Content="حفظ" Margin="5" Command="{Binding Save}"/>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBox
+                Height="100"
+                Margin="5"
+                materialDesign:HintAssist.Hint="قيمه الباركود"
+                AcceptsReturn="True"
+                IsReadOnly="True"
+                Style="{DynamicResource MaterialDesignTextAreaTextBox}"
+                Text="{Binding EncodedValue}"
+                TextWrapping="WrapWithOverflow"
+                VerticalScrollBarVisibility="Auto" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button
+                    Margin="5"
+                    Command="{Binding Encode}"
+                    Content="ترميز" />
+                <Button
+                    Margin="5"
+                    Command="{Binding Save}"
+                    Content="حفظ" />
             </StackPanel>
         </StackPanel>
-        <GroupBox Grid.Column="2" Grid.RowSpan="2">
-            <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="None"/>
+        <GroupBox Grid.RowSpan="2" Grid.Column="2">
+            <Image Source="{Binding Image, Converter={StaticResource ImageToSource}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="None" />
         </GroupBox>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
-            <TextBlock Text="نسخه معدله من الاصدار 1.3.0.0 لمكتبه BarcodeLib النسخه الاصليه كتبت من قبل Brand Barnhill" Margin="5"/>
-            <TextBlock Text="مختار الالوان تم بواسطه Sacha Barber" Margin="5"/>
+            <TextBlock Margin="5" Text="نسخه معدله من الاصدار 1.3.0.0 لمكتبه BarcodeLib النسخه الاصليه كتبت من قبل Brand Barnhill" />
+            <TextBlock Margin="5" Text="مختار الالوان تم بواسطه Sacha Barber" />
         </StatusBar>
     </Grid>
 </mde:MaterialWindow>

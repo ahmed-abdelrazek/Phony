@@ -947,10 +947,19 @@ namespace Phony.WPF.ViewModels
             try
             {
                 using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
-                var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
-                if (x == 1)
+                var xCollection = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault();
+                long x = 0;
+                if (xCollection is null)
                 {
                     x = 0;
+                }
+                else
+                {
+                    x = xCollection.Id;
+                    if (x == 1)
+                    {
+                        x = 0;
+                    }
                 }
                 CurrentBillNo = ++x;
             }

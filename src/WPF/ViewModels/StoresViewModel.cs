@@ -172,19 +172,6 @@ namespace Phony.WPF.ViewModels
         public StoresViewModel()
         {
             Title = "بيانات المحل";
-            Name = store.Name;
-            Motto = store.Motto;
-            Image = store.Image;
-            Address1 = store.Address1;
-            Address2 = store.Address2;
-            Tel1 = store.Tel1;
-            Tel2 = store.Tel2;
-            Phone1 = store.Phone1;
-            Phone2 = store.Phone2;
-            Email1 = store.Email1;
-            Email2 = store.Email2;
-            Site = store.Site;
-            Notes = store.Notes;
         }
 
         public async Task OnLoadedAsync()
@@ -193,6 +180,19 @@ namespace Phony.WPF.ViewModels
             {
                 using var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString);
                 store = db.GetCollection<Store>(DBCollections.Stores).FindById(1);
+                Name = store.Name;
+                Motto = store.Motto;
+                Image = store.Image;
+                Address1 = store.Address1;
+                Address2 = store.Address2;
+                Tel1 = store.Tel1;
+                Tel2 = store.Tel2;
+                Phone1 = store.Phone1;
+                Phone2 = store.Phone2;
+                Email1 = store.Email1;
+                Email2 = store.Email2;
+                Site = store.Site;
+                Notes = store.Notes;
             });
         }
 

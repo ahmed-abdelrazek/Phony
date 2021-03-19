@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
+    Title="الرئيسية"
     d:DataContext="{d:DesignInstance ViewModels:MainViewModel}"
     d:DesignHeight="650"
     d:DesignWidth="750"

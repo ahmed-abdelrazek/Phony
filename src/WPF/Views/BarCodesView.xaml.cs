@@ -5,9 +5,9 @@ namespace Phony.WPF.Views
     /// <summary>
     /// Interaction logic for BarCodes.xaml
     /// </summary>
-    public partial class BarCodesView : MaterialWindow
+    public partial class BarcodesView : MaterialWindow
     {
-        public BarCodesView()
+        public BarcodesView()
         {
             InitializeComponent();
         }
