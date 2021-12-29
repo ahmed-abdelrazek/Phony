@@ -446,7 +446,7 @@ namespace Phony.WPF.ViewModels
         private async Task DoDeleteSalesMan()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", "حذف الصنف", true);
-            if (result == MessageBoxResult.OK)
+            if (result == System.Windows.MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {

@@ -225,7 +225,7 @@ namespace Phony.WPF.ViewModels
         private void DoDeleteNo()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", "حذف الرقم", true);
-            if (result == MessageBoxResult.OK)
+            if (result == System.Windows.MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {

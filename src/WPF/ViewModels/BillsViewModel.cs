@@ -523,7 +523,7 @@ namespace Phony.WPF.ViewModels
                     return 0;
                 }
                 var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من تسجيل الفاتورة كاجل؟", "اجل", true);
-                if (result != MessageBoxResult.OK)
+                if (result != System.Windows.MessageBoxResult.OK)
                 {
                     return 0;
                 }

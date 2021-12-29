@@ -331,7 +331,7 @@ namespace Phony.WPF.ViewModels
         private async Task DoDeleteService()
         {
             var result = MessageBox.MaterialMessageBox.ShowWithCancel($"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", "حذف الخدمة", true);
-            if (result == MessageBoxResult.OK)
+            if (result == System.Windows.MessageBoxResult.OK)
             {
                 using (var db = new LiteDatabase(Properties.Settings.Default.LiteDbConnectionString))
                 {
