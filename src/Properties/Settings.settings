@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Phony.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IsDarkTheme" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsAlternateStyle" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PrimaryColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">teal</Value>
+    </Setting>
+    <Setting Name="AccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">yellow</Value>
+    </Setting>
+    <Setting Name="LiteDbConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="IsConfigured" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="BackUpsFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SalesBillsPaperSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">A4</Value>
+    </Setting>
+    <Setting Name="LiteDbConnectionPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

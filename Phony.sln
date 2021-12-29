@@ -3,29 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony.WPF", "src\WPF\Phony.WPF.csproj", "{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{514652A4-D240-49ED-8258-F87000000257} = {514652A4-D240-49ED-8258-F87000000257}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony", "src\Phony.csproj", "{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{E156EECD-9F9D-4939-BF84-B9E00BA7F700}"
-EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstallerBootstrapper", "InstallerBootstrapper\InstallerBootstrapper.wixproj", "{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700} = {E156EECD-9F9D-4939-BF84-B9E00BA7F700}
-	EndProjectSection
-EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "InstallerBootstrapperX64", "InstallerBootstrapperX64\InstallerBootstrapperX64.wixproj", "{0B308F73-7957-4CA7-B3C3-306AAD31CC94}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700} = {E156EECD-9F9D-4939-BF84-B9E00BA7F700}
-		{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC} = {2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony.Data", "src\DataCore\Phony.Data.csproj", "{514652A4-D240-49ED-8258-F87000000257}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Phony.MessageBox", "src\MessageBox\Phony.MessageBox.csproj", "{4628FD27-E488-4A51-A574-3BB7EB3014E9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{77AA9645-8977-4432-B6A8-AC9C2E2AC622}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1A5478BD-2277-429F-A7A5-76FEC8996E33}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
@@ -46,40 +26,6 @@ Global
 		{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}.Release|x86.ActiveCfg = Release|Any CPU
 		{2EADCED1-524E-4FDF-B25D-7C0F60BBFDCC}.Release|x86.Build.0 = Release|Any CPU
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Debug|x86.ActiveCfg = Debug|x86
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Debug|x86.Build.0 = Debug|x86
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Release|Any CPU.ActiveCfg = Release|x86
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Release|x86.ActiveCfg = Release|x86
-		{E156EECD-9F9D-4939-BF84-B9E00BA7F700}.Release|x86.Build.0 = Release|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Debug|x86.ActiveCfg = Debug|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Debug|x86.Build.0 = Debug|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Release|Any CPU.ActiveCfg = Release|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Release|x86.ActiveCfg = Release|x86
-		{B67D5C76-C9B1-4DB5-A0CA-4623CD283799}.Release|x86.Build.0 = Release|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Debug|x86.ActiveCfg = Debug|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Debug|x86.Build.0 = Debug|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|Any CPU.ActiveCfg = Release|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|x86.ActiveCfg = Release|x86
-		{0B308F73-7957-4CA7-B3C3-306AAD31CC94}.Release|x86.Build.0 = Release|x86
-		{514652A4-D240-49ED-8258-F87000000257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Debug|x86.Build.0 = Debug|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Release|Any CPU.Build.0 = Release|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Release|x86.ActiveCfg = Release|Any CPU
-		{514652A4-D240-49ED-8258-F87000000257}.Release|x86.Build.0 = Release|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Debug|x86.Build.0 = Debug|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Release|x86.ActiveCfg = Release|Any CPU
-		{4628FD27-E488-4A51-A574-3BB7EB3014E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,20 +7,17 @@ https://shababco.blogspot.com/
 	1- LiteDB https://github.com/mbdavid/LiteDB
 	2- MahApps https://github.com/MahApps/MahApps.Metro
 	3- MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
-	4- Modified version of MaterialMessageBox https://github.com/denpalrius/Material-Message-Box
-	5- Modified version of BarcodeLib https://github.com/barnhill/barcodelib
-	6- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
-	7- Crystal Reports https://goo.gl/NCE3SQ
-	8- Newtonsoft.Json https://github.com/JamesNK/Newtonsoft.Json
-	9- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
+	4- BarcodeLib https://github.com/barnhill/barcodelib
+	5- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
+	6- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
+	7- RazorEngineCore https://github.com/adoconnection/RazorEngineCore
 
 ## How To Build:
-	1- You need Visual Studio 2017 Community Edition or higher with dot Netframework 4.7.1, NuGet and Desktop workload installed https://visualstudio.microsoft.com/
-	2- Crystal Reports 13 SP 23 for Visual Studio or higher https://www.crystalreports.com/crvs/confirm/
+	1- You need Visual Studio 2019 Community Edition or higher with dot Net 6, NuGet and Desktop workload installed https://visualstudio.microsoft.com/
 	
 ## How To Run:
-	1- You must install dot Netframework 4.7.1 or later https://www.microsoft.com/net/download/dotnet-framework-runtime/net471
-	2- Crystal Reports 13 SP 22 runtime or later to have working reports (Optional) https://goo.gl/NCE3SQ
+	1- You must install dot Net 6 Desktop Runtime https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+	2- Install Microsoft Edge WebView2 to have working reports (Optional) https://go.microsoft.com/fwlink/p/?LinkId=2124703
 
 ## Screenshots
 

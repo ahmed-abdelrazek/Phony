@@ -1,0 +1,179 @@
+﻿<Controls:MetroWindow
+    x:Class="Phony.Views.SalesBillsViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:converts="clr-namespace:Phony.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Phony.ViewModels"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+    Title="طباعة الفواتير"
+    Width="800"
+    Height="450"
+    FlowDirection="RightToLeft"
+    Icon="{DynamicResource PrinterDrawingImage}"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <converts:BooleanToVisibilityCollapsedConvertor x:Key="BToV" />
+        <converts:InverseBooleanToVisibilityCollapsedConvertor x:Key="IBToV" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="100*" />
+        </Grid.RowDefinitions>
+        <materialDesign:Card
+            Padding="8"
+            Background="{DynamicResource PrimaryHueDarkBrush}"
+            Foreground="{DynamicResource MetroDataGrid.HighlightTextBrush}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="ByBillNoRadioButton"
+                        Margin="5"
+                        Content="برقم الفاتورة"
+                        IsChecked="{Binding ByBillNo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel
+                        Margin="50,0,0,0"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=ByBillNoRadioButton}">
+                        <TextBlock
+                            Margin="0,1,5,5"
+                            VerticalAlignment="Center"
+                            Text="اسم العميل" />
+                        <ToggleButton
+                            x:Name="ByClientNameToggleButton"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding ByClientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                        <TextBlock
+                            Margin="15,1,0,5"
+                            VerticalAlignment="Center"
+                            Text="التاريخ" />
+                        <ToggleButton
+                            x:Name="By2DatesToggleButton"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding By2Dates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="50,0,0,0"
+                        Orientation="Horizontal"
+                        Visibility="{Binding IsReturnedVisible}">
+                        <TextBlock
+                            Margin="0,1,5,5"
+                            VerticalAlignment="Center"
+                            Text="مرتجع" />
+                        <ToggleButton
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding IsReturned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                        <Button
+                            Margin="10,5,5,5"
+                            Command="{Binding SaveReturned}"
+                            Content="حفظ حاله المرتجع للفاتورة"
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox
+                        Width="400"
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="اختار العميل"
+                        DisplayMemberPath="Name"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        IsEditable="True"
+                        ItemsSource="{Binding Clients, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValue="{Binding ClientSelectedValue}"
+                        SelectedValuePath="Id"
+                        Style="{StaticResource MaterialDesignComboBox}"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=ByClientNameToggleButton}" />
+                    <TextBlock
+                        Margin="20,0,5,0"
+                        VerticalAlignment="Center"
+                        Text="من"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}" />
+                    <DatePicker
+                        Width="100"
+                        Margin="5"
+                        FirstDayOfWeek="Saturday"
+                        Language="ar-EG"
+                        SelectedDate="{Binding FirstDate}"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}" />
+                    <TextBlock
+                        Margin="10,0,5,0"
+                        VerticalAlignment="Center"
+                        Text="الى"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}" />
+                    <DatePicker
+                        Width="100"
+                        Margin="5"
+                        FirstDayOfWeek="Saturday"
+                        Language="ar-EG"
+                        SelectedDate="{Binding SecondDate}"
+                        Style="{DynamicResource MaterialDesignDatePicker}"
+                        Visibility="{Binding IsChecked, Converter={StaticResource IBToV}, ElementName=By2DatesToggleButton}" />
+                    <Button
+                        Grid.Column="1"
+                        Margin="20,0,5,0"
+                        Command="{Binding GetBills}"
+                        Style="{DynamicResource MaterialDesignFloatingActionLightButton}">
+                        <StackPanel>
+                            <materialDesign:PackIcon Kind="Filter" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox
+                        x:Name="BillNoComboBox"
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        materialDesign:HintAssist.Hint="ادخل رقم الفاتورة"
+                        DisplayMemberPath="Id"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        IsEditable="True"
+                        ItemsSource="{Binding Bills, IsAsync=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedValue="{Binding BillSelectedValue}"
+                        SelectedValuePath="Id"
+                        Style="{StaticResource MaterialDesignComboBox}" />
+                    <Button
+                        Grid.Column="1"
+                        Margin="5"
+                        Click="SearchButton_Click"
+                        IsDefault="True"
+                        Style="{DynamicResource MaterialDesignFloatingActionLightButton}">
+                        <materialDesign:PackIcon Kind="Tv" />
+                    </Button>
+                    <Button
+                        Grid.Column="2"
+                        Margin="5"
+                        Click="PrintButton_Click"
+                        IsDefault="True"
+                        Style="{DynamicResource MaterialDesignFloatingActionLightButton}">
+                        <materialDesign:PackIcon Kind="Printer" />
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </materialDesign:Card>
+        <wv2:WebView2
+            Name="webView"
+            Grid.Row="1"
+            Margin="5,5,5,0"
+            FlowDirection="LeftToRight" />
+    </Grid>
+</Controls:MetroWindow>

@@ -1,0 +1,125 @@
+﻿<UserControl
+    x:Class="Phony.Controls.MSSQLMovement"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:Phony.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:Phony.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    FlowDirection="RightToLeft"
+    mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:SettingsViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <c:BooleanToVisibilityCollapsedConvertor x:Key="TrueToCollapsed" />
+            <c:InverseBooleanConverter x:Key="InverseBool" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel x:Name="ClientConnectionPanel" Margin="5">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock
+                Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+                VerticalAlignment="Center"
+                Text="بيانات الاتصال بقاعده البيانات القديمة لنقلها" />
+            <materialDesign:PackIcon
+                Margin="5"
+                Foreground="{DynamicResource AccentColorBrush}"
+                Kind="Database" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <CheckBox
+                Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+                Content="استخدم الاعدادات الافتراضية"
+                IsChecked="{Binding SQLUseDefault}" />
+            <materialDesign:PackIcon
+                Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+                Foreground="{DynamicResource AccentBaseColorBrush}"
+                Kind="Information" />
+        </StackPanel>
+        <StackPanel
+            Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsEnabled="{Binding SQLUseDefault, Converter={StaticResource InverseBool}}"
+            Orientation="Horizontal">
+            <RadioButton Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsChecked="{Binding SQLIsWinAuth}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Margin="5,2"
+                        Foreground="{DynamicResource AccentColorBrush}"
+                        Kind="MicrosoftWindows" />
+                    <TextBlock Margin="0,2" Text="باستخدام وندز" />
+                </StackPanel>
+            </RadioButton>
+            <RadioButton Margin="{Binding Margin, ElementName=ClientConnectionPanel}" IsChecked="{Binding SQLIsSQLAuth}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon
+                        Margin="5,2"
+                        Foreground="{DynamicResource AccentColorBrush}"
+                        Kind="Database" />
+                    <TextBlock Margin="0,2" Text="باستخدام سكول" />
+                </StackPanel>
+            </RadioButton>
+        </StackPanel>
+        <StackPanel IsEnabled="{Binding SQLUseDefault, Converter={StaticResource InverseBool}}">
+            <TextBlock Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Text="السيرفر" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Server (Name - (IP, Port) - Etc ...)"
+                FlowDirection="LeftToRight"
+                Text="{Binding SQLServerName}" />
+            <TextBlock
+                Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+                Text="اسم المستخدم"
+                Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Username"
+                FlowDirection="LeftToRight"
+                Text="{Binding SQLUserName}"
+                Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" />
+            <TextBlock
+                Margin="{Binding Margin, ElementName=ClientConnectionPanel}"
+                Text="كلمة المرور"
+                Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Password"
+                FlowDirection="LeftToRight"
+                Text="{Binding SQLPassword}"
+                Visibility="{Binding SQLIsWinAuth, Converter={StaticResource TrueToCollapsed}}" />
+            <TextBlock Margin="{Binding Margin, ElementName=ClientConnectionPanel}" Text="قاعدة البيانات" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Database Name"
+                FlowDirection="LeftToRight"
+                Text="{Binding SQLDataBase}" />
+        </StackPanel>
+        <Button
+            Height="48"
+            Margin="10"
+            HorizontalAlignment="Right"
+            materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+            materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding SQLIsImporting}"
+            materialDesign:ButtonProgressAssist.Value="-1"
+            Command="{Binding MoveData}"
+            IsDefault="True"
+            Style="{DynamicResource MaterialDesignRaisedAccentButton}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    Width="60"
+                    Height="38"
+                    VerticalAlignment="Center"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Text="نقل " />
+                <materialDesign:PackIcon
+                    Width="32"
+                    Height="32"
+                    VerticalAlignment="Center"
+                    Kind="SyncAlert" />
+            </StackPanel>
+        </Button>
+    </StackPanel>
+</UserControl>
