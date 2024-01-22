@@ -1,3 +1,4 @@
+using BarcodeStandard;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Phony.Data;
@@ -6,6 +7,7 @@ using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
 using Prism.Mvvm;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -139,7 +141,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _encoders, value);
         }
 
-        private readonly BarcodeLib.Barcode barCode = new();
+        private readonly Barcode barCode = new();
 
         public ICommand SelectForeColor { get; set; }
         public ICommand SelectBackColor { get; set; }
@@ -150,19 +152,19 @@ namespace Phony.ViewModels
 
         public BarcodesViewModel()
         {
-            Foreground = barCode.ForeColor.ToHexString();
-            Background = barCode.BackColor.ToHexString();
-            RotateTypes = new List<string>();
+            Foreground = barCode.ForeColor.ToString();
+            Background = barCode.BackColor.ToString();
+            RotateTypes = [];
             foreach (var item in Enum.GetNames(typeof(RotateFlipType)))
             {
-                if (item.ToString().Trim().ToLower() == "rotatenoneflipnone")
+                if (item.ToString().Trim().Equals("rotatenoneflipnone", StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
                 }
                 RotateTypes.Add(item.ToString());
             }
             SelectedRotate = "Rotate180FlipXY";
-            Encoders = new List<Enumeration<byte>>();
+            Encoders = [];
             foreach (var type in Enum.GetValues(typeof(BarCodeEncoders)))
             {
                 Encoders.Add(new Enumeration<byte>
@@ -192,20 +194,18 @@ namespace Phony.ViewModels
         {
             SaveFileDialog sfd = new()
             {
-                Filter = "BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|TIFF (*.tif)|*.tif",
+                Filter = "JPG (*.jpg)|*.jpg|PNG (*.png)|*.png|Webp (*.webp)|*.webp",
                 FilterIndex = 2,
                 AddExtension = true
             };
             if (sfd.ShowDialog() == true)
             {
-                BarcodeLib.SaveTypes savetype = BarcodeLib.SaveTypes.UNSPECIFIED;
+                SaveTypes savetype = SaveTypes.Unspecified;
                 switch (sfd.FilterIndex)
                 {
-                    case 1: /* BMP */  savetype = BarcodeLib.SaveTypes.BMP; break;
-                    case 2: /* GIF */  savetype = BarcodeLib.SaveTypes.GIF; break;
-                    case 3: /* JPG */  savetype = BarcodeLib.SaveTypes.JPG; break;
-                    case 4: /* PNG */  savetype = BarcodeLib.SaveTypes.PNG; break;
-                    case 5: /* TIFF */ savetype = BarcodeLib.SaveTypes.TIFF; break;
+                    case 1: /* JPG */  savetype = SaveTypes.Jpg; break;
+                    case 2: /* PNG */  savetype = SaveTypes.Png; break;
+                    case 3: /* Webp */ savetype = SaveTypes.Webp; break;
                     default: break;
                 }
                 barCode.SaveImage(sfd.FileName, savetype);
@@ -229,46 +229,51 @@ namespace Phony.ViewModels
             {
                 H = Height;
             }
-            barCode.Alignment =Alignment switch
+            barCode.Alignment = Alignment switch
             {
-                "يمين" => BarcodeLib.AlignmentPositions.RIGHT,
-                "يسار" => BarcodeLib.AlignmentPositions.LEFT,
-                _ => BarcodeLib.AlignmentPositions.CENTER,
+                "يمين" => AlignmentPositions.Right,
+                "يسار" => AlignmentPositions.Left,
+                _ => AlignmentPositions.Center,
             };
-            BarcodeLib.TYPE type = BarcodeLib.TYPE.UNSPECIFIED;
+            BarcodeStandard.Type type = BarcodeStandard.Type.Unspecified;
             switch (SelectedEncoder)
             {
-                case "UPC-A": type = BarcodeLib.TYPE.UPCA; break;
-                case "UPC-E": type = BarcodeLib.TYPE.UPCE; break;
-                case "UPC 2 Digit Ext.": type = BarcodeLib.TYPE.UPC_SUPPLEMENTAL_2DIGIT; break;
-                case "UPC 5 Digit Ext.": type = BarcodeLib.TYPE.UPC_SUPPLEMENTAL_5DIGIT; break;
-                case "EAN-13": type = BarcodeLib.TYPE.EAN13; break;
-                case "JAN-13": type = BarcodeLib.TYPE.JAN13; break;
-                case "EAN-8": type = BarcodeLib.TYPE.EAN8; break;
-                case "ITF-14": type = BarcodeLib.TYPE.ITF14; break;
-                case "Codabar": type = BarcodeLib.TYPE.Codabar; break;
-                case "PostNet": type = BarcodeLib.TYPE.PostNet; break;
-                case "Bookland/ISBN": type = BarcodeLib.TYPE.BOOKLAND; break;
-                case "Code 11": type = BarcodeLib.TYPE.CODE11; break;
-                case "Code 39": type = BarcodeLib.TYPE.CODE39; break;
-                case "Code 39 Extended": type = BarcodeLib.TYPE.CODE39Extended; break;
-                case "Code 39 Mod 43": type = BarcodeLib.TYPE.CODE39_Mod43; break;
-                case "Code 93": type = BarcodeLib.TYPE.CODE93; break;
-                case "LOGMARS": type = BarcodeLib.TYPE.LOGMARS; break;
-                case "MSI": type = BarcodeLib.TYPE.MSI_Mod10; break;
-                case "Interleaved 2 of 5": type = BarcodeLib.TYPE.Interleaved2of5; break;
-                case "Standard 2 of 5": type = BarcodeLib.TYPE.Standard2of5; break;
-                case "Code 128": type = BarcodeLib.TYPE.CODE128; break;
-                case "Code 128-A": type = BarcodeLib.TYPE.CODE128A; break;
-                case "Code 128-B": type = BarcodeLib.TYPE.CODE128B; break;
-                case "Code 128-C": type = BarcodeLib.TYPE.CODE128C; break;
-                case "Telepen": type = BarcodeLib.TYPE.TELEPEN; break;
-                case "FIM": type = BarcodeLib.TYPE.FIM; break;
-                case "Pharmacode": type = BarcodeLib.TYPE.PHARMACODE; break;
+                case "UPC-A": type = BarcodeStandard.Type.UpcA; break;
+                case "UPC-E": type = BarcodeStandard.Type.UpcE; break;
+                case "UPC 2 Digit Ext.": type = BarcodeStandard.Type.UpcSupplemental2Digit; break;
+                case "UPC 5 Digit Ext.": type = BarcodeStandard.Type.UpcSupplemental5Digit; break;
+                case "EAN-13": type = BarcodeStandard.Type.Ean13; break;
+                case "JAN-13": type = BarcodeStandard.Type.Jan13; break;
+                case "EAN-8": type = BarcodeStandard.Type.Ean8; break;
+                case "ITF-14": type = BarcodeStandard.Type.Itf14; break;
+                case "Codabar": type = BarcodeStandard.Type.Codabar; break;
+                case "PostNet": type = BarcodeStandard.Type.PostNet; break;
+                case "Bookland/ISBN": type = BarcodeStandard.Type.Bookland; break;
+                case "Code 11": type = BarcodeStandard.Type.Code11; break;
+                case "Code 39": type = BarcodeStandard.Type.Code39; break;
+                case "Code 39 Extended": type = BarcodeStandard.Type.Code39Extended; break;
+                case "Code 39 Mod 43": type = BarcodeStandard.Type.Code39Mod43; break;
+                case "Code 93": type = BarcodeStandard.Type.Code93; break;
+                case "LOGMARS": type = BarcodeStandard.Type.Logmars; break;
+                case "MSI Mod 10": type = BarcodeStandard.Type.MsiMod10; break;
+                case "MSI Mod 11": type = BarcodeStandard.Type.MsiMod11; break;
+                case "MSI 2 Mod 10": type = BarcodeStandard.Type.Msi2Mod10; break;
+                case "MSI Mod 11 Mod 10": type = BarcodeStandard.Type.MsiMod11Mod10; break;
+                case "Interleaved 2 of 5": type = BarcodeStandard.Type.Interleaved2Of5; break;
+                case "Interleaved 2 of 5 Mod 10": type = BarcodeStandard.Type.Interleaved2Of5Mod10; break;
+                case "Standard 2 of 5": type = BarcodeStandard.Type.Standard2Of5; break;
+                case "Standard 2 of 5 Mod 10": type = BarcodeStandard.Type.Standard2Of5Mod10; break;
+                case "Code 128": type = BarcodeStandard.Type.Code128; break;
+                case "Code 128-A": type = BarcodeStandard.Type.Code128A; break;
+                case "Code 128-B": type = BarcodeStandard.Type.Code128B; break;
+                case "Code 128-C": type = BarcodeStandard.Type.Code128C; break;
+                case "Telepen": type = BarcodeStandard.Type.Telepen; break;
+                case "FIM": type = BarcodeStandard.Type.Fim; break;
+                case "Pharmacode": type = BarcodeStandard.Type.Pharmacode; break;
             }
             try
             {
-                if (type != BarcodeLib.TYPE.UNSPECIFIED)
+                if (type != BarcodeStandard.Type.Unspecified)
                 {
                     try
                     {
@@ -289,20 +294,12 @@ namespace Phony.ViewModels
                         await Message.ShowMessageAsync("مشكلة ", "هناك مشكله تخص النسبة");
                     }
                     barCode.IncludeLabel = GenerateLabel;
-                    barCode.RotateFlipType = (RotateFlipType)Enum.Parse(typeof(RotateFlipType), SelectedRotate, true);
-
-                    barCode.AlternateLabel = !String.IsNullOrEmpty(AlternateLabelText) ? AlternateLabelText : EncodeValue;
-                    barCode.LabelPosition =LabelLocation switch
-                    {
-                        "اسفل - يمين" => BarcodeLib.LabelPositions.BOTTOMRIGHT,
-                        "اسفل - يسار" => BarcodeLib.LabelPositions.BOTTOMLEFT,
-                        "اعلى - وسط" => BarcodeLib.LabelPositions.TOPCENTER,
-                        "اعلى - يمين" => BarcodeLib.LabelPositions.TOPLEFT,
-                        "اعلى - يسار" => BarcodeLib.LabelPositions.TOPRIGHT,
-                        _ => BarcodeLib.LabelPositions.BOTTOMCENTER,
-                    };
                     //===== Encoding performed here =====
-                    Image = barCode.Encode(type, EncodeValue, ColorTranslator.FromHtml(Foreground), ColorTranslator.FromHtml(Background), W, H).ImageToByteArray();
+                    SKColor.TryParse(Foreground, out SKColor sKColorForeground);
+                    SKColor.TryParse(Background, out SKColor sKColorBackground);
+
+                    var sKImage = barCode.Encode(type, EncodeValue, sKColorForeground, sKColorBackground, W, H);
+                    Image = sKImage.EncodedData.ToArray();
                     //===================================
                     EncodedValue = barCode.EncodedValue;
                     // Read dynamically calculated Width/Height because the user is interested.
