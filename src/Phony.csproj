@@ -71,7 +71,7 @@
 		<Resource Include="Resources\ColorSwatchSquare2.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="AutoMapper" Version="16.1.1" />
 		<PackageReference Include="BarcodeLib" Version="3.0.3" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
