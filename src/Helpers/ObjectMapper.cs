@@ -12,7 +12,7 @@ namespace Phony.Helpers
                 // This line ensures that internal properties are also mapped over.
                 cfg.ShouldMapProperty = p => p.GetMethod.IsPublic || p.GetMethod.IsAssembly;
                 cfg.AddProfile<MappingProfile>();
-            });
+            }, null);
             var mapper = config.CreateMapper();
             return mapper;
         });
