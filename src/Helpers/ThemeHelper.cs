@@ -1,7 +1,8 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
+﻿using MaterialDesignColors; // Required for Swatch and SwatchesProvider
+using MaterialDesignThemes.Wpf; // Required for PaletteHelper, ITheme, BaseTheme
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace Phony.Helpers
@@ -27,23 +28,30 @@ namespace Phony.Helpers
         }
 
         public static void ApplyBase(bool isDark)
-            => ModifyTheme(theme => theme.SetBaseTheme(isDark ? Theme.Dark : Theme.Light));
+            => ModifyTheme(theme => theme.SetBaseTheme(isDark ? BaseTheme.Dark : BaseTheme.Light));
 
         public static void ApplyPrimary(Swatch swatch)
-            => ModifyTheme(theme => theme.SetPrimaryColor(swatch.ExemplarHue.Color));
-
-        public static void ApplyAccent(Swatch swatch)
         {
-            if (swatch.AccentExemplarHue is Hue accentHue)
+            var primaryColor = swatch.PrimaryHues.FirstOrDefault()?.Color;
+            if (primaryColor.HasValue)
             {
-                ModifyTheme(theme => theme.SetSecondaryColor(accentHue.Color));
+                ModifyTheme(theme => theme.SetPrimaryColor(primaryColor.Value));
             }
         }
 
-        public static void ModifyTheme(Action<ITheme> modificationAction)
+        public static void ApplyAccent(Swatch swatch)
+        {
+            var secondaryColor = swatch.SecondaryHues.FirstOrDefault()?.Color;
+            if (secondaryColor.HasValue)
+            {
+                ModifyTheme(theme => theme.SetSecondaryColor(secondaryColor.Value));
+            }
+        }
+
+        public static void ModifyTheme(Action<Theme> modificationAction)
         {
             PaletteHelper paletteHelper = new PaletteHelper();
-            ITheme theme = paletteHelper.GetTheme();
+            var theme = paletteHelper.GetTheme();
 
             modificationAction?.Invoke(theme);
 

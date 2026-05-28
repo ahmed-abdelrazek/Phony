@@ -105,7 +105,7 @@
             materialDesign:ButtonProgressAssist.Value="-1"
             Command="{Binding MoveData}"
             IsDefault="True"
-            Style="{DynamicResource MaterialDesignRaisedAccentButton}">
+            Style="{DynamicResource MaterialDesignRaisedSecondaryButton}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock
                     Width="60"

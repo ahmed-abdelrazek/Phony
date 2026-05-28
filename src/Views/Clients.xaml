@@ -61,17 +61,17 @@
                     Margin="5"
                     Command="{Binding OpenAddClientFlyout}"
                     Content="اضافة"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding DeleteClient}"
                     Content="حذف"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ReloadAllClients}"
                     Content="تحميل الكل"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ClientPay}"

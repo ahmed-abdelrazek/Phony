@@ -60,17 +60,17 @@
                     Margin="5"
                     Command="{Binding OpenAddSupplierFlyout}"
                     Content="اضافة"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding DeleteSupplier}"
                     Content="حذف"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ReloadAllSuppliers}"
                     Content="تحميل الكل"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding SupplierPay}"

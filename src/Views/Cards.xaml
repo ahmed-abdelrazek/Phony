@@ -79,17 +79,17 @@
                     Margin="5"
                     Command="{Binding OpenAddCardFlyout}"
                     Content="اضافة"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding DeleteCard}"
                     Content="حذف"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ReloadAllCards}"
                     Content="تحميل الكل"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
             </StackPanel>
         </StackPanel>
         <DataGrid

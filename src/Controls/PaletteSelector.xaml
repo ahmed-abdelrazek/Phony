@@ -6,7 +6,8 @@
              xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
              xmlns:vm="clr-namespace:Phony.ViewModels"       
-             xmlns:mahMaterialDragablzMashUp="clr-namespace:Phony.Controls"
+             xmlns:mahMaterialDragablzMashUp="clr-namespace:Phony.Controls" 
+             xmlns:converters="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" FlowDirection="RightToLeft">
     <UserControl.DataContext>
@@ -14,6 +15,7 @@
     </UserControl.DataContext>
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
         <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
             <Setter Property="Margin" Value="0" />
             <Setter Property="CommandParameter" Value="{Binding}" />
@@ -60,9 +62,9 @@
                             </StackPanel>
                         </Button>
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="1" Visibility="{Binding IsAccented, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" Width="120">
+                    <Border Grid.Row="1" Grid.Column="1" Visibility="{Binding SecondaryExemplarHue, Converter={StaticResource NullableToVisibilityConverter}, Mode=OneTime}" Width="120">
                         <Border.Background>
-                            <SolidColorBrush Color="{Binding AccentExemplarHue.Color, Mode=OneTime}" />
+                            <SolidColorBrush Color="{Binding SecondaryExemplarHue.Color, Mode=OneTime}" />
                         </Border.Background>
                         <Button Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mahMaterialDragablzMashUp:PaletteSelector}}, Path=DataContext.ApplyAccentCommand, Mode=OneTime}" CommandParameter="{Binding}">
                             <StackPanel Orientation="Horizontal">

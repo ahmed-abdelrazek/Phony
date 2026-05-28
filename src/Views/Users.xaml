@@ -56,17 +56,17 @@
                     Margin="5"
                     Command="{Binding OpenAddUserFlyout}"
                     Content="اضافة"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding DeleteUser}"
                     Content="حذف"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ReloadAllUsers}"
                     Content="تحميل الكل"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
             </StackPanel>
         </StackPanel>
         <Controls:Flyout

@@ -60,17 +60,17 @@
                     Margin="5"
                     Command="{Binding OpenAddCompanyFlyout}"
                     Content="اضافة"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding DeleteCompany}"
                     Content="حذف"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding ReloadAllCompanies}"
                     Content="تحميل الكل"
-                    Style="{DynamicResource MaterialDesignRaisedAccentButton}" />
+                    Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" />
                 <Button
                     Margin="5"
                     Command="{Binding CompanyPay}"

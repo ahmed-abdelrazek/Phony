@@ -24,7 +24,7 @@
                 <PasswordBox x:Name="PasswordTextBox" Foreground="{DynamicResource TextBrush}" w:PasswordHelper.Attach="True" w:PasswordHelper.Password="{Binding Pass, Mode=TwoWay}" Style="{DynamicResource MaterialDesignPasswordBox}"  MinWidth="{Binding MinWidth, ElementName=UserNameTextBox}" Controls:TextBoxHelper.Watermark="كلمة المرور" Controls:TextBoxHelper.ClearTextButton="True" Margin="{Binding Margin, ElementName=UserNameTextBox}" materialDesign:HintAssist.Hint="كلمة المرور"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button Command="{Binding LogIn}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLogging}" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Content="دخول" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsDefault="True"/>
+                <Button Command="{Binding LogIn}" materialDesign:ButtonProgressAssist.Value="-1" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLogging}" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Content="دخول" Style="{DynamicResource MaterialDesignRaisedSecondaryButton}" IsDefault="True"/>
             </StackPanel>
         </StackPanel>
     </Grid>
