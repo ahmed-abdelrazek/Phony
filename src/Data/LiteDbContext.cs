@@ -9,6 +9,12 @@ namespace Phony.Data
     {
         private static ConnectionString? connectionString;
 
+        internal static ConnectionString? ConfiguredConnectionString
+        {
+            get => connectionString;
+            set => connectionString = value;
+        }
+
         public static ConnectionString ConnectionString
         {
             get => connectionString ?? throw new InvalidOperationException("The database has not been initialized.");

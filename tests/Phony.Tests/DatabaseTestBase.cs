@@ -17,7 +17,7 @@ namespace Phony.Tests
         protected DatabaseTestBase()
         {
             Directory.CreateDirectory(_folder);
-            _previousConnection = LiteDbContext.ConnectionString;
+            _previousConnection = LiteDbContext.ConfiguredConnectionString;
             _previousPaperSize = Phony.Properties.Settings.Default.SalesBillsPaperSize;
             _connection = LiteDbContext.GetConnectionString(Path.Combine(_folder, "Phony.db"), "test password");
             using var db = new LiteDatabase(_connection);
@@ -38,7 +38,7 @@ namespace Phony.Tests
 
         public void Dispose()
         {
-            LiteDbContext.ConnectionString = _previousConnection;
+            LiteDbContext.ConfiguredConnectionString = _previousConnection;
             Phony.Properties.Settings.Default.SalesBillsPaperSize = _previousPaperSize;
             Directory.Delete(_folder, true);
         }
