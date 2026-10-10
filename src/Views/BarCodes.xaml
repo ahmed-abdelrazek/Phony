@@ -1,4 +1,4 @@
-﻿<Controls:MetroWindow x:Class="Phony.Views.BarCodes"
+<Controls:MetroWindow x:Class="Phony.Views.BarCodes"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -60,7 +60,7 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <TextBlock Text="اضافه نص" Margin="5,0"/>
-                        <ToggleButton IsChecked="{Binding GenerateLabel}" Style="{DynamicResource MaterialDesignSwitchAccentToggleButton}" Margin="5,0"/>
+                        <ToggleButton IsChecked="{Binding GenerateLabel}" Style="{DynamicResource MaterialDesignSwitchSecondaryToggleButton}" Margin="5,0"/>
                     </StackPanel>
                     <TextBox Text="{Binding AlternateLabelText}" materialDesign:HintAssist.Hint="نص بديل" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="5"/>
                     <ComboBox materialDesign:HintAssist.Hint="المكان" SelectedIndex="0" Style="{DynamicResource MaterialDesignFloatingHintComboBox}" Margin="5">

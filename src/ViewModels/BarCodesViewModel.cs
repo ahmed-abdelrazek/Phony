@@ -299,7 +299,15 @@ namespace Phony.ViewModels
                     SKColor.TryParse(Background, out SKColor sKColorBackground);
 
                     var sKImage = barCode.Encode(type, EncodeValue, sKColorForeground, sKColorBackground, W, H);
-                    Image = sKImage.EncodedData.ToArray();
+                    // Generated SKImages do not necessarily contain encoded data.
+                    // Keep the image owned by Barcode for SaveImage, and dispose
+                    // only the temporary PNG data used by the WPF preview.
+                    using var imageData = sKImage?.Encode(SKEncodedImageFormat.Png, 100);
+                    if (imageData == null)
+                    {
+                        throw new InvalidOperationException("Could not encode the barcode image as PNG.");
+                    }
+                    Image = imageData.ToArray();
                     //===================================
                     EncodedValue = barCode.EncodedValue;
                     // Read dynamically calculated Width/Height because the user is interested.
