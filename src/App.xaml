@@ -27,6 +27,37 @@
                 <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- Dialog-local overrides use the same live palette as the application. -->
+            <ResourceDictionary x:Key="MaterialDesignDialogResources">
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Dialogs.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+                <Style
+                    x:Key="MahApps.Styles.Button.Dialogs"
+                    BasedOn="{StaticResource MaterialDesignRaisedButton}"
+                    TargetType="{x:Type ButtonBase}">
+                    <Setter Property="MinHeight" Value="35" />
+                    <Setter Property="MinWidth" Value="80" />
+                    <Setter Property="Height" Value="35" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}" />
+                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Primary.Foreground}" />
+                </Style>
+                <Style
+                    x:Key="MahApps.Styles.Button.Dialogs.Accent"
+                    BasedOn="{StaticResource MahApps.Styles.Button.Dialogs}"
+                    TargetType="{x:Type ButtonBase}" />
+                <Style
+                    x:Key="MahApps.Styles.Button.Dialogs.AccentHighlight"
+                    BasedOn="{StaticResource MahApps.Styles.Button.Dialogs}"
+                    TargetType="{x:Type ButtonBase}">
+                    <Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Secondary}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Secondary}" />
+                    <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Secondary.Foreground}" />
+                </Style>
+            </ResourceDictionary>
+
             <!--  Dragablz Material Design  -->
             <Style BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" TargetType="{x:Type dragablz:TabablzControl}" />
 

@@ -1,4 +1,5 @@
-﻿using RazorEngineCore;
+﻿using MahApps.Metro.Controls;
+using RazorEngineCore;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace Phony
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            EventManager.RegisterClassHandler(typeof(MetroWindow), FrameworkElement.LoadedEvent,
+                new RoutedEventHandler(ConfigureDialogResources), true);
+
             var cul = new CultureInfo("ar-EG");
             Thread.CurrentThread.CurrentCulture = cul;
             Thread.CurrentThread.CurrentUICulture = cul;
@@ -56,6 +60,17 @@ namespace Phony
             })).Start();
 
             base.OnStartup(e);
+        }
+
+        private static void ConfigureDialogResources(object sender, RoutedEventArgs e)
+        {
+            if (sender is not MetroWindow window || !ReferenceEquals(e.OriginalSource, window))
+                return;
+
+            // Dialogs have their own resource scope; the application compatibility theme
+            // alone does not override their explicitly keyed MahApps button styles.
+            window.MetroDialogOptions.CustomResourceDictionary ??=
+                (ResourceDictionary)Current.Resources["MaterialDesignDialogResources"];
         }
     }
 }
