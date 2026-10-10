@@ -2,3 +2,7 @@
 
 # CA1416: Validate platform compatibility
 dotnet_diagnostic.CA1416.severity = none
+
+# Require braces for conditional statements.
+csharp_prefer_braces = true:warning
+dotnet_diagnostic.IDE0011.severity = warning
