@@ -1,4 +1,4 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.Extensions;
@@ -7,7 +7,6 @@ using Phony.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ using System.Windows.Threading;
 
 namespace Phony.ViewModels
 {
-    class MainPageVM : BindableBase
+    class MainPageVM : BindableBase, IDisposable
     {
         int _itemsCount;
         int _clientsCount;
@@ -148,18 +147,22 @@ namespace Phony.ViewModels
         public ICommand SaveUser { get; set; }
 
         private readonly MainWindow Message = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-        private DbConnectionStringBuilder ConnectionStringBuilder = new();
+
         private readonly MainWindowViewModel v = new();
         private DispatcherTimer Timer = new();
 
-        public MainPageVM()
+        public MainPageVM() : this(Core.ReadUserSession())
+        {
+        }
+
+        internal MainPageVM(User currentUser)
         {
             LoadCommands();
             Timer.Tick += Timer_Tick;
             Timer.Interval = TimeSpan.FromMilliseconds(500);
-            Timer.Start();
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == Core.ReadUserSession().Id).FirstOrDefault();
+            var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == currentUser.Id).FirstOrDefault();
             UserName = u.Name;
             Phone = u.Phone;
             Group = Enumerations.GetEnumDescription(u.Group);
@@ -187,65 +190,85 @@ namespace Phony.ViewModels
             SaveUser = new DelegateCommand(DoSaveUser, CanSaveUser);
         }
 
-        async Task CountEveryThing()
+        private bool _disposed;
+        private bool _isPolling;
+        private Task _refreshTask = Task.CompletedTask;
+        internal bool IsPolling => Timer.IsEnabled;
+
+        public void StartPolling()
         {
-            if (isBacking)
+            if (!_disposed)
+            {
+                _isPolling = true;
+                Timer.Start();
+            }
+        }
+
+        public void StopPolling()
+        {
+            _isPolling = false;
+            Timer.Stop();
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
             {
                 return;
             }
-            using var db = new LiteDatabase(LiteDbContext.ConnectionString);
+
+            _disposed = true;
+            _isPolling = false;
+            Timer.Stop();
+            Timer.Tick -= Timer_Tick;
+        }
+
+        private async Task CountEveryThing()
+        {
             try
             {
-                await Task.Run(() =>
+                var counts = await Task.Run(() =>
                 {
-                    ItemsCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Other);
+                    using var db = new LiteDatabase(LiteDbContext.ConnectionString);
+                    return new[]
+                    {
+                        db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Other),
+                        db.GetCollection<Client>(DBCollections.Clients).Count(),
+                        db.GetCollection<Item>(DBCollections.Items).Count(x => x.QTY == 0),
+                        db.GetCollection<Service>(DBCollections.Services).Count(),
+                        db.GetCollection<Supplier>(DBCollections.Suppliers).Count(),
+                        db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Card),
+                        db.GetCollection<Company>(DBCollections.Companies).Count(),
+                        db.GetCollection<SalesMan>(DBCollections.SalesMen).Count(),
+                        db.GetCollection<Note>(DBCollections.Notes).Count(),
+                        db.GetCollection<User>(DBCollections.Users).Count()
+                    };
                 });
-                await Task.Run(() =>
+
+                if (_disposed || !_isPolling || isBacking)
                 {
-                    ClientsCount = db.GetCollection<Client>(DBCollections.Clients.ToString()).Count();
-                });
-                await Task.Run(() =>
-                {
-                    ShortagesCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.QTY == 0);
-                });
-                await Task.Run(() =>
-                {
-                    ServicesCount = db.GetCollection<Service>(DBCollections.Services).Count();
-                });
-                await Task.Run(() =>
-                {
-                    SuppliersCount = db.GetCollection<Supplier>(DBCollections.Suppliers).Count();
-                });
-                await Task.Run(() =>
-                {
-                    CardsCount = db.GetCollection<Item>(DBCollections.Items).Count(x => x.Group == ItemGroup.Card);
-                });
-                await Task.Run(() =>
-                {
-                    CompaniesCount = db.GetCollection<Company>(DBCollections.Companies).Count();
-                });
-                await Task.Run(() =>
-                {
-                    SalesMenCount = db.GetCollection<SalesMan>(DBCollections.SalesMen).Count();
-                });
-                await Task.Run(() =>
-                {
-                    NumbersCount = db.GetCollection<Note>(DBCollections.Notes).Count();
-                });
-                await Task.Run(() =>
-                {
-                    UsersCount = db.GetCollection<User>(DBCollections.Users).Count();
-                });
+                    return;
+                }
+
+                ItemsCount = counts[0]; ClientsCount = counts[1]; ShortagesCount = counts[2];
+                ServicesCount = counts[3]; SuppliersCount = counts[4]; CardsCount = counts[5];
+                CompaniesCount = counts[6]; SalesMenCount = counts[7]; NumbersCount = counts[8]; UsersCount = counts[9];
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex);
             }
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
-            await CountEveryThing();
+            if (_disposed || isBacking || !_refreshTask.IsCompleted)
+            {
+                return;
+            }
+
+            _refreshTask = CountEveryThing();
+            await _refreshTask;
         }
 
         private bool CanOpenBarcodesWindow()
@@ -311,6 +334,8 @@ namespace Phony.ViewModels
 
         private void DoSignOut()
         {
+            Dispose();
+
             try
             {
                 File.Delete(Core.UserLocalAppFolderPath() + "..\\..\\session");
@@ -444,6 +469,7 @@ namespace Phony.ViewModels
             }
 
             isBacking = true;
+            await _refreshTask;
             var progressbar = await Message.ShowProgressAsync("استرجع نسخه احتياطية", "جارى استعادة نسخه احتياطية الان");
             progressbar.SetIndeterminate();
             try
@@ -496,6 +522,7 @@ namespace Phony.ViewModels
             }
 
             isBacking = true;
+            await _refreshTask;
             var progressbar = await Message.ShowProgressAsync("اخذ نسخه احتياطية", "جارى اخذ نسخه احتياطية الان");
             progressbar.SetIndeterminate();
 
