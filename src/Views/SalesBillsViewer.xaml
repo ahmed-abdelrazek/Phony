@@ -1,4 +1,4 @@
-﻿<Controls:MetroWindow
+<Controls:MetroWindow
     x:Class="Phony.Views.SalesBillsViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -50,7 +50,7 @@
                             Margin="5"
                             VerticalAlignment="Center"
                             IsChecked="{Binding ByClientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                            Style="{StaticResource MaterialDesignSwitchSecondaryToggleButton}" />
                         <TextBlock
                             Margin="15,1,0,5"
                             VerticalAlignment="Center"
@@ -60,7 +60,7 @@
                             Margin="5"
                             VerticalAlignment="Center"
                             IsChecked="{Binding By2Dates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                            Style="{StaticResource MaterialDesignSwitchSecondaryToggleButton}" />
                     </StackPanel>
                     <StackPanel
                         Margin="50,0,0,0"
@@ -74,7 +74,7 @@
                             Margin="5"
                             VerticalAlignment="Center"
                             IsChecked="{Binding IsReturned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource MaterialDesignSwitchAccentToggleButton}" />
+                            Style="{StaticResource MaterialDesignSwitchSecondaryToggleButton}" />
                         <Button
                             Margin="10,5,5,5"
                             Command="{Binding SaveReturned}"
@@ -156,6 +156,7 @@
                         Grid.Column="1"
                         Margin="5"
                         Click="SearchButton_Click"
+                        IsEnabled="False"
                         IsDefault="True"
                         Style="{DynamicResource MaterialDesignFloatingActionLightButton}">
                         <materialDesign:PackIcon Kind="Tv" />
@@ -165,7 +166,7 @@
                         Grid.Column="2"
                         Margin="5"
                         Click="PrintButton_Click"
-                        IsDefault="True"
+                        IsEnabled="False"
                         Style="{DynamicResource MaterialDesignFloatingActionLightButton}">
                         <materialDesign:PackIcon Kind="Printer" />
                     </Button>
@@ -174,6 +175,7 @@
         </materialDesign:Card>
         <wv2:WebView2
             Name="webView"
+            NavigationCompleted="WebView_NavigationCompleted"
             Grid.Row="1"
             Margin="5,5,5,0"
             FlowDirection="LeftToRight" />

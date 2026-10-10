@@ -9,7 +9,6 @@ using Prism.Commands;
 using Prism.Mvvm;
 using RazorEngineCore;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -143,7 +142,6 @@ namespace Phony.ViewModels
         public SalesBillsViewerViewModel(long id) : this()
         {
             BillSelectedValue = id;
-            LoadReportAsync(id).ConfigureAwait(true);
         }
 
         private readonly SalesBillsViewer Message = Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault();
@@ -163,6 +161,8 @@ namespace Phony.ViewModels
 
         public async Task LoadReportAsync(long id)
         {
+            Report = null;
+            IsReturnedVisible = Visibility.Collapsed;
             BillDto bill = null;
 
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
