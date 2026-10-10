@@ -1,4 +1,4 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.Models;
@@ -131,6 +131,7 @@ namespace Phony.ViewModels
             AppVersion = "رقم الاصدار: " + ai.Version;
 
             LiteDbFullPath = Properties.Settings.Default.LiteDbConnectionString;
+            LiteDbPassword = Properties.Settings.Default.LiteDbConnectionPassword;
 
             if (Properties.Settings.Default.IsConfigured)
             {
@@ -165,36 +166,32 @@ namespace Phony.ViewModels
         {
             if (Properties.Settings.Default.IsConfigured)
             {
-                if (string.IsNullOrWhiteSpace(LiteDbFullPath))
+                try
                 {
-                    await Window.ShowMessageAsync("خطا", "من فضلك اختار مكان لحفظ قاعده البيانات");
-                    return;
-                }
-                else
-                {
-                    if (Directory.Exists(LiteDbFullPath))
+                    var path = Directory.Exists(LiteDbFullPath) ? Path.Combine(LiteDbFullPath, "Phony.db") : LiteDbFullPath;
+                    if (!File.Exists(path))
                     {
-                        if (LiteDbFullPath.EndsWith("Phony.db"))
-                        {
-                            Properties.Settings.Default.LiteDbConnectionString = LiteDbFullPath;
-                        }
-                        else
-                        {
-                            if (!LiteDbFullPath.EndsWith("\\"))
-                            {
-                                LiteDbFullPath = LiteDbFullPath + "\\";
-                            }
-                            Properties.Settings.Default.LiteDbConnectionString = LiteDbFullPath + "Phony.db";
-                        }
+                        throw new FileNotFoundException("Database not found.");
                     }
-                }
-                if (!string.IsNullOrWhiteSpace(LiteDbPassword))
-                {
+
+                    var connection = LiteDbContext.GetConnectionString(path, LiteDbPassword);
+                    using (var db = new LiteDatabase(connection))
+                    {
+                        db.GetCollection<User>(DBCollections.Users).Count();
+                    }
+
+                    Properties.Settings.Default.LiteDbConnectionString = path;
                     Properties.Settings.Default.LiteDbConnectionPassword = LiteDbPassword;
+                    Properties.Settings.Default.SalesBillsPaperSize = ReportsSize;
+                    Properties.Settings.Default.Save();
+                    LiteDbContext.ConnectionString = connection;
+                    await Window.ShowMessageAsync("تم الحفظ", "لقد تم تغيير اعدادات البرنامج و حفظها بنجاح");
                 }
-                Properties.Settings.Default.SalesBillsPaperSize = ReportsSize;
-                Properties.Settings.Default.Save();
-                await Window.ShowMessageAsync("تم الحفظ", "لقد تم تغيير اعدادات البرنامج و حفظها بنجاح");
+                catch (Exception ex)
+                {
+                    await Core.SaveExceptionAsync(ex);
+                    await Window.ShowMessageAsync("مشكلة", "تعذر فتح قاعدة البيانات. تحقق من المسار وكلمة المرور.");
+                }
             }
             else
             {
@@ -221,6 +218,7 @@ namespace Phony.ViewModels
                         Properties.Settings.Default.LiteDbConnectionPassword = LiteDbPassword;
                     }
                 }
+                Properties.Settings.Default.LiteDbConnectionPassword = LiteDbPassword;
                 Properties.Settings.Default.Save();
                 try
                 {

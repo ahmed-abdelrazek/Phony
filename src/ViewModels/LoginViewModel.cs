@@ -1,4 +1,4 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.Models;
@@ -48,7 +48,7 @@ namespace Phony.ViewModels
             LoadCommands();
             if (Properties.Settings.Default.IsConfigured)
             {
-                LiteDbContext.ConnectionString  = LiteDbContext.GetConnectionString(Properties.Settings.Default.LiteDbConnectionString);
+                LiteDbContext.ConnectionString = LiteDbContext.GetConnectionString(Properties.Settings.Default.LiteDbConnectionString, Properties.Settings.Default.LiteDbConnectionPassword);
             }
         }
 
@@ -71,27 +71,17 @@ namespace Phony.ViewModels
                 {
                     if (File.Exists(LiteDbContext.ConnectionString.Filename))
                     {
-                        using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                        User u = null;
-                        await Task.Run(() =>
+                        var name = Name;
+                        var password = Pass;
+                        var user = await Task.Run(() => AuthenticationService.Authenticate(LiteDbContext.ConnectionString, name, password));
+                        if (user == null)
                         {
-                            u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Name == Name).FirstOrDefault();
-                        });
-                        if (u is null)
-                        {
-                            await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
+                            await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط");
                         }
                         else
                         {
-                            if (SecurePasswordHasher.Verify(Pass, u.Pass))
-                            {
-                                Core.WriteUserSession(u);
-                                v.PageName = "Main";
-                            }
-                            else
-                            {
-                                await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم او كلمة المرور و ان المستخدم نشط").ConfigureAwait(false);
-                            }
+                            Core.WriteUserSession(user);
+                            v.PageName = "Main";
                         }
                     }
                     else

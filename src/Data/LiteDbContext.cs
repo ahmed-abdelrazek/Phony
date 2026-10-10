@@ -162,12 +162,15 @@ namespace Phony.Data
                 }
 
                 LiteDb.Rebuild();
-                LiteDb.Dispose();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 throw;
+            }
+            finally
+            {
+                LiteDb.Dispose();
             }
         }
 
@@ -178,13 +181,12 @@ namespace Phony.Data
                 throw new ArgumentException($"'{nameof(path)}' cannot be null or whitespace.", nameof(path));
             }
 
-            if (string.IsNullOrWhiteSpace(pass))
+            return new ConnectionString
             {
-                Console.WriteLine($"'{nameof(pass)}' cannot be null or whitespace.", nameof(pass));
-                return new ConnectionString { Filename = Properties.Settings.Default.LiteDbConnectionString, Connection = ConnectionType.Shared };
-            }
-
-            return LiteDbContext.ConnectionString;
+                Filename = path,
+                Password = string.IsNullOrWhiteSpace(pass) ? null : pass,
+                Connection = ConnectionType.Shared
+            };
         }
     }
 }

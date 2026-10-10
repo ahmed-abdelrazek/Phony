@@ -438,6 +438,11 @@ namespace Phony.ViewModels
 
         private async void DoRestoreBackup()
         {
+            if (isBacking)
+            {
+                return;
+            }
+
             isBacking = true;
             var progressbar = await Message.ShowProgressAsync("استرجع نسخه احتياطية", "جارى استعادة نسخه احتياطية الان");
             progressbar.SetIndeterminate();
@@ -452,8 +457,13 @@ namespace Phony.ViewModels
                 };
                 if (dlg.ShowDialog() == true)
                 {
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
-                    File.Copy(dlg.FileName, ConnectionStringBuilder["Filename"].ToString(), true);
+
+                    if (System.Windows.Application.Current.Windows.OfType<System.Windows.Window>().Any(w => w != Message))
+                    {
+                        throw new InvalidOperationException("Close other application windows before restoring a backup.");
+                    }
+
+                    DatabaseBackup.Restore(LiteDbContext.ConnectionString, dlg.FileName);
                     await Message.ShowMessageAsync("تمت العملية", "تم استرجاع النسخه الاحتياطية بنجاح");
                 }
             }
@@ -461,6 +471,7 @@ namespace Phony.ViewModels
             {
                 await progressbar.CloseAsync();
                 Core.SaveException(ex);
+                await Message.ShowMessageAsync("مشكلة", "تعذر استرجاع النسخة الاحتياطية. أغلق النوافذ الأخرى وتحقق من الملف وكلمة مرور قاعدة البيانات.");
             }
             finally
             {
@@ -479,9 +490,15 @@ namespace Phony.ViewModels
 
         private async void DoTakeBackup()
         {
+            if (isBacking)
+            {
+                return;
+            }
+
             isBacking = true;
             var progressbar = await Message.ShowProgressAsync("اخذ نسخه احتياطية", "جارى اخذ نسخه احتياطية الان");
             progressbar.SetIndeterminate();
+
             try
             {
                 var dlg = new FolderBrowserDialog
@@ -497,8 +514,8 @@ namespace Phony.ViewModels
                         Properties.Settings.Default.BackUpsFolder += "\\";
                     }
                     Properties.Settings.Default.Save();
-                    ConnectionStringBuilder.ConnectionString = Properties.Settings.Default.LiteDbConnectionString;
-                    File.Copy(ConnectionStringBuilder["Filename"].ToString(), $"{Properties.Settings.Default.BackUpsFolder}PhonyDbBackup {DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")}.bak");
+
+                    DatabaseBackup.Create(LiteDbContext.ConnectionString, Path.Combine(Properties.Settings.Default.BackUpsFolder, $"PhonyDbBackup {DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.bak"));
                     await Message.ShowMessageAsync("تمت العملية", "تم اخذ نسخه احتياطية بنجاح");
                 }
             }
