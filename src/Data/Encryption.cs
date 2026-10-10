@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net;
 using System.Security;
@@ -25,9 +25,7 @@ namespace Phony.Data
                 using var AES = Aes.Create();
                 AES.KeySize = 256;
                 AES.BlockSize = 128;
-                var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
-                AES.Key = key.GetBytes(AES.KeySize / 8);
-                AES.IV = key.GetBytes(AES.BlockSize / 8);
+                SetKeyAndIV(AES, passwordBytes, saltBytes);
                 AES.Mode = CipherMode.CBC;
                 using (var cs = new CryptoStream(ms, AES.CreateEncryptor(), CryptoStreamMode.Write))
                 {
@@ -50,9 +48,7 @@ namespace Phony.Data
                 using var AES = Aes.Create();
                 AES.KeySize = 256;
                 AES.BlockSize = 128;
-                var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
-                AES.Key = key.GetBytes(AES.KeySize / 8);
-                AES.IV = key.GetBytes(AES.BlockSize / 8);
+                SetKeyAndIV(AES, passwordBytes, saltBytes);
                 AES.Mode = CipherMode.CBC;
                 using (var cs = new CryptoStream(ms, AES.CreateDecryptor(), CryptoStreamMode.Write))
                 {
@@ -62,6 +58,26 @@ namespace Phony.Data
                 decryptedBytes = ms.ToArray();
             }
             return decryptedBytes;
+        }
+
+        private static void SetKeyAndIV(Aes aes, byte[] passwordBytes, byte[] saltBytes)
+        {
+            int keyLength = aes.KeySize / 8;
+            int ivLength = aes.BlockSize / 8;
+            // Preserve the legacy SHA1 stream: first 32 bytes are the key,
+            // followed by 16 bytes for the IV. Deriving each separately would
+            // change the IV and make existing encrypted data unreadable.
+            byte[] derivedBytes = Rfc2898DeriveBytes.Pbkdf2(
+                passwordBytes, saltBytes, 1000, HashAlgorithmName.SHA1, keyLength + ivLength);
+            try
+            {
+                aes.Key = derivedBytes.AsSpan(0, keyLength).ToArray();
+                aes.IV = derivedBytes.AsSpan(keyLength, ivLength).ToArray();
+            }
+            finally
+            {
+                CryptographicOperations.ZeroMemory(derivedBytes);
+            }
         }
 
         /// <summary>
@@ -75,7 +91,7 @@ namespace Phony.Data
             byte[] bytesToBeEncrypted = Encoding.UTF8.GetBytes(input);
             byte[] passwordBytes = Encoding.UTF8.GetBytes(new NetworkCredential("", Key).Password);
             // Hash the password with SHA256
-            passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+            passwordBytes = SHA256.HashData(passwordBytes);
             byte[] bytesEncrypted = AES_Encrypt(bytesToBeEncrypted, passwordBytes);
             string result = Convert.ToBase64String(bytesEncrypted);
             return result;
@@ -91,7 +107,7 @@ namespace Phony.Data
             // Get the bytes of the string
             byte[] bytesToBeDecrypted = Convert.FromBase64String(input);
             byte[] passwordBytes = Encoding.UTF8.GetBytes(new NetworkCredential("", Key).Password);
-            passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+            passwordBytes = SHA256.HashData(passwordBytes);
             byte[] bytesDecrypted = AES_Decrypt(bytesToBeDecrypted, passwordBytes);
             string result = Encoding.UTF8.GetString(bytesDecrypted);
             return result;
@@ -107,7 +123,7 @@ namespace Phony.Data
             byte[] bytesToBeEncrypted = File.ReadAllBytes(inFile);
             byte[] passwordBytes = Encoding.UTF8.GetBytes(new NetworkCredential("", Key).Password);
             // Hash the password with SHA256
-            passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+            passwordBytes = SHA256.HashData(passwordBytes);
             byte[] bytesEncrypted = AES_Encrypt(bytesToBeEncrypted, passwordBytes);
             File.WriteAllBytes(outFile, bytesEncrypted);
         }
@@ -121,7 +137,7 @@ namespace Phony.Data
         {
             byte[] bytesToBeDecrypted = File.ReadAllBytes(inFile);
             byte[] passwordBytes = Encoding.UTF8.GetBytes(new NetworkCredential("", Key).Password);
-            passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+            passwordBytes = SHA256.HashData(passwordBytes);
             byte[] bytesDecrypted = AES_Decrypt(bytesToBeDecrypted, passwordBytes);
             File.WriteAllBytes(outFile, bytesDecrypted);
         }

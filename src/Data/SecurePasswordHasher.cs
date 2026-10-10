@@ -24,12 +24,11 @@ namespace Phony.Data
         public static string Hash(string password, int iterations)
         {
             //create salt
-            byte[] salt;
-            RandomNumberGenerator.Create().GetBytes(salt = new byte[SaltSize]);
+            byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);
 
             //create hash
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(HashSize);
+            // V1 hashes use SHA1; retain it for compatibility with stored hashes.
+            var hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA1, HashSize);
 
             //combine salt and hash
             var hashBytes = new byte[SaltSize + HashSize];
@@ -83,18 +82,10 @@ namespace Phony.Data
             Array.Copy(hashBytes, 0, salt, 0, SaltSize);
 
             //create hash with given salt
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            byte[] hash = pbkdf2.GetBytes(HashSize);
+            byte[] hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA1, HashSize);
 
             //get result
-            for (var i = 0; i < HashSize; i++)
-            {
-                if (hashBytes[i + SaltSize] != hash[i])
-                {
-                    return false;
-                }
-            }
-            return true;
+            return CryptographicOperations.FixedTimeEquals(hashBytes.AsSpan(SaltSize, HashSize), hash);
         }
     }
 }
