@@ -1,23 +1,62 @@
 # Phony
-A Simple Arabic WPF (MVVM) Mobile Store Management Application
-For more information about the Application, please see 
-https://shababco.blogspot.com/ 
 
-## The Application uses:
-	1- LiteDB https://github.com/mbdavid/LiteDB
-	2- MahApps https://github.com/MahApps/MahApps.Metro
-	3- MaterialDesignInXamlToolkit https://github.com/ButchersBoy/MaterialDesignInXamlToolkit
-	4- BarcodeLib https://github.com/barnhill/barcodelib
-	5- WPF Simple Color Picker With Preview https://goo.gl/hL3nra
-	6- SimpleChildWindow https://github.com/punker76/MahApps.Metro.SimpleChildWindow
-	7- RazorEngineCore https://github.com/adoconnection/RazorEngineCore
+An Arabic WPF desktop application for mobile store management, using MVVM and LiteDB.
 
-## How To Build:
-	1- You need Visual Studio 2019 Community Edition or higher with dot Net 6, NuGet and Desktop workload installed https://visualstudio.microsoft.com/
-	
-## How To Run:
-	1- You must install dot Net 6 Desktop Runtime https://dotnet.microsoft.com/en-us/download/dotnet/6.0
-	2- Install Microsoft Edge WebView2 to have working reports (Optional) https://go.microsoft.com/fwlink/p/?LinkId=2124703
+Author's website: [ShababConquer](https://shababco.blogspot.com/).
+
+## Libraries and components
+
+The application references the following NuGet packages in [Phony.csproj](src/Phony.csproj):
+
+- [LiteDB](https://github.com/mbdavid/LiteDB) for the local database.
+- [Prism.Wpf](https://github.com/PrismLibrary/Prism) for MVVM and commands.
+- [MahApps.Metro](https://github.com/MahApps/MahApps.Metro), [ControlzEx](https://github.com/ControlzEx/ControlzEx), and [MaterialDesignThemes.MahApps](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit) for the interface and themes.
+- [Dragablz](https://github.com/ButchersBoy/Dragablz) for tabs.
+- [MahApps.Metro.SimpleChildWindow](https://github.com/punker76/MahApps.Metro.SimpleChildWindow) for child windows.
+- [BarcodeLib](https://github.com/barnhill/barcodelib) for barcodes.
+- [RazorEngineCore](https://github.com/adoconnection/RazorEngineCore) for HTML report templates.
+- [Microsoft.Web.WebView2](https://learn.microsoft.com/en-us/microsoft-edge/webview2/) for displaying and printing reports.
+- [Microsoft.Data.SqlClient](https://github.com/dotnet/SqlClient) for importing data from the SQL Server version.
+- [Riok.Mapperly](https://github.com/riok/mapperly) for generated model/DTO mappings.
+- [Microsoft.Xaml.Behaviors.Wpf](https://github.com/microsoft/XamlBehaviorsWpf) for XAML behaviors.
+
+The repository also includes a WPF color picker and preview dialog in `src/Views`.
+
+## How to build
+
+Build on Windows with the [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0). Both projects target `net10.0-windows`.
+
+For Visual Studio, use **Visual Studio 2026 (18.0 or higher)** with the **.NET desktop development** workload and .NET 10 SDK installed. See Microsoft's [Windows installation requirements](https://learn.microsoft.com/en-us/dotnet/core/install/windows). Open `Phony.slnx` and build the solution.
+
+Alternatively, from the repository root:
+
+```powershell
+dotnet build Phony.slnx
+```
+
+NuGet dependencies are restored as part of the build.
+
+## How to run
+
+For a framework-dependent build, install the **.NET 10 Desktop Runtime** for Windows from the [.NET 10 download page](https://dotnet.microsoft.com/en-us/download/dotnet/10.0). The SDK includes the runtime for development.
+
+The **Microsoft Edge WebView2 Runtime** is required to display and print invoice reports. Install it if it is missing; see Microsoft's [WebView2 Runtime deployment documentation](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution). Installing the NuGet SDK package alone does not provide the runtime.
+
+To run from source on Windows:
+
+```powershell
+dotnet run --project src/Phony.csproj
+```
+
+## Tests
+
+Run the xUnit regression suite on Windows with the .NET 10 SDK:
+
+```powershell
+dotnet test tests/Phony.Tests/Phony.Tests.csproj
+```
+
+See [tests/README.md](tests/README.md) for test coverage and isolation details.
 
 ## Screenshots
 
