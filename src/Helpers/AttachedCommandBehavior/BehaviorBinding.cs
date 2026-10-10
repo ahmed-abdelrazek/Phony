@@ -10,7 +10,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
     /// </summary>
     public class BehaviorBinding : Freezable
     {
-        CommandBehaviorBinding behavior;
+        CommandBehaviorBinding? behavior;
         /// <summary>
         /// Stores the Command Behavior Binding
         /// </summary>
@@ -26,11 +26,11 @@ namespace Phony.Helpers.AttachedCommandBehavior
             }
         }
 
-        DependencyObject owner;
+        DependencyObject? owner;
         /// <summary>
         /// Gets or sets the Owner of the binding
         /// </summary>
-        public DependencyObject Owner
+        public DependencyObject? Owner
         {
             get { return owner; }
             set
@@ -45,14 +45,14 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Command Dependency Property
         /// </summary>
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(BehaviorBinding), new FrameworkPropertyMetadata((ICommand)null, new PropertyChangedCallback(OnCommandChanged)));
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register("Command", typeof(ICommand), typeof(BehaviorBinding), new FrameworkPropertyMetadata((ICommand?)null, new PropertyChangedCallback(OnCommandChanged)));
 
         /// <summary>
         /// Gets or sets the Command property.  
         /// </summary>
-        public ICommand Command
+        public ICommand? Command
         {
-            get { return (ICommand)GetValue(CommandProperty); }
+            get { return (ICommand?)GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
         }
 
@@ -79,14 +79,14 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Action Dependency Property
         /// </summary>
-        public static readonly DependencyProperty ActionProperty = DependencyProperty.Register("Action", typeof(Action<object>), typeof(BehaviorBinding), new FrameworkPropertyMetadata((Action<object>)null, new PropertyChangedCallback(OnActionChanged)));
+        public static readonly DependencyProperty ActionProperty = DependencyProperty.Register("Action", typeof(Action<object?>), typeof(BehaviorBinding), new FrameworkPropertyMetadata((Action<object?>?)null, new PropertyChangedCallback(OnActionChanged)));
 
         /// <summary>
         /// Gets or sets the Action property. 
         /// </summary>
-        public Action<object> Action
+        public Action<object?>? Action
         {
-            get { return (Action<object>)GetValue(ActionProperty); }
+            get { return (Action<object?>?)GetValue(ActionProperty); }
             set { SetValue(ActionProperty, value); }
         }
 
@@ -113,14 +113,14 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// CommandParameter Dependency Property
         /// </summary>
-        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register("CommandParameter", typeof(object), typeof(BehaviorBinding), new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnCommandParameterChanged)));
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register("CommandParameter", typeof(object), typeof(BehaviorBinding), new FrameworkPropertyMetadata((object?)null, new PropertyChangedCallback(OnCommandParameterChanged)));
 
         /// <summary>
         /// Gets or sets the CommandParameter property.  
         /// </summary>
-        public object CommandParameter
+        public object? CommandParameter
         {
-            get { return (object)GetValue(CommandParameterProperty); }
+            get { return GetValue(CommandParameterProperty); }
             set { SetValue(CommandParameterProperty, value); }
         }
 
@@ -147,14 +147,14 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Event Dependency Property
         /// </summary>
-        public static readonly DependencyProperty EventProperty = DependencyProperty.Register("Event", typeof(string), typeof(BehaviorBinding), new FrameworkPropertyMetadata((string)null, new PropertyChangedCallback(OnEventChanged)));
+        public static readonly DependencyProperty EventProperty = DependencyProperty.Register("Event", typeof(string), typeof(BehaviorBinding), new FrameworkPropertyMetadata((string?)null, new PropertyChangedCallback(OnEventChanged)));
 
         /// <summary>
         /// Gets or sets the Event property.  
         /// </summary>
-        public string Event
+        public string? Event
         {
-            get { return (string)GetValue(EventProperty); }
+            get { return (string?)GetValue(EventProperty); }
             set { SetValue(EventProperty, value); }
         }
 
@@ -183,7 +183,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
 
         private void ResetEventBinding()
         {
-            if (Owner is not null) //only do this when the Owner is set
+            if (Owner is not null && !string.IsNullOrEmpty(Event)) //only do this when the Owner is set
             {
                 //check if the Event is set. If yes we need to rebind the Command to the new event and unregister the old one
                 if (Behavior.Event is not null && Behavior.Owner is not null)

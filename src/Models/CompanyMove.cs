@@ -5,7 +5,7 @@ namespace Phony.Models
     public class CompanyMove : BaseModel
     {
         [BsonRef(nameof(Data.DBCollections.Companies))]
-        public virtual Company Company { get; set; }
+        public virtual Company? Company { get; set; }
 
         public decimal Debit { get; set; }
 

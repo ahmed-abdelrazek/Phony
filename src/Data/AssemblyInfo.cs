@@ -29,7 +29,7 @@ namespace Phony.Data
         {
             get
             {
-                Version version = assembly.GetName().Version;
+                Version? version = assembly.GetName().Version;
                 return version is not null ? version.ToString() : "1.0.0.0";
             }
         }
@@ -54,7 +54,7 @@ namespace Phony.Data
         /// </summary>
         public string Company => GetAttributeValue<AssemblyCompanyAttribute>(a => a.Company);
 
-        protected string GetAttributeValue<TAttr>(Func<TAttr, string> resolveFunc, string defaultResult = null) where TAttr : Attribute
+        protected string GetAttributeValue<TAttr>(Func<TAttr, string> resolveFunc, string defaultResult = "") where TAttr : Attribute
         {
             object[] attributes = assembly.GetCustomAttributes(typeof(TAttr), false);
             return attributes.Length > 0 ? resolveFunc((TAttr)attributes[0]) : defaultResult;

@@ -8,11 +8,11 @@ namespace Phony.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        static Uri _currentSource;
-        static string _pageName;
+        static Uri? _currentSource;
+        static string? _pageName;
 
-        public ICommand ChangeSource { get; set; }
-        public ICommand OpenSettingsWindow { get; set; }
+        public ICommand? ChangeSource { get; set; }
+        public ICommand? OpenSettingsWindow { get; set; }
 
         public MainWindowViewModel()
         {
@@ -50,7 +50,7 @@ namespace Phony.ViewModels
             return CurrentSource is not null;
         }
 
-        public static Uri CurrentSource
+        public static Uri? CurrentSource
         {
             get { return _currentSource; }
             set
@@ -62,7 +62,7 @@ namespace Phony.ViewModels
             }
         }
 
-        public string PageName
+        public string? PageName
         {
             get => _pageName;
             set
@@ -75,8 +75,12 @@ namespace Phony.ViewModels
             }
         }
 
-        public void NavigateToPage(string Page)
+        public void NavigateToPage(string? Page)
         {
+            if (string.IsNullOrWhiteSpace(Page))
+            {
+                return;
+            }
             CurrentSource = new Uri("/PhonyLite;component/Views/Pages/" + Page + ".xaml", UriKind.Relative);
         }
     }

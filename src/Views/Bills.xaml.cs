@@ -20,7 +20,9 @@ namespace Phony.Views
         {
             var comboBox = (ComboBox)sender;
             if (!string.IsNullOrWhiteSpace(comboBox.Text) || comboBox.IsDropDownOpen)
+            {
                 return;
+            }
 
             // Let the focus/click finish before opening the dropdown.
             comboBox.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>

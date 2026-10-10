@@ -19,24 +19,24 @@ namespace Phony.ViewModels
     public class SalesMenViewModel : BindableBase
     {
         long _salesManId;
-        string _name;
-        string _email;
-        string _phone;
-        string _notes;
-        string _searchText;
-        string _childName;
-        string _childPrice;
-        static string _salesMenCount;
-        static string _salesMenPurchasePrice;
-        static string _salesMenSalePrice;
-        static string _salesMenProfit;
+        string? _name;
+        string? _email;
+        string? _phone;
+        string? _notes;
+        string? _searchText;
+        string? _childName;
+        string? _childPrice;
+        static string? _salesMenCount;
+        static string? _salesMenPurchasePrice;
+        static string? _salesMenSalePrice;
+        static string? _salesMenProfit;
         decimal _balance;
         bool _fastResult;
         bool _openFastResult;
         bool _isAddSalesManFlyoutOpen;
-        SalesManDto _dataGridSelectedSalesMan;
+        SalesManDto? _dataGridSelectedSalesMan;
 
-        ObservableCollection<SalesManDto> _salesMen;
+        ObservableCollection<SalesManDto> _salesMen = [];
 
         public long SalesManId
         {
@@ -44,67 +44,67 @@ namespace Phony.ViewModels
             set => SetProperty(ref _salesManId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Email
+        public string? Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string ChildName
+        public string? ChildName
         {
             get => _childName;
             set => SetProperty(ref _childName, value);
         }
 
-        public string ChildPrice
+        public string? ChildPrice
         {
             get => _childPrice;
             set => SetProperty(ref _childPrice, value);
         }
 
-        public string SalesMenCount
+        public string? SalesMenCount
         {
             get => _salesMenCount;
             set => SetProperty(ref _salesMenCount, value);
         }
 
-        public string SalesMenCredits
+        public string? SalesMenCredits
         {
             get => _salesMenPurchasePrice;
             set => SetProperty(ref _salesMenPurchasePrice, value);
         }
 
-        public string SalesMenDebits
+        public string? SalesMenDebits
         {
             get => _salesMenSalePrice;
             set => SetProperty(ref _salesMenSalePrice, value);
         }
 
-        public string SalesMenProfit
+        public string? SalesMenProfit
         {
             get => _salesMenProfit;
             set => SetProperty(ref _salesMenProfit, value);
@@ -134,7 +134,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isAddSalesManFlyoutOpen, value);
         }
 
-        public SalesManDto DataGridSelectedSalesMan
+        public SalesManDto? DataGridSelectedSalesMan
         {
             get => _dataGridSelectedSalesMan;
             set => SetProperty(ref _dataGridSelectedSalesMan, value);
@@ -146,17 +146,17 @@ namespace Phony.ViewModels
             set => SetProperty(ref _salesMen, value);
         }
 
-        public ICommand SalesManPay { get; set; }
-        public ICommand PaySalesMan { get; set; }
-        public ICommand AddSalesMan { get; set; }
-        public ICommand EditSalesMan { get; set; }
-        public ICommand DeleteSalesMan { get; set; }
-        public ICommand Search { get; set; }
-        public ICommand OpenAddSalesManFlyout { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllSalesMen { get; set; }
+        public ICommand? SalesManPay { get; set; }
+        public ICommand? PaySalesMan { get; set; }
+        public ICommand? AddSalesMan { get; set; }
+        public ICommand? EditSalesMan { get; set; }
+        public ICommand? DeleteSalesMan { get; set; }
+        public ICommand? Search { get; set; }
+        public ICommand? OpenAddSalesManFlyout { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllSalesMen { get; set; }
 
-        private readonly SalesMen Message = Application.Current.Windows.OfType<SalesMen>().FirstOrDefault();
+        private SalesMen Message => Application.Current.Windows.OfType<SalesMen>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public SalesMenViewModel()
         {
@@ -210,7 +210,13 @@ namespace Phony.ViewModels
 
         private async void DoSalesManPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلامته من المندوب {DataGridSelectedSalesMan.Name}");
+            var selectedSalesMan = DataGridSelectedSalesMan;
+            if (selectedSalesMan is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلامته من المندوب {selectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
@@ -221,20 +227,20 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+                    var s = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(selectedSalesMan.Id);
                     s.Balance += SalesManpaymentamount;
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(s);
                     db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                     {
-                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
+                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(selectedSalesMan.Id),
                         Credit = SalesManpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
-                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(s);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {selectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
+                    SalesMen[SalesMen.IndexOf(selectedSalesMan)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedSalesMan = null;
                     SalesManId = 0;
@@ -253,7 +259,13 @@ namespace Phony.ViewModels
 
         private async void DoPaySalesManAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {DataGridSelectedSalesMan.Name}");
+            var selectedSalesMan = DataGridSelectedSalesMan;
+            if (selectedSalesMan is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمندوب {selectedSalesMan.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
@@ -264,12 +276,12 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var salesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+                    var salesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(selectedSalesMan.Id);
                     salesMan.Balance -= SalesManpaymentamount;
                     db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(salesMan);
                     db.GetCollection<SalesManMove>(DBCollections.SalesMenMoves).Insert(new SalesManMove
                     {
-                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id),
+                        SalesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(selectedSalesMan.Id),
                         Debit = SalesManpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
@@ -280,14 +292,14 @@ namespace Phony.ViewModels
                     {
                         Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                         Credit = SalesManpaymentamount,
-                        Notes = $"تدفيع المندوب بكود {DataGridSelectedSalesMan.Id} باسم {DataGridSelectedSalesMan.Name}",
+                        Notes = $"تدفيع المندوب بكود {selectedSalesMan.Id} باسم {selectedSalesMan.Name}",
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
-                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(salesMan);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {selectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
+                    SalesMen[SalesMen.IndexOf(selectedSalesMan)] = AppMapper.ToDto(salesMan);
                     DebitCredit();
                     DataGridSelectedSalesMan = null;
                     SalesManId = 0;
@@ -340,8 +352,14 @@ namespace Phony.ViewModels
 
         private async void DoEditSalesMan()
         {
+            var selectedSalesMan = DataGridSelectedSalesMan;
+            if (selectedSalesMan is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var salesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(DataGridSelectedSalesMan.Id);
+            var salesMan = db.GetCollection<SalesMan>(DBCollections.SalesMen).FindById(selectedSalesMan.Id);
             salesMan.Name = Name;
             salesMan.Balance = Balance;
             salesMan.Email = Email;
@@ -351,7 +369,7 @@ namespace Phony.ViewModels
             salesMan.EditDate = DateTime.Now;
             db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(salesMan);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
-            SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(salesMan);
+            SalesMen[SalesMen.IndexOf(selectedSalesMan)] = AppMapper.ToDto(salesMan);
             DebitCredit();
             DataGridSelectedSalesMan = null;
             SalesManId = 0;
@@ -364,13 +382,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteSalesMan()
         {
-            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {DataGridSelectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedSalesMan = DataGridSelectedSalesMan;
+            if (selectedSalesMan is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف المندوب {selectedSalesMan.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(DataGridSelectedSalesMan.Id);
-                    SalesMen.Remove(DataGridSelectedSalesMan);
+                    db.GetCollection<SalesMan>(DBCollections.SalesMen).Delete(selectedSalesMan.Id);
+                    SalesMen.Remove(selectedSalesMan);
                 }
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف المندوب بنجاح");
                 DebitCredit();
@@ -388,13 +412,13 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                SalesMen = AppMapper.ToSalesManDtos(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
+                SalesMen = AppMapper.ToSalesManDtos(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name != null && x.Name.Contains(SearchText ?? string.Empty)));
                 if (SalesMen.Count > 0)
                 {
                     if (FastResult)
                     {
-                        ChildName = SalesMen.FirstOrDefault().Name;
-                        ChildPrice = SalesMen.FirstOrDefault().Balance.ToString();
+                        ChildName = SalesMen.FirstOrDefault()?.Name;
+                        ChildPrice = SalesMen.FirstOrDefault()?.Balance.ToString();
                         OpenFastResult = true;
                     }
                 }
@@ -431,12 +455,18 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            SalesManId = DataGridSelectedSalesMan.Id;
-            Name = DataGridSelectedSalesMan.Name;
-            Balance = DataGridSelectedSalesMan.Balance;
-            Email = DataGridSelectedSalesMan.Email;
-            Phone = DataGridSelectedSalesMan.Phone;
-            Notes = DataGridSelectedSalesMan.Notes;
+            var selectedSalesMan = DataGridSelectedSalesMan;
+            if (selectedSalesMan is null)
+            {
+                return;
+            }
+
+            SalesManId = selectedSalesMan.Id;
+            Name = selectedSalesMan.Name;
+            Balance = selectedSalesMan.Balance;
+            Email = selectedSalesMan.Email;
+            Phone = selectedSalesMan.Phone;
+            Notes = selectedSalesMan.Notes;
             IsAddSalesManFlyoutOpen = true;
         }
 

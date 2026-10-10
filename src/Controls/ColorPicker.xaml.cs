@@ -101,7 +101,10 @@ namespace Phony.Controls
         /// </summary>
         private void CanvasImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if (IsMouseDown) UpdateColor();
+            if (IsMouseDown)
+            {
+                UpdateColor();
+            }
         }
 
         /// <summary>
@@ -127,7 +130,10 @@ namespace Phony.Controls
         /// </summary>
         private void Swatch_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Image img = (sender as Image);
+            if (sender is not Image img)
+            {
+                return;
+            }
             ColorImage.Source = img.Source;
             UpdateCursorEllipse(SelectedColor);
         }
@@ -151,7 +157,10 @@ namespace Phony.Controls
             // Test to ensure we do not get bad mouse positions along the edges
             int imageX = (int)Mouse.GetPosition(canvasImage).X;
             int imageY = (int)Mouse.GetPosition(canvasImage).Y;
-            if ((imageX < 0) || (imageY < 0) || (imageX > ColorImage.Width - 1) || (imageY > ColorImage.Height - 1)) return;
+            if ((imageX < 0) || (imageY < 0) || (imageX > ColorImage.Width - 1) || (imageY > ColorImage.Height - 1))
+            {
+                return;
+            }
             // Get the single pixel under the mouse into a bitmap and copy it to a byte array
             CroppedBitmap cb = new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(imageX, imageY, 1, 1));
             byte[] pixels = new byte[4];
@@ -183,9 +192,15 @@ namespace Phony.Controls
                     cb = new CroppedBitmap(ColorImage.Source as BitmapSource, new Int32Rect(searchX, searchY, 1, 1));
                     cb.CopyPixels(pixels, 4, 0);
                     tempColor = Color.FromArgb(255, pixels[2], pixels[1], pixels[0]);
-                    if (tempColor == searchColor) break;
+                    if (tempColor == searchColor)
+                    {
+                        break;
+                    }
                 }
-                if (tempColor == searchColor) break;
+                if (tempColor == searchColor)
+                {
+                    break;
+                }
             }
             // Default to the top left if no match is found
             if (tempColor != searchColor)

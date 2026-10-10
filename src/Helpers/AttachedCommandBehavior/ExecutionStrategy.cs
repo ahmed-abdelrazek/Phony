@@ -10,13 +10,13 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Gets or sets the Behavior that we execute this strategy
         /// </summary>
-        CommandBehaviorBinding Behavior { get; set; }
+        CommandBehaviorBinding? Behavior { get; set; }
 
         /// <summary>
         /// Executes according to the strategy type
         /// </summary>
         /// <param name="parameter">The parameter to be used in the execution</param>
-        void Execute(object parameter);
+        void Execute(object? parameter);
     }
 
     /// <summary>
@@ -28,19 +28,19 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Gets or sets the Behavior that we execute this strategy
         /// </summary>
-        public CommandBehaviorBinding Behavior { get; set; }
+        public CommandBehaviorBinding? Behavior { get; set; }
 
         /// <summary>
         /// Executes the Command that is stored in the CommandProperty of the CommandExecution
         /// </summary>
         /// <param name="parameter">The parameter for the command</param>
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (Behavior is null)
             {
                 throw new InvalidOperationException("Behavior property cannot be null when executing a strategy");
             }
-            if (Behavior.Command.CanExecute(Behavior.CommandParameter))
+            if (Behavior.Command?.CanExecute(Behavior.CommandParameter) == true)
             {
                 Behavior.Command.Execute(Behavior.CommandParameter);
             }
@@ -60,15 +60,15 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Gets or sets the Behavior that we execute this strategy
         /// </summary>
-        public CommandBehaviorBinding Behavior { get; set; }
+        public CommandBehaviorBinding? Behavior { get; set; }
 
         /// <summary>
         /// Executes an Action delegate
         /// </summary>
         /// <param name="parameter">The parameter to pass to the Action</param>
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
-            Behavior.Action(parameter);
+            Behavior?.Action?.Invoke(parameter);
         }
 
         #endregion

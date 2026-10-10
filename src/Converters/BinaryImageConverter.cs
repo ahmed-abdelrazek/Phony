@@ -8,11 +8,10 @@ namespace Phony.Converters
 {
     public class BinaryImageConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not null && value is byte[])
+            if (value is byte[] bytes)
             {
-                byte[] bytes = value as byte[];
                 MemoryStream stream = new(bytes);
                 BitmapImage image = new();
                 image.BeginInit();

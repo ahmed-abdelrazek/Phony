@@ -13,7 +13,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// As you can see the Attached readonly property has a name registered different (BehaviorsInternal) than the property name, this is a tricks os that we can construct the collection as we want
         /// Read more about this here http://wekempf.spaces.live.com/blog/cns!D18C3EC06EA971CF!468.entry
         /// </summary>
-        private static readonly DependencyPropertyKey BehaviorsPropertyKey = DependencyProperty.RegisterAttachedReadOnly("BehaviorsInternal", typeof(BehaviorBindingCollection), typeof(CommandBehaviorCollection), new FrameworkPropertyMetadata((BehaviorBindingCollection)null));
+        private static readonly DependencyPropertyKey BehaviorsPropertyKey = DependencyProperty.RegisterAttachedReadOnly("BehaviorsInternal", typeof(BehaviorBindingCollection), typeof(CommandBehaviorCollection), new FrameworkPropertyMetadata((BehaviorBindingCollection?)null));
 
         public static readonly DependencyProperty BehaviorsProperty = BehaviorsPropertyKey.DependencyProperty;
 
@@ -27,7 +27,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
             {
                 throw new InvalidOperationException("The dependency object trying to attach to is set to null");
             }
-            BehaviorBindingCollection collection = d.GetValue(CommandBehaviorCollection.BehaviorsProperty) as BehaviorBindingCollection;
+            BehaviorBindingCollection? collection = d.GetValue(CommandBehaviorCollection.BehaviorsProperty) as BehaviorBindingCollection;
             if (collection is null)
             {
                 collection = new BehaviorBindingCollection();
@@ -48,9 +48,12 @@ namespace Phony.Helpers.AttachedCommandBehavior
             collection.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
         }
 
-        static void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        static void CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            BehaviorBindingCollection sourceCollection = (BehaviorBindingCollection)sender;
+            if (sender is not BehaviorBindingCollection sourceCollection)
+            {
+                return;
+            }
             switch (e.Action)
             {
                 //when an item(s) is added we need to set the Owner property implicitly
@@ -126,6 +129,6 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Gets or sets the Owner of the binding
         /// </summary>
-        public DependencyObject Owner { get; set; }
+        public DependencyObject? Owner { get; set; }
     }
 }

@@ -19,21 +19,21 @@ namespace Phony.ViewModels
     public class ServicesViewModel : BindableBase
     {
         long _serviceId;
-        string _name;
-        string _site;
-        string _email;
-        string _searchText;
-        string _phone;
-        string _notes;
-        static string _servicesCount;
-        static string _servicesPurchasePrice;
-        static string _servicesSalePrice;
-        static string _servicesProfit;
-        byte[] _image;
+        string? _name;
+        string? _site;
+        string? _email;
+        string? _searchText;
+        string? _phone;
+        string? _notes;
+        static string? _servicesCount;
+        static string? _servicesPurchasePrice;
+        static string? _servicesSalePrice;
+        static string? _servicesProfit;
+        byte[]? _image;
         decimal _balance;
         bool _isServiceFlyoutOpen;
-        Service _dataGridSelectedService;
-        ObservableCollection<Service> _services;
+        Service? _dataGridSelectedService;
+        ObservableCollection<Service> _services = [];
 
         public long ServiceId
         {
@@ -41,67 +41,67 @@ namespace Phony.ViewModels
             set => SetProperty(ref _serviceId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Site
+        public string? Site
         {
             get => _site;
             set => SetProperty(ref _site, value);
         }
 
-        public string Email
+        public string? Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string ServicesCount
+        public string? ServicesCount
         {
             get => _servicesCount;
             set => SetProperty(ref _servicesCount, value);
         }
 
-        public string ServicesPurchasePrice
+        public string? ServicesPurchasePrice
         {
             get => _servicesPurchasePrice;
             set => SetProperty(ref _servicesPurchasePrice, value);
         }
 
-        public string ServicesSalePrice
+        public string? ServicesSalePrice
         {
             get => _servicesSalePrice;
             set => SetProperty(ref _servicesSalePrice, value);
         }
 
-        public string ServicesProfit
+        public string? ServicesProfit
         {
             get => _servicesProfit;
             set => SetProperty(ref _servicesProfit, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
@@ -119,7 +119,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isServiceFlyoutOpen, value);
         }
 
-        public Service DataGridSelectedService
+        public Service? DataGridSelectedService
         {
             get => _dataGridSelectedService;
             set => SetProperty(ref _dataGridSelectedService, value);
@@ -133,17 +133,17 @@ namespace Phony.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        public ICommand AddBalance { get; set; }
-        public ICommand AddService { get; set; }
-        public ICommand EditService { get; set; }
-        public ICommand DeleteService { get; set; }
-        public ICommand OpenAddServiceFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllServices { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? AddBalance { get; set; }
+        public ICommand? AddService { get; set; }
+        public ICommand? EditService { get; set; }
+        public ICommand? DeleteService { get; set; }
+        public ICommand? OpenAddServiceFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllServices { get; set; }
+        public ICommand? Search { get; set; }
 
-        Services Message = Application.Current.Windows.OfType<Services>().FirstOrDefault();
+        private Services Message => Application.Current.Windows.OfType<Services>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public ServicesViewModel()
         {
@@ -189,7 +189,13 @@ namespace Phony.ViewModels
 
         private async void DoAddBalance()
         {
-            var result = await Message.ShowInputAsync("شحن", $"ادخل المبلغ الذى تريد شحن الخدمه به {DataGridSelectedService.Name}");
+            var selectedService = DataGridSelectedService;
+            if (selectedService is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("شحن", $"ادخل المبلغ الذى تريد شحن الخدمه به {selectedService.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -200,20 +206,20 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
+                    var s = db.GetCollection<Service>(DBCollections.Services).FindById(selectedService.Id);
                     s.Balance += servicepaymentamount;
                     db.GetCollection<Service>(DBCollections.Services).Update(s);
                     db.GetCollection<ServiceMove>(DBCollections.ServicesMoves).Insert(new ServiceMove
                     {
-                        Service = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id),
+                        Service = db.GetCollection<Service>(DBCollections.Services).FindById(selectedService.Id),
                         Debit = servicepaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {DataGridSelectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
-                    Services[Services.IndexOf(DataGridSelectedService)] = s;
+                    await Message.ShowMessageAsync("تمت العملية", $"تم شحن خدمة {selectedService.Name} بمبلغ {servicepaymentamount} جنية بنجاح");
+                    Services[Services.IndexOf(selectedService)] = s;
                     DebitCredit();
                     DataGridSelectedService = null;
                     ServiceId = 0;
@@ -268,8 +274,14 @@ namespace Phony.ViewModels
 
         private async void DoEditService()
         {
+            var selectedService = DataGridSelectedService;
+            if (selectedService is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var s = db.GetCollection<Service>(DBCollections.Services).FindById(DataGridSelectedService.Id);
+            var s = db.GetCollection<Service>(DBCollections.Services).FindById(selectedService.Id);
             s.Name = Name;
             s.Balance = Balance;
             s.Site = Site;
@@ -281,7 +293,7 @@ namespace Phony.ViewModels
             s.EditDate = DateTime.Now;
             db.GetCollection<Service>(DBCollections.Services).Update(s);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل الخدمة بنجاح");
-            Services[Services.IndexOf(DataGridSelectedService)] = s;
+            Services[Services.IndexOf(selectedService)] = s;
             DebitCredit();
             DataGridSelectedService = null;
             ServiceId = 0;
@@ -294,13 +306,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteService()
         {
-            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {DataGridSelectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedService = DataGridSelectedService;
+            if (selectedService is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الخدمة {selectedService.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Service>(DBCollections.Services).Delete(DataGridSelectedService.Id);
-                    Services.Remove(DataGridSelectedService);
+                    db.GetCollection<Service>(DBCollections.Services).Delete(selectedService.Id);
+                    Services.Remove(selectedService);
                 }
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف الخدمة بنجاح");
                 DebitCredit();
@@ -318,7 +336,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name.Contains(SearchText)));
+                Services = new ObservableCollection<Service>(db.GetCollection<Service>(DBCollections.Services).Find(x => x.Name != null && x.Name.Contains(SearchText ?? string.Empty)));
                 if (Services.Count < 1)
                 {
                     await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -352,14 +370,20 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            ServiceId = DataGridSelectedService.Id;
-            Name = DataGridSelectedService.Name;
-            Balance = DataGridSelectedService.Balance;
-            Site = DataGridSelectedService.Site;
-            Image = DataGridSelectedService.Image;
-            Email = DataGridSelectedService.Email;
-            Phone = DataGridSelectedService.Phone;
-            Notes = DataGridSelectedService.Notes;
+            var selectedService = DataGridSelectedService;
+            if (selectedService is null)
+            {
+                return;
+            }
+
+            ServiceId = selectedService.Id;
+            Name = selectedService.Name;
+            Balance = selectedService.Balance;
+            Site = selectedService.Site;
+            Image = selectedService.Image;
+            Email = selectedService.Email;
+            Phone = selectedService.Phone;
+            Notes = selectedService.Notes;
             IsAddServiceFlyoutOpen = true;
         }
 

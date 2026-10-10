@@ -33,7 +33,7 @@ namespace Phony.Data
                             var userCol = db.GetCollection<User>(DBCollections.Users);
                             if (id == 1)
                             {
-                                var u = userCol.Find(x => x.Id == id).FirstOrDefault();
+                                var u = userCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 u.Name = reader["Name"].ToString();
                                 u.Pass = reader["Pass"].ToString();
                                 u.Group = (UserGroup)Convert.ToByte(reader["Group"]);
@@ -70,7 +70,7 @@ namespace Phony.Data
                             var clientCol = db.GetCollection<Client>(DBCollections.Clients);
                             if (id == 1)
                             {
-                                var c = clientCol.Find(x => x.Id == id).FirstOrDefault();
+                                var c = clientCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 c.Name = reader["Name"].ToString();
                                 c.Balance = Convert.ToDecimal(reader["Balance"]);
                                 c.Site = reader["Site"].ToString();
@@ -115,10 +115,10 @@ namespace Phony.Data
                             var companyCol = db.GetCollection<Company>(DBCollections.Companies);
                             if (id == 1)
                             {
-                                var c = companyCol.Find(x => x.Id == id).FirstOrDefault();
+                                var c = companyCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 c.Name = reader["Name"].ToString();
                                 c.Balance = Convert.ToDecimal(reader["Balance"]);
-                                c.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString());
+                                c.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty);
                                 c.Site = reader["Site"].ToString();
                                 c.Email = reader["Email"].ToString();
                                 c.Phone = reader["Phone"].ToString();
@@ -136,7 +136,7 @@ namespace Phony.Data
                                     Id = id,
                                     Name = reader["Name"].ToString(),
                                     Balance = Convert.ToDecimal(reader["Balance"]),
-                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString()),
+                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty),
                                     Site = reader["Site"].ToString(),
                                     Email = reader["Email"].ToString(),
                                     Phone = reader["Phone"].ToString(),
@@ -162,7 +162,7 @@ namespace Phony.Data
                             var salesmanCol = db.GetCollection<SalesMan>(DBCollections.SalesMen);
                             if (id == 1)
                             {
-                                var s = salesmanCol.Find(x => x.Id == id).FirstOrDefault();
+                                var s = salesmanCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 s.Name = reader["Name"].ToString();
                                 s.Balance = Convert.ToDecimal(reader["Balance"]);
                                 s.Email = reader["Email"].ToString();
@@ -205,10 +205,10 @@ namespace Phony.Data
                             var supplierCol = db.GetCollection<Supplier>(DBCollections.Suppliers);
                             if (id == 1)
                             {
-                                var s = supplierCol.Find(x => x.Id == id).FirstOrDefault();
+                                var s = supplierCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 s.Name = reader["Name"].ToString();
                                 s.Balance = Convert.ToDecimal(reader["Balance"]);
-                                s.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString());
+                                s.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty);
                                 s.Site = reader["Site"].ToString();
                                 s.Email = reader["Email"].ToString();
                                 s.Phone = reader["Phone"].ToString();
@@ -227,7 +227,7 @@ namespace Phony.Data
                                     Id = id,
                                     Name = reader["Name"].ToString(),
                                     Balance = Convert.ToDecimal(reader["Balance"]),
-                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString()),
+                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty),
                                     Site = reader["Site"].ToString(),
                                     Email = reader["Email"].ToString(),
                                     Phone = reader["Phone"].ToString(),
@@ -254,10 +254,10 @@ namespace Phony.Data
                             var storeCol = db.GetCollection<Store>(DBCollections.Stores);
                             if (id == 1)
                             {
-                                var s = storeCol.Find(x => x.Id == id).FirstOrDefault();
+                                var s = storeCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 s.Name = reader["Name"].ToString();
                                 s.Motto = reader["Motto"].ToString();
-                                s.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString());
+                                s.Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty);
                                 s.Address1 = reader["Address1"].ToString();
                                 s.Address2 = reader["Address2"].ToString();
                                 s.Tel1 = reader["Tel1"].ToString();
@@ -281,7 +281,7 @@ namespace Phony.Data
                                     Id = id,
                                     Name = reader["Name"].ToString(),
                                     Motto = reader["Motto"].ToString(),
-                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString()),
+                                    Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty),
                                     Address1 = reader["Address1"].ToString(),
                                     Address2 = reader["Address2"].ToString(),
                                     Tel1 = reader["Tel1"].ToString(),
@@ -313,7 +313,7 @@ namespace Phony.Data
                             var treasuryCol = db.GetCollection<Treasury>(DBCollections.Treasuries);
                             if (id == 1)
                             {
-                                var t = treasuryCol.Find(x => x.Id == id).FirstOrDefault();
+                                var t = treasuryCol.Find(x => x.Id == id).FirstOrDefault() ?? throw new InvalidOperationException("The default record is missing from the database.");
                                 t.Name = reader["Name"].ToString();
                                 t.Balance = Convert.ToDecimal(reader["Balance"]);
                                 t.Store = db.GetCollection<Store>(DBCollections.Stores).FindById(Convert.ToInt64(reader["StoreId"]));
@@ -476,7 +476,7 @@ namespace Phony.Data
                                 Id = Convert.ToInt64(reader["Id"]),
                                 Name = reader["Name"].ToString(),
                                 Balance = Convert.ToDecimal(reader["Balance"]),
-                                Image = Encoding.ASCII.GetBytes(reader["Image"].ToString()),
+                                Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty),
                                 Site = reader["Site"].ToString(),
                                 Email = reader["Email"].ToString(),
                                 Phone = reader["Phone"].ToString(),
@@ -528,7 +528,7 @@ namespace Phony.Data
                                 Name = reader["Name"].ToString(),
                                 Barcode = reader["Barcode"].ToString(),
                                 Shopcode = reader["Shopcode"].ToString(),
-                                Image = Encoding.ASCII.GetBytes(reader["Image"].ToString()),
+                                Image = Encoding.ASCII.GetBytes(reader["Image"].ToString() ?? string.Empty),
                                 Group = (ItemGroup)Convert.ToByte(reader["Group"]),
                                 PurchasePrice = Convert.ToDecimal(reader["PurchasePrice"]),
                                 WholeSalePrice = Convert.ToDecimal(reader["WholeSalePrice"]),

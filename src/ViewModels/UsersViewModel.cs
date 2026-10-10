@@ -17,18 +17,18 @@ namespace Phony.ViewModels
     public class UsersViewModel : BindableBase
     {
         int _userId;
-        string _name;
-        string _password1;
-        string _password2;
+        string? _name;
+        string? _password1;
+        string? _password2;
         byte _selectedGroup;
-        string _phone;
-        string _searchText;
-        string _notes;
+        string? _phone;
+        string? _searchText;
+        string? _notes;
         bool _isActive;
         bool _isAddUserFlyoutOpen;
-        User _dataGridSelectedUser;
+        User? _dataGridSelectedUser;
 
-        ObservableCollection<User> _users;
+        ObservableCollection<User> _users = [];
 
         public int UserId
         {
@@ -36,19 +36,19 @@ namespace Phony.ViewModels
             set => SetProperty(ref _userId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Password1
+        public string? Password1
         {
             get => _password1;
             set => SetProperty(ref _password1, value);
         }
 
-        public string Password2
+        public string? Password2
         {
             get => _password2;
             set => SetProperty(ref _password2, value);
@@ -60,19 +60,19 @@ namespace Phony.ViewModels
             set => SetProperty(ref _selectedGroup, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
@@ -90,7 +90,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isAddUserFlyoutOpen, value);
         }
 
-        public User DataGridSelectedUser
+        public User? DataGridSelectedUser
         {
             get => _dataGridSelectedUser;
             set => SetProperty(ref _dataGridSelectedUser, value);
@@ -104,34 +104,33 @@ namespace Phony.ViewModels
             set => SetProperty(ref _users, value);
         }
 
-        public ICommand AddUser { get; set; }
-        public ICommand EditUser { get; set; }
-        public ICommand DeleteUser { get; set; }
-        public ICommand OpenAddUserFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllUsers { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? AddUser { get; set; }
+        public ICommand? EditUser { get; set; }
+        public ICommand? DeleteUser { get; set; }
+        public ICommand? OpenAddUserFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllUsers { get; set; }
+        public ICommand? Search { get; set; }
 
-        Views.Users Message = Application.Current.Windows.OfType<Views.Users>().FirstOrDefault();
+        private Views.Users Message => Application.Current.Windows.OfType<Views.Users>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public UsersViewModel()
         {
             LoadCommands();
             IsActive = true;
-            Groups = new ObservableCollection<Enumeration<byte>>();
-            foreach (var group in Enum.GetValues(typeof(UserGroup)))
+            Groups = [];
+            foreach (var group in Enum.GetValues<UserGroup>())
             {
                 Groups.Add(new Enumeration<byte>
                 {
                     Id = (byte)group,
-                    Name = Enumerations.GetEnumDescription((UserGroup)group).ToString()
+                    Name = Enumerations.GetEnumDescription(group).ToString()
                 });
             }
-            using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
-            {
-                Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
-            }
+
+            using var db = new LiteDatabase(LiteDbContext.ConnectionString);
+            Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll().ToList());
         }
 
         public void LoadCommands()
@@ -162,7 +161,7 @@ namespace Phony.ViewModels
                     var u = new User
                     {
                         Name = Name,
-                        Pass = SecurePasswordHasher.Hash(Password1),
+                        Pass = SecurePasswordHasher.Hash(Password1 ?? throw new InvalidOperationException("A password is required.")),
                         Group = (UserGroup)SelectedGroup,
                         Phone = Phone,
                         Notes = Notes,
@@ -190,19 +189,25 @@ namespace Phony.ViewModels
 
         private void DoEditUser()
         {
+            var selectedUser = DataGridSelectedUser;
+            if (selectedUser is null)
+            {
+                return;
+            }
+
             if (new NetworkCredential("", Password1).Password == new NetworkCredential("", Password2).Password)
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
                 var userCol = db.GetCollection<User>(DBCollections.Users);
-                var u = userCol.Find(x => x.Id == DataGridSelectedUser.Id).FirstOrDefault();
+                var u = userCol.Find(x => x.Id == selectedUser.Id).FirstOrDefault() ?? throw new InvalidOperationException("The selected record no longer exists.");
                 u.Name = Name;
-                u.Pass = SecurePasswordHasher.Hash(Password1);
+                u.Pass = SecurePasswordHasher.Hash(Password1 ?? throw new InvalidOperationException("A password is required."));
                 u.Group = (UserGroup)SelectedGroup;
                 u.Phone = Phone;
                 u.Notes = Notes;
                 u.IsActive = IsActive;
                 userCol.Update(u);
-                Users[Users.IndexOf(DataGridSelectedUser)] = u;
+                Users[Users.IndexOf(selectedUser)] = u;
                 UserId = 0;
                 DataGridSelectedUser = null;
                 Message.ShowMessageAsync("تمت العملية", "تم تعديل المستخدم بنجاح");
@@ -220,13 +225,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteUser()
         {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedUser = DataGridSelectedUser;
+            if (selectedUser is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {selectedUser.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<User>(DBCollections.Users).Delete(DataGridSelectedUser.Id);
-                    Users.Remove(DataGridSelectedUser);
+                    db.GetCollection<User>(DBCollections.Users).Delete(selectedUser.Id);
+                    Users.Remove(selectedUser);
                 }
                 DataGridSelectedUser = null;
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف الكارت بنجاح");
@@ -274,12 +285,18 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            UserId = DataGridSelectedUser.Id;
-            Name = DataGridSelectedUser.Name;
-            SelectedGroup = (byte)DataGridSelectedUser.Group;
-            Phone = DataGridSelectedUser.Phone;
-            Notes = DataGridSelectedUser.Notes;
-            IsActive = DataGridSelectedUser.IsActive;
+            var selectedUser = DataGridSelectedUser;
+            if (selectedUser is null)
+            {
+                return;
+            }
+
+            UserId = selectedUser.Id;
+            Name = selectedUser.Name;
+            SelectedGroup = (byte)selectedUser.Group;
+            Phone = selectedUser.Phone;
+            Notes = selectedUser.Notes;
+            IsActive = selectedUser.IsActive;
             IsAddUserFlyoutOpen = true;
         }
 

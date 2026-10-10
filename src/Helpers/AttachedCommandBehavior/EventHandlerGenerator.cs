@@ -21,7 +21,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         {
             //Get the eventHandlerType signature
             var eventHandlerInfo = eventHandlerType.GetMethod("Invoke");
-            Type returnType = eventHandlerInfo.ReturnParameter.ParameterType;
+            Type returnType = (eventHandlerInfo ?? throw new ArgumentException("The type must be a delegate.", nameof(eventHandlerType))).ReturnParameter.ParameterType;
             if (returnType != typeof(void))
             {
                 throw new ApplicationException("Delegate has a return type. This only supprts event handlers that are void");

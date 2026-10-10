@@ -31,13 +31,13 @@ namespace Phony.ViewModels
 
         Visibility _isReturnedVisible;
 
-        ObservableCollection<Bill> _bills;
+        ObservableCollection<Bill> _bills = [];
 
-        ObservableCollection<Client> _clients;
+        ObservableCollection<Client> _clients = [];
 
-        ObservableCollection<User> _users;
+        ObservableCollection<User> _users = [];
 
-        string _report;
+        string? _report;
 
         private long _loadedBillId;
         private bool _isReturning;
@@ -138,15 +138,15 @@ namespace Phony.ViewModels
             set => SetProperty(ref _users, value);
         }
 
-        public string Report
+        public string? Report
         {
             get => _report;
             set => SetProperty(ref _report, value);
         }
 
-        public ICommand GetBills { get; set; }
-        public ICommand Show { get; set; }
-        public ICommand SaveReturned { get; set; }
+        public ICommand? GetBills { get; set; }
+        public ICommand? Show { get; set; }
+        public ICommand? SaveReturned { get; set; }
 
         public SalesBillsViewerViewModel()
         {
@@ -165,7 +165,7 @@ namespace Phony.ViewModels
             BillSelectedValue = id;
         }
 
-        private readonly SalesBillsViewer Message = Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault();
+        private SalesBillsViewer Message => Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public void LoadCommands()
         {
@@ -185,7 +185,7 @@ namespace Phony.ViewModels
             LoadedBillId = 0;
             Report = null;
             IsReturnedVisible = Visibility.Collapsed;
-            BillDto bill = null;
+            BillDto? bill = null;
 
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
@@ -199,10 +199,10 @@ namespace Phony.ViewModels
                     return;
                 }
 
-                var services = AppMapper.ToBillServiceMoveDtos(db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Include(x => x.Service).Find(x => x.Bill.Id == bill.Id));
+                var services = AppMapper.ToBillServiceMoveDtos(db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Include(x => x.Service).Find(x => x.Bill != null && x.Bill.Id == bill.Id));
                 bill.ServicesMoves = services;
 
-                var Items = AppMapper.ToBillItemMoveDtos(db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Include(x => x.Item).Find(x => x.Bill.Id == bill.Id));
+                var Items = AppMapper.ToBillItemMoveDtos(db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Include(x => x.Item).Find(x => x.Bill != null && x.Bill.Id == bill.Id));
                 bill.ItemsMoves = Items;
 
             }
@@ -298,7 +298,7 @@ namespace Phony.ViewModels
                 if (ClientSelectedValue > 0 && FirstDate.Year > 2000 && SecondDate.Year > 2000)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client != null && b.Client.Id == ClientSelectedValue && b.CreateDate >= FirstDate && b.CreateDate <= SecondDate));
                 }
             }
             else if (ByClientName)
@@ -306,7 +306,7 @@ namespace Phony.ViewModels
                 if (ClientSelectedValue > 0)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client.Id == ClientSelectedValue));
+                    Bills = new ObservableCollection<Bill>(db.GetCollection<Bill>(DBCollections.Bills).Find(b => b.Client != null && b.Client.Id == ClientSelectedValue));
                 }
             }
             else if (By2Dates)

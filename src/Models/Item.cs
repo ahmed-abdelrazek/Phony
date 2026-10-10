@@ -5,13 +5,13 @@ namespace Phony.Models
 {
     public class Item : BaseModel
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Barcode { get; set; }
+        public string? Barcode { get; set; }
 
-        public string Shopcode { get; set; }
+        public string? Shopcode { get; set; }
 
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
 
         public ItemGroup Group { get; set; }
 
@@ -26,9 +26,9 @@ namespace Phony.Models
         public decimal QTY { get; set; }
 
         [BsonRef(nameof(DBCollections.Companies))]
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
 
         [BsonRef(nameof(DBCollections.Suppliers))]
-        public virtual Supplier Supplier { get; set; }
+        public virtual Supplier? Supplier { get; set; }
     }
 }

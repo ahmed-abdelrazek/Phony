@@ -19,25 +19,25 @@ namespace Phony.ViewModels
     public class ClientsViewModel : BindableBase
     {
         long _clientsId;
-        string _name;
-        string _site;
-        string _email;
-        string _phone;
-        string _notes;
-        string _searchText;
-        string _childName;
-        string _childPrice;
-        static string _clientsCount;
-        static string _clientsPurchasePrice;
-        static string _clientsSalePrice;
-        static string _clientsProfit;
+        string? _name;
+        string? _site;
+        string? _email;
+        string? _phone;
+        string? _notes;
+        string? _searchText;
+        string? _childName;
+        string? _childPrice;
+        static string? _clientsCount;
+        static string? _clientsPurchasePrice;
+        static string? _clientsSalePrice;
+        static string? _clientsProfit;
         decimal _balance;
         bool _fastResult;
         bool _openFastResult;
         bool _isAddClientFlyoutOpen;
-        ClientDto _dataGridSelectedClient;
+        ClientDto? _dataGridSelectedClient;
 
-        ObservableCollection<ClientDto> _clients;
+        ObservableCollection<ClientDto> _clients = [];
 
         public long ClientId
         {
@@ -45,73 +45,73 @@ namespace Phony.ViewModels
             set => SetProperty(ref _clientsId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Site
+        public string? Site
         {
             get => _site;
             set => SetProperty(ref _site, value);
         }
 
-        public string Email
+        public string? Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string ChildName
+        public string? ChildName
         {
             get => _childName;
             set => SetProperty(ref _childName, value);
         }
 
-        public string ChildPrice
+        public string? ChildPrice
         {
             get => _childPrice;
             set => SetProperty(ref _childPrice, value);
         }
 
-        public string ClientCount
+        public string? ClientCount
         {
             get => _clientsCount;
             set => SetProperty(ref _clientsCount, value);
         }
 
-        public string ClientCredits
+        public string? ClientCredits
         {
             get => _clientsPurchasePrice;
             set => SetProperty(ref _clientsPurchasePrice, value);
         }
 
-        public string ClientDebits
+        public string? ClientDebits
         {
             get => _clientsSalePrice;
             set => SetProperty(ref _clientsSalePrice, value);
         }
 
-        public string ClientProfit
+        public string? ClientProfit
         {
             get => _clientsProfit;
             set => SetProperty(ref _clientsProfit, value);
@@ -141,7 +141,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isAddClientFlyoutOpen, value);
         }
 
-        public ClientDto DataGridSelectedClient
+        public ClientDto? DataGridSelectedClient
         {
             get => _dataGridSelectedClient;
             set => SetProperty(ref _dataGridSelectedClient, value);
@@ -153,17 +153,17 @@ namespace Phony.ViewModels
             set => SetProperty(ref _clients, value);
         }
 
-        public ICommand ClientPay { get; set; }
-        public ICommand PayClient { get; set; }
-        public ICommand AddClient { get; set; }
-        public ICommand EditClient { get; set; }
-        public ICommand DeleteClient { get; set; }
-        public ICommand Search { get; set; }
-        public ICommand OpenAddClientFlyout { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllClients { get; set; }
+        public ICommand? ClientPay { get; set; }
+        public ICommand? PayClient { get; set; }
+        public ICommand? AddClient { get; set; }
+        public ICommand? EditClient { get; set; }
+        public ICommand? DeleteClient { get; set; }
+        public ICommand? Search { get; set; }
+        public ICommand? OpenAddClientFlyout { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllClients { get; set; }
 
-        private readonly Clients Message = Application.Current.Windows.OfType<Clients>().FirstOrDefault();
+        private Clients Message => Application.Current.Windows.OfType<Clients>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public ClientsViewModel()
         {
@@ -181,7 +181,7 @@ namespace Phony.ViewModels
             PayClient = new DelegateCommand(DoPayClientAsync, CanPayClient).ObservesProperty(() => DataGridSelectedClient);
             AddClient = new DelegateCommand(DoAddClient, CanAddClient).ObservesProperty(() => Name);
             EditClient = new DelegateCommand(DoEditClient, CanEditClient).ObservesProperty(() => Name).ObservesProperty(() => ClientId).ObservesProperty(() => DataGridSelectedClient);
-            DeleteClient = new DelegateCommand(DoDeleteClient, CanDeleteClient).ObservesProperty(() => DataGridSelectedClient).ObservesProperty(() => DataGridSelectedClient.Id);
+            DeleteClient = new DelegateCommand(DoDeleteClient, CanDeleteClient).ObservesProperty(() => DataGridSelectedClient);
             Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
             OpenAddClientFlyout = new DelegateCommand(DoOpenAddClientFlyout, CanOpenAddClientFlyout);
             FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedClient);
@@ -217,7 +217,13 @@ namespace Phony.ViewModels
 
         private async void DoClientPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد خصمه من حساب العميل {DataGridSelectedClient.Name}");
+            var selectedClient = DataGridSelectedClient;
+            if (selectedClient is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد خصمه من حساب العميل {selectedClient.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
@@ -228,11 +234,11 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
+                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(selectedClient.Id);
                     c.Balance -= clientpaymentamount;
                     db.GetCollection<ClientMove>(DBCollections.ClientsMoves).Insert(new ClientMove
                     {
-                        Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
+                        Client = db.GetCollection<Client>(DBCollections.Clients).FindById(selectedClient.Id),
                         Credit = clientpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
@@ -245,15 +251,15 @@ namespace Phony.ViewModels
                         {
                             Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                             Debit = clientpaymentamount,
-                            Notes = $"استلام من العميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
+                            Notes = $"استلام من العميل بكود {selectedClient.Id} باسم {selectedClient.Name}",
                             CreateDate = DateTime.Now,
                             Creator = Core.ReadUserSession(),
                             EditDate = null,
                             Editor = null
                         });
                     }
-                    await Message.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
-                    Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم تدفيع {selectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
+                    Clients[Clients.IndexOf(selectedClient)] = AppMapper.ToDto(c);
                     DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
@@ -272,7 +278,13 @@ namespace Phony.ViewModels
 
         private async void DoPayClientAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لحساب للعميل {DataGridSelectedClient.Name}");
+            var selectedClient = DataGridSelectedClient;
+            if (selectedClient is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لحساب للعميل {selectedClient.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لتدفيعه");
@@ -283,11 +295,11 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
+                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(selectedClient.Id);
                     c.Balance += clientpaymentamount;
                     db.GetCollection<ClientMove>(DBCollections.ClientsMoves).Insert(new ClientMove
                     {
-                        Client = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id),
+                        Client = db.GetCollection<Client>(DBCollections.Clients).FindById(selectedClient.Id),
                         Debit = clientpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
@@ -298,14 +310,14 @@ namespace Phony.ViewModels
                     {
                         Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                         Credit = clientpaymentamount,
-                        Notes = $"تسليم المبلغ للعميل بكود {DataGridSelectedClient.Id} باسم {DataGridSelectedClient.Name}",
+                        Notes = $"تسليم المبلغ للعميل بكود {selectedClient.Id} باسم {selectedClient.Name}",
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم دفع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
-                    Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم دفع {selectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
+                    Clients[Clients.IndexOf(selectedClient)] = AppMapper.ToDto(c);
                     DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
@@ -359,8 +371,14 @@ namespace Phony.ViewModels
 
         private void DoEditClient()
         {
+            var selectedClient = DataGridSelectedClient;
+            if (selectedClient is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var c = db.GetCollection<Client>(DBCollections.Clients).FindById(DataGridSelectedClient.Id);
+            var c = db.GetCollection<Client>(DBCollections.Clients).FindById(selectedClient.Id);
             c.Name = Name;
             c.Balance = Balance;
             c.Site = Site;
@@ -371,7 +389,7 @@ namespace Phony.ViewModels
             c.EditDate = DateTime.Now;
             db.GetCollection<Client>(DBCollections.Clients).Update(c);
             Message.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
-            Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
+            Clients[Clients.IndexOf(selectedClient)] = AppMapper.ToDto(c);
             DebitCredit();
             DataGridSelectedClient = null;
             ClientId = 0;
@@ -384,13 +402,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteClient()
         {
-            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {DataGridSelectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedClient = DataGridSelectedClient;
+            if (selectedClient is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف العميل {selectedClient.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Client>(DBCollections.Clients).Delete(DataGridSelectedClient.Id);
-                    Clients.Remove(DataGridSelectedClient);
+                    db.GetCollection<Client>(DBCollections.Clients).Delete(selectedClient.Id);
+                    Clients.Remove(selectedClient);
                 }
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف العميل بنجاح");
                 DebitCredit();
@@ -408,13 +432,13 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Clients = AppMapper.ToClientDtos(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name.Contains(SearchText)));
+                Clients = AppMapper.ToClientDtos(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name != null && x.Name.Contains(SearchText ?? string.Empty)));
                 if (Clients.Count > 0)
                 {
                     if (FastResult)
                     {
-                        ChildName = Clients.FirstOrDefault().Name;
-                        ChildPrice = Clients.FirstOrDefault().Balance.ToString();
+                        ChildName = Clients.FirstOrDefault()?.Name;
+                        ChildPrice = Clients.FirstOrDefault()?.Balance.ToString();
                         OpenFastResult = true;
                     }
                 }
@@ -448,13 +472,19 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            ClientId = DataGridSelectedClient.Id;
-            Name = DataGridSelectedClient.Name;
-            Balance = DataGridSelectedClient.Balance;
-            Site = DataGridSelectedClient.Site;
-            Email = DataGridSelectedClient.Email;
-            Phone = DataGridSelectedClient.Phone;
-            Notes = DataGridSelectedClient.Notes;
+            var selectedClient = DataGridSelectedClient;
+            if (selectedClient is null)
+            {
+                return;
+            }
+
+            ClientId = selectedClient.Id;
+            Name = selectedClient.Name;
+            Balance = selectedClient.Balance;
+            Site = selectedClient.Site;
+            Email = selectedClient.Email;
+            Phone = selectedClient.Phone;
+            Notes = selectedClient.Notes;
             IsAddClientFlyoutOpen = true;
         }
 

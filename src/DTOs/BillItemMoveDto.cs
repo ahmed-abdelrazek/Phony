@@ -6,15 +6,15 @@ namespace Phony.DTOs
     public class BillItemMoveDto : BindableBase
     {
         private long id;
-        private string notes;
-        private UserDto creator;
+        private string? notes;
+        private UserDto? creator;
         private DateTime createDate;
-        private UserDto editor;
+        private UserDto? editor;
         private DateTime? editDate;
 
         public long Id { get => id; set => SetProperty(ref id, value); }
 
-        public virtual ItemDto Item { get; set; }
+        public virtual ItemDto? Item { get; set; }
 
         public decimal ItemPrice { get; set; }
 
@@ -24,13 +24,13 @@ namespace Phony.DTOs
 
         public decimal Total => Math.Round(ItemPrice * QTY * (1 - Discount / 100), 2);
 
-        public string Notes { get => notes; set => SetProperty(ref notes, value); }
+        public string? Notes { get => notes; set => SetProperty(ref notes, value); }
 
-        public UserDto Creator { get => creator; set => SetProperty(ref creator, value); }
+        public UserDto? Creator { get => creator; set => SetProperty(ref creator, value); }
 
         public DateTime CreateDate { get => createDate; set => SetProperty(ref createDate, value); }
 
-        public UserDto Editor { get => editor; set => SetProperty(ref editor, value); }
+        public UserDto? Editor { get => editor; set => SetProperty(ref editor, value); }
 
         public DateTime? EditDate { get => editDate; set => SetProperty(ref editDate, value); }
     }

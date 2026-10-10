@@ -40,9 +40,15 @@ namespace Phony.Data
                     if (db.GetCollection<Models.User>(DBCollections.Users).Count() == 0
                         || db.GetCollection<Models.Store>(DBCollections.Stores).FindById(1) == null
                         || db.GetCollection<Models.Treasury>(DBCollections.Treasuries).FindById(1) == null)
+                    {
                         throw new InvalidOperationException("Backup is not a configured Phony database.");
+                    }
+
                     foreach (var name in db.GetCollectionNames())
+                    {
                         foreach (var document in db.GetCollection(name).FindAll()) { }
+                    }
+
                     db.Checkpoint();
                 }
 
@@ -55,7 +61,10 @@ namespace Phony.Data
                     // Preserve the previous database and replace atomically.
                     File.Replace(staged, target, target + ".before-restore-" + Guid.NewGuid().ToString("N") + ".bak");
                 }
-                else File.Move(staged, target);
+                else
+                {
+                    File.Move(staged, target);
+                }
             }
             finally
             {

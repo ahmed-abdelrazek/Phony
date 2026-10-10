@@ -1,5 +1,3 @@
-#nullable enable
-
 using Phony.Data;
 using Phony.DTOs;
 using Phony.Extensions;
@@ -44,8 +42,8 @@ namespace Phony.Mappers
         public static partial ObservableCollection<CompanyDto> ToCompanyDtos(IEnumerable<Company> source);
         public static partial ObservableCollection<ItemDto> ToItemDtos(IEnumerable<Item> source);
         public static partial ObservableCollection<SalesManDto> ToSalesManDtos(IEnumerable<SalesMan> source);
-        public static partial List<BillItemMoveDto> ToBillItemMoveDtos(IEnumerable<BillItemMove> source);
-        public static partial List<BillServiceMoveDto> ToBillServiceMoveDtos(IEnumerable<BillServiceMove> source);
+        public static partial List<BillItemMoveDto?> ToBillItemMoveDtos(IEnumerable<BillItemMove?> source);
+        public static partial List<BillServiceMoveDto?> ToBillServiceMoveDtos(IEnumerable<BillServiceMove?> source);
 
         // AutoMapper mapped missing invoice collections to empty lists.
         private static List<BillItemMoveDto?> MapBillItems(List<BillItemMove?>? source)
@@ -54,7 +52,9 @@ namespace Phony.Mappers
             if (source != null)
             {
                 foreach (var move in source)
+                {
                     result.Add(ToDto(move));
+                }
             }
             return result;
         }
@@ -65,7 +65,9 @@ namespace Phony.Mappers
             if (source != null)
             {
                 foreach (var move in source)
+                {
                     result.Add(ToDto(move));
+                }
             }
             return result;
         }

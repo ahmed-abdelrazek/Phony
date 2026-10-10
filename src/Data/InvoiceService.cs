@@ -10,7 +10,7 @@ namespace Phony.Data
     {
         public static decimal Change(decimal paid, decimal total) => Math.Round(Math.Max(0, paid - total), 2);
 
-        public static long Save(ConnectionString connection, long clientId, decimal discount, decimal paid, string notes, User creator, IEnumerable<BillItemMove> items, IEnumerable<BillServiceMove> services)
+        public static long Save(ConnectionString connection, long clientId, decimal discount, decimal paid, string? notes, User creator, IEnumerable<BillItemMove> items, IEnumerable<BillServiceMove> services)
         {
             var itemMoves = items.ToList();
             var serviceMoves = services.ToList();
@@ -49,7 +49,7 @@ namespace Phony.Data
                 }
 
                 // Read current balances inside the transaction, aggregating repeated lines.
-                foreach (var group in itemMoves.GroupBy(x => x.Item.Id))
+                foreach (var group in itemMoves.GroupBy(x => (x.Item ?? throw new InvalidOperationException("The item movement has no item.")).Id))
                 {
                     var item = db.GetCollection<Item>(DBCollections.Items).FindById(group.Key)
                         ?? throw new InvalidOperationException("Item no longer exists.");
@@ -65,7 +65,7 @@ namespace Phony.Data
                     db.GetCollection<Item>(DBCollections.Items).Update(item);
                 }
 
-                foreach (var group in serviceMoves.GroupBy(x => x.Service.Id))
+                foreach (var group in serviceMoves.GroupBy(x => (x.Service ?? throw new InvalidOperationException("The service movement has no service.")).Id))
                 {
                     var service = db.GetCollection<Service>(DBCollections.Services).FindById(group.Key)
                         ?? throw new InvalidOperationException("Service no longer exists.");
@@ -166,7 +166,7 @@ namespace Phony.Data
                     throw new InvalidOperationException("Invoice was already returned.");
                 }
 
-                foreach (var group in db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Find(x => x.Bill.Id == billId).ToList().GroupBy(x => x.Item.Id))
+                foreach (var group in db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Find(x => x.Bill != null && x.Bill.Id == billId).ToList().GroupBy(x => (x.Item ?? throw new InvalidOperationException("The item movement has no item.")).Id))
                 {
                     var item = db.GetCollection<Item>(DBCollections.Items).FindById(group.Key)
                         ?? throw new InvalidOperationException("Cannot return a deleted item.");
@@ -175,7 +175,7 @@ namespace Phony.Data
                     db.GetCollection<Item>(DBCollections.Items).Update(item);
                 }
 
-                foreach (var group in db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Find(x => x.Bill.Id == billId).ToList().GroupBy(x => x.Service.Id))
+                foreach (var group in db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Find(x => x.Bill != null && x.Bill.Id == billId).ToList().GroupBy(x => (x.Service ?? throw new InvalidOperationException("The service movement has no service.")).Id))
                 {
                     var service = db.GetCollection<Service>(DBCollections.Services).FindById(group.Key)
                         ?? throw new InvalidOperationException("Cannot return a deleted service.");
@@ -184,7 +184,7 @@ namespace Phony.Data
                     db.GetCollection<Service>(DBCollections.Services).Update(service);
                 }
 
-                var client = db.GetCollection<Client>(DBCollections.Clients).FindById(bill.Client.Id)
+                var client = db.GetCollection<Client>(DBCollections.Clients).FindById((bill.Client ?? throw new InvalidOperationException("The invoice has no client.")).Id)
                     ?? throw new InvalidOperationException("Cannot return an invoice for a deleted client.");
 
                 client.Balance -= Math.Max(0, bill.TotalAfterDiscounts - bill.TotalPayed);

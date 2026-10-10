@@ -21,21 +21,21 @@ namespace Phony.ViewModels
     public class CompaniesViewModel : BindableBase
     {
         long _companyId;
-        string _name;
-        string _site;
-        string _email;
-        string _searchText;
-        string _phone;
-        string _notes;
-        static string _companiesCount;
-        static string _companiesDebits;
-        static string _companiesCredits;
-        static string _companiesProfit;
-        byte[] _image;
+        string? _name;
+        string? _site;
+        string? _email;
+        string? _searchText;
+        string? _phone;
+        string? _notes;
+        static string? _companiesCount;
+        static string? _companiesDebits;
+        static string? _companiesCredits;
+        static string? _companiesProfit;
+        byte[]? _image;
         decimal _balance;
         bool _isCompanyFlyoutOpen;
-        CompanyDto _dataGridSelectedCompany;
-        ObservableCollection<CompanyDto> _companies;
+        CompanyDto? _dataGridSelectedCompany;
+        ObservableCollection<CompanyDto> _companies = [];
 
         public long CompanyId
         {
@@ -43,67 +43,67 @@ namespace Phony.ViewModels
             set => SetProperty(ref _companyId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Site
+        public string? Site
         {
             get => _site;
             set => SetProperty(ref _site, value);
         }
 
-        public string Email
+        public string? Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string CompaniesCount
+        public string? CompaniesCount
         {
             get => _companiesCount;
             set => SetProperty(ref _companiesCount, value);
         }
 
-        public string CompaniesDebits
+        public string? CompaniesDebits
         {
             get => _companiesDebits;
             set => SetProperty(ref _companiesDebits, value);
         }
 
-        public string CompaniesCredits
+        public string? CompaniesCredits
         {
             get => _companiesCredits;
             set => SetProperty(ref _companiesCredits, value);
         }
 
-        public string CompaniesProfit
+        public string? CompaniesProfit
         {
             get => _companiesProfit;
             set => SetProperty(ref _companiesProfit, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
@@ -121,7 +121,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isCompanyFlyoutOpen, value);
         }
 
-        public CompanyDto DataGridSelectedCompany
+        public CompanyDto? DataGridSelectedCompany
         {
             get => _dataGridSelectedCompany;
             set => SetProperty(ref _dataGridSelectedCompany, value);
@@ -133,18 +133,18 @@ namespace Phony.ViewModels
             set => SetProperty(ref _companies, value);
         }
 
-        public ICommand CompanyPay { get; set; }
-        public ICommand PayCompany { get; set; }
-        public ICommand AddCompany { get; set; }
-        public ICommand EditCompany { get; set; }
-        public ICommand DeleteCompany { get; set; }
-        public ICommand OpenAddCompanyFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllCompanies { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? CompanyPay { get; set; }
+        public ICommand? PayCompany { get; set; }
+        public ICommand? AddCompany { get; set; }
+        public ICommand? EditCompany { get; set; }
+        public ICommand? DeleteCompany { get; set; }
+        public ICommand? OpenAddCompanyFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllCompanies { get; set; }
+        public ICommand? Search { get; set; }
 
-        private readonly Companies Message = Application.Current.Windows.OfType<Companies>().FirstOrDefault();
+        private Companies Message => Application.Current.Windows.OfType<Companies>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public CompaniesViewModel()
         {
@@ -162,7 +162,7 @@ namespace Phony.ViewModels
             PayCompany = new DelegateCommand(DoPayCompanyAsync, CanPayCompany).ObservesProperty(() => DataGridSelectedCompany);
             AddCompany = new DelegateCommand(DoAddCompany, CanAddCompany).ObservesProperty(() => Name);
             EditCompany = new DelegateCommand(DoEditCompany, CanEditCompany).ObservesProperty(() => Name).ObservesProperty(() => CompanyId).ObservesProperty(() => DataGridSelectedCompany);
-            DeleteCompany = new DelegateCommand(DoDeleteCompany, CanDeleteCompany).ObservesProperty(() => DataGridSelectedCompany).ObservesProperty(() => DataGridSelectedCompany.Id);
+            DeleteCompany = new DelegateCommand(DoDeleteCompany, CanDeleteCompany).ObservesProperty(() => DataGridSelectedCompany);
             OpenAddCompanyFlyout = new DelegateCommand(DoOpenAddCompanyFlyout, CanOpenAddCompanyFlyout);
             SelectImage = new DelegateCommand(DoSelectImage, CanSelectImage);
             FillUI = new DelegateCommand(DoFillUI, CanFillUI).ObservesProperty(() => DataGridSelectedCompany);
@@ -199,7 +199,13 @@ namespace Phony.ViewModels
 
         private async void DoCompanyPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {DataGridSelectedCompany.Name}");
+            var selectedCompany = DataGridSelectedCompany;
+            if (selectedCompany is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد اضافته لرصيدك لدى شركة {selectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -210,20 +216,20 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(selectedCompany.Id);
                     s.Balance += compantpaymentamount;
                     //the company will give us money in form of balance or something
                     db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                     {
-                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
+                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(selectedCompany.Id),
                         Credit = compantpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(s);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {selectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                    Companies[Companies.IndexOf(selectedCompany)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedCompany = null;
                     CompanyId = 0;
@@ -242,7 +248,13 @@ namespace Phony.ViewModels
 
         private async void DoPayCompanyAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {DataGridSelectedCompany.Name}");
+            var selectedCompany = DataGridSelectedCompany;
+            if (selectedCompany is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد دفعه لشركة {selectedCompany.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -253,12 +265,12 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+                    var s = db.GetCollection<Company>(DBCollections.Companies).FindById(selectedCompany.Id);
                     s.Balance -= compantpaymentamount;
                     //Company gets money from us
                     db.GetCollection<CompanyMove>(DBCollections.CompaniesMoves).Insert(new CompanyMove
                     {
-                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id),
+                        Company = db.GetCollection<Company>(DBCollections.Companies).FindById(selectedCompany.Id),
                         Debit = compantpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
@@ -270,14 +282,14 @@ namespace Phony.ViewModels
                     {
                         Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                         Credit = compantpaymentamount,
-                        Notes = $"دفع للشركة بكود {DataGridSelectedCompany.Id} باسم {DataGridSelectedCompany.Name}",
+                        Notes = $"دفع للشركة بكود {selectedCompany.Id} باسم {selectedCompany.Name}",
                         CreateDate = DateTime.Now,
                         Creator = db.GetCollection<User>(DBCollections.Users).FindById(Core.ReadUserSession().Id),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(s);
+                    await Message.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {selectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
+                    Companies[Companies.IndexOf(selectedCompany)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedCompany = null;
                     CompanyId = 0;
@@ -332,8 +344,14 @@ namespace Phony.ViewModels
 
         private async void DoEditCompany()
         {
+            var selectedCompany = DataGridSelectedCompany;
+            if (selectedCompany is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var company = db.GetCollection<Company>(DBCollections.Companies).FindById(DataGridSelectedCompany.Id);
+            var company = db.GetCollection<Company>(DBCollections.Companies).FindById(selectedCompany.Id);
             company.Name = Name;
             company.Balance = Balance;
             company.Site = Site;
@@ -345,7 +363,7 @@ namespace Phony.ViewModels
             company.EditDate = DateTime.Now;
             db.GetCollection<Company>(DBCollections.Companies).Update(company);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
-            Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(company);
+            Companies[Companies.IndexOf(selectedCompany)] = AppMapper.ToDto(company);
             DebitCredit();
             DataGridSelectedCompany = null;
             CompanyId = 0;
@@ -358,13 +376,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteCompany()
         {
-            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {DataGridSelectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedCompany = DataGridSelectedCompany;
+            if (selectedCompany is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الخدمة", $"هل انت متاكد من حذف الشركة {selectedCompany.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Company>(DBCollections.Companies).Delete(DataGridSelectedCompany.Id);
-                    Companies.Remove(DataGridSelectedCompany);
+                    db.GetCollection<Company>(DBCollections.Companies).Delete(selectedCompany.Id);
+                    Companies.Remove(selectedCompany);
                 }
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف الشركة بنجاح");
                 DebitCredit();
@@ -382,7 +406,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Companies = AppMapper.ToCompanyDtos(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
+                Companies = AppMapper.ToCompanyDtos(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name != null && x.Name.Contains(SearchText ?? string.Empty)));
                 if (Companies.Count < 1)
                 {
                     await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -416,14 +440,20 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            CompanyId = DataGridSelectedCompany.Id;
-            Name = DataGridSelectedCompany.Name;
-            Balance = DataGridSelectedCompany.Balance;
-            Site = DataGridSelectedCompany.Site;
-            Image = DataGridSelectedCompany.Image;
-            Email = DataGridSelectedCompany.Email;
-            Phone = DataGridSelectedCompany.Phone;
-            Notes = DataGridSelectedCompany.Notes;
+            var selectedCompany = DataGridSelectedCompany;
+            if (selectedCompany is null)
+            {
+                return;
+            }
+
+            CompanyId = selectedCompany.Id;
+            Name = selectedCompany.Name;
+            Balance = selectedCompany.Balance;
+            Site = selectedCompany.Site;
+            Image = selectedCompany.Image;
+            Email = selectedCompany.Email;
+            Phone = selectedCompany.Phone;
+            Notes = selectedCompany.Notes;
             IsAddCompanyFlyoutOpen = true;
         }
 

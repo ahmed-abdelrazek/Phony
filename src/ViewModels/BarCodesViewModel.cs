@@ -24,20 +24,20 @@ namespace Phony.ViewModels
         int _width;
         int _barWidth;
         double _aspectRatio;
-        string _encodeValue;
-        string _selectedRotate;
-        string _alignment;
-        string _foreground;
-        string _background;
-        string _alternateLabelText;
-        string _labelLocation;
-        string _encodedValue;
-        string _selectedEncoder;
-        byte[] _image;
+        string? _encodeValue;
+        string? _selectedRotate;
+        string? _alignment;
+        string? _foreground;
+        string? _background;
+        string? _alternateLabelText;
+        string? _labelLocation;
+        string? _encodedValue;
+        string? _selectedEncoder;
+        byte[]? _image;
         bool _generateLabel;
 
-        List<string> _rotateTypes;
-        List<Enumeration<byte>> _encoders;
+        List<string> _rotateTypes = [];
+        List<Enumeration<byte>> _encoders = [];
 
         public int Height
         {
@@ -63,55 +63,55 @@ namespace Phony.ViewModels
             set => SetProperty(ref _aspectRatio, value);
         }
 
-        public string EncodeValue
+        public string? EncodeValue
         {
             get => _encodeValue;
             set => SetProperty(ref _encodeValue, value);
         }
 
-        public string SelectedRotate
+        public string? SelectedRotate
         {
             get => _selectedRotate;
             set => SetProperty(ref _selectedRotate, value);
         }
 
-        public string Alignment
+        public string? Alignment
         {
             get => _alignment;
             set => SetProperty(ref _alignment, value);
         }
 
-        public string Foreground
+        public string? Foreground
         {
             get => _foreground;
             set => SetProperty(ref _foreground, value);
         }
 
-        public string Background
+        public string? Background
         {
             get => _background;
             set => SetProperty(ref _background, value);
         }
 
-        public string AlternateLabelText
+        public string? AlternateLabelText
         {
             get => _alternateLabelText;
             set => SetProperty(ref _alternateLabelText, value);
         }
 
-        public string LabelLocation
+        public string? LabelLocation
         {
             get => _labelLocation;
             set => SetProperty(ref _labelLocation, value);
         }
 
-        public string EncodedValue
+        public string? EncodedValue
         {
             get => _encodedValue;
             set => SetProperty(ref _encodedValue, value);
         }
 
-        public string SelectedEncoder
+        public string? SelectedEncoder
         {
             get => _selectedEncoder;
             set => SetProperty(ref _selectedEncoder, value);
@@ -123,7 +123,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _generateLabel, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
@@ -143,12 +143,12 @@ namespace Phony.ViewModels
 
         private readonly Barcode barCode = new();
 
-        public ICommand SelectForeColor { get; set; }
-        public ICommand SelectBackColor { get; set; }
-        public ICommand Encode { get; set; }
-        public ICommand Save { get; set; }
+        public ICommand? SelectForeColor { get; set; }
+        public ICommand? SelectBackColor { get; set; }
+        public ICommand? Encode { get; set; }
+        public ICommand? Save { get; set; }
 
-        readonly BarCodes Message = Application.Current.Windows.OfType<BarCodes>().FirstOrDefault();
+        private BarCodes Message => Application.Current.Windows.OfType<BarCodes>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public BarcodesViewModel()
         {
@@ -338,9 +338,9 @@ namespace Phony.ViewModels
         {
             ColorDialog colorDialog = new()
             {
-                SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Foreground))).Color
+                SelectedColor = (new BrushConverter().ConvertFrom(Foreground ?? "Black") as SolidColorBrush)?.Color ?? Colors.Black
             };
-            if ((bool)colorDialog.ShowDialog())
+            if (colorDialog.ShowDialog() == true)
             {
                 Foreground = colorDialog.SelectedColor.ToHexString();
             }
@@ -355,9 +355,9 @@ namespace Phony.ViewModels
         {
             ColorDialog colorDialog = new()
             {
-                SelectedColor = ((SolidColorBrush)(new BrushConverter().ConvertFrom(Background))).Color
+                SelectedColor = (new BrushConverter().ConvertFrom(Background ?? "White") as SolidColorBrush)?.Color ?? Colors.White
             };
-            if ((bool)colorDialog.ShowDialog())
+            if (colorDialog.ShowDialog() == true)
             {
                 Background = colorDialog.SelectedColor.ToHexString();
             }

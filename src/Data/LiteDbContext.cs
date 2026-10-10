@@ -7,9 +7,15 @@ namespace Phony.Data
 {
     public class LiteDbContext
     {
-        public static ConnectionString ConnectionString { get; set; }
+        private static ConnectionString? connectionString;
 
-        public static LiteDatabase LiteDb { get; set; }
+        public static ConnectionString ConnectionString
+        {
+            get => connectionString ?? throw new InvalidOperationException("The database has not been initialized.");
+            set => connectionString = value;
+        }
+
+        public static LiteDatabase? LiteDb { get; set; }
 
         /// <summary>
         /// Set the Database Connection string and initialize the database
@@ -174,7 +180,7 @@ namespace Phony.Data
             }
         }
 
-        public static ConnectionString GetConnectionString(string path, string pass = null)
+        public static ConnectionString GetConnectionString(string path, string? pass = null)
         {
             if (string.IsNullOrWhiteSpace(path))
             {

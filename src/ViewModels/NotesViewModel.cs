@@ -16,19 +16,19 @@ namespace Phony.ViewModels
     public class NotesViewModel : BindableBase
     {
         long _noId;
-        string _name;
-        string _phone;
-        string _searchText;
-        string _notes;
-        string _childName;
-        string _childNo;
+        string? _name;
+        string? _phone;
+        string? _searchText;
+        string? _notes;
+        string? _childName;
+        string? _childNo;
         bool _byName;
         bool _fastResult;
         bool _openFastResult;
         bool _isAddNoFlyoutOpen;
-        Note _dataGridSelectedNo;
+        Note? _dataGridSelectedNo;
 
-        ObservableCollection<Note> _numbers;
+        ObservableCollection<Note> _numbers = [];
 
         public long NoId
         {
@@ -36,37 +36,37 @@ namespace Phony.ViewModels
             set => SetProperty(ref _noId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string ChildName
+        public string? ChildName
         {
             get => _childName;
             set => SetProperty(ref _childName, value);
         }
 
-        public string ChildNo
+        public string? ChildNo
         {
             get => _childNo;
             set => SetProperty(ref _childNo, value);
@@ -96,7 +96,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isAddNoFlyoutOpen, value);
         }
 
-        public Note DataGridSelectedNo
+        public Note? DataGridSelectedNo
         {
             get => _dataGridSelectedNo;
             set => SetProperty(ref _dataGridSelectedNo, value);
@@ -110,16 +110,16 @@ namespace Phony.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        public ICommand AddNo { get; set; }
-        public ICommand EditNo { get; set; }
-        public ICommand DeleteNo { get; set; }
-        public ICommand OpenAddNoFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllNos { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? AddNo { get; set; }
+        public ICommand? EditNo { get; set; }
+        public ICommand? DeleteNo { get; set; }
+        public ICommand? OpenAddNoFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllNos { get; set; }
+        public ICommand? Search { get; set; }
 
-        private readonly Notes Message = Application.Current.Windows.OfType<Notes>().FirstOrDefault();
+        private Notes Message => Application.Current.Windows.OfType<Notes>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public NotesViewModel()
         {
@@ -172,15 +172,21 @@ namespace Phony.ViewModels
 
         private void DoEditNo()
         {
+            var selectedNo = DataGridSelectedNo;
+            if (selectedNo is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var n = db.GetCollection<Note>(DBCollections.Notes).FindById(DataGridSelectedNo.Id);
+            var n = db.GetCollection<Note>(DBCollections.Notes).FindById(selectedNo.Id);
             n.Name = Name;
             n.Phone = Phone;
             n.Notes = Notes;
             n.Editor = Core.ReadUserSession();
             n.EditDate = DateTime.Now;
             db.GetCollection<Note>(DBCollections.Notes).Update(n);
-            Numbers[Numbers.IndexOf(DataGridSelectedNo)] = n;
+            Numbers[Numbers.IndexOf(selectedNo)] = n;
             NoId = 0;
             DataGridSelectedNo = null;
             Message.ShowMessageAsync("تمت العملية", "تم تعديل الرقم بنجاح");
@@ -193,13 +199,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteNo()
         {
-            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {DataGridSelectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedNo = DataGridSelectedNo;
+            if (selectedNo is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الرقم", $"هل انت متاكد من حذف الرقم {selectedNo.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Note>(DBCollections.Notes).Delete(DataGridSelectedNo.Id);
-                    Numbers.Remove(DataGridSelectedNo);
+                    db.GetCollection<Note>(DBCollections.Notes).Delete(selectedNo.Id);
+                    Numbers.Remove(selectedNo);
                 }
                 DataGridSelectedNo = null;
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف الرقم بنجاح");
@@ -216,13 +228,13 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name.Contains(SearchText)));
+                Numbers = new ObservableCollection<Note>(db.GetCollection<Note>(DBCollections.Notes).Find(i => i.Name != null && i.Name.Contains(SearchText ?? string.Empty)));
                 if (Numbers.Count > 0)
                 {
                     if (FastResult)
                     {
-                        ChildName = Numbers.FirstOrDefault().Name;
-                        ChildNo = Numbers.FirstOrDefault().Phone;
+                        ChildName = Numbers.FirstOrDefault()?.Name;
+                        ChildNo = Numbers.FirstOrDefault()?.Phone;
                         OpenFastResult = true;
                     }
                 }
@@ -256,10 +268,16 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            NoId = DataGridSelectedNo.Id;
-            Name = DataGridSelectedNo.Name;
-            Phone = DataGridSelectedNo.Phone;
-            Notes = DataGridSelectedNo.Notes;
+            var selectedNo = DataGridSelectedNo;
+            if (selectedNo is null)
+            {
+                return;
+            }
+
+            NoId = selectedNo.Id;
+            Name = selectedNo.Name;
+            Phone = selectedNo.Phone;
+            Notes = selectedNo.Notes;
             IsAddNoFlyoutOpen = true;
         }
 

@@ -15,35 +15,35 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// Get the owner of the CommandBinding ex: a Button
         /// This property can only be set from the BindEvent Method
         /// </summary>
-        public DependencyObject Owner { get; private set; }
+        public DependencyObject? Owner { get; private set; }
         /// <summary>
         /// The event name to hook up to
         /// This property can only be set from the BindEvent Method
         /// </summary>
-        public string EventName { get; private set; }
+        public string? EventName { get; private set; }
         /// <summary>
         /// The event info of the event
         /// </summary>
-        public EventInfo Event { get; private set; }
+        public EventInfo? Event { get; private set; }
         /// <summary>
         /// Gets the EventHandler for the binding with the event
         /// </summary>
-        public Delegate EventHandler { get; private set; }
+        public Delegate? EventHandler { get; private set; }
 
         #region Execution
         //stores the strategy of how to execute the event handler
-        IExecutionStrategy strategy;
+        IExecutionStrategy? strategy;
 
         /// <summary>
         /// Gets or sets a CommandParameter
         /// </summary>
-        public object CommandParameter { get; set; }
+        public object? CommandParameter { get; set; }
 
-        ICommand command;
+        ICommand? command;
         /// <summary>
         /// The command to execute when the specified event is raised
         /// </summary>
-        public ICommand Command
+        public ICommand? Command
         {
             get { return command; }
             set
@@ -54,11 +54,11 @@ namespace Phony.Helpers.AttachedCommandBehavior
             }
         }
 
-        Action<object> action;
+        Action<object?>? action;
         /// <summary>
         /// Gets or sets the Action
         /// </summary>
-        public Action<object> Action
+        public Action<object?>? Action
         {
             get { return action; }
             set
@@ -84,7 +84,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
             }
 
             //Create an event handler for the event that will call the ExecuteCommand method
-            EventHandler = EventHandlerGenerator.CreateDelegate(Event.EventHandlerType, typeof(CommandBehaviorBinding).GetMethod("Execute", BindingFlags.Public | BindingFlags.Instance), this);
+            EventHandler = EventHandlerGenerator.CreateDelegate(Event.EventHandlerType ?? throw new InvalidOperationException("The event has no handler type."), typeof(CommandBehaviorBinding).GetMethod(nameof(Execute), BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException("The execution method is missing."), this);
             //Register the handler to the Event
             Event.AddEventHandler(Owner, EventHandler);
         }
@@ -94,7 +94,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// </summary>
         public void Execute()
         {
-            strategy.Execute(CommandParameter);
+            strategy?.Execute(CommandParameter);
         }
 
         #region IDisposable Members
@@ -106,7 +106,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         {
             if (!disposed)
             {
-                Event.RemoveEventHandler(Owner, EventHandler);
+                Event?.RemoveEventHandler(Owner, EventHandler);
                 disposed = true;
             }
         }

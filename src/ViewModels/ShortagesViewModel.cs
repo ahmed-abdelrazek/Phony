@@ -10,11 +10,11 @@ namespace Phony.ViewModels
 {
     public class ShortagesViewModel : BindableBase
     {
-        static string _itemsCount;
+        static string? _itemsCount;
 
-        ObservableCollection<Item> _items;
+        ObservableCollection<Item> _items = [];
 
-        public string ItemsCount
+        public string? ItemsCount
         {
             get => _itemsCount;
             set => SetProperty(ref _itemsCount, value);

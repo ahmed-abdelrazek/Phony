@@ -39,13 +39,17 @@ namespace Phony.Views
 
         private void UpdateButtons()
         {
-            if (_isClosed) return;
+            if (_isClosed)
+            {
+                return;
+            }
+
             SearchButton.IsEnabled = HasSelectedBill && !_isLoading && !_isPrinting;
             PrintButton.IsEnabled = HasSelectedBill && !_isLoading && !_isPrinting
                 && _loadedBillNo == _viewModel.BillSelectedValue && webView.CoreWebView2 != null;
         }
 
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(_viewModel.BillSelectedValue)
                 || e.PropertyName == nameof(_viewModel.Bills))
@@ -58,7 +62,10 @@ namespace Phony.Views
         private async void Viewer_Loaded(object sender, RoutedEventArgs e)
         {
             Loaded -= Viewer_Loaded;
-            if (HasSelectedBill) await LoadSelectedReportAsync();
+            if (HasSelectedBill)
+            {
+                await LoadSelectedReportAsync();
+            }
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -68,7 +75,11 @@ namespace Phony.Views
 
         private async Task LoadSelectedReportAsync()
         {
-            if (!HasSelectedBill || _isLoading || _isPrinting || _isClosed) return;
+            if (!HasSelectedBill || _isLoading || _isPrinting || _isClosed)
+            {
+                return;
+            }
+
             _isLoading = true;
             _loadedBillNo = 0;
             _pendingBillNo = 0;
@@ -77,7 +88,11 @@ namespace Phony.Views
             try
             {
                 await _viewModel.LoadReportAsync(selectedBillNo);
-                if (_isClosed) return;
+                if (_isClosed)
+                {
+                    return;
+                }
+
                 if (string.IsNullOrWhiteSpace(_viewModel.Report)
                     || selectedBillNo != _viewModel.BillSelectedValue)
                 {
@@ -86,7 +101,11 @@ namespace Phony.Views
                     return;
                 }
                 await webView.EnsureCoreWebView2Async();
-                if (_isClosed) return;
+                if (_isClosed)
+                {
+                    return;
+                }
+
                 if (selectedBillNo != _viewModel.BillSelectedValue)
                 {
                     _isLoading = false;
@@ -102,13 +121,19 @@ namespace Phony.Views
                 _isLoading = false;
                 UpdateButtons();
                 if (!_isClosed)
+                {
                     await this.ShowMessageAsync("خطأ", "تعذر تحميل الفاتورة. تأكد من تثبيت WebView2 ثم حاول مرة أخرى.");
+                }
             }
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            if (_pendingBillNo == 0) return;
+            if (_pendingBillNo == 0)
+            {
+                return;
+            }
+
             _loadedBillNo = e.IsSuccess ? _pendingBillNo : 0;
             _pendingBillNo = 0;
             _isLoading = false;
@@ -118,7 +143,11 @@ namespace Phony.Views
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateButtons();
-            if (!PrintButton.IsEnabled || webView.CoreWebView2 == null) return;
+            if (!PrintButton.IsEnabled || webView.CoreWebView2 == null)
+            {
+                return;
+            }
+
             _isPrinting = true;
             UpdateButtons();
             try
@@ -129,7 +158,9 @@ namespace Phony.Views
             {
                 _loadedBillNo = 0;
                 if (!_isClosed)
+                {
                     await this.ShowMessageAsync("خطأ", "تعذر طباعة الفاتورة. أعد تحميلها ثم حاول مرة أخرى.");
+                }
             }
             finally
             {

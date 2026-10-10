@@ -10,8 +10,8 @@ namespace Phony.Extensions
     {
         public static string GetEnumDescription(Enum value)
         {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
-            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            FieldInfo? fi = value.GetType().GetField(value.ToString());
+            DescriptionAttribute[]? attributes = (DescriptionAttribute[]?)fi?.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes is not null && attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
 
@@ -32,7 +32,7 @@ namespace Phony.Extensions
                 for (int i = 0; i < Props.Length; i++)
                 {
                     //inserting property values to datatable rows
-                    values[i] = Props[i].GetValue(item, null);
+                    values[i] = Props[i].GetValue(item, null) ?? DBNull.Value;
                 }
                 dataTable.Rows.Add(values);
             }

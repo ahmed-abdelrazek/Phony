@@ -4,10 +4,10 @@ namespace Phony.Models
 {
     public class Note : BaseModel
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public NoteGroup Group { get; set; }
 
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
     }
 }

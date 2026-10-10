@@ -16,10 +16,10 @@ namespace Phony.Data
 
         private static byte[] AES_Encrypt(byte[] bytesToBeEncrypted, byte[] passwordBytes)
         {
-            byte[] encryptedBytes = null;
+            byte[] encryptedBytes;
             // Set your salt here, change it to meet your flavor:
             // The salt bytes must be at least 8 bytes.
-            byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            byte[] saltBytes = [1, 2, 3, 4, 5, 6, 7, 8];
             using (MemoryStream ms = new())
             {
                 using var AES = Aes.Create();
@@ -39,10 +39,10 @@ namespace Phony.Data
 
         private static byte[] AES_Decrypt(byte[] bytesToBeDecrypted, byte[] passwordBytes)
         {
-            byte[] decryptedBytes = null;
+            byte[] decryptedBytes;
             // Set your salt here, change it to meet your flavor:
             // The salt bytes must be at least 8 bytes.
-            byte[] saltBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            byte[] saltBytes = [1, 2, 3, 4, 5, 6, 7, 8];
             using (MemoryStream ms = new())
             {
                 using var AES = Aes.Create();

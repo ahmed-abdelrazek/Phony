@@ -14,14 +14,14 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Behavior Attached Dependency Property
         /// </summary>
-        private static readonly DependencyProperty BehaviorProperty = DependencyProperty.RegisterAttached("Behavior", typeof(CommandBehaviorBinding), typeof(CommandBehavior), new FrameworkPropertyMetadata((CommandBehaviorBinding)null));
+        private static readonly DependencyProperty BehaviorProperty = DependencyProperty.RegisterAttached("Behavior", typeof(CommandBehaviorBinding), typeof(CommandBehavior), new FrameworkPropertyMetadata((CommandBehaviorBinding?)null));
 
         /// <summary>
         /// Gets the Behavior property. 
         /// </summary>
-        private static CommandBehaviorBinding GetBehavior(DependencyObject d)
+        private static CommandBehaviorBinding? GetBehavior(DependencyObject d)
         {
-            return (CommandBehaviorBinding)d.GetValue(BehaviorProperty);
+            return (CommandBehaviorBinding?)d.GetValue(BehaviorProperty);
         }
 
         /// <summary>
@@ -39,20 +39,20 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Command Attached Dependency Property
         /// </summary>
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(CommandBehavior), new FrameworkPropertyMetadata((ICommand)null, new PropertyChangedCallback(OnCommandChanged)));
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(CommandBehavior), new FrameworkPropertyMetadata((ICommand?)null, new PropertyChangedCallback(OnCommandChanged)));
 
         /// <summary>
         /// Gets the Command property.  
         /// </summary>
-        public static ICommand GetCommand(DependencyObject d)
+        public static ICommand? GetCommand(DependencyObject d)
         {
-            return (ICommand)d.GetValue(CommandProperty);
+            return (ICommand?)d.GetValue(CommandProperty);
         }
 
         /// <summary>
         /// Sets the Command property. 
         /// </summary>
-        public static void SetCommand(DependencyObject d, ICommand value)
+        public static void SetCommand(DependencyObject d, ICommand? value)
         {
             d.SetValue(CommandProperty, value);
         }
@@ -63,7 +63,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             CommandBehaviorBinding binding = FetchOrCreateBinding(d);
-            binding.Command = (ICommand)e.NewValue;
+            binding.Command = (ICommand?)e.NewValue;
         }
 
         #endregion
@@ -73,20 +73,20 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Action Attached Dependency Property
         /// </summary>
-        public static readonly DependencyProperty ActionProperty = DependencyProperty.RegisterAttached("Action", typeof(Action<object>), typeof(CommandBehavior), new FrameworkPropertyMetadata((Action<object>)null, new PropertyChangedCallback(OnActionChanged)));
+        public static readonly DependencyProperty ActionProperty = DependencyProperty.RegisterAttached("Action", typeof(Action<object?>), typeof(CommandBehavior), new FrameworkPropertyMetadata((Action<object?>?)null, new PropertyChangedCallback(OnActionChanged)));
 
         /// <summary>
         /// Gets the Action property.  
         /// </summary>
-        public static Action<object> GetAction(DependencyObject d)
+        public static Action<object?>? GetAction(DependencyObject d)
         {
-            return (Action<object>)d.GetValue(ActionProperty);
+            return (Action<object?>?)d.GetValue(ActionProperty);
         }
 
         /// <summary>
         /// Sets the Action property. 
         /// </summary>
-        public static void SetAction(DependencyObject d, Action<object> value)
+        public static void SetAction(DependencyObject d, Action<object?>? value)
         {
             d.SetValue(ActionProperty, value);
         }
@@ -97,7 +97,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         private static void OnActionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             CommandBehaviorBinding binding = FetchOrCreateBinding(d);
-            binding.Action = (Action<object>)e.NewValue;
+            binding.Action = (Action<object?>?)e.NewValue;
         }
 
         #endregion
@@ -107,12 +107,12 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// CommandParameter Attached Dependency Property
         /// </summary>
-        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(CommandBehavior), new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnCommandParameterChanged)));
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(CommandBehavior), new FrameworkPropertyMetadata((object?)null, new PropertyChangedCallback(OnCommandParameterChanged)));
 
         /// <summary>
         /// Gets the CommandParameter property.  
         /// </summary>
-        public static object GetCommandParameter(DependencyObject d)
+        public static object? GetCommandParameter(DependencyObject d)
         {
             return (object)d.GetValue(CommandParameterProperty);
         }
@@ -120,7 +120,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         /// <summary>
         /// Sets the CommandParameter property. 
         /// </summary>
-        public static void SetCommandParameter(DependencyObject d, object value)
+        public static void SetCommandParameter(DependencyObject d, object? value)
         {
             d.SetValue(CommandParameterProperty, value);
         }
@@ -173,7 +173,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
                 binding.Dispose();
             }
             //bind the new event to the command
-            binding.BindEvent(d, e.NewValue.ToString());
+            binding.BindEvent(d, e.NewValue.ToString() ?? throw new InvalidOperationException("An event name is required."));
         }
 
         #endregion
@@ -182,7 +182,7 @@ namespace Phony.Helpers.AttachedCommandBehavior
         //tries to get a CommandBehaviorBinding from the element. Creates a new instance if there is not one attached
         private static CommandBehaviorBinding FetchOrCreateBinding(DependencyObject d)
         {
-            CommandBehaviorBinding binding = CommandBehavior.GetBehavior(d);
+            CommandBehaviorBinding? binding = CommandBehavior.GetBehavior(d);
             if (binding is null)
             {
                 binding = new CommandBehaviorBinding();

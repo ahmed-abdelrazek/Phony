@@ -16,17 +16,17 @@ namespace Phony.ViewModels
 {
     public class LoginViewModel : BindableBase
     {
-        string _name;
-        string _pass;
+        string? _name;
+        string? _pass;
         bool _isLogging;
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Pass
+        public string? Pass
         {
             get => _pass;
             set => SetProperty(ref _pass, value);
@@ -38,10 +38,10 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isLogging, value);
         }
 
-        public ICommand LogIn { get; set; }
+        public ICommand? LogIn { get; set; }
 
         private readonly MainWindowViewModel v = new();
-        private readonly Views.MainWindow Message = Application.Current.Windows.OfType<Views.MainWindow>().FirstOrDefault();
+        private Views.MainWindow Message => Application.Current.Windows.OfType<Views.MainWindow>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public LoginViewModel()
         {

@@ -15,7 +15,6 @@ using System.Windows.Input;
 
 namespace Phony.ViewModels
 {
-
     public class BillsViewModel : BindableBase
     {
         long _searchSelectedValue;
@@ -32,11 +31,11 @@ namespace Phony.ViewModels
         decimal _billClientPayment;
         decimal _billClientPaymentChange;
         long _currentBillNo;
-        string _searchText;
-        string _itemChildItemName;
-        string _serviceChildServiceName;
-        string _serviceChildNotes;
-        string _itemChildNotes;
+        string? _searchText;
+        string? _itemChildItemName;
+        string? _serviceChildServiceName;
+        string? _serviceChildNotes;
+        string? _itemChildNotes;
         bool _byItem;
         bool _byCard;
         bool _byService;
@@ -47,22 +46,22 @@ namespace Phony.ViewModels
         bool _isAddServiceChildOpen;
         bool _isAddBillNote;
         bool _isSearchDropDownOpen;
-        Client _selectedClient;
-        Item _selectedItem;
-        Service _selectedService;
-        BillItemMove _dataGridSelectedBillItemMove;
-        BillServiceMove _dataGridSelectedBillServiceMove;
+        Client? _selectedClient;
+        Item? _selectedItem;
+        Service? _selectedService;
+        BillItemMove? _dataGridSelectedBillItemMove;
+        BillServiceMove? _dataGridSelectedBillServiceMove;
 
         Visibility _billClientPaymentChangeVisible;
 
-        List<Client> _clients;
-        List<Item> _items;
-        List<Service> _services;
-        List<User> _users;
+        List<Client> _clients = [];
+        List<Item> _items = [];
+        List<Service> _services = [];
+        List<User> _users = [];
 
-        ObservableCollection<object> _searchItems;
-        ObservableCollection<BillItemMove> _billItemsMoves;
-        ObservableCollection<BillServiceMove> _billServicesMoves;
+        ObservableCollection<object> _searchItems = [];
+        ObservableCollection<BillItemMove> _billItemsMoves = [];
+        ObservableCollection<BillServiceMove> _billServicesMoves = [];
 
         public long SearchSelectedValue
         {
@@ -184,31 +183,31 @@ namespace Phony.ViewModels
             set => SetProperty(ref _currentBillNo, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string ItemChildItemName
+        public string? ItemChildItemName
         {
             get => _itemChildItemName;
             set => SetProperty(ref _itemChildItemName, value);
         }
 
-        public string ServiceChildServiceName
+        public string? ServiceChildServiceName
         {
             get => _serviceChildServiceName;
             set => SetProperty(ref _serviceChildServiceName, value);
         }
 
-        public string ServiceChildNotes
+        public string? ServiceChildNotes
         {
             get => _serviceChildNotes;
             set => SetProperty(ref _serviceChildNotes, value);
         }
 
-        public string ItemChildNotes
+        public string? ItemChildNotes
         {
             get => _itemChildNotes;
             set => SetProperty(ref _itemChildNotes, value);
@@ -274,31 +273,31 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isSearchDropDownOpen, value);
         }
 
-        public Client SelectedClient
+        public Client? SelectedClient
         {
             get => _selectedClient;
             set => SetProperty(ref _selectedClient, value);
         }
 
-        public Item SelectedItem
+        public Item? SelectedItem
         {
             get => _selectedItem;
             set => SetProperty(ref _selectedItem, value);
         }
 
-        public Service SelectedService
+        public Service? SelectedService
         {
             get => _selectedService;
             set => SetProperty(ref _selectedService, value);
         }
 
-        public BillItemMove DataGridSelectedBillItemMove
+        public BillItemMove? DataGridSelectedBillItemMove
         {
             get => _dataGridSelectedBillItemMove;
             set => SetProperty(ref _dataGridSelectedBillItemMove, value);
         }
 
-        public BillServiceMove DataGridSelectedBillServiceMove
+        public BillServiceMove? DataGridSelectedBillServiceMove
         {
             get => _dataGridSelectedBillServiceMove;
             set => SetProperty(ref _dataGridSelectedBillServiceMove, value);
@@ -352,16 +351,16 @@ namespace Phony.ViewModels
             set => SetProperty(ref _users, value);
         }
 
-        public ICommand Search { get; set; }
-        public ICommand AddBillMove { get; set; }
-        public ICommand AddItemToBill { get; set; }
-        public ICommand AddServiceToBill { get; set; }
-        public ICommand DeleteBillMove { get; set; }
-        public ICommand RedoBill { get; set; }
-        public ICommand SaveBill { get; set; }
-        public ICommand SaveAndShow { get; set; }
+        public ICommand? Search { get; set; }
+        public ICommand? AddBillMove { get; set; }
+        public ICommand? AddItemToBill { get; set; }
+        public ICommand? AddServiceToBill { get; set; }
+        public ICommand? DeleteBillMove { get; set; }
+        public ICommand? RedoBill { get; set; }
+        public ICommand? SaveBill { get; set; }
+        public ICommand? SaveAndShow { get; set; }
 
-        readonly Bills Message = Application.Current.Windows.OfType<Bills>().FirstOrDefault();
+        private Bills Message => Application.Current.Windows.OfType<Bills>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public BillsViewModel()
         {
@@ -395,7 +394,11 @@ namespace Phony.ViewModels
 
         async Task<long> SaveBillNoAsync()
         {
-            if (!CanSaveBill()) return 0;
+            if (!CanSaveBill())
+            {
+                return 0;
+            }
+
             IsSaving = true;
             try { return await SaveBillCoreAsync(); }
             finally { IsSaving = false; }
@@ -403,9 +406,14 @@ namespace Phony.ViewModels
 
         async Task<long> SaveBillCoreAsync()
         {
+            var selectedClient = SelectedClient;
+            if (selectedClient is null)
+            {
+                return 0;
+            }
             if (BillClientPayment < BillTotalAfterDiscount)
             {
-                if (SelectedClient.Id == 1)
+                if (selectedClient.Id == 1)
                 {
                     await Message.ShowMessageAsync("خطأ", "لا يمكن عمل فاتورة اجل لهذا العميل اختار عميل اخر او اضف عميل جديد");
                     return 0;
@@ -416,7 +424,7 @@ namespace Phony.ViewModels
                     return 0;
                 }
             }
-            string billNote = null;
+            string? billNote = null;
             if (IsAddBillNote)
             {
                 billNote = await Message.ShowInputAsync("ملاحظة", $"اكتب اى شئ ليتم طباعته مع الفاتورة");
@@ -424,7 +432,7 @@ namespace Phony.ViewModels
             long id;
             try
             {
-                id = InvoiceService.Save(LiteDbContext.ConnectionString, SelectedClient.Id,
+                id = InvoiceService.Save(LiteDbContext.ConnectionString, selectedClient.Id,
                     BillDiscount, BillClientPayment, billNote, Core.ReadUserSession(), BillItemsMoves, BillServicesMoves);
             }
             catch (Exception ex)
@@ -493,7 +501,7 @@ namespace Phony.ViewModels
 
         private void DoDeleteBillMove()
         {
-            if (ByItem)
+            if (ByItem && DataGridSelectedBillItemMove is not null)
             {
                 var ItemToQtyPrice = DataGridSelectedBillItemMove.ItemPrice * DataGridSelectedBillItemMove.QTY;
                 BillTotal -= ItemToQtyPrice;
@@ -501,7 +509,7 @@ namespace Phony.ViewModels
                 BillTotalAfterDiscount = BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100));
                 BillItemsMoves.Remove(DataGridSelectedBillItemMove);
             }
-            if (ByService)
+            if (ByService && DataGridSelectedBillServiceMove is not null)
             {
                 BillTotal -= DataGridSelectedBillServiceMove.Cost;
                 BillTotalAfterEachDiscount -= DataGridSelectedBillServiceMove.Cost - (DataGridSelectedBillServiceMove.Cost * (DataGridSelectedBillServiceMove.Discount / 100));
@@ -561,10 +569,14 @@ namespace Phony.ViewModels
 
         private void DoAddServiceToBill()
         {
+            if (SelectedService is null)
+            {
+                return;
+            }
             decimal balanceNeeded = 0;
             foreach (var item in BillServicesMoves)
             {
-                if (item.Service.Id == SearchSelectedValue)
+                if (item.Service?.Id == SearchSelectedValue)
                 {
                     balanceNeeded += item.Balance;
                 }
@@ -608,10 +620,14 @@ namespace Phony.ViewModels
 
         private void DoAddItemToBill()
         {
+            if (SelectedItem is null)
+            {
+                return;
+            }
             decimal QTYNeeded = 0;
             foreach (var item in BillItemsMoves)
             {
-                if (item.Item.Id == SearchSelectedValue)
+                if (item.Item?.Id == SearchSelectedValue)
                 {
                     QTYNeeded += item.QTY;
                 }
@@ -659,12 +675,20 @@ namespace Phony.ViewModels
             if (ByService)
             {
                 SelectedService = Services.FirstOrDefault(f => f.Id == SearchSelectedValue);
+                if (SelectedService is null)
+                {
+                    return;
+                }
                 IsAddServiceChildOpen = true;
                 ServiceChildServiceName = SelectedService.Name;
             }
             else
             {
                 SelectedItem = Items.FirstOrDefault(f => f.Id == SearchSelectedValue);
+                if (SelectedItem is null)
+                {
+                    return;
+                }
                 IsAddItemChildOpen = true;
                 ItemChildItemName = SelectedItem.Name;
                 ItemChildItemPrice = SelectedItem.RetailPrice;
@@ -685,7 +709,7 @@ namespace Phony.ViewModels
                 {
                     if (ByName)
                     {
-                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Name.Contains(SearchText)));
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Name != null && i.Name.Contains(SearchText ?? string.Empty)));
                         if (SearchItems.Count > 0)
                         {
                             IsSearchDropDownOpen = true;
@@ -701,7 +725,7 @@ namespace Phony.ViewModels
                         SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Barcode == SearchText));
                         if (SearchItems.Count > 0)
                         {
-                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText).Id;
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Barcode == SearchText)?.Id ?? 0;
                             IsSearchDropDownOpen = true;
                         }
                         else
@@ -715,7 +739,7 @@ namespace Phony.ViewModels
                         SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText));
                         if (SearchItems.Count > 0)
                         {
-                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText).Id;
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Other && i.Shopcode == SearchText)?.Id ?? 0;
                             IsSearchDropDownOpen = true;
                         }
                         else
@@ -729,7 +753,7 @@ namespace Phony.ViewModels
                 {
                     if (ByName)
                     {
-                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Name.Contains(SearchText)));
+                        SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Name != null && i.Name.Contains(SearchText ?? string.Empty)));
                         if (SearchItems.Count > 0)
                         {
                             IsSearchDropDownOpen = true;
@@ -745,7 +769,7 @@ namespace Phony.ViewModels
                         SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Barcode == SearchText));
                         if (SearchItems.Count > 0)
                         {
-                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Barcode == SearchText).Id;
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Barcode == SearchText)?.Id ?? 0;
                             IsSearchDropDownOpen = true;
                         }
                         else
@@ -759,7 +783,7 @@ namespace Phony.ViewModels
                         SearchItems = new ObservableCollection<object>(Items.Where(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText));
                         if (SearchItems.Count > 0)
                         {
-                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText).Id;
+                            SearchSelectedValue = Items.SingleOrDefault(i => i.Group == ItemGroup.Card && i.Shopcode == SearchText)?.Id ?? 0;
                             IsSearchDropDownOpen = true;
                         }
                         else
@@ -771,7 +795,7 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    SearchItems = new ObservableCollection<object>(Services.Where(s => s.Name.Contains(SearchText)));
+                    SearchItems = new ObservableCollection<object>(Services.Where(s => s.Name != null && s.Name.Contains(SearchText ?? string.Empty)));
                     if (SearchItems.Count > 0)
                     {
                         IsSearchDropDownOpen = true;
@@ -795,7 +819,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
+                var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault()?.Id ?? 0;
                 if (x < 1)
                 {
                     x = 0;

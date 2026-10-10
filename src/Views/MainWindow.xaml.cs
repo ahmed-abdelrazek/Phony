@@ -20,7 +20,7 @@ namespace Phony.Views
             Timer.Start();
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             if (FrameWithinGrid.Source != MainWindowViewModel.CurrentSource)
             {
@@ -47,7 +47,7 @@ namespace Phony.Views
             Environment.Exit(0);
         }
 
-        private void metroWindow_ContentRendered(object sender, EventArgs e)
+        private void metroWindow_ContentRendered(object? sender, EventArgs e)
         {
             if (!Properties.Settings.Default.IsConfigured)
             {

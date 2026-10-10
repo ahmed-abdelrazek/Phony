@@ -24,20 +24,20 @@ namespace Phony.ViewModels
         long _itemId;
         long _selectedCompanyValue;
         long _selectedSupplierValue;
-        string _name;
-        string _barcode;
-        string _shopcode;
-        string _searchText;
-        string _notes;
-        string _childName;
-        string _childPrice;
-        string _childQTY;
-        static string _itemsCount;
-        static string _itemsPurchasePrice;
-        static string _itemsSalePrice;
-        static string _itemsProfit;
-        byte[] _image;
-        byte[] _childImage;
+        string? _name;
+        string? _barcode;
+        string? _shopcode;
+        string? _searchText;
+        string? _notes;
+        string? _childName;
+        string? _childPrice;
+        string? _childQTY;
+        static string? _itemsCount;
+        static string? _itemsPurchasePrice;
+        static string? _itemsSalePrice;
+        static string? _itemsProfit;
+        byte[]? _image;
+        byte[]? _childImage;
         ItemGroup _group;
         decimal _purchasePrice;
         decimal _wholeSalePrice;
@@ -50,11 +50,11 @@ namespace Phony.ViewModels
         bool _fastResult;
         bool _openFastResult;
         bool _isAddItemFlyoutOpen;
-        ItemDto _dataGridSelectedItem;
+        ItemDto? _dataGridSelectedItem;
 
-        ObservableCollection<Company> _companies;
-        ObservableCollection<Supplier> _suppliers;
-        ObservableCollection<ItemDto> _items;
+        ObservableCollection<Company> _companies = [];
+        ObservableCollection<Supplier> _suppliers = [];
+        ObservableCollection<ItemDto> _items = [];
 
         public long ItemId
         {
@@ -62,85 +62,85 @@ namespace Phony.ViewModels
             set => SetProperty(ref _itemId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Barcode
+        public string? Barcode
         {
             get => _barcode;
             set => SetProperty(ref _barcode, value);
         }
 
-        public string Shopcode
+        public string? Shopcode
         {
             get => _shopcode;
             set => SetProperty(ref _shopcode, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string ChildName
+        public string? ChildName
         {
             get => _childName;
             set => SetProperty(ref _childName, value);
         }
 
-        public string ChildPrice
+        public string? ChildPrice
         {
             get => _childPrice;
             set => SetProperty(ref _childPrice, value);
         }
 
-        public string ChildQTY
+        public string? ChildQTY
         {
             get => _childQTY;
             set => SetProperty(ref _childQTY, value);
         }
 
-        public string ItemsCount
+        public string? ItemsCount
         {
             get => _itemsCount;
             set => SetProperty(ref _itemsCount, value);
         }
 
-        public string ItemsPurchasePrice
+        public string? ItemsPurchasePrice
         {
             get => _itemsPurchasePrice;
             set => SetProperty(ref _itemsPurchasePrice, value);
         }
 
-        public string ItemsSalePrice
+        public string? ItemsSalePrice
         {
             get => _itemsSalePrice;
             set => SetProperty(ref _itemsSalePrice, value);
         }
 
-        public string ItemsProfit
+        public string? ItemsProfit
         {
             get => _itemsProfit;
             set => SetProperty(ref _itemsProfit, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
         }
 
-        public byte[] ChildImage
+        public byte[]? ChildImage
         {
             get => _childImage;
             set => SetProperty(ref _childImage, value);
@@ -230,7 +230,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isAddItemFlyoutOpen, value);
         }
 
-        public ItemDto DataGridSelectedItem
+        public ItemDto? DataGridSelectedItem
         {
             get => _dataGridSelectedItem;
             set => SetProperty(ref _dataGridSelectedItem, value);
@@ -256,16 +256,16 @@ namespace Phony.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        public ICommand AddItem { get; set; }
-        public ICommand EditItem { get; set; }
-        public ICommand DeleteItem { get; set; }
-        public ICommand OpenAddItemFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllItems { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? AddItem { get; set; }
+        public ICommand? EditItem { get; set; }
+        public ICommand? DeleteItem { get; set; }
+        public ICommand? OpenAddItemFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllItems { get; set; }
+        public ICommand? Search { get; set; }
 
-        private readonly Items Message = Application.Current.Windows.OfType<Items>().FirstOrDefault();
+        private Items Message => Application.Current.Windows.OfType<Items>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public ItemVM()
         {
@@ -333,8 +333,14 @@ namespace Phony.ViewModels
 
         private async void DoEditItem()
         {
+            var selectedItem = DataGridSelectedItem;
+            if (selectedItem is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var i = db.GetCollection<Item>(DBCollections.Items).FindById(DataGridSelectedItem.Id);
+            var i = db.GetCollection<Item>(DBCollections.Items).FindById(selectedItem.Id);
             i.Name = Name;
             i.Barcode = Barcode;
             i.Shopcode = Shopcode;
@@ -350,7 +356,7 @@ namespace Phony.ViewModels
             i.Editor = Core.ReadUserSession();
             i.EditDate = DateTime.Now;
             db.GetCollection<Item>(DBCollections.Items).Update(i);
-            Items[Items.IndexOf(DataGridSelectedItem)] = AppMapper.ToDto(i);
+            Items[Items.IndexOf(selectedItem)] = AppMapper.ToDto(i);
             ItemId = 0;
             DataGridSelectedItem = null;
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
@@ -360,13 +366,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteItem()
         {
-            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {DataGridSelectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedItem = DataGridSelectedItem;
+            if (selectedItem is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف الصنف", $"هل انت متاكد من حذف الصنف {selectedItem.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Item>(DBCollections.Items).Delete(DataGridSelectedItem.Id);
-                    Items.Remove(DataGridSelectedItem);
+                    db.GetCollection<Item>(DBCollections.Items).Delete(selectedItem.Id);
+                    Items.Remove(selectedItem);
                 }
                 DataGridSelectedItem = null;
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف الصنف بنجاح");
@@ -382,7 +394,7 @@ namespace Phony.ViewModels
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
                 if (ByName)
                 {
-                    Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                    Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name != null && i.Name.Contains(SearchText ?? string.Empty) && i.Group == ItemGroup.Other));
                 }
                 else if (ByBarCode)
                 {
@@ -396,10 +408,10 @@ namespace Phony.ViewModels
                 {
                     if (FastResult)
                     {
-                        ChildName = Items.FirstOrDefault().Name;
-                        ChildPrice = Items.FirstOrDefault().RetailPrice.ToString();
-                        ChildQTY = Items.FirstOrDefault().QTY.ToString();
-                        ChildImage = Items.FirstOrDefault().Image;
+                        ChildName = Items.FirstOrDefault()?.Name;
+                        ChildPrice = Items.FirstOrDefault()?.RetailPrice.ToString();
+                        ChildQTY = Items.FirstOrDefault()?.QTY.ToString();
+                        ChildImage = Items.FirstOrDefault()?.Image;
                         OpenFastResult = true;
                     }
                 }
@@ -430,19 +442,25 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            ItemId = DataGridSelectedItem.Id;
-            Name = DataGridSelectedItem.Name;
-            Barcode = DataGridSelectedItem.Barcode;
-            Shopcode = DataGridSelectedItem.Shopcode;
-            Image = DataGridSelectedItem.Image;
-            PurchasePrice = DataGridSelectedItem.PurchasePrice;
-            WholeSalePrice = DataGridSelectedItem.WholeSalePrice;
-            HalfWholeSalePrice = DataGridSelectedItem.HalfWholeSalePrice;
-            RetailPrice = DataGridSelectedItem.RetailPrice;
-            QTY = DataGridSelectedItem.QTY;
-            SelectedCompanyValue = DataGridSelectedItem.Company.Id;
-            SelectedSupplierValue = DataGridSelectedItem.Supplier.Id;
-            Notes = DataGridSelectedItem.Notes;
+            var selectedItem = DataGridSelectedItem;
+            if (selectedItem is null)
+            {
+                return;
+            }
+
+            ItemId = selectedItem.Id;
+            Name = selectedItem.Name;
+            Barcode = selectedItem.Barcode;
+            Shopcode = selectedItem.Shopcode;
+            Image = selectedItem.Image;
+            PurchasePrice = selectedItem.PurchasePrice;
+            WholeSalePrice = selectedItem.WholeSalePrice;
+            HalfWholeSalePrice = selectedItem.HalfWholeSalePrice;
+            RetailPrice = selectedItem.RetailPrice;
+            QTY = selectedItem.QTY;
+            SelectedCompanyValue = selectedItem.Company?.Id ?? 0;
+            SelectedSupplierValue = selectedItem.Supplier?.Id ?? 0;
+            Notes = selectedItem.Notes;
             IsAddItemFlyoutOpen = true;
         }
 

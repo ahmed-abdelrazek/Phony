@@ -18,19 +18,19 @@ namespace Phony.ViewModels
     public class StoresViewModel : BindableBase
     {
         int _storeId;
-        string _name;
-        string _motto;
-        byte[] _image;
-        string _address1;
-        string _address2;
-        string _tel1;
-        string _tel2;
-        string _phone1;
-        string _phone2;
-        string _email1;
-        string _email2;
-        string _site;
-        string _notes;
+        string? _name;
+        string? _motto;
+        byte[]? _image;
+        string? _address1;
+        string? _address2;
+        string? _tel1;
+        string? _tel2;
+        string? _phone1;
+        string? _phone2;
+        string? _email1;
+        string? _email2;
+        string? _site;
+        string? _notes;
 
         public int StoreId
         {
@@ -38,79 +38,79 @@ namespace Phony.ViewModels
             set => SetProperty(ref _storeId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Motto
+        public string? Motto
         {
             get => _motto;
             set => SetProperty(ref _motto, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
         }
 
-        public string Address1
+        public string? Address1
         {
             get => _address1;
             set => SetProperty(ref _address1, value);
         }
 
-        public string Address2
+        public string? Address2
         {
             get => _address2;
             set => SetProperty(ref _address2, value);
         }
 
-        public string Tel1
+        public string? Tel1
         {
             get => _tel1;
             set => SetProperty(ref _tel1, value);
         }
 
-        public string Tel2
+        public string? Tel2
         {
             get => _tel2;
             set => SetProperty(ref _tel2, value);
         }
 
-        public string Phone1
+        public string? Phone1
         {
             get => _phone1;
             set => SetProperty(ref _phone1, value);
         }
 
-        public string Phone2
+        public string? Phone2
         {
             get => _phone2;
             set => SetProperty(ref _phone2, value);
         }
 
-        public string Email1
+        public string? Email1
         {
             get => _email1;
             set => SetProperty(ref _email1, value);
         }
 
-        public string Email2
+        public string? Email2
         {
             get => _email2;
             set => SetProperty(ref _email2, value);
         }
 
-        public string Site
+        public string? Site
         {
             get => _site;
             set => SetProperty(ref _site, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
@@ -120,10 +120,10 @@ namespace Phony.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        public ICommand SelectImage { get; set; }
-        public ICommand Edit { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? Edit { get; set; }
 
-        private readonly Stores Message = Application.Current.Windows.OfType<Stores>().FirstOrDefault();
+        private Stores Message => Application.Current.Windows.OfType<Stores>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public StoresViewModel()
         {

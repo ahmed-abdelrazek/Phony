@@ -28,11 +28,11 @@ namespace Phony.ViewModels
         int _salesMenCount;
         int _numbersCount;
         int _usersCount;
-        string _userName;
-        string _password;
-        string _newPassword;
-        string _phone;
-        string _group;
+        string? _userName;
+        string? _password;
+        string? _newPassword;
+        string? _phone;
+        string? _group;
 
         bool isBacking;
 
@@ -96,57 +96,57 @@ namespace Phony.ViewModels
             set => SetProperty(ref _usersCount, value);
         }
 
-        public string UserName
+        public string? UserName
         {
             get => _userName;
             set => SetProperty(ref _userName, value);
         }
 
-        public string Password
+        public string? Password
         {
             get => _password;
             set => SetProperty(ref _password, value);
         }
 
-        public string NewPassword
+        public string? NewPassword
         {
             get => _newPassword;
             set => SetProperty(ref _newPassword, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string Group
+        public string? Group
         {
             get => _group;
             set => SetProperty(ref _group, value);
         }
 
-        public ICommand ChangeSource { get; set; }
-        public ICommand OpenItemsWindow { get; set; }
-        public ICommand OpenClientsWindow { get; set; }
-        public ICommand OpenBillsWindow { get; set; }
-        public ICommand OpenSalesBillsWindow { get; set; }
-        public ICommand OpenShortagesWindow { get; set; }
-        public ICommand OpenServicesWindow { get; set; }
-        public ICommand OpenSuppliersWindow { get; set; }
-        public ICommand OpenCardsWindow { get; set; }
-        public ICommand OpenCompaniesWindow { get; set; }
-        public ICommand OpenSalesMenWindow { get; set; }
-        public ICommand TakeBackup { get; set; }
-        public ICommand RestoreBackup { get; set; }
-        public ICommand OpenStoreInfoWindow { get; set; }
-        public ICommand OpenNumbersWindow { get; set; }
-        public ICommand OpenUsersWindow { get; set; }
-        public ICommand OpenBarcodesWindow { get; set; }
-        public ICommand SignOut { get; set; }
-        public ICommand SaveUser { get; set; }
+        public ICommand? ChangeSource { get; set; }
+        public ICommand? OpenItemsWindow { get; set; }
+        public ICommand? OpenClientsWindow { get; set; }
+        public ICommand? OpenBillsWindow { get; set; }
+        public ICommand? OpenSalesBillsWindow { get; set; }
+        public ICommand? OpenShortagesWindow { get; set; }
+        public ICommand? OpenServicesWindow { get; set; }
+        public ICommand? OpenSuppliersWindow { get; set; }
+        public ICommand? OpenCardsWindow { get; set; }
+        public ICommand? OpenCompaniesWindow { get; set; }
+        public ICommand? OpenSalesMenWindow { get; set; }
+        public ICommand? TakeBackup { get; set; }
+        public ICommand? RestoreBackup { get; set; }
+        public ICommand? OpenStoreInfoWindow { get; set; }
+        public ICommand? OpenNumbersWindow { get; set; }
+        public ICommand? OpenUsersWindow { get; set; }
+        public ICommand? OpenBarcodesWindow { get; set; }
+        public ICommand? SignOut { get; set; }
+        public ICommand? SaveUser { get; set; }
 
-        private readonly MainWindow Message = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+        private MainWindow Message => System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         private readonly MainWindowViewModel v = new();
         private DispatcherTimer Timer = new();
@@ -162,7 +162,7 @@ namespace Phony.ViewModels
             Timer.Interval = TimeSpan.FromMilliseconds(500);
 
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == currentUser.Id).FirstOrDefault();
+            var u = db.GetCollection<User>(DBCollections.Users).Find(x => x.Id == currentUser.Id).FirstOrDefault() ?? throw new InvalidOperationException("The session user no longer exists.");
             UserName = u.Name;
             Phone = u.Phone;
             Group = Enumerations.GetEnumDescription(u.Group);
@@ -260,7 +260,7 @@ namespace Phony.ViewModels
             }
         }
 
-        private async void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object? sender, EventArgs e)
         {
             if (_disposed || isBacking || !_refreshTask.IsCompleted)
             {
@@ -285,7 +285,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<BarCodes>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<BarCodes>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -298,7 +298,7 @@ namespace Phony.ViewModels
         {
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
             var userCol = db.GetCollection<User>(DBCollections.Users);
-            User u = null;
+            User? u = null;
             await Task.Run(() =>
             {
                 u = userCol.Find(x => x.Name == UserName).FirstOrDefault();
@@ -306,6 +306,7 @@ namespace Phony.ViewModels
             if (u is null)
             {
                 await Message.ShowMessageAsync("خطا", "تاكد من اسم المستخدم و ان كلمه المرور الحاليه صحيحة");
+                return;
             }
             else if (string.IsNullOrWhiteSpace(NewPassword))
             {
@@ -314,7 +315,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                if (SecurePasswordHasher.Verify(Password, u.Pass))
+                if (Password != null && u.Pass != null && SecurePasswordHasher.Verify(Password, u.Pass))
                 {
                     u.Name = UserName;
                     u.Pass = SecurePasswordHasher.Hash(NewPassword);
@@ -362,7 +363,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<SalesBillsViewer>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -380,7 +381,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Bills>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Bills>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -398,7 +399,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Users>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Users>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -416,7 +417,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Notes>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Notes>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -434,7 +435,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Stores>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Stores>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -452,7 +453,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<SalesMen>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<SalesMen>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -576,7 +577,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Companies>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Companies>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -594,7 +595,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Cards>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Cards>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -612,7 +613,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Suppliers>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Suppliers>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -630,7 +631,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Services>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Services>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -648,7 +649,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Shortages>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Shortages>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -666,7 +667,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Clients>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Clients>().FirstOrDefault()?.Activate();
             }
         }
 
@@ -684,7 +685,7 @@ namespace Phony.ViewModels
             }
             else
             {
-                System.Windows.Application.Current.Windows.OfType<Items>().FirstOrDefault().Activate();
+                System.Windows.Application.Current.Windows.OfType<Items>().FirstOrDefault()?.Activate();
             }
         }
     }

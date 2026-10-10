@@ -43,7 +43,11 @@ namespace Phony.Helpers
 
         private static void OnPasswordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
+            if (sender is not PasswordBox passwordBox)
+            {
+                return;
+            }
+
             passwordBox.PasswordChanged -= PasswordChanged;
 
             if (!(bool)GetIsUpdating(passwordBox))
@@ -72,7 +76,11 @@ namespace Phony.Helpers
 
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
-            PasswordBox passwordBox = sender as PasswordBox;
+            if (sender is not PasswordBox passwordBox)
+            {
+                return;
+            }
+
             SetIsUpdating(passwordBox, true);
             SetPassword(passwordBox, passwordBox.Password);
             SetIsUpdating(passwordBox, false);

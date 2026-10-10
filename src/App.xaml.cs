@@ -65,7 +65,9 @@ namespace Phony
         private static void ConfigureDialogResources(object sender, RoutedEventArgs e)
         {
             if (sender is not MetroWindow window || !ReferenceEquals(e.OriginalSource, window))
+            {
                 return;
+            }
 
             // Dialogs have their own resource scope; the application compatibility theme
             // alone does not override their explicitly keyed MahApps button styles.

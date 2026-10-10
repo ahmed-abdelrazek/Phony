@@ -19,14 +19,14 @@ namespace Phony.ViewModels
     public class SettingsViewModel : BindableBase
     {
         int _reportsSizeIndex;
-        string _reportsSize;
-        string _dbFullPath;
-        string _dbPassword;
-        string _sqlServerName;
-        string _sqlUserName;
-        string _sqlPassword;
-        string _sqlDataBase;
-        string _appVersion;
+        string? _reportsSize;
+        string? _dbFullPath;
+        string? _dbPassword;
+        string? _sqlServerName;
+        string? _sqlUserName;
+        string? _sqlPassword;
+        string? _sqlDataBase;
+        string? _appVersion;
         bool _liteUseDefault;
         bool _sqlUseDefault;
         bool _sqlIsWinAuth;
@@ -39,49 +39,49 @@ namespace Phony.ViewModels
             set => SetProperty(ref _reportsSizeIndex, value);
         }
 
-        public string ReportsSize
+        public string? ReportsSize
         {
             get => _reportsSize;
             set => SetProperty(ref _reportsSize, value);
         }
 
-        public string LiteDbFullPath
+        public string? LiteDbFullPath
         {
             get => _dbFullPath;
             set => SetProperty(ref _dbFullPath, value);
         }
 
-        public string LiteDbPassword
+        public string? LiteDbPassword
         {
             get => _dbPassword;
             set => SetProperty(ref _dbPassword, value);
         }
 
-        public string SQLServerName
+        public string? SQLServerName
         {
             get => _sqlServerName;
             set => SetProperty(ref _sqlServerName, value);
         }
 
-        public string SQLUserName
+        public string? SQLUserName
         {
             get => _sqlUserName;
             set => SetProperty(ref _sqlUserName, value);
         }
 
-        public string SQLPassword
+        public string? SQLPassword
         {
             get => _sqlPassword;
             set => SetProperty(ref _sqlPassword, value);
         }
 
-        public string SQLDataBase
+        public string? SQLDataBase
         {
             get => _sqlDataBase;
             set => SetProperty(ref _sqlDataBase, value);
         }
 
-        public string AppVersion
+        public string? AppVersion
         {
             get => _appVersion;
             set => SetProperty(ref _appVersion, value);
@@ -123,11 +123,11 @@ namespace Phony.ViewModels
 
         private readonly SqlConnectionStringBuilder SQLConnectionStringBuilder = new();
 
-        readonly Views.Settings Window = System.Windows.Application.Current.Windows.OfType<Views.Settings>().FirstOrDefault();
+        private Views.Settings Window => System.Windows.Application.Current.Windows.OfType<Views.Settings>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public SettingsViewModel()
         {
-            AssemblyInfo ai = new(Assembly.GetEntryAssembly());
+            AssemblyInfo ai = new(Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly());
             AppVersion = "رقم الاصدار: " + ai.Version;
 
             LiteDbFullPath = Properties.Settings.Default.LiteDbConnectionString;
@@ -201,13 +201,13 @@ namespace Phony.ViewModels
                 }
                 else
                 {
-                    if (LiteDbFullPath.EndsWith("Phony.db"))
+                    if (LiteDbFullPath?.EndsWith("Phony.db") == true)
                     {
                         Properties.Settings.Default.LiteDbConnectionString = LiteDbFullPath;
                     }
                     else
                     {
-                        if (!LiteDbFullPath.EndsWith("\\"))
+                        if (LiteDbFullPath?.EndsWith("\\") != true)
                         {
                             LiteDbFullPath = LiteDbFullPath + "\\";
                         }
@@ -222,7 +222,7 @@ namespace Phony.ViewModels
                 Properties.Settings.Default.Save();
                 try
                 {
-                    LiteDbContext.ConnectionString = LiteDbContext.GetConnectionString(Properties.Settings.Default.LiteDbConnectionString, Properties.Settings.Default.LiteDbConnectionPassword);
+                    LiteDbContext.ConnectionString = LiteDbContext.GetConnectionString(Properties.Settings.Default.LiteDbConnectionString ?? throw new InvalidOperationException("A database path is required."), Properties.Settings.Default.LiteDbConnectionPassword);
                     LiteDbContext.InitializeDatabase();
                     if (!SQLIsImporting)
                     {
@@ -253,9 +253,9 @@ namespace Phony.ViewModels
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 LiteDbFullPath = dlg.SelectedPath;
-                if (!LiteDbFullPath.EndsWith("Phony.db"))
+                if (LiteDbFullPath?.EndsWith("Phony.db") != true)
                 {
-                    if (!LiteDbFullPath.EndsWith("\\"))
+                    if (LiteDbFullPath?.EndsWith("\\") != true)
                     {
                         LiteDbFullPath = LiteDbFullPath + "\\";
                     }

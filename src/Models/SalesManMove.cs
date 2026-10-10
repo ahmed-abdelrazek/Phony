@@ -5,7 +5,7 @@ namespace Phony.Models
     public class SalesManMove : BaseModel
     {
         [BsonRef(nameof(Data.DBCollections.SalesMen))]
-        public virtual SalesMan SalesMan { get; set; }
+        public virtual SalesMan? SalesMan { get; set; }
 
         public decimal Debit { get; set; }
 

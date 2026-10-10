@@ -53,7 +53,7 @@ namespace Phony.Data
                     e.Message,
                     "----End of exception message----\r\n",
                     "----Stack trace----",
-                    e.StackTrace,
+                    e.StackTrace ?? string.Empty,
                     "----End of stack trace----\r\n"
                 }.ToArray());
             }
@@ -85,7 +85,7 @@ namespace Phony.Data
                     e.Message,
                     "----End of exception message----\r\n",
                     "----Stack trace----",
-                    e.StackTrace,
+                    e.StackTrace ?? string.Empty,
                     "----End of stack trace----\r\n"
                 }.ToArray());
             });
@@ -110,7 +110,7 @@ namespace Phony.Data
 
         public static User ReadUserSession()
         {
-            return JsonSerializer.Deserialize<User>(Encryption.DecryptText(File.ReadAllText(UserLocalAppFolderPath() + "..\\..\\session")));
+            return JsonSerializer.Deserialize<User>(Encryption.DecryptText(File.ReadAllText(UserLocalAppFolderPath() + "..\\..\\session"))) ?? throw new InvalidDataException("The saved user session is empty.");
         }
     }
 }

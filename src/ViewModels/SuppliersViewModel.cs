@@ -19,23 +19,23 @@ namespace Phony.ViewModels
     public class SuppliersViewModel : BindableBase
     {
         long _supplierId;
-        string _name;
-        string _site;
-        string _email;
-        string _searchText;
-        string _phone;
-        string _notes;
-        static string _suppliersCount;
-        static string _suppliersDebits;
-        static string _suppliersCredits;
-        static string _suppliersProfit;
-        byte[] _image;
+        string? _name;
+        string? _site;
+        string? _email;
+        string? _searchText;
+        string? _phone;
+        string? _notes;
+        static string? _suppliersCount;
+        static string? _suppliersDebits;
+        static string? _suppliersCredits;
+        static string? _suppliersProfit;
+        byte[]? _image;
         decimal _balance;
         bool _isSupplierFlyoutOpen;
-        Supplier _dataGridSelectedSupplier;
+        Supplier? _dataGridSelectedSupplier;
         long _selectedSalesMan;
-        ObservableCollection<Supplier> _suppliers;
-        ObservableCollection<SalesMan> _salesMen;
+        ObservableCollection<Supplier> _suppliers = [];
+        ObservableCollection<SalesMan> _salesMen = [];
 
         public long SupplierId
         {
@@ -43,67 +43,67 @@ namespace Phony.ViewModels
             set => SetProperty(ref _supplierId, value);
         }
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set => SetProperty(ref _name, value);
         }
 
-        public string Site
+        public string? Site
         {
             get => _site;
             set => SetProperty(ref _site, value);
         }
 
-        public string Email
+        public string? Email
         {
             get => _email;
             set => SetProperty(ref _email, value);
         }
 
-        public string Phone
+        public string? Phone
         {
             get => _phone;
             set => SetProperty(ref _phone, value);
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set => SetProperty(ref _searchText, value);
         }
 
-        public string Notes
+        public string? Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);
         }
 
-        public string SuppliersCount
+        public string? SuppliersCount
         {
             get => _suppliersCount;
             set => SetProperty(ref _suppliersCount, value);
         }
 
-        public string SuppliersDebits
+        public string? SuppliersDebits
         {
             get => _suppliersDebits;
             set => SetProperty(ref _suppliersDebits, value);
         }
 
-        public string SuppliersCredits
+        public string? SuppliersCredits
         {
             get => _suppliersCredits;
             set => SetProperty(ref _suppliersCredits, value);
         }
 
-        public string SuppliersProfit
+        public string? SuppliersProfit
         {
             get => _suppliersProfit;
             set => SetProperty(ref _suppliersProfit, value);
         }
 
-        public byte[] Image
+        public byte[]? Image
         {
             get => _image;
             set => SetProperty(ref _image, value);
@@ -121,7 +121,7 @@ namespace Phony.ViewModels
             set => SetProperty(ref _isSupplierFlyoutOpen, value);
         }
 
-        public Supplier DataGridSelectedSupplier
+        public Supplier? DataGridSelectedSupplier
         {
             get => _dataGridSelectedSupplier;
             set => SetProperty(ref _dataGridSelectedSupplier, value);
@@ -147,18 +147,18 @@ namespace Phony.ViewModels
 
         public ObservableCollection<User> Users { get; set; }
 
-        public ICommand SupplierPay { get; set; }
-        public ICommand PaySupplier { get; set; }
-        public ICommand AddSupplier { get; set; }
-        public ICommand EditSupplier { get; set; }
-        public ICommand DeleteSupplier { get; set; }
-        public ICommand OpenAddSupplierFlyout { get; set; }
-        public ICommand SelectImage { get; set; }
-        public ICommand FillUI { get; set; }
-        public ICommand ReloadAllSuppliers { get; set; }
-        public ICommand Search { get; set; }
+        public ICommand? SupplierPay { get; set; }
+        public ICommand? PaySupplier { get; set; }
+        public ICommand? AddSupplier { get; set; }
+        public ICommand? EditSupplier { get; set; }
+        public ICommand? DeleteSupplier { get; set; }
+        public ICommand? OpenAddSupplierFlyout { get; set; }
+        public ICommand? SelectImage { get; set; }
+        public ICommand? FillUI { get; set; }
+        public ICommand? ReloadAllSuppliers { get; set; }
+        public ICommand? Search { get; set; }
 
-        private readonly Suppliers Message = Application.Current.Windows.OfType<Suppliers>().FirstOrDefault();
+        private Suppliers Message => Application.Current.Windows.OfType<Suppliers>().FirstOrDefault() ?? throw new InvalidOperationException("An open view is required for this UI action.");
 
         public SuppliersViewModel()
         {
@@ -215,7 +215,13 @@ namespace Phony.ViewModels
 
         private async void DoSupplierPayAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلمته من المورد {DataGridSelectedSupplier.Name}");
+            var selectedSupplier = DataGridSelectedSupplier;
+            if (selectedSupplier is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى استلمته من المورد {selectedSupplier.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -226,19 +232,19 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
+                    var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(selectedSupplier.Id);
                     s.Balance += supplierpaymentamount;
                     db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves).Insert(new SupplierMove
                     {
-                        Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id),
+                        Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(selectedSupplier.Id),
                         Credit = supplierpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم استلام للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
-                    Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
+                    await Message.ShowMessageAsync("تمت العملية", $"تم استلام للمورد {selectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
+                    Suppliers[Suppliers.IndexOf(selectedSupplier)] = s;
                     DebitCredit();
                     DataGridSelectedSupplier = null;
                     SupplierId = 0;
@@ -257,7 +263,13 @@ namespace Phony.ViewModels
 
         private async void DoPaySupplierAsync()
         {
-            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمورد {DataGridSelectedSupplier.Name}");
+            var selectedSupplier = DataGridSelectedSupplier;
+            if (selectedSupplier is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowInputAsync("تدفيع", $"ادخل المبلغ الذى تريد تدفيعه للمورد {selectedSupplier.Name}");
             if (string.IsNullOrWhiteSpace(result))
             {
                 await Message.ShowMessageAsync("ادخل مبلغ", "لم تقم بادخال اى مبلغ لاضافته للرصيد");
@@ -268,11 +280,11 @@ namespace Phony.ViewModels
                 if (isvalidmoney)
                 {
                     using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                    var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
+                    var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(selectedSupplier.Id);
                     s.Balance -= supplierpaymentamount;
                     db.GetCollection<SupplierMove>(DBCollections.SuppliersMoves).Insert(new SupplierMove
                     {
-                        Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id),
+                        Supplier = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(selectedSupplier.Id),
                         Debit = supplierpaymentamount,
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
@@ -283,14 +295,14 @@ namespace Phony.ViewModels
                     {
                         Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
                         Credit = supplierpaymentamount,
-                        Notes = $"دفع المورد بكود {DataGridSelectedSupplier.Id} باسم {DataGridSelectedSupplier.Name}",
+                        Notes = $"دفع المورد بكود {selectedSupplier.Id} باسم {selectedSupplier.Name}",
                         CreateDate = DateTime.Now,
                         Creator = Core.ReadUserSession(),
                         EditDate = null,
                         Editor = null
                     });
-                    await Message.ShowMessageAsync("تمت العملية", $"تم دفع للمورد {DataGridSelectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
-                    Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
+                    await Message.ShowMessageAsync("تمت العملية", $"تم دفع للمورد {selectedSupplier.Name} مبلغ {supplierpaymentamount} جنية بنجاح");
+                    Suppliers[Suppliers.IndexOf(selectedSupplier)] = s;
                     DebitCredit();
                     DataGridSelectedSupplier = null;
                     SupplierId = 0;
@@ -346,8 +358,14 @@ namespace Phony.ViewModels
 
         private async void DoEditSupplier()
         {
+            var selectedSupplier = DataGridSelectedSupplier;
+            if (selectedSupplier is null)
+            {
+                return;
+            }
+
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(DataGridSelectedSupplier.Id);
+            var s = db.GetCollection<Supplier>(DBCollections.Suppliers).FindById(selectedSupplier.Id);
             s.Name = Name;
             s.Balance = Balance;
             s.Site = Site;
@@ -360,7 +378,7 @@ namespace Phony.ViewModels
             s.EditDate = DateTime.Now;
             db.GetCollection<Supplier>(DBCollections.Suppliers).Update(s);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل المورد بنجاح");
-            Suppliers[Suppliers.IndexOf(DataGridSelectedSupplier)] = s;
+            Suppliers[Suppliers.IndexOf(selectedSupplier)] = s;
             DebitCredit();
             DataGridSelectedSupplier = null;
             SupplierId = 0;
@@ -373,13 +391,19 @@ namespace Phony.ViewModels
 
         private async void DoDeleteSupplier()
         {
-            var result = await Message.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {DataGridSelectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
+            var selectedSupplier = DataGridSelectedSupplier;
+            if (selectedSupplier is null)
+            {
+                return;
+            }
+
+            var result = await Message.ShowMessageAsync("حذف المورد", $"هل انت متاكد من حذف المورد {selectedSupplier.Name}", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
                 {
-                    db.GetCollection<Supplier>(DBCollections.Suppliers).Delete(DataGridSelectedSupplier.Id);
-                    Suppliers.Remove(DataGridSelectedSupplier);
+                    db.GetCollection<Supplier>(DBCollections.Suppliers).Delete(selectedSupplier.Id);
+                    Suppliers.Remove(selectedSupplier);
                 }
                 await Message.ShowMessageAsync("تمت العملية", "تم حذف المورد بنجاح");
                 DebitCredit();
@@ -397,7 +421,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).Find(x => x.Name.Contains(SearchText)));
+                Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).Find(x => x.Name != null && x.Name.Contains(SearchText ?? string.Empty)));
                 if (Suppliers.Count < 1)
                 {
                     await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -431,15 +455,21 @@ namespace Phony.ViewModels
 
         private void DoFillUI()
         {
-            SupplierId = DataGridSelectedSupplier.Id;
-            Name = DataGridSelectedSupplier.Name;
-            Balance = DataGridSelectedSupplier.Balance;
-            Site = DataGridSelectedSupplier.Site;
-            Image = DataGridSelectedSupplier.Image;
-            Email = DataGridSelectedSupplier.Email;
-            Phone = DataGridSelectedSupplier.Phone;
-            SelectedSalesMan = DataGridSelectedSupplier.SalesMan.Id;
-            Notes = DataGridSelectedSupplier.Notes;
+            var selectedSupplier = DataGridSelectedSupplier;
+            if (selectedSupplier is null)
+            {
+                return;
+            }
+
+            SupplierId = selectedSupplier.Id;
+            Name = selectedSupplier.Name;
+            Balance = selectedSupplier.Balance;
+            Site = selectedSupplier.Site;
+            Image = selectedSupplier.Image;
+            Email = selectedSupplier.Email;
+            Phone = selectedSupplier.Phone;
+            SelectedSalesMan = selectedSupplier.SalesMan?.Id ?? 0;
+            Notes = selectedSupplier.Notes;
             IsAddSupplierFlyoutOpen = true;
         }
 
