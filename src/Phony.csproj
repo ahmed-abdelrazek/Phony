@@ -71,10 +71,10 @@
 		<Resource Include="Resources\ColorSwatchSquare2.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="16.1.1" />
+		<PackageReference Include="Riok.Mapperly" Version="4.3.1" ExcludeAssets="runtime" PrivateAssets="all" />
 		<PackageReference Include="BarcodeLib" Version="3.1.5" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.1" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3967.48" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
 		<PackageReference Include="RazorEngineCore" Version="2026.1.1" />
 		<PackageReference Include="Prism.Wpf" Version="9.0.537" />
 		<PackageReference Include="ControlzEx" Version="5.0.2" />
@@ -83,7 +83,7 @@
 		<PackageReference Include="MahApps.Metro" Version="2.4.11" />
 		<PackageReference Include="MahApps.Metro.SimpleChildWindow" Version="2.2.1" />
 		<PackageReference Include="MaterialDesignThemes.MahApps" Version="5.3.2" />
-		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\.editorconfig" Link=".editorconfig" />

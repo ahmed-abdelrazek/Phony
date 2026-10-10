@@ -1,8 +1,8 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.DTOs;
-using Phony.Helpers;
+using Phony.Mappers;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -151,7 +151,7 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                Companies = ObjectMapper.Mapper.Map<ObservableCollection<CompanyDto>>(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).FindAll());
+                Companies = AppMapper.ToCompanyDtos(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).FindAll());
             }
             DebitCredit();
         }
@@ -223,7 +223,7 @@ namespace Phony.ViewModels
                         Editor = null
                     });
                     await Message.ShowMessageAsync("تمت العملية", $"تم اضافه رصيد لشركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = ObjectMapper.Mapper.Map<CompanyDto>(s);
+                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedCompany = null;
                     CompanyId = 0;
@@ -277,7 +277,7 @@ namespace Phony.ViewModels
                         Editor = null
                     });
                     await Message.ShowMessageAsync("تمت العملية", $"تم خصم من شركة {DataGridSelectedCompany.Name} مبلغ {compantpaymentamount} جنية بنجاح");
-                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = ObjectMapper.Mapper.Map<CompanyDto>(s);
+                    Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedCompany = null;
                     CompanyId = 0;
@@ -315,7 +315,7 @@ namespace Phony.ViewModels
                     Editor = null
                 };
                 db.GetCollection<Company>(DBCollections.Companies).Insert(company);
-                Companies.Add(ObjectMapper.Mapper.Map<CompanyDto>(company));
+                Companies.Add(AppMapper.ToDto(company));
                 await Message.ShowMessageAsync("تمت العملية", "تم اضافة الشركة بنجاح");
                 DebitCredit();
             }
@@ -345,7 +345,7 @@ namespace Phony.ViewModels
             company.EditDate = DateTime.Now;
             db.GetCollection<Company>(DBCollections.Companies).Update(company);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل الشركة بنجاح");
-            Companies[Companies.IndexOf(DataGridSelectedCompany)] = ObjectMapper.Mapper.Map<CompanyDto>(company);
+            Companies[Companies.IndexOf(DataGridSelectedCompany)] = AppMapper.ToDto(company);
             DebitCredit();
             DataGridSelectedCompany = null;
             CompanyId = 0;
@@ -382,7 +382,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Companies = ObjectMapper.Mapper.Map<ObservableCollection<CompanyDto>>(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
+                Companies = AppMapper.ToCompanyDtos(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
                 if (Companies.Count < 1)
                 {
                     await Message.ShowMessageAsync("غير موجود", "لم يتم العثور على شئ");
@@ -404,7 +404,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                Companies = ObjectMapper.Mapper.Map<ObservableCollection<CompanyDto>>(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).FindAll());
+                Companies = AppMapper.ToCompanyDtos(db.GetCollection<Company>(DBCollections.Companies).Include(x => x.Creator).Include(x => x.Editor).FindAll());
             }
             DebitCredit();
         }

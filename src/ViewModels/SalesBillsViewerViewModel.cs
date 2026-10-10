@@ -1,8 +1,8 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.DTOs;
-using Phony.Helpers;
+using Phony.Mappers;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -167,7 +167,7 @@ namespace Phony.ViewModels
 
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                bill = ObjectMapper.Mapper.Map<BillDto>(db.GetCollection<Bill>(DBCollections.Bills)
+                bill = AppMapper.ToDto(db.GetCollection<Bill>(DBCollections.Bills)
                     .Include(x => x.Store)
                     .Include(x => x.Client)
                     .Include(x => x.Creator).FindById(id));
@@ -177,10 +177,10 @@ namespace Phony.ViewModels
                     return;
                 }
 
-                var services = ObjectMapper.Mapper.Map<List<BillServiceMoveDto>>(db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Include(x => x.Service).Find(x => x.Bill.Id == bill.Id));
+                var services = AppMapper.ToBillServiceMoveDtos(db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Include(x => x.Service).Find(x => x.Bill.Id == bill.Id));
                 bill.ServicesMoves = services;
 
-                var Items = ObjectMapper.Mapper.Map<List<BillItemMoveDto>>(db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Include(x => x.Item).Find(x => x.Bill.Id == bill.Id));
+                var Items = AppMapper.ToBillItemMoveDtos(db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Include(x => x.Item).Find(x => x.Bill.Id == bill.Id));
                 bill.ItemsMoves = Items;
 
             }

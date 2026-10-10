@@ -1,8 +1,9 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.DTOs;
 using Phony.Helpers;
+using Phony.Mappers;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -274,7 +275,7 @@ namespace Phony.ViewModels
             {
                 Companies = new ObservableCollection<Company>(db.GetCollection<Company>(DBCollections.Companies).FindAll());
                 Suppliers = new ObservableCollection<Supplier>(db.GetCollection<Supplier>(DBCollections.Suppliers).FindAll());
-                Items = ObjectMapper.Mapper.Map<ObservableCollection<ItemDto>>(db.GetCollection<Item>(DBCollections.Items).Include(x => x.Company).Include(x => x.Supplier).Include(x => x.Creator).Include(x => x.Editor).Find(i => i.Group == ItemGroup.Other));
+                Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Include(x => x.Company).Include(x => x.Supplier).Include(x => x.Creator).Include(x => x.Editor).Find(i => i.Group == ItemGroup.Other));
                 Users = new ObservableCollection<User>(db.GetCollection<User>(DBCollections.Users).FindAll());
             }
             new Thread(() =>
@@ -324,7 +325,7 @@ namespace Phony.ViewModels
                 Editor = null
             };
             db.GetCollection<Item>(DBCollections.Items).Insert(newItem);
-            Items.Add(ObjectMapper.Mapper.Map<ItemDto>(newItem));
+            Items.Add(AppMapper.ToDto(newItem));
             await Message.ShowMessageAsync("تمت العملية", "تم اضافة الصنف بنجاح");
         }
 
@@ -349,7 +350,7 @@ namespace Phony.ViewModels
             i.Editor = Core.ReadUserSession();
             i.EditDate = DateTime.Now;
             db.GetCollection<Item>(DBCollections.Items).Update(i);
-            Items[Items.IndexOf(DataGridSelectedItem)] = ObjectMapper.Mapper.Map<ItemDto>(i);
+            Items[Items.IndexOf(DataGridSelectedItem)] = AppMapper.ToDto(i);
             ItemId = 0;
             DataGridSelectedItem = null;
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل الصنف بنجاح");
@@ -381,15 +382,15 @@ namespace Phony.ViewModels
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
                 if (ByName)
                 {
-                    Items = ObjectMapper.Mapper.Map<ObservableCollection<ItemDto>>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
+                    Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Name.Contains(SearchText) && i.Group == ItemGroup.Other));
                 }
                 else if (ByBarCode)
                 {
-                    Items = ObjectMapper.Mapper.Map<ObservableCollection<ItemDto>>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
+                    Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Barcode == SearchText && i.Group == ItemGroup.Other));
                 }
                 else
                 {
-                    Items = ObjectMapper.Mapper.Map<ObservableCollection<ItemDto>>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
+                    Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Shopcode == SearchText && i.Group == ItemGroup.Other));
                 }
                 if (Items.Count > 0)
                 {
@@ -422,7 +423,7 @@ namespace Phony.ViewModels
         private void DoReloadAllItems()
         {
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            Items = ObjectMapper.Mapper.Map<ObservableCollection<ItemDto>>(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
+            Items = AppMapper.ToItemDtos(db.GetCollection<Item>(DBCollections.Items).Find(i => i.Group == ItemGroup.Other));
         }
 
         private bool CanFillUI() => DataGridSelectedItem is not null;

@@ -1,8 +1,8 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.DTOs;
-using Phony.Helpers;
+using Phony.Mappers;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -163,7 +163,7 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                SalesMen = ObjectMapper.Mapper.Map<ObservableCollection<SalesManDto>>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).FindAll());
+                SalesMen = AppMapper.ToSalesManDtos(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).FindAll());
             }
             DebitCredit();
         }
@@ -234,7 +234,7 @@ namespace Phony.ViewModels
                         Editor = null
                     });
                     await Message.ShowMessageAsync("تمت العملية", $"تم استلام مبلغ من {DataGridSelectedSalesMan.Name} و قدره {SalesManpaymentamount} جنية بنجاح");
-                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = ObjectMapper.Mapper.Map<SalesManDto>(s);
+                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(s);
                     DebitCredit();
                     DataGridSelectedSalesMan = null;
                     SalesManId = 0;
@@ -287,7 +287,7 @@ namespace Phony.ViewModels
                         Editor = null
                     });
                     await Message.ShowMessageAsync("تمت العملية", $"تم الدفع لـ {DataGridSelectedSalesMan.Name} مبلغ {SalesManpaymentamount} جنية بنجاح");
-                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = ObjectMapper.Mapper.Map<SalesManDto>(salesMan);
+                    SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(salesMan);
                     DebitCredit();
                     DataGridSelectedSalesMan = null;
                     SalesManId = 0;
@@ -323,7 +323,7 @@ namespace Phony.ViewModels
                     Editor = null
                 };
                 db.GetCollection<SalesMan>(DBCollections.SalesMen).Insert(salesMan);
-                SalesMen.Add(ObjectMapper.Mapper.Map<SalesManDto>(salesMan));
+                SalesMen.Add(AppMapper.ToDto(salesMan));
                 await Message.ShowMessageAsync("تمت العملية", "تم اضافة المندوب بنجاح");
                 DebitCredit();
             }
@@ -351,7 +351,7 @@ namespace Phony.ViewModels
             salesMan.EditDate = DateTime.Now;
             db.GetCollection<SalesMan>(DBCollections.SalesMen).Update(salesMan);
             await Message.ShowMessageAsync("تمت العملية", "تم تعديل المندوب بنجاح");
-            SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = ObjectMapper.Mapper.Map<SalesManDto>(salesMan);
+            SalesMen[SalesMen.IndexOf(DataGridSelectedSalesMan)] = AppMapper.ToDto(salesMan);
             DebitCredit();
             DataGridSelectedSalesMan = null;
             SalesManId = 0;
@@ -388,7 +388,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                SalesMen = ObjectMapper.Mapper.Map<ObservableCollection<SalesManDto>>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
+                SalesMen = AppMapper.ToSalesManDtos(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).Find(x => x.Name.Contains(SearchText)));
                 if (SalesMen.Count > 0)
                 {
                     if (FastResult)
@@ -419,7 +419,7 @@ namespace Phony.ViewModels
         {
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                SalesMen = ObjectMapper.Mapper.Map<ObservableCollection<SalesManDto>>(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).FindAll());
+                SalesMen = AppMapper.ToSalesManDtos(db.GetCollection<SalesMan>(DBCollections.SalesMen).Include(x => x.Creator).Include(x => x.Editor).FindAll());
             }
             DebitCredit();
         }

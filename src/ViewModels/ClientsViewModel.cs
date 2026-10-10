@@ -1,8 +1,8 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.DTOs;
-using Phony.Helpers;
+using Phony.Mappers;
 using Phony.Models;
 using Phony.Views;
 using Prism.Commands;
@@ -170,7 +170,7 @@ namespace Phony.ViewModels
             LoadCommands();
             using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
             {
-                Clients = ObjectMapper.Mapper.Map<ObservableCollection<ClientDto>>(db.GetCollection<Client>(DBCollections.Clients).Include(x => x.Creator).Include(x => x.Editor).FindAll());
+                Clients = AppMapper.ToClientDtos(db.GetCollection<Client>(DBCollections.Clients).Include(x => x.Creator).Include(x => x.Editor).FindAll());
             }
             DebitCredit();
         }
@@ -253,7 +253,7 @@ namespace Phony.ViewModels
                         });
                     }
                     await Message.ShowMessageAsync("تمت العملية", $"تم تدفيع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
-                    Clients[Clients.IndexOf(DataGridSelectedClient)] = ObjectMapper.Mapper.Map<ClientDto>(c);
+                    Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
                     DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
@@ -305,7 +305,7 @@ namespace Phony.ViewModels
                         Editor = null
                     });
                     await Message.ShowMessageAsync("تمت العملية", $"تم دفع {DataGridSelectedClient.Name} مبلغ {clientpaymentamount} جنية بنجاح");
-                    Clients[Clients.IndexOf(DataGridSelectedClient)] = ObjectMapper.Mapper.Map<ClientDto>(c);
+                    Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
                     DebitCredit();
                     ClientId = 0;
                     DataGridSelectedClient = null;
@@ -342,7 +342,7 @@ namespace Phony.ViewModels
                     Editor = null
                 };
                 db.GetCollection<Client>(DBCollections.Clients).Insert(c);
-                Clients.Add(ObjectMapper.Mapper.Map<ClientDto>(c));
+                Clients.Add(AppMapper.ToDto(c));
                 Message.ShowMessageAsync("تمت العملية", "تم اضافة العميل بنجاح");
                 DebitCredit();
             }
@@ -371,7 +371,7 @@ namespace Phony.ViewModels
             c.EditDate = DateTime.Now;
             db.GetCollection<Client>(DBCollections.Clients).Update(c);
             Message.ShowMessageAsync("تمت العملية", "تم تعديل العميل بنجاح");
-            Clients[Clients.IndexOf(DataGridSelectedClient)] = ObjectMapper.Mapper.Map<ClientDto>(c);
+            Clients[Clients.IndexOf(DataGridSelectedClient)] = AppMapper.ToDto(c);
             DebitCredit();
             DataGridSelectedClient = null;
             ClientId = 0;
@@ -408,7 +408,7 @@ namespace Phony.ViewModels
             try
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-                Clients = ObjectMapper.Mapper.Map<ObservableCollection<ClientDto>>(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name.Contains(SearchText)));
+                Clients = AppMapper.ToClientDtos(db.GetCollection<Client>(DBCollections.Clients).Find(x => x.Name.Contains(SearchText)));
                 if (Clients.Count > 0)
                 {
                     if (FastResult)
@@ -438,7 +438,7 @@ namespace Phony.ViewModels
         private void DoReloadAllClients()
         {
             using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            Clients = ObjectMapper.Mapper.Map<ObservableCollection<ClientDto>>(db.GetCollection<Client>(DBCollections.Clients).FindAll());
+            Clients = AppMapper.ToClientDtos(db.GetCollection<Client>(DBCollections.Clients).FindAll());
         }
 
         private bool CanFillUI()
