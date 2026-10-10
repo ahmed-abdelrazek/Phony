@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -7,192 +7,61 @@
     <meta name="description" content="Sales Invoice Report" />
     <meta name="author" content="Ahmed Mohamed Abdel-Razek" />
     <style>
-        @@page {
-            size: 21cm 29.7cm;
-        }
-
-        @@media print {
-            body {
-                size: 21cm 29.7cm;
-            }
-        }
-
-        .html,
+        @@page { size: A4; margin: 5mm 8mm; }
+        * { box-sizing: border-box; }
+        html { margin: 0; padding: 0; }
         body {
-            size: 21cm 29.7cm;
-            margin: 5mm 8mm 5mm 8mm;
+            width: 210mm;
+            margin: 0 auto;
+            padding: 5mm 8mm;
+            color: #000;
+            background: #fff;
+            font: 14px/1.4 Arial, sans-serif;
         }
-
-        .container {
-            display: grid;
-            grid-template-columns: 100%;
-            grid-template-rows: auto auto auto auto;
-            gap: 0px 0px;
-            grid-auto-flow: row;
-            grid-template-areas:
-                "Header"
-                "InvoiceInfo"
-                "Content"
-                "Footer";
-        }
-
+        .container, .Content, .ContentTable { width: 100%; min-width: 0; }
         .Header {
             display: grid;
-            grid-template-columns: auto 100%;
-            grid-template-rows: auto;
-            gap: 0px 0px;
-            grid-auto-flow: row;
-            grid-template-areas:
-                "Logo StoreInfo";
-            grid-area: Header;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: 4mm;
+            align-items: center;
+            margin-bottom: 3mm;
         }
-
-        .Logo {
-            grid-area: Logo;
-        }
-
-        .StoreInfo {
-            grid-area: StoreInfo;
-            vertical-align: middle;
-        }
-
+        .Logo img { display: block; max-width: 100%; object-fit: contain; }
+        .StoreInfo, .InvoiceInfo > div { min-width: 0; overflow-wrap: anywhere; }
         .InvoiceInfo {
             display: grid;
-            grid-template-columns: auto 100%;
-            grid-template-rows: auto auto auto auto;
-            gap: 0px 5px;
-            grid-auto-flow: row;
-            grid-template-areas:
-                "InvoiceNo InvoiceNoValue"
-                "InvoiceDate InvoiceDateValue"
-                "ClientName ClientNameValue"
-                "SellerName SellerNameValue";
-            grid-area: InvoiceInfo;
+            grid-template-columns: max-content minmax(0, 1fr);
+            gap: 1mm 2mm;
         }
-
-        .InvoiceNo {
-            grid-area: InvoiceNo;
-            white-space: nowrap;
-        }
-
-        .InvoiceNoValue {
-            grid-area: InvoiceNoValue;
-        }
-
-        .InvoiceDate {
-            grid-area: InvoiceDate;
-            white-space: nowrap;
-        }
-
-        .InvoiceDateValue {
-            grid-area: InvoiceDateValue;
-        }
-
-        .ClientName {
-            grid-area: ClientName;
-            white-space: nowrap;
-        }
-
-        .ClientNameValue {
-            grid-area: ClientNameValue;
-        }
-
-        .SellerName {
-            grid-area: SellerName;
-            white-space: nowrap;
-        }
-
-        .SellerNameValue {
-            grid-area: SellerNameValue;
-        }
-
-        .Content {
-            display: grid;
-            grid-template-columns: auto;
-            grid-template-rows: auto auto;
-            gap: 5px 0px;
-            margin-top: 10px;
-            grid-auto-flow: row;
-            grid-template-areas:
-                "ContentTable"
-                "ContentSums";
-            grid-area: Content;
-        }
-
-        .ContentTable {
-            grid-area: ContentTable;
-        }
-
+        .Content { margin-top: 3mm; }
         .ContentSums {
             display: grid;
-            grid-template-columns: auto auto auto auto;
-            grid-template-rows: auto;
-            gap: 0px 0px;
-            grid-auto-flow: row;
-            grid-template-areas:
-                "Sum1 Sum2 Sum3 Sum4";
-            grid-area: ContentSums;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 3mm;
+            break-inside: avoid;
         }
-
-        .Sum1 {
-            grid-area: Sum1;
-            white-space: nowrap;
-        }
-
-        .Sum2 {
-            grid-area: Sum2;
-            white-space: nowrap;
-        }
-
-        .Sum3 {
-            grid-area: Sum3;
-            white-space: nowrap;
-        }
-
-        .Sum4 {
-            grid-area: Sum4;
-            white-space: nowrap;
-        }
-
-        .Footer {
-            grid-area: Footer;
-        }
-
+        .ContentSums > div { min-width: 0; overflow-wrap: anywhere; }
+        p { margin: 2mm 0; }
         table.minimalistBlack {
-            border: 3px solid #000000;
-            width: 99%;
-            text-align: center;
+            width: 100%;
+            table-layout: fixed;
+            border: 1px solid #000;
             border-collapse: collapse;
+            text-align: center;
         }
-
-            table.minimalistBlack td,
-            table.minimalistBlack th {
-                border: 1px solid #000000;
-                padding: 5px 4px;
-            }
-
-            table.minimalistBlack tbody td {
-                font-size: 13px;
-            }
-
-            table.minimalistBlack thead {
-                background: #cfcfcf;
-                background: -moz-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #cfcfcf 100%);
-                background: -webkit-linear-gradient(top, #dbdbdb 0%, #d3d3d3 66%, #cfcfcf 100%);
-                background: linear-gradient(to bottom, #dbdbdb 0%, #d3d3d3 66%, #cfcfcf 100%);
-                border-bottom: 3px solid #000000;
-            }
-
-                table.minimalistBlack thead th {
-                    font-size: 15px;
-                    font-weight: bold;
-                    color: #000000;
-                    text-align: center;
-                }
-
-            table.minimalistBlack tfoot td {
-                font-size: 14px;
-            }
+        table.minimalistBlack th, table.minimalistBlack td {
+            border: 1px solid #000;
+            padding: 1.3mm 1mm;
+            overflow-wrap: anywhere;
+            vertical-align: top;
+        }
+        table.minimalistBlack th:first-child { width: 40%; }
+        table.minimalistBlack thead { display: table-header-group; }
+        table.minimalistBlack tr { break-inside: avoid; }
+        @@media print {
+            body { width: auto; margin: 0; padding: 0; }
+            .container, .Content { display: block; }
+        }
     </style>
 </head>
 
@@ -217,7 +86,7 @@
             <div class="InvoiceNo">رقم الفاتورة:</div>
             <div class="InvoiceNoValue">@Model.Id</div>
             <div class="InvoiceDate">تاريخ الاصدار:</div>
-            <div class="InvoiceDateValue">@Model.CreateDate</div>
+            <div class="InvoiceDateValue"><bdi dir="ltr">@Model.CreateDateDisplay</bdi></div>
             <div class="ClientName">اسم العميل:</div>
             <div class="ClientNameValue">@Model.Client.Name</div>
             <div class="SellerName">اسم البائع:</div>
@@ -240,7 +109,7 @@
                         @foreach (var invoiceService in Model.ServicesMoves) {
                         <tr>
                             <td>@invoiceService.Service.Name</td>
-                            <td>@invoiceService.Service.Cost</td>
+                            <td>@invoiceService.Cost</td>
                             <td>1</td>
                             <td>@invoiceService.Discount %</td>
                             <td>@invoiceService.Total ج.م</td>

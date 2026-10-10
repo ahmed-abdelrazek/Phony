@@ -1,6 +1,7 @@
 ﻿using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Phony.DTOs
 {
@@ -38,6 +39,24 @@ namespace Phony.DTOs
         public UserDto Creator { get => creator; set => SetProperty(ref creator, value); }
 
         public DateTime CreateDate { get => createDate; set => SetProperty(ref createDate, value); }
+
+        public string CreateDateDisplay
+        {
+            get
+            {
+                var characters = CreateDate.ToString("dd/MM/yyyy hh:mm tt", CultureInfo.GetCultureInfo("ar-EG")).ToCharArray();
+                // DateTime formatting does not substitute NativeDigits automatically.
+                for (var i = 0; i < characters.Length; i++)
+                {
+                    if (characters[i] >= '0' && characters[i] <= '9')
+                    {
+                        characters[i] = (char)('\u0660' + characters[i] - '0');
+                    }
+                }
+
+                return new string(characters);
+            }
+        }
 
         public UserDto Editor { get => editor; set => SetProperty(ref editor, value); }
 

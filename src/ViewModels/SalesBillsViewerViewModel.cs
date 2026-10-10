@@ -39,6 +39,19 @@ namespace Phony.ViewModels
 
         string _report;
 
+        private long _loadedBillId;
+        private bool _isReturning;
+        private bool _loadedBillWasReturned;
+        public long LoadedBillId
+        {
+            get => _loadedBillId;
+            private set => SetProperty(ref _loadedBillId, value);
+        }
+        public bool IsReturning
+        {
+            get => _isReturning;
+            private set => SetProperty(ref _isReturning, value);
+        }
         public long ClientSelectedValue
         {
             get => _clientSelectedValue;
@@ -48,7 +61,15 @@ namespace Phony.ViewModels
         public long BillSelectedValue
         {
             get => _billSelectedValue;
-            set => SetProperty(ref _billSelectedValue, value);
+            set
+            {
+                if (SetProperty(ref _billSelectedValue, value))
+                {
+                    LoadedBillId = 0;
+                    IsReturned = false;
+                    IsReturnedVisible = Visibility.Collapsed;
+                }
+            }
         }
 
         public DateTime FirstDate
@@ -150,7 +171,7 @@ namespace Phony.ViewModels
         {
             GetBills = new DelegateCommand(DoGetBills, CanGetBills);
             Show = new DelegateCommand(DoShow, CanShow).ObservesProperty(() => BillSelectedValue);
-            SaveReturned = new DelegateCommand(DoSaveReturned, CanSaveReturned).ObservesProperty(() => BillSelectedValue);
+            SaveReturned = new DelegateCommand(DoSaveReturned, CanSaveReturned).ObservesProperty(() => BillSelectedValue).ObservesProperty(() => LoadedBillId).ObservesProperty(() => IsReturned).ObservesProperty(() => IsReturning).ObservesProperty(() => Bills);
         }
 
         void BillReturnedStatues(long id)
@@ -161,6 +182,7 @@ namespace Phony.ViewModels
 
         public async Task LoadReportAsync(long id)
         {
+            LoadedBillId = 0;
             Report = null;
             IsReturnedVisible = Visibility.Collapsed;
             BillDto bill = null;
@@ -187,20 +209,40 @@ namespace Phony.ViewModels
             if (Properties.Settings.Default.SalesBillsPaperSize == "A4")
             {
                 IRazorEngine razorEngine = new RazorEngine();
-                var templateString = System.IO.File.ReadAllText("Reports\\SalesInvoiceReportA4.html");
+                var templateString = System.IO.File.ReadAllText(System.IO.Path.Combine(AppContext.BaseDirectory, "Reports", "SalesInvoiceReportA4.html"));
                 IRazorEngineCompiledTemplate template = await razorEngine.CompileAsync(templateString);
 
-                Report = template.Run(bill);
+                var report = template.Run(bill);
+                if (BillSelectedValue != id)
+                {
+                    return;
+                }
+
+                Report = report;
             }
             else
             {
                 IRazorEngine razorEngine = new RazorEngine();
-                var templateString = System.IO.File.ReadAllText("Reports\\SalesInvoiceReportA8.html");
+                var templateString = System.IO.File.ReadAllText(System.IO.Path.Combine(AppContext.BaseDirectory, "Reports", "SalesInvoiceReportA8.html"));
                 IRazorEngineCompiledTemplate template = await razorEngine.CompileAsync(templateString);
 
-                Report = template.Run(bill);
+                var report = template.Run(bill);
+                if (BillSelectedValue != id)
+                {
+                    return;
+                }
+
+                Report = report;
             }
+
+            if (BillSelectedValue != id)
+            {
+                return;
+            }
+
             BillReturnedStatues(id);
+            _loadedBillWasReturned = IsReturned;
+            LoadedBillId = id;
             IsReturnedVisible = Visibility.Visible;
         }
 
@@ -216,37 +258,34 @@ namespace Phony.ViewModels
 
         private bool CanSaveReturned()
         {
-            return BillSelectedValue > 0;
+            return !IsReturning && !_loadedBillWasReturned && IsReturned && LoadedBillId > 0
+                && LoadedBillId == BillSelectedValue && Bills.Any(b => b.Id == BillSelectedValue);
         }
 
         private async void DoSaveReturned()
         {
-            using var db = new LiteDatabase(LiteDbContext.ConnectionString);
-            var b = db.GetCollection<Bill>(DBCollections.Bills).FindById(BillSelectedValue);
-            if (!b.IsReturned)
+            if (!CanSaveReturned())
             {
-                b.IsReturned = IsReturned;
-                b.Editor = Core.ReadUserSession();
-                b.EditDate = DateTime.Now;
-                if (b.TotalPayed < b.TotalAfterDiscounts)
-                {
-                    if (IsReturned)
-                    {
-                        var c = db.GetCollection<Client>(DBCollections.Clients).FindById(b.Client.Id);
-                        c.Balance -= b.TotalAfterDiscounts - b.TotalPayed;
-                        db.GetCollection<Client>(DBCollections.Clients).Update(c);
-                    }
-                }
-                db.GetCollection<Bill>(DBCollections.Bills).Update(b);
+                return;
+            }
+
+            var id = LoadedBillId;
+            IsReturning = true;
+
+            try
+            {
+                InvoiceService.Return(LiteDbContext.ConnectionString, id, Core.ReadUserSession());
+                LoadedBillId = 0;
+                IsReturnedVisible = Visibility.Collapsed;
                 await Message.ShowMessageAsync("نجاح العملية", "تم ارجاع الفاتورة بنجاح");
             }
-            else
+            catch (Exception ex)
             {
-                IsReturned = true;
-                await Message.ShowMessageAsync("خطأ", "لا يمكن اعاده مرتجع مرة اخرى قم بانشاء فاتورة جديدة");
+                await Core.SaveExceptionAsync(ex);
+                await Message.ShowMessageAsync("خطأ", "تعذر إرجاع الفاتورة. تحقق من بياناتها أو أنها لم ترجع سابقاً.");
             }
+            finally { IsReturning = false; }
         }
-
         private bool CanGetBills()
         {
             return true;
