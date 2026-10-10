@@ -24,7 +24,7 @@ namespace Phony.DTOs
 
         public decimal Discount { get; set; }
 
-        public decimal Total { get => Discount == 0 ? (Cost * QTY) : (Cost * QTY) * Discount / 100; }
+        public decimal Total => Math.Round(Cost * QTY * (1 - Discount / 100), 2);
 
         public string Notes { get => notes; set => SetProperty(ref notes, value); }
 

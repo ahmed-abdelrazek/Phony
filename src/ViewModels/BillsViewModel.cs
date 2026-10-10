@@ -1,4 +1,4 @@
-﻿using LiteDB;
+using LiteDB;
 using MahApps.Metro.Controls.Dialogs;
 using Phony.Data;
 using Phony.Models;
@@ -137,7 +137,13 @@ namespace Phony.ViewModels
         public decimal BillTotalAfterDiscount
         {
             get => _billTotalAfterDiscount;
-            set => SetProperty(ref _billTotalAfterDiscount, Math.Round(value, 2));
+            set
+            {
+                if (SetProperty(ref _billTotalAfterDiscount, Math.Round(value, 2)))
+                {
+                    RecalculateChange();
+                }
+            }
         }
 
         public decimal BillClientPayment
@@ -148,21 +154,24 @@ namespace Phony.ViewModels
                 if (value != _billClientPayment)
                 {
                     _billClientPayment = value;
-                    if (_billClientPayment > BillTotalAfterDiscount)
-                    {
-                        BillClientPaymentChange = Math.Round(_billClientPayment - BillTotalAfterDiscount, 2);
-                        BillClientPaymentChangeVisible = Visibility.Visible;
-                    }
-                    else
-                    {
-                        BillClientPaymentChange = 0;
-                        BillClientPaymentChangeVisible = Visibility.Collapsed;
-                    }
+                    RecalculateChange();
                     RaisePropertyChanged();
                 }
             }
         }
 
+        private void RecalculateChange()
+        {
+            BillClientPaymentChange = InvoiceService.Change(BillClientPayment, BillTotalAfterDiscount);
+            BillClientPaymentChangeVisible = BillClientPaymentChange > 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private bool _isSaving;
+        public bool IsSaving
+        {
+            get => _isSaving;
+            private set => SetProperty(ref _isSaving, value);
+        }
         public decimal BillClientPaymentChange
         {
             get => _billClientPaymentChange;
@@ -376,15 +385,23 @@ namespace Phony.ViewModels
         {
             Search = new DelegateCommand(DoSearch, CanSearch).ObservesProperty(() => SearchText);
             AddBillMove = new DelegateCommand(DoAddBillMove, CanAddBillMove).ObservesProperty(() => SearchSelectedValue);
-            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill).ObservesProperty(() => ItemChildItemQTYSell).ObservesProperty(() => BillTotal).ObservesProperty(() => BillTotalAfterEachDiscount).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillClientPaymentChange);
-            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill).ObservesProperty(() => ServiceChildServiceCost).ObservesProperty(() => BillTotal).ObservesProperty(() => BillTotalAfterEachDiscount).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillClientPaymentChange);
+            AddItemToBill = new DelegateCommand(DoAddItemToBill, CanAddItemToBill).ObservesProperty(() => ItemChildItemQTYSell).ObservesProperty(() => SelectedItem).ObservesProperty(() => ChildDiscount).ObservesProperty(() => IsSaving);
+            AddServiceToBill = new DelegateCommand(DoAddServiceToBill, CanAddServiceToBill).ObservesProperty(() => ServiceChildServiceCost).ObservesProperty(() => ServiceChildServiceBalance).ObservesProperty(() => SelectedService).ObservesProperty(() => ChildDiscount).ObservesProperty(() => IsSaving);
             DeleteBillMove = new DelegateCommand(DoDeleteBillMove, CanDeleteBillMove).ObservesProperty(() => DataGridSelectedBillItemMove).ObservesProperty(() => ByItem).ObservesProperty(() => DataGridSelectedBillServiceMove).ObservesProperty(() => ByService);
             RedoBill = new DelegateCommand(DoRedoBill, CanRedoBill);
-            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill).ObservesProperty(() => SelectedClient).ObservesProperty(() => BillItemsMoves.Count).ObservesProperty(() => BillServicesMoves.Count);
-            SaveAndShow = new DelegateCommand(DoSaveAndShow, CanSaveAndShow).ObservesProperty(() => SelectedClient);
+            SaveBill = new DelegateCommand(DoSaveBill, CanSaveBill).ObservesProperty(() => SelectedClient).ObservesProperty(() => BillItemsMoves.Count).ObservesProperty(() => BillServicesMoves.Count).ObservesProperty(() => IsSaving).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillDiscount);
+            SaveAndShow = new DelegateCommand(DoSaveAndShow, CanSaveAndShow).ObservesProperty(() => SelectedClient).ObservesProperty(() => BillItemsMoves.Count).ObservesProperty(() => BillServicesMoves.Count).ObservesProperty(() => IsSaving).ObservesProperty(() => BillClientPayment).ObservesProperty(() => BillDiscount);
         }
 
         async Task<long> SaveBillNoAsync()
+        {
+            if (!CanSaveBill()) return 0;
+            IsSaving = true;
+            try { return await SaveBillCoreAsync(); }
+            finally { IsSaving = false; }
+        }
+
+        async Task<long> SaveBillCoreAsync()
         {
             if (BillClientPayment < BillTotalAfterDiscount)
             {
@@ -404,65 +421,22 @@ namespace Phony.ViewModels
             {
                 billNote = await Message.ShowInputAsync("ملاحظة", $"اكتب اى شئ ليتم طباعته مع الفاتورة");
             }
-            using var db = new LiteDatabase(LiteDbContext.ConnectionString);
+            long id;
             try
             {
-                var bi = new Bill
-                {
-                    Client = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id),
-                    Store = db.GetCollection<Store>(DBCollections.Stores).FindById(1),
-                    Discount = BillDiscount,
-                    TotalAfterDiscounts = BillTotalAfterDiscount,
-                    TotalPayed = BillClientPayment,
-                    Notes = billNote,
-                    CreateDate = DateTime.Now,
-                    Creator = Core.ReadUserSession(),
-                    Editor = null,
-                    EditDate = null
-                };
-                db.GetCollection<Bill>(DBCollections.Bills).Insert(bi);
-                foreach (var item in BillItemsMoves)
-                {
-                    item.Bill = bi;
-                    db.GetCollection<BillItemMove>(DBCollections.BillsItemsMoves).Insert(item);
-                    var i = db.GetCollection<Item>(DBCollections.Items).FindById(item.Item.Id);
-                    i.QTY -= item.QTY;
-                    db.GetCollection<Item>(DBCollections.Items).Update(i);
-                }
-                foreach (var service in BillServicesMoves)
-                {
-                    service.Bill = bi;
-                    db.GetCollection<BillServiceMove>(DBCollections.BillsServicesMoves).Insert(service);
-                    var s = db.GetCollection<Service>(DBCollections.Services).FindById(service.Service.Id);
-                    s.Balance -= service.Balance;
-                    db.GetCollection<Service>(DBCollections.Services).Update(s);
-                }
-                if (BillClientPayment < BillTotalAfterDiscount)
-                {
-                    var c = db.GetCollection<Client>(DBCollections.Clients).FindById(SelectedClient.Id);
-                    c.Balance += BillTotalAfterDiscount - BillClientPayment;
-                    db.GetCollection<Client>(DBCollections.Clients).Update(c);
-                }
-                db.GetCollection<TreasuryMove>(DBCollections.TreasuriesMoves).Insert(new TreasuryMove
-                {
-                    Treasury = db.GetCollection<Treasury>(DBCollections.Treasuries).FindById(1),
-                    Debit = BillClientPayment,
-                    Credit = BillClientPaymentChange,
-                    Notes = $"فاتورة رقم {bi.Id}",
-                    CreateDate = DateTime.Now,
-                    Creator = Core.ReadUserSession(),
-                    EditDate = null,
-                    Editor = null
-                });
-                Clear();
-                CurrentBillNo = bi.Id + 1;
-                return bi.Id;
+                id = InvoiceService.Save(LiteDbContext.ConnectionString, SelectedClient.Id,
+                    BillDiscount, BillClientPayment, billNote, Core.ReadUserSession(), BillItemsMoves, BillServicesMoves);
             }
             catch (Exception ex)
             {
                 await Core.SaveExceptionAsync(ex);
                 return -1;
             }
+            // A refresh failure after commit must not report the sale as failed.
+            try { Clear(); }
+            catch (Exception ex) { await Core.SaveExceptionAsync(ex); }
+            CurrentBillNo = id + 1;
+            return id;
         }
 
         private bool CanSaveAndShow()
@@ -486,7 +460,7 @@ namespace Phony.ViewModels
 
         private bool CanSaveBill()
         {
-            return SelectedClient is null ? false : (BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0) && SelectedClient.Id > 0;
+            return !IsSaving && SelectedClient != null && SelectedClient.Id > 0 && BillClientPayment >= 0 && BillDiscount >= 0 && BillDiscount <= 100 && (BillItemsMoves.Count > 0 || BillServicesMoves.Count > 0);
         }
 
         private async void DoSaveBill()
@@ -582,7 +556,7 @@ namespace Phony.ViewModels
 
         private bool CanAddServiceToBill()
         {
-            return ServiceChildServiceCost > 0;
+            return !IsSaving && SelectedService != null && ServiceChildServiceCost > 0 && ServiceChildServiceBalance >= 0 && ChildDiscount >= 0 && ChildDiscount <= 100;
         }
 
         private void DoAddServiceToBill()
@@ -595,7 +569,7 @@ namespace Phony.ViewModels
                     balanceNeeded += item.Balance;
                 }
             }
-            balanceNeeded += ServiceChildServiceCost;
+            balanceNeeded += ServiceChildServiceBalance;
             if (SelectedService.Balance >= balanceNeeded)
             {
                 using (var db = new LiteDatabase(LiteDbContext.ConnectionString))
@@ -629,7 +603,7 @@ namespace Phony.ViewModels
 
         private bool CanAddItemToBill()
         {
-            return ItemChildItemQTYSell > 0;
+            return !IsSaving && SelectedItem != null && ItemChildItemQTYSell > 0 && ChildDiscount >= 0 && ChildDiscount <= 100;
         }
 
         private void DoAddItemToBill()

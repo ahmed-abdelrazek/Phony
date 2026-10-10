@@ -33,10 +33,12 @@ namespace Phony.Mappers
         [MapperIgnoreTarget(nameof(BillServiceMoveDto.QTY))]
         public static partial BillServiceMoveDto? ToDto(BillServiceMove? source);
 
-        [MapperIgnoreTarget(nameof(BillDto.Change))]
+        [MapPropertyFromSource(nameof(BillDto.Change), Use = nameof(MapChange))]
         [MapProperty(nameof(Bill.ItemsMoves), nameof(BillDto.ItemsMoves), Use = nameof(MapBillItems))]
         [MapProperty(nameof(Bill.ServicesMoves), nameof(BillDto.ServicesMoves), Use = nameof(MapBillServices))]
         public static partial BillDto? ToDto(Bill? source);
+
+        private static decimal MapChange(Bill source) => InvoiceService.Change(source.TotalPayed, source.TotalAfterDiscounts);
 
         public static partial ObservableCollection<ClientDto> ToClientDtos(IEnumerable<Client> source);
         public static partial ObservableCollection<CompanyDto> ToCompanyDtos(IEnumerable<Company> source);
