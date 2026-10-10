@@ -126,7 +126,7 @@ namespace Phony.ViewModels
                 if (value != _billDiscount)
                 {
                     _billDiscount = value;
-                    BillTotalAfterDiscount =_billDiscount > 0
+                    BillTotalAfterDiscount = _billDiscount > 0
                         ? Math.Round(BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (_billDiscount / 100)), 2)
                         : Math.Round(BillTotalAfterEachDiscount, 2);
                     RaisePropertyChanged();
@@ -616,7 +616,7 @@ namespace Phony.ViewModels
                 }
                 BillTotal += ServiceChildServiceCost;
                 BillTotalAfterEachDiscount += ServiceChildServiceCost - (ServiceChildServiceCost * (ChildDiscount / 100));
-                BillTotalAfterDiscount =BillDiscount > 0
+                BillTotalAfterDiscount = BillDiscount > 0
                     ? BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100))
                     : BillTotalAfterEachDiscount;
                 ClearChild();
@@ -664,7 +664,7 @@ namespace Phony.ViewModels
                 }
                 BillTotal += ItemToQtyPrice;
                 BillTotalAfterEachDiscount += ItemToQtyPrice - (ItemToQtyPrice * (ChildDiscount / 100));
-                BillTotalAfterDiscount =BillDiscount > 0
+                BillTotalAfterDiscount = BillDiscount > 0
                     ? BillTotalAfterEachDiscount - (BillTotalAfterEachDiscount * (BillDiscount / 100))
                     : BillTotalAfterEachDiscount;
                 ClearChild();
@@ -822,7 +822,7 @@ namespace Phony.ViewModels
             {
                 using var db = new LiteDatabase(LiteDbContext.ConnectionString);
                 var x = db.GetCollection<Bill>(DBCollections.Bills).FindAll().LastOrDefault().Id;
-                if (x == 1)
+                if (x < 1)
                 {
                     x = 0;
                 }
