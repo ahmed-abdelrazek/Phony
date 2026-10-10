@@ -10,6 +10,8 @@ namespace Phony.Views.Pages
         public Main()
         {
             InitializeComponent();
+            Loaded += (_, _) => (DataContext as ViewModels.MainPageVM)?.StartPolling();
+            Unloaded += (_, _) => (DataContext as ViewModels.MainPageVM)?.StopPolling();
         }
     }
 }
